@@ -29,3 +29,6 @@ config :course_planner, CoursePlanner.Repo,
   database: "course_planner_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :course_planner, CoursePlanner.Mailer,
+  adapter: Bamboo.LocalAdapter
