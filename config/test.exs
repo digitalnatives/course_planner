@@ -17,3 +17,6 @@ config :course_planner, CoursePlanner.Repo,
   database: "course_planner_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :course_planner, CoursePlanner.Mailer,
+  adapter: Bamboo.TestAdapter
