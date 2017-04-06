@@ -8,4 +8,9 @@ defmodule CoursePlanner.Router do
   scope "/api", CoursePlanner do
     pipe_through :api
   end
+
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
+  end
+
 end
