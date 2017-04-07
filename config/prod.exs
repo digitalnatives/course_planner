@@ -18,4 +18,4 @@ config :course_planner, CoursePlanner.Repo,
 config :course_planner, CoursePlanner.Mailer,
   adapter: Bamboo.MailgunAdapter,
   api_key: System.get_env("MAILGUN_API_KEY"),
-  domain: "sandbox2c32a5cb470c4c3480c227b8ed604f75.mailgun.org"
+  domain: Syste.get_env("MAILGUN_DOMAIN")
