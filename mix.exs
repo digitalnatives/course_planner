@@ -37,6 +37,8 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:bamboo, "~> 0.8"},
+     {:credo, "~> 0.7.2", only: [:dev, :test]},
+     {:dogma, "~> 0.1.14", only: [:dev, :test]},
    ]
   end
 
