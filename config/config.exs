@@ -6,7 +6,7 @@ config :course_planner,
 config :course_planner, CoursePlanner.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Ml1LamAwEl2ra/9mM5mMbFffEqgL0vp05nbPjrXw0Mfzn0RO4x/t77NVPuZ5AzN+",
-  render_errors: [view: CoursePlanner.ErrorView, accepts: ~w(json)],
+  render_errors: [view: CoursePlanner.ErrorView, accepts: ~w(html json)],
   pubsub: [name: CoursePlanner.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
