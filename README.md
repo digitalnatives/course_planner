@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/digitalnatives/course_planner.svg?branch=master)](https://travis-ci.org/digitalnatives/course_planner)
+
 # Course Planner
 
 To start your Phoenix app:
