@@ -14,4 +14,8 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+  config :course_planner, CoursePlanner.Mailer.Main,
+    adapter: Swoosh.Adapters.SMTP,
+    api_key: "some api key should be added here"
+
 import_config "#{Mix.env}.exs"
