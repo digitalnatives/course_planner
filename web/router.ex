@@ -38,8 +38,6 @@ defmodule CoursePlanner.Router do
 
   scope "/", CoursePlanner do
     pipe_through :protected
-
-    resources "/courses", CourseController
   end
 
   if Mix.env == :dev do
