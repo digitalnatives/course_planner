@@ -1,9 +1,23 @@
 defmodule CoursePlanner.CourseControllerTest do
   use CoursePlanner.ConnCase
+  alias CoursePlanner.Repo
+  alias CoursePlanner.User
 
   alias CoursePlanner.Course
   @valid_attrs %{name: "some content", teacher: "some content"}
   @invalid_attrs %{}
+  @user %User{
+    name: "Test User",
+    email: "testuser@example.com",
+    password: "secret",
+    password_confirmation: "secret"}
+
+  setup context do
+    conn =
+      Phoenix.ConnTest.build_conn()
+        |> assign(:current_user, @user)
+    {:ok, conn: conn}
+  end
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, course_path(conn, :index)
