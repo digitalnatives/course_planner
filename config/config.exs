@@ -27,6 +27,5 @@ config :coherence,
   opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable, :registerable]
 
 config :coherence, CoursePlanner.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: "your api key here"
+  adapter: Swoosh.Adapters.Local
 # %% End Coherence Configuration %%

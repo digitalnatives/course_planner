@@ -14,3 +14,8 @@ config :course_planner, CoursePlanner.Repo,
   url: System.get_env("DATABASE_URL"),
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
+
+config :coherence, CoursePlanner.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Mailgun,
+  api_key: System.get_env("MAILGUN_API_KEY"),
+  domain: Syste.get_env("MAILGUN_DOMAIN")
