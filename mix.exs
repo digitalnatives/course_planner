@@ -40,7 +40,7 @@ defmodule CoursePlanner.Mixfile do
      {:cowboy, "~> 1.0"},
      {:credo, "~> 0.7.2", only: [:dev, :test]},
      {:dogma, "~> 0.1.14", only: [:dev, :test]},
-     {:coherence, "~> 0.3"},
+     {:coherence, github: "smpallen99/coherence"},
    ]
   end
 

@@ -1,4 +1,5 @@
 defmodule CoursePlanner.Coherence.Web do
+  @moduledoc false
 
   def view do
     quote do
@@ -13,7 +14,6 @@ defmodule CoursePlanner.Coherence.Web do
       import CoursePlanner.ErrorHelpers
       import CoursePlanner.Gettext
       import CoursePlanner.Coherence.ViewHelpers
-
     end
   end
 

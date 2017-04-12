@@ -20,6 +20,7 @@ config :coherence,
   repo: CoursePlanner.Repo,
   module: CoursePlanner,
   logged_out_url: "/",
+  title: "Course Planner",
   opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
 
 config :coherence, CoursePlanner.Coherence.Mailer,
