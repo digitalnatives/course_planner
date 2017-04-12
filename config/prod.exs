@@ -21,5 +21,5 @@ config :coherence, CoursePlanner.Coherence.Mailer,
   domain: Syste.get_env("MAILGUN_DOMAIN")
 
 config :coherence,
-  email_from_name: Syste.get_env("EMAIL_FROM_NAME"),
-  email_from_email: Syste.get_env("EMAIL_FROM_EMAIL")
+  email_from_name: System.get_env("EMAIL_FROM_NAME"),
+  email_from_email: System.get_env("EMAIL_FROM_EMAIL")
