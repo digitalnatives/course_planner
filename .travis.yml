@@ -16,5 +16,5 @@ before_script:
   - gem install pronto-dogma
 
 script:
-— if [ $PULL_REQUEST_ID != false ]; then pronto run -f github_pr; fi
-— mix test
+  - if [ $PULL_REQUEST_ID != false ]; then pronto run -f github_pr; fi
+  - mix test
