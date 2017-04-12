@@ -7,3 +7,14 @@ otp_release:
 
 env:
   - MIX_ENV=test
+  - PULL_REQUEST_ID=$TRAVIS_PULL_REQUEST
+
+before_script:
+  - rvm install ruby-2.3.1
+  - gem install pronto
+  - gem install pronto-credo
+  - gem install pronto-dogma
+
+script:
+  — if [ $PULL_REQUEST_ID != false ]; then pronto run -f github_pr; fi
+  — mix test
