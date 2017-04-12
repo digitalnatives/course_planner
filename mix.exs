@@ -19,7 +19,7 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :bamboo]]
   end
 
   # Specifies which paths to compile per environment.
@@ -38,6 +38,7 @@ defmodule CoursePlanner.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
+     {:bamboo, "~> 0.8"},
      {:credo, "~> 0.7.2", only: [:dev, :test]},
      {:dogma, "~> 0.1.14", only: [:dev, :test]},
    ]
