@@ -30,3 +30,7 @@ config :course_planner, CoursePlanner.Repo,
   database: "course_planner_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :coherence,
+  email_from_name: "Dev Name",
+  email_from_email: "dev@email"
