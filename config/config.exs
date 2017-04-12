@@ -14,4 +14,16 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: CoursePlanner.User,
+  repo: CoursePlanner.Repo,
+  module: CoursePlanner,
+  logged_out_url: "/",
+  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
+
+config :coherence, CoursePlanner.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Local
+# %% End Coherence Configuration %%
+
 import_config "#{Mix.env}.exs"
