@@ -14,8 +14,21 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-  config :course_planner, CoursePlanner.Mailer.Main,
-    adapter: Swoosh.Adapters.SMTP,
-    api_key: "some api key should be added here"
+config :course_planner, CoursePlanner.Mailer.Main,
+  adapter: Swoosh.Adapters.SMTP,
+  api_key: "some api key should be added here"
+
+# %% Coherence Configuration %%   Don't remove this line
+config :coherence,
+  user_schema: CoursePlanner.User,
+  repo: CoursePlanner.Repo,
+  module: CoursePlanner,
+  logged_out_url: "/",
+  title: "Course Planner",
+  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
+
+config :coherence, CoursePlanner.Coherence.Mailer,
+  adapter: Swoosh.Adapters.Local
+# %% End Coherence Configuration %%
 
 import_config "#{Mix.env}.exs"

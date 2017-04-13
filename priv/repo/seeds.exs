@@ -1,11 +1,4 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     CoursePlanner.Repo.insert!(%CoursePlanner.SomeModel{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+CoursePlanner.Repo.delete_all CoursePlanner.User
+
+CoursePlanner.User.changeset(%CoursePlanner.User{}, %{name: "Test User", email: "testuser@example.com", password: "secret", password_confirmation: "secret"})
+|> CoursePlanner.Repo.insert!
