@@ -5,7 +5,6 @@ defmodule CoursePlanner do
   use Application
   alias CoursePlanner.Endpoint, as: Endpoint
   alias CoursePlanner.Repo, as: Repo
-  alias CoursePlanner.Supervisor, as: Supervisor
 
   def start(_type, _args) do
     import Supervisor.Spec
@@ -15,7 +14,7 @@ defmodule CoursePlanner do
       supervisor(Endpoint, []),
     ]
 
-    opts = [strategy: :one_for_one, name: Supervisor]
+    opts = [strategy: :one_for_one, name: CoursePlanner.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
