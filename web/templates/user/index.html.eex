@@ -1,0 +1,23 @@
+<h2>User list</h2>
+
+<%= link "Invite user", to: invitation_path(@conn, :new)%>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>E-mail</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for user <- @users do %>
+    <tr>
+      <td><%= user.name %></td>
+      <td><%= user.email %></td>
+
+    </tr>
+<% end %>
+  </tbody>
+</table>
