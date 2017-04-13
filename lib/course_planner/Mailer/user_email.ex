@@ -1,4 +1,7 @@
 defmodule CoursePlanner.Mailer.UserEmail do
+  @moduledoc """
+  This module for creating emails
+  """
   import Swoosh.Email
 
   @type recipient_name :: String.t
@@ -14,7 +17,6 @@ defmodule CoursePlanner.Mailer.UserEmail do
     |> html_body("<h1>Hello #{user.name}</h1>")
     |> text_body("Hello #{user.name}\n")
   end
-
 
   @spec add_recepients(Swoosh.Email, target_group, [recipient_info]) :: Swoosh.Email
   def add_recepients(email, target_group, recipient_list) when is_list(recipient_list) do
