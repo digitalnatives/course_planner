@@ -3,10 +3,10 @@ defmodule CoursePlanner.UserControllerTest do
   alias CoursePlanner.Repo
   alias CoursePlanner.User
 
-  @valid_attrs %{name: "some content", email: "some content"}
+  @valid_attrs %{first_name: "some content", email: "some content"}
   @invalid_attrs %{}
   @user %User{
-    name: "Test User",
+    first_name: "Test User",
     email: "testuser@example.com",
     password: "secret",
     password_confirmation: "secret"}

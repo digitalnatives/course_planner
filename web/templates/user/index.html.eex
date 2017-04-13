@@ -5,8 +5,12 @@
 <table class="table">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>E-mail</th>
+      <td> First Name </td>
+      <td> Family Name </td>
+      <td> Nickname</td>
+      <td> Email</td>
+      <td> Student ID </td>
+      <td> Comments </td>
 
       <th></th>
     </tr>
@@ -14,8 +18,12 @@
   <tbody>
 <%= for user <- @users do %>
     <tr>
-      <td><%= user.name %></td>
+      <td><%= user.first_name %></td>
+      <td><%= user.family_name %></td>
+      <td><%= user.nickname %></td>
       <td><%= user.email %></td>
+      <td><%= user.student_id %></td>
+      <td><%= user.comments %></td>
       <td class="text-right">
         <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %>
