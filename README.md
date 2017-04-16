@@ -2,7 +2,16 @@
 
 # Course Planner
 
-To start your Phoenix app:
+## Development Setup
+
+### Docker
+
+  * Install Elixir dependencies with `docker-compose run web mix deps.get`
+  * Setup your database (create, migrate and seed) with `docker-compose run web mix ecto.setup`
+  * Install Node.js dependencies with `docker-compose run web npm install`
+  * Start Phoenix endpoint (db and web containers) with `docker-compose up`
+
+### Local
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`

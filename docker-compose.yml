@@ -1,0 +1,20 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    command: mix phoenix.server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_HOST=db
+    volumes:
+      - .:/myapp
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
