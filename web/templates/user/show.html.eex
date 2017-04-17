@@ -1,0 +1,31 @@
+<h2>Show user</h2>
+
+<ul>
+  <li>
+    <strong>First Name:</strong>
+    <%= @user.first_name %>
+  </li>
+  <li>
+    <strong>Family Name:</strong>
+    <%= @user.family_name %>
+  </li>
+  <li>
+    <strong>Nickname:</strong>
+    <%= @user.nickname %>
+  </li>
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+  <li>
+    <strong>Student ID:</strong>
+    <%= @user.student_id %>
+  </li>
+  <li>
+    <strong>Comments:</strong>
+    <%= @user.comments %>
+  </li>
+</ul>
+
+<%= link "Edit", to: user_path(@conn, :edit, @user), class: "btn btn-primary" %>
+<%= link "Back", to: user_path(@conn, :index), class: "btn btn-secondary" %>

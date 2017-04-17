@@ -1,3 +1,5 @@
+<h3>Invite user</h3>
+
 <%= form_for @changeset, invitation_path(@conn, :create), [as: :invitation], fn f  -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
@@ -18,7 +20,7 @@
 
   <div class="form-group">
     <%= submit "Send Invitation", class: "btn btn-primary" %>
-    <%= link "Cancel", to: Coherence.Config.logged_out_url("/"), class: "btn" %>
+    <%= link "Cancel", to: user_path(@conn, :index), class: "btn" %>
     <%= if invitation = @conn.assigns[:invitation] do %>
       <%= link "Resend Invitation!", to: invitation_path(@conn, :resend, invitation.id), class: "btn" %>
     <% end %>
