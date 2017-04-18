@@ -1,0 +1,48 @@
+<h2>Show term</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @term.name %>
+  </li>
+
+  <li>
+    <strong>Starting day:</strong>
+    <%= @term.starting_day %>
+  </li>
+
+  <li>
+    <strong>Finishing day:</strong>
+    <%= @term.finishing_day %>
+  </li>
+
+  <li>
+    <strong>Holidays:</strong>
+    <%= @term.holidays %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @term.status %>
+  </li>
+
+  <li>
+    <strong>Frozen at:</strong>
+    <%= @term.frozen_at %>
+  </li>
+
+  <li>
+    <strong>Finished at:</strong>
+    <%= @term.finished_at %>
+  </li>
+
+  <li>
+    <strong>Deleted at:</strong>
+    <%= @term.deleted_at %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: term_path(@conn, :edit, @term) %>
+<%= link "Back", to: term_path(@conn, :index) %>
