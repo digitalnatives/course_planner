@@ -2,16 +2,12 @@ FROM elixir:1.4.2
 
 ENV NODE_VERSION=7
 
-# Install system dependencies
+# Install system dependencies and nodejs, then clean up apt temporary artefacts
 RUN apt-get -y update \
-    && apt-get -y install apt-transport-https build-essential curl git make locales locales-all inotify-tools
-
-# Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
-    && apt-get -y install nodejs
-
-# Clean up apt temporary apt artefacts
-RUN apt-get clean -y \
+    && apt-get -y install apt-transport-https build-essential curl git make locales locales-all inotify-tools \
+    && curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
+    && apt-get -y install nodejs \
+    && apt-get -y clean \
     && rm -rf /var/cache/apt/*
 
 # Elixir requires UTF-8
