@@ -4,9 +4,20 @@
 </div>
 
 <div class="row marketing">
-  <div class="col-lg-4">
+  <div class="col-lg-3">
     <h4>Users</h4>
     <%= link "Users", to: user_path(@conn, :index)%>
   </div>
-
+  <div class="col-lg-3">
+    <h4>Terms</h4>
+    <%= link "Terms", to: term_path(@conn, :index)%>
+  </div>
+  <div class="col-lg-3">
+    <h4>Courses</h4>
+    <%= link "Courses", to: course_path(@conn, :index)%>
+  </div>
+  <div class="col-lg-3">
+    <h4>Tasks</h4>
+    <%= link "Tasks", to: task_path(@conn, :index)%>
+  </div>
 </div>
