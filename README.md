@@ -6,10 +6,14 @@
 
 ### Docker
 
-  * Install Elixir dependencies with `docker-compose run web mix deps.get`
-  * Setup your database (create, migrate and seed) with `docker-compose run web mix ecto.setup`
-  * Install Node.js dependencies with `docker-compose run web npm install`
-  * Start Phoenix endpoint (db and web containers) with `docker-compose up`
+  * Copy the docker-compose sample file
+    `cp docker-compose.yml.sample docker-compose.yml`
+  * Copy the docker-compose-up sample script
+    `cp ./scripts/docker-compose-up.sh.sample ./scripts/docker-compose-up.sh`
+  * Create and seed database, then start Phoenix
+    `docker-compose up`
+
+  You may change your local `docker-compose.yml` and `./scripts/docker-compose-up.sh` according to your preferences, if you want to use a local database for example.
 
 ### Local
 

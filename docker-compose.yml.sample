@@ -6,15 +6,16 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   web:
-    command: mix phoenix.server
+    command: ./scripts/docker-compose-up.sh
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       - DATABASE_HOST=db
     volumes:
-      - .:/myapp
+      - .:/myapp-dev
     ports:
       - 4000:4000
     depends_on:
       - db
+    working_dir: /myapp-dev
