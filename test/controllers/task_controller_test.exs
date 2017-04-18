@@ -1,9 +1,22 @@
 defmodule CoursePlanner.TaskControllerTest do
   use CoursePlanner.ConnCase
+  alias CoursePlanner.User
 
   alias CoursePlanner.Task
   @valid_attrs %{due: %{day: 17, month: 4, year: 2010}, name: "some content"}
   @invalid_attrs %{}
+  @user %User{
+    first_name: "Test User",
+    email: "testuser@example.com",
+    password: "secret",
+    password_confirmation: "secret"}
+
+  setup do
+    conn =
+      Phoenix.ConnTest.build_conn()
+        |> assign(:current_user, @user)
+    {:ok, conn: conn}
+  end
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, task_path(conn, :index)

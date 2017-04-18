@@ -1,9 +1,22 @@
 defmodule CoursePlanner.TermControllerTest do
   use CoursePlanner.ConnCase
+  alias CoursePlanner.User
 
   alias CoursePlanner.Term
   @valid_attrs %{deleted_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, finished_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, finishing_day: %{day: 17, month: 4, year: 2010}, frozen_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, holidays: [], name: "some content", starting_day: %{day: 17, month: 4, year: 2010}, status: "some content"}
   @invalid_attrs %{}
+  @user %User{
+    first_name: "Test User",
+    email: "testuser@example.com",
+    password: "secret",
+    password_confirmation: "secret"}
+
+  setup do
+    conn =
+      Phoenix.ConnTest.build_conn()
+        |> assign(:current_user, @user)
+    {:ok, conn: conn}
+  end
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, term_path(conn, :index)
