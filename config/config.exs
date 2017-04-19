@@ -21,7 +21,7 @@ config :coherence,
   module: CoursePlanner,
   logged_out_url: "/",
   title: "Course Planner",
-  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token, :invitable]
+  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token]
 
 config :coherence, CoursePlanner.Coherence.Mailer,
   adapter: Swoosh.Adapters.Local
