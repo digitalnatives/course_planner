@@ -4,17 +4,21 @@ defmodule CoursePlanner.User do
   use Coherence.Schema
 
   schema "users" do
-    field :name, :string
+    field :first_name, :string
+    field :family_name, :string
+    field :nickname, :string
     field :email, :string
-    coherence_schema()
+    field :student_id, :string
+    field :comments, :string
 
+    coherence_schema()
     timestamps()
   end
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, [:name, :email] ++ coherence_fields())
-    |> validate_required([:name, :email])
+    |> cast(params, [:first_name, :family_name, :nickname, :email, :student_id, :comments] ++ coherence_fields())
+    |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> validate_coherence(params)
