@@ -15,8 +15,7 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :course_planner, CoursePlanner.Mailer.Main,
-  adapter: Swoosh.Adapters.SMTP,
-  api_key: "some api key should be added here"
+  adapter: Swoosh.Adapters.Local
 
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,

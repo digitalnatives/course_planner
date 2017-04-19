@@ -3,8 +3,7 @@ defmodule CoursePlanner do
   This is the main module of the app
   """
   use Application
-  alias CoursePlanner.Endpoint, as: Endpoint
-  alias CoursePlanner.Repo, as: Repo
+  alias CoursePlanner.{Endpoint, Repo}
 
   def start(_type, _args) do
     import Supervisor.Spec
