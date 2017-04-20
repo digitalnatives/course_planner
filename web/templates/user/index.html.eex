@@ -18,7 +18,7 @@
   <tbody>
 <%= for user <- @users do %>
     <tr>
-      <td><%= user.first_name %></td>
+      <td><%= user.name %></td>
       <td><%= user.family_name %></td>
       <td><%= user.nickname %></td>
       <td><%= user.email %></td>
