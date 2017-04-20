@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= label f, :name, class: "control-label" %>
-    <%= text_input f, :name, class: "form-control" %>
+    <%= text_input f, :name, class: "form-control", required: ""%>
     <%= error_tag f, :name %>
   </div>
 
@@ -25,7 +25,7 @@
 
   <div class="form-group">
     <%= label f, :email, class: "control-label" %>
-    <%= text_input f, :email, class: "form-control" %>
+    <%= text_input f, :email, class: "form-control", required: ""%>
     <%= error_tag f, :email %>
   </div>
 
