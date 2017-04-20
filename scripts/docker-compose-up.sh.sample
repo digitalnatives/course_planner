@@ -1,0 +1,14 @@
+#! /bin/bash
+
+if [ ! -d "/myapp-dev/deps" ]; then
+  ln -s /myapp/deps /myapp-dev/.
+fi
+if [ ! -d "/myapp-dev/_build" ]; then
+  ln -s /myapp/_build /myapp-dev/.
+fi
+if [ ! -d "/myapp-dev/node_modules" ]; then
+  ln -s /myapp/node_modules /myapp-dev/.
+fi
+
+mix ecto.setup
+mix phoenix.server

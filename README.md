@@ -2,7 +2,20 @@
 
 # Course Planner
 
-To start your Phoenix app:
+## Development Setup
+
+### Docker
+
+  * Copy the docker-compose sample file
+    `cp docker-compose.yml.sample docker-compose.yml`
+  * Copy the docker-compose-up sample script
+    `cp ./scripts/docker-compose-up.sh.sample ./scripts/docker-compose-up.sh`
+  * Create and seed database, then start Phoenix
+    `docker-compose up`
+
+  You may change your local `docker-compose.yml` and `./scripts/docker-compose-up.sh` according to your preferences, if you want to use a local database for example.
+
+### Local
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
