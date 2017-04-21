@@ -2,7 +2,7 @@ defmodule CoursePlanner.CourseControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.User
   alias CoursePlanner.Course
-  
+
   @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
   @invalid_attrs %{}
   @user %User{
@@ -76,4 +76,39 @@ defmodule CoursePlanner.CourseControllerTest do
     assert redirected_to(conn) == course_path(conn, :index)
     refute Repo.get(Course, course.id)
   end
+
+  test "does not create resource and renders errors when data number_of_sessions is negative", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: -1}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data number_of_sessions is zero", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: 0}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data number_of_sessions is too big", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: 100_000_000}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data value of status is not valid", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "random"}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "creates resource and redirects when data is valid and status is Planned", %{conn: conn} do
+    new_attrs = %{@valid_attrs | status: "Planned"}
+    conn = post conn, course_path(conn, :create), course: new_attrs
+    assert redirected_to(conn) == course_path(conn, :index)
+    assert Repo.get_by(Course, new_attrs)
+  end
+
+  test "creates resource and redirects when data is valid and status is Active", %{conn: conn} do
+    new_attrs = %{@valid_attrs | status: "Active"}
+    conn = post conn, course_path(conn, :create), course: new_attrs
+    assert redirected_to(conn) == course_path(conn, :index)
+    assert Repo.get_by(Course, new_attrs)
+  end
+
 end
