@@ -14,5 +14,5 @@ config :course_planner, CoursePlanner.Repo,
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-  config :course_planner, CoursePlanner.Mailer.Main,
+  config :course_planner, CoursePlanner.Mailer,
     adapter: Swoosh.Adapters.Test

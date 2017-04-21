@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Mailer.Main do
+defmodule CoursePlanner.Mailer do
   @moduledoc """
   This module is needed as the main center for swoosh to be accessed in the app
   """

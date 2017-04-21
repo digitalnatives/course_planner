@@ -6,7 +6,7 @@ defmodule CoursePlanner.UserTest do
   test "sends welcome email" do
     user = %{name: "ironman", email: "tony.stark@example.com"}
     email = CoursePlanner.Mailer.UserEmail.welcome(user)
-    CoursePlanner.Mailer.Main.deliver(email)
+    CoursePlanner.Mailer.deliver(email)
     assert_email_sent email
   end
 
