@@ -12,6 +12,6 @@ defmodule CoursePlanner.Terms do
   def create_term(params) do
     %Term{}
     |> Term.changeset(params)
-    |> CoursePlanner.Repo.insert
+    |> Repo.insert
   end
 end
