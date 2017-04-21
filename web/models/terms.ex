@@ -5,6 +5,10 @@ defmodule CoursePlanner.Terms do
   alias CoursePlanner.Repo
   alias CoursePlanner.Terms.Term
 
+  def new do
+    Term.changeset(%Term{})
+  end
+
   def create_term(params) do
     %Term{}
     |> Term.changeset(params)

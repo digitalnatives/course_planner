@@ -27,7 +27,7 @@ defmodule CoursePlanner.Terms.Term do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :start_date, :end_date, :status])
-    |> validate_required([:start_date, :end_date, :status])
+    |> validate_required([:name, :start_date, :end_date, :status])
     |> cast_embed(:holidays)
     |> Statuses.update_status_timestamp()
   end

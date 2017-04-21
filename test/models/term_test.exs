@@ -6,6 +6,7 @@ defmodule CoursePlanner.TermTest do
   test "changeset with valid attributes" do
     valid_attrs =
       %{
+        name: "Spring",
         start_date: %{day: 17, month: 4, year: 2010},
         end_date: %{day: 17, month: 4, year: 2010},
         status: "Planned"
@@ -23,6 +24,7 @@ defmodule CoursePlanner.TermTest do
   test "changeset with valid holidays" do
     valid_attrs =
       %{
+        name: "Spring",
         start_date: %{day: 17, month: 4, year: 2010},
         end_date: %{day: 17, month: 4, year: 2010},
         status: "Planned",
