@@ -3,7 +3,7 @@ defmodule CoursePlanner.CourseTest do
 
   alias CoursePlanner.Course
 
-  @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "some content", syllabus: "some content"}
+  @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
