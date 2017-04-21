@@ -22,6 +22,11 @@ defmodule CoursePlanner.Course do
     |> cast(params, [:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
     |> validate_required([:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
     |> validate_number(:number_of_sessions, greater_than: 0, less_than: 100_000_000)
+  end
 
+  def create_changeset(struct, params \\ %{}) do
+    struct
+    |> changeset(params)
+    |> validate_inclusion(:status, ["Planned", "Active"])
   end
 end

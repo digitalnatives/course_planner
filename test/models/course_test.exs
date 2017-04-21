@@ -1,7 +1,7 @@
 defmodule CoursePlanner.CourseTest do
   use CoursePlanner.ModelCase
 
-  alias CoursePlanner.Course
+  alias CoursePlanner.Course, as: Course
 
   @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
   @invalid_attrs %{}
@@ -13,6 +13,11 @@ defmodule CoursePlanner.CourseTest do
 
   test "changeset with invalid attributes" do
     changeset = Course.changeset(%Course{}, @invalid_attrs)
+    refute changeset.valid?
+  end
+
+  test "changeset with number_of_sessions equal zero" do
+    changeset = Course.changeset(%Course{}, %{ @valid_attrs | number_of_sessions: 0 })
     refute changeset.valid?
   end
 
@@ -59,5 +64,40 @@ defmodule CoursePlanner.CourseTest do
   test "changeset with status Deleted" do
     changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "Deleted" })
     assert changeset.valid?
+  end
+
+  test "create_changeset with invalid status" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "random" })
+    refute changeset.valid?
+  end
+
+  test "create_changeset with status Planned" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Planned" })
+    assert changeset.valid?
+  end
+
+  test "create_changeset with status Active" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Active" })
+    assert changeset.valid?
+  end
+
+  test "create_changeset with status Finished" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Finished" })
+    refute changeset.valid?
+  end
+
+  test "create_changeset with status Graduated" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Graduated" })
+    refute changeset.valid?
+  end
+
+  test "create_changeset with status Frozen" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Frozen" })
+    refute changeset.valid?
+  end
+
+  test "create_changeset with status Deleted" do
+    changeset = Course.create_changeset(%Course{}, %{ @valid_attrs | status: "Deleted" })
+    refute changeset.valid?
   end
 end

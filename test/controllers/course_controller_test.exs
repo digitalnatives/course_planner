@@ -111,4 +111,23 @@ defmodule CoursePlanner.CourseControllerTest do
     assert Repo.get_by(Course, new_attrs)
   end
 
+  test "does not create resource and renders errors when data value of status is Finished", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "Finished"}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data value of status is Graduated", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "Graduated"}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data value of status is Frozen", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "Frozen"}
+    assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not create resource and renders errors when data value of status is Deleted", %{conn: conn} do
+    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "Deleted"}
+    assert html_response(conn, 200) =~ "New course"
+  end
 end

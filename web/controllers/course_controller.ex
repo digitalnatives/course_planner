@@ -14,7 +14,7 @@ defmodule CoursePlanner.CourseController do
   end
 
   def create(conn, %{"course" => course_params}) do
-    changeset = Course.changeset(%Course{}, course_params)
+    changeset = Course.create_changeset(%Course{}, course_params)
 
     case Repo.insert(changeset) do
       {:ok, _course} ->
