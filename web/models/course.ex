@@ -24,7 +24,7 @@ defmodule CoursePlanner.Course do
     |> validate_number(:number_of_sessions, greater_than: 0, less_than: 100_000_000)
   end
 
-  def create_changeset(struct, params \\ %{}) do
+  def changeset(struct, params, :create) do
     struct
     |> changeset(params)
     |> validate_inclusion(:status, ["Planned", "Active"])
