@@ -16,8 +16,14 @@ defmodule CoursePlanner.User do
   end
 
   def changeset(model, params \\ %{}) do
+    target_params = [
+      :name,
+      :family_name,
+      :nickname, :email, :student_id, :comments
+    ] ++ coherence_fields()
+
     model
-    |> cast(params, [:name, :family_name, :nickname, :email, :student_id, :comments] ++ coherence_fields())
+    |> cast(params, target_params)
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
