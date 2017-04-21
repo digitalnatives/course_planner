@@ -19,7 +19,7 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :gen_smtp]]
+                    :phoenix_ecto, :postgrex, :coherence, :swoosh]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,7 +41,6 @@ defmodule CoursePlanner.Mixfile do
      {:credo, "~> 0.7.2", only: [:dev, :test]},
      {:dogma, "~> 0.1.14", only: [:dev, :test]},
      {:swoosh, "~> 0.7.0"},
-     {:gen_smtp, "~> 0.11.0"}, #needed if swoosh wanna use smtp
      {:coherence, github: "smpallen99/coherence", ref: "590222b"}
    ]
   end
