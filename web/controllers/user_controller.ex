@@ -3,6 +3,7 @@ defmodule CoursePlanner.UserController do
   alias CoursePlanner.User
   alias CoursePlanner.Router.Helpers
   alias Coherence.ControllerHelpers
+  alias Ecto.DateTime
   require Logger
 
   def index(conn, _params) do
@@ -16,16 +17,14 @@ defmodule CoursePlanner.UserController do
   end
 
   def create(conn, %{"user" => user} = params) do
-    IO.inspect user
     email = user["email"]
     token = ControllerHelpers.random_string 48
     url = Helpers.password_url(conn, :edit, token)
     reset_params =
       %{"reset_password_token" => token,
-        "reset_password_sent_at" => Ecto.DateTime.utc,
+        "reset_password_sent_at" => DateTime.utc,
         "password" => "fakepassword"}
     merged = Map.merge(user, reset_params)
-    IO.inspect merged
     user = User.changeset(%User{}, merged, :create)
     case Repo.insert(user) do
       {:ok, user} ->
@@ -33,7 +32,7 @@ defmodule CoursePlanner.UserController do
         conn
         |> put_flash(:info, "User created and notified by.")
         |> redirect(to: user_path(conn, :index))
-      {:error, changeset} -> Logger.warn("something went wrong creating a new user: #{IO.inspect changeset}")
+      {:error, changeset} -> Logger.warn("something went wrong creating a new user: #{changeset}")
         conn
         |> put_flash(:error, "Something went wrong.")
         |> render("new.html", changeset: changeset)

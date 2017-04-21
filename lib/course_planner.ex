@@ -1,5 +1,7 @@
 defmodule CoursePlanner do
+  @moduledoc false
   use Application
+  alias CoursePlanner.Endpoint
 
   def start(_type, _args) do
     import Supervisor.Spec
@@ -14,7 +16,7 @@ defmodule CoursePlanner do
   end
 
   def config_change(changed, _new, removed) do
-    CoursePlanner.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 end
