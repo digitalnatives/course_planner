@@ -42,6 +42,14 @@ defmodule CoursePlanner.Router do
     resources "/users", UserController
   end
 
+  scope "/", CoursePlanner do
+    pipe_through :browser
+
+    resources "/courses", CourseController
+    resources "/courses/:id", CourseController
+    resources "/courses/:id/edit", CourseController
+  end
+
   if Mix.env == :dev do
   scope "/dev" do
     pipe_through [:browser]

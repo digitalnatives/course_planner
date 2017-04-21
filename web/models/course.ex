@@ -1,0 +1,25 @@
+defmodule CoursePlanner.Course do
+  use CoursePlanner.Web, :model
+
+  alias CoursePlanner.Types, as: Types
+
+  schema "courses" do
+    field :name, :string
+    field :description, :string
+    field :number_of_sessions, :integer
+    field :session_duration, Ecto.Time
+    field :syllabus, :string
+    field :status, Types.EntityStatus
+
+    timestamps()
+  end
+
+  @doc """
+  Builds a changeset based on the `struct` and `params`.
+  """
+  def changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
+    |> validate_required([:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
+  end
+end
