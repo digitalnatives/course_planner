@@ -40,11 +40,6 @@ defmodule CoursePlanner.Router do
     pipe_through :protected
 
     resources "/users", UserController
-  end
-
-  scope "/", CoursePlanner do
-    pipe_through :browser
-
     resources "/courses", CourseController
     resources "/courses/:id", CourseController
     resources "/courses/:id/edit", CourseController

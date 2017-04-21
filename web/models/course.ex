@@ -21,5 +21,7 @@ defmodule CoursePlanner.Course do
     struct
     |> cast(params, [:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
     |> validate_required([:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
+    |> validate_number(:number_of_sessions, greater_than: 0, less_than: 100_000_000)
+
   end
 end
