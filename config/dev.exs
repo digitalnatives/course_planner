@@ -28,7 +28,7 @@ config :course_planner, CoursePlanner.Repo,
   username: "postgres",
   password: "postgres",
   database: "course_planner_dev",
-  hostname: "localhost",
+  hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool_size: 10
 
 config :coherence,

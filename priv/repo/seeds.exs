@@ -1,7 +1,7 @@
 CoursePlanner.Repo.delete_all CoursePlanner.User
 
 CoursePlanner.User.changeset(%CoursePlanner.User{},
-  %{first_name: "first",
+  %{name: "first",
     family_name: "family",
     email: "testuser@example.com",
     password: "secret",

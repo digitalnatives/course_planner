@@ -1,0 +1,11 @@
+.git*
+.travis.yml
+_build
+deps
+docker-compose.yml
+Dockerfile
+elixir_buildpack.config
+LICENSE
+node_modules
+Procfile
+README.md
