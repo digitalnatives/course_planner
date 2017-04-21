@@ -24,8 +24,8 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   test "renders form for new resources", %{conn: conn} do
-    conn = get conn, invitation_path(conn, :new)
-    assert html_response(conn, 200) =~ "Invite user"
+    conn = get conn, user_path(conn, :new)
+    assert html_response(conn, 200) =~ "New user"
   end
 
   test "shows chosen resource", %{conn: conn} do

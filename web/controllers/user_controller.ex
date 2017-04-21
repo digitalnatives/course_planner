@@ -1,7 +1,6 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
   alias CoursePlanner.User
-  alias Coherence.Invitation
 
   def index(conn, _params) do
     users = Repo.all(User)
@@ -9,10 +8,8 @@ defmodule CoursePlanner.UserController do
   end
 
   def new(conn, _params) do
-    changeset = Invitation.changeset(%Invitation{})
-    conn
-    |> put_view(Coherence.InvitationView)
-    |> render("new.html", changeset: changeset)
+    changeset = User.changeset(%User{})
+    render(conn, "new.html", changeset: changeset)
   end
 
   def show(conn, %{"id" => id}) do

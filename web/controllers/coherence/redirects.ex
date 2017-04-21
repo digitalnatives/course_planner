@@ -44,10 +44,6 @@ defmodule Coherence.Redirects do
   use Redirects
   # Uncomment the import below if adding overrides
   # import CoursePlanner.Router.Helpers
-  import CoursePlanner.Router.Helpers
-
-  def invitation_create(conn, _), do: redirect(conn, to: user_path(conn, :index))
-  def invitation_resend(conn, _), do: redirect(conn, to: user_path(conn, :index))
 
   # Add function overrides below
 
