@@ -7,7 +7,8 @@ defmodule CoursePlanner.Repo.Migrations.CreateRole do
           CREATE TYPE user_role AS ENUM (
             'Student',
             'Teacher',
-            'Organizer'
+            'Organizer',
+            'Volunteer'
           )
         """)
     alter table(:users) do
