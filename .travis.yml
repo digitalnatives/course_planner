@@ -6,18 +6,8 @@ otp_release:
   - 19.2
 
 env:
-  global:
-    - MIX_ENV=test
-    - PULL_REQUEST_ID=$TRAVIS_PULL_REQUEST
-
-before_script:
-  - rvm install ruby-2.3.1
-  - gem install pronto-credo
+  - MIX_ENV=test
 
 script:
-  - if [ $PULL_REQUEST_ID != false ]; then pronto run -f github_pr; fi
+  - mix credo --strict
   - mix test
-
-cache:
-  directories:
-    - /home/travis/.rvm/
