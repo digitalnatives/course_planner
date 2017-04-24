@@ -2,9 +2,10 @@ defmodule CoursePlanner.CourseController do
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.Course
+  alias CoursePlanner.CourseHelper
 
   def index(conn, _params) do
-    courses = Repo.all(Course)
+    courses = CourseHelper.all_excluding_status("Deleted")
     render(conn, "index.html", courses: courses)
   end
 
@@ -56,7 +57,7 @@ defmodule CoursePlanner.CourseController do
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
-    Repo.delete!(course)
+    CourseHelper.delete_handler(course)
 
     conn
     |> put_flash(:info, "Course deleted successfully.")

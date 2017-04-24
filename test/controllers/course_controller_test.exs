@@ -70,11 +70,51 @@ defmodule CoursePlanner.CourseControllerTest do
     assert html_response(conn, 200) =~ "Edit course"
   end
 
-  test "deletes chosen resource", %{conn: conn} do
-    course = Repo.insert! %Course{}
+  test "deletes chosen resource when the states is Planned", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
     conn = delete conn, course_path(conn, :delete, course)
     assert redirected_to(conn) == course_path(conn, :index)
     refute Repo.get(Course, course.id)
+  end
+
+  test "deletes chosen resource when the states is Active", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Active", syllabus: "some content"}
+    conn = delete conn, course_path(conn, :delete, course)
+    assert redirected_to(conn) == course_path(conn, :index)
+    soft_deleted_course = Repo.get(Course, course.id)
+    assert soft_deleted_course.status == "Deleted" && !is_nil(soft_deleted_course)
+  end
+
+  test "deletes chosen resource when the states is Finished", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Finished", syllabus: "some content"}
+    conn = delete conn, course_path(conn, :delete, course)
+    assert redirected_to(conn) == course_path(conn, :index)
+    soft_deleted_course = Repo.get(Course, course.id)
+    assert soft_deleted_course.status == "Deleted" && !is_nil(soft_deleted_course)
+  end
+
+  test "deletes chosen resource when the states is Graduated", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Graduated", syllabus: "some content"}
+    conn = delete conn, course_path(conn, :delete, course)
+    assert redirected_to(conn) == course_path(conn, :index)
+    soft_deleted_course = Repo.get(Course, course.id)
+    assert soft_deleted_course.status == "Deleted" && !is_nil(soft_deleted_course)
+  end
+
+  test "deletes chosen resource when the states is Frozen", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Frozen", syllabus: "some content"}
+    conn = delete conn, course_path(conn, :delete, course)
+    assert redirected_to(conn) == course_path(conn, :index)
+    soft_deleted_course = Repo.get(Course, course.id)
+    assert soft_deleted_course.status == "Deleted" && !is_nil(soft_deleted_course)
+  end
+
+  test "deletes chosen resource when the states is Deleted", %{conn: conn} do
+    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, status: "Deleted", syllabus: "some content"}
+    conn = delete conn, course_path(conn, :delete, course)
+    assert redirected_to(conn) == course_path(conn, :index)
+    soft_deleted_course = Repo.get(Course, course.id)
+    assert soft_deleted_course.status == "Deleted" && !is_nil(soft_deleted_course)
   end
 
   test "does not create resource and renders errors when data number_of_sessions is negative", %{conn: conn} do
