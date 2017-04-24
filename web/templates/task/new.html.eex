@@ -1,0 +1,6 @@
+<h2>New task</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: task_path(@conn, :create) %>
+
+<%= link "Back", to: task_path(@conn, :index) %>

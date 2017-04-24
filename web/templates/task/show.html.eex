@@ -1,0 +1,18 @@
+<h2>Show task</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @task.name %>
+  </li>
+
+  <li>
+    <strong>Due:</strong>
+    <%= @task.due %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: task_path(@conn, :edit, @task) %>
+<%= link "Back", to: task_path(@conn, :index) %>

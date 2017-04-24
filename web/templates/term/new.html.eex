@@ -1,0 +1,6 @@
+<h2>New term</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: term_path(@conn, :create) %>
+
+<%= link "Back", to: term_path(@conn, :index) %>
