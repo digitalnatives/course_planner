@@ -1,6 +1,7 @@
 defmodule CoursePlanner.Statuses do
   @moduledoc """
-    Updates the status timestamps whenever there is a status change in a resource
+    Updates the status timestamps whenever there is a status change in a resource.
+    It assumes the resource has a field called status of type CoursePlanner.Types.EntityStatus.
   """
   import Ecto.Changeset, only: [put_change: 3]
 
