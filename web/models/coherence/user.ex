@@ -2,6 +2,7 @@ defmodule CoursePlanner.User do
   @moduledoc false
   use CoursePlanner.Web, :model
   use Coherence.Schema
+  alias CoursePlanner.Types.UserRole
 
   schema "users" do
     field :name, :string
@@ -10,6 +11,7 @@ defmodule CoursePlanner.User do
     field :email, :string
     field :student_id, :string
     field :comments, :string
+    field :role, UserRole
 
     coherence_schema()
     timestamps()
@@ -18,7 +20,7 @@ defmodule CoursePlanner.User do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params,
-      [:name, :family_name, :nickname, :email, :student_id, :comments]
+      [:name, :family_name, :nickname, :email, :student_id, :comments, :role]
       ++ coherence_fields())
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
@@ -29,7 +31,7 @@ defmodule CoursePlanner.User do
   def changeset(model, params, :create) do
     model
     |> cast(params,
-      [:name, :family_name, :nickname, :email, :student_id, :comments,
+      [:name, :family_name, :nickname, :email, :student_id, :comments, :role,
        :reset_password_token, :reset_password_sent_at])
     # |> validate_coherence(params)
   end
