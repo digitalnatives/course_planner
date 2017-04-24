@@ -25,7 +25,6 @@ defmodule CoursePlanner.Coherence.ViewHelpers do
   * create links for the new session page `:new_session`
   * create links for your layout template `:layout`
 
-
   Defaults are provided based on the options configured for Coherence.
   However, the defaults can be overridden by passing the following options.
 
@@ -74,7 +73,7 @@ defmodule CoursePlanner.Coherence.ViewHelpers do
     register_link = Keyword.get opts, :register, @register_link
     confirm_link  = Keyword.get opts, :confirm, @confirm_link
 
-    user_schema = Coherence.Config.user_schema
+    user_schema = Config.user_schema
     [
       recover_link(conn, user_schema, recover_link),
       unlock_link(conn, user_schema, unlock_link),
@@ -99,9 +98,12 @@ defmodule CoursePlanner.Coherence.ViewHelpers do
         content_tag(list_tag, signout_link(conn, signout, signout_class))
       ]
     else
-      signin_link = content_tag(list_tag, link(signin, to: coherence_path(@helpers, :session_path, conn, :new)))
+      signin_link =
+        list_tag
+        |> content_tag(link(signin, to: coherence_path(@helpers, :session_path, conn, :new)))
       if Config.has_option(:registerable) && register do
-        [content_tag(list_tag, link(register, to: coherence_path(@helpers, :registration_path, conn, :new))), signin_link]
+        content_link = link(register, to: coherence_path(@helpers, :registration_path, conn, :new))
+        [content_tag(list_tag, content_link), signin_link]
       else
         signin_link
       end
@@ -148,7 +150,8 @@ defmodule CoursePlanner.Coherence.ViewHelpers do
   end
 
   def signout_link(conn, text \\ @signout_link, signout_class \\ "") do
-    link(text, to: coherence_path(@helpers, :session_path, conn, :delete), method: :delete, class: signout_class)
+    to_coherence_path = coherence_path(@helpers, :session_path, conn, :delete)
+    link(text, to: to_coherence_path, method: :delete, class: signout_class)
   end
 
   def confirmation_link(_conn, _user_schema, false), do: []
