@@ -30,9 +30,18 @@ defmodule CoursePlanner.User do
     |> validate_coherence(params)
   end
 
+  def changeset(model, params, :create) do
+    model
+    |> cast(params,
+      [:name, :family_name, :nickname, :email, :student_id, :comments,
+       :reset_password_token, :reset_password_sent_at])
+    # |> validate_coherence(params)
+  end
+
   def changeset(model, params, :password) do
     model
-    |> cast(params, ~w(password password_confirmation reset_password_token reset_password_sent_at))
+    |> cast(params,
+      ~w(password password_confirmation reset_password_token reset_password_sent_at))
     |> validate_coherence_password_reset(params)
   end
 end
