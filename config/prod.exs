@@ -23,3 +23,8 @@ config :coherence, CoursePlanner.Coherence.Mailer,
 config :coherence,
   email_from_name: System.get_env("EMAIL_FROM_NAME"),
   email_from_email: System.get_env("EMAIL_FROM_EMAIL")
+
+config :course_planner, CoursePlanner.Mailer,
+  adapter: Swoosh.Adapters.Mailgun,
+  api_key: System.get_env("MAILGUN_API_KEY"),
+  domain: System.get_env("MAILGUN_DOMAIN")
