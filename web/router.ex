@@ -40,6 +40,7 @@ defmodule CoursePlanner.Router do
     pipe_through :protected
 
     resources "/users", UserController
+    resources "/terms", TermController, only: [:new, :create]
   end
 
   if Mix.env == :dev do
