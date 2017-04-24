@@ -1,14 +1,16 @@
 defmodule CoursePlanner do
-  @moduledoc false
+  @moduledoc """
+  This is the main module of the app
+  """
   use Application
-  alias CoursePlanner.Endpoint
+  alias CoursePlanner.{Endpoint, Repo}
 
   def start(_type, _args) do
     import Supervisor.Spec
 
     children = [
-      supervisor(CoursePlanner.Repo, []),
-      supervisor(CoursePlanner.Endpoint, []),
+      supervisor(Repo, []),
+      supervisor(Endpoint, []),
     ]
 
     opts = [strategy: :one_for_one, name: CoursePlanner.Supervisor]

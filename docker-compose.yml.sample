@@ -1,0 +1,21 @@
+version: '2'
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  web:
+    command: ./scripts/docker-compose-up.sh
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_HOST=db
+    volumes:
+      - .:/myapp-dev
+    ports:
+      - 4000:4000
+    depends_on:
+      - db
+    working_dir: /myapp-dev

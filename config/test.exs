@@ -11,5 +11,8 @@ config :course_planner, CoursePlanner.Repo,
   username: "postgres",
   password: "postgres",
   database: "course_planner_test",
-  hostname: "localhost",
+  hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+  config :course_planner, CoursePlanner.Mailer,
+    adapter: Swoosh.Adapters.Test
