@@ -41,9 +41,9 @@ defmodule CoursePlanner.StatusesTest do
 
   test "set timestamp status when the status is one of EntityStatus values" do
     changeset = DummySchema.changeset(%DummySchema{}, %{status: "Active"})
-    assert Changeset.get_change(changeset, :activated_at) == nil
+    assert Changeset.get_change(changeset, :active_at) == nil
 
     changeset = Statuses.update_status_timestamp(changeset)
-    refute Changeset.get_change(changeset, :activated_at) == nil
+    refute Changeset.get_change(changeset, :active_at) == nil
   end
 end
