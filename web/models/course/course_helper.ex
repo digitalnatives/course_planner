@@ -8,7 +8,7 @@ defmodule CoursePlanner.CourseHelper do
   alias CoursePlanner.Repo
   alias CoursePlanner.Course
 
-  def delete_handler(course) do
+  def delete(course) do
     case course.status do
       "Planned" -> hard_delete_course(course)
       _         -> soft_delete_course(course)
@@ -16,7 +16,7 @@ defmodule CoursePlanner.CourseHelper do
   end
 
   defp soft_delete_course(course) do
-    changeset = change(course, %{status: "Deleted", deleted_at: utc()})
+    changeset = change(course, %{deleted_at: utc()})
     Repo.update(changeset)
   end
 
@@ -24,8 +24,8 @@ defmodule CoursePlanner.CourseHelper do
     Repo.delete!(course)
   end
 
-  def all_excluding_status(value) do
-    query = from c in Course, where: c.status != ^value
+  def all_none_deleted() do
+    query = from c in Course , where: is_nil(c.deleted_at)
     Repo.all(query)
   end
 end

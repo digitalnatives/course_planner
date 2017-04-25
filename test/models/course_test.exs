@@ -61,11 +61,6 @@ defmodule CoursePlanner.CourseTest do
     assert changeset.valid?
   end
 
-  test "changeset with status Deleted" do
-    changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "Deleted" })
-    assert changeset.valid?
-  end
-
   test "changeset with invalid status with :create" do
     changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "random" })
     refute changeset.valid?
@@ -93,11 +88,6 @@ defmodule CoursePlanner.CourseTest do
 
   test "changeset with status Frozen with :create" do
     changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "Frozen" }, :create)
-    refute changeset.valid?
-  end
-
-  test "changeset with status Deleted with :create" do
-    changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "Deleted" }, :create)
     refute changeset.valid?
   end
 end

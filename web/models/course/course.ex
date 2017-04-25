@@ -10,6 +10,7 @@ defmodule CoursePlanner.Course do
     field :session_duration, Ecto.Time
     field :syllabus, :string
     field :status, Types.EntityStatus
+    field :deleted_at, :naive_datetime
 
     timestamps()
   end
@@ -19,8 +20,8 @@ defmodule CoursePlanner.Course do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
-    |> validate_required([:name, :description, :number_of_sessions, :session_duration, :syllabus, :status])
+    |> cast(params, [:name, :description, :number_of_sessions, :session_duration, :syllabus, :status, :deleted_at])
+    |> validate_required([:name, :description, :number_of_sessions, :session_duration, :status])
     |> validate_number(:number_of_sessions, greater_than: 0, less_than: 100_000_000)
   end
 

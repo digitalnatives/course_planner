@@ -9,6 +9,7 @@ defmodule CoursePlanner.Repo.Migrations.CreateCourse do
       add :session_duration, :time
       add :syllabus, :string
       add :status, :entity_status
+      add :deleted_at, :naive_datetime
 
       timestamps()
     end
