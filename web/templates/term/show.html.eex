@@ -1,0 +1,44 @@
+<h2>Show term</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @term.name %>
+  </li>
+
+  <li>
+    <strong>Start date:</strong>
+    <%= @term.start_date %>
+  </li>
+
+  <li>
+    <strong>End date:</strong>
+    <%= @term.end_date %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @term.status %>
+  </li>
+
+  <%= if length(@term.holidays) > 0 do %>
+    <strong>Holidays</strong>
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Description</th>
+      </tr>
+      <%= for h <- @term.holidays do %>
+        <tr>
+          <td><%= h.date %></td>
+          <td><%= h.description %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
+
+</ul>
+
+<%#= link "Edit", to: term_path(@conn, :edit, @term) %>
+<%#= link "Back", to: term_path(@conn, :index) %>
