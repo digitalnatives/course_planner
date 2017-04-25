@@ -1,7 +1,5 @@
 <h2>User list</h2>
 
-<%= link "Invite user", to: invitation_path(@conn, :new)%>
-
 <table class="table">
   <thead>
     <tr>
@@ -32,3 +30,5 @@
 <% end %>
   </tbody>
 </table>
+
+<%= link "New user", to: user_path(@conn, :new) %>
