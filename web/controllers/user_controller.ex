@@ -7,7 +7,7 @@ defmodule CoursePlanner.UserController do
   require Logger
 
   def index(conn, _params) do
-    query = from u in User, where: u.deleted == false
+    query = from u in User, where: is_nil(u.deleted_at)
     users = Repo.all(query)
     render(conn, "index.html", users: users)
   end
@@ -68,7 +68,7 @@ defmodule CoursePlanner.UserController do
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user,
-      %{deleted: true, deleted_at: Ecto.DateTime.utc()},
+      %{deleted_at: Ecto.DateTime.utc()},
       :delete)
 
     IO.inspect changeset
