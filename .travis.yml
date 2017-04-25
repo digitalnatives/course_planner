@@ -8,5 +8,10 @@ otp_release:
 env:
   - MIX_ENV=test
 
+
+script:
+  - mix credo --strict
+  - mix test
+  
 addons:
   postgresql: "9.4"
