@@ -68,10 +68,9 @@ defmodule CoursePlanner.UserController do
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user,
-      %{deleted_at: Ecto.DateTime.utc()},
+      %{deleted_at: DateTime.utc()},
       :delete)
 
-    IO.inspect changeset
     case Repo.update(changeset) do
       {:ok, user} ->
         conn
