@@ -12,7 +12,6 @@ defmodule CoursePlanner.User do
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
-    field :deleted, :boolean
     field :deleted_at, Ecto.DateTime
 
     coherence_schema()
@@ -23,7 +22,7 @@ defmodule CoursePlanner.User do
     target_params = [
       :name,
       :family_name,
-      :nickname, :email, :student_id, :comments, :role
+      :nickname, :email, :student_id, :comments, :role, :deleted_at
     ] ++ coherence_fields()
 
     model
@@ -39,7 +38,6 @@ defmodule CoursePlanner.User do
     |> cast(params,
       [:name, :family_name, :nickname, :email, :student_id, :comments, :role,
        :reset_password_token, :reset_password_sent_at])
-    |> put_change(:deleted, false)
   end
 
   def changeset(model, params, :password) do
@@ -52,6 +50,6 @@ defmodule CoursePlanner.User do
   def changeset(model, params, :delete) do
     model
     |> cast(params,
-      [:deleted, :deleted_at])
+      [:deleted_at])
   end
 end

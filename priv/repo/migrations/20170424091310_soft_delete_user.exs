@@ -3,7 +3,6 @@ defmodule CoursePlanner.Repo.Migrations.SoftDeleteUser do
 
   def change do
     alter table(:users) do
-      add :deleted, :boolean
       add :deleted_at, :utc_datetime
     end
   end

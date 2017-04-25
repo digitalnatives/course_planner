@@ -5,6 +5,5 @@ CoursePlanner.User.changeset(%CoursePlanner.User{},
     family_name: "family",
     email: "testuser@example.com",
     password: "secret",
-    password_confirmation: "secret",
-    deleted: false})
+    password_confirmation: "secret"})
 |> CoursePlanner.Repo.insert!

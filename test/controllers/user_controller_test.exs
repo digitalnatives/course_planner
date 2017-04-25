@@ -56,6 +56,6 @@ defmodule CoursePlanner.UserControllerTest do
     user = Repo.insert! %User{}
     conn = delete conn, user_path(conn, :delete, user)
     assert redirected_to(conn) == user_path(conn, :index)
-    assert Repo.get(User, user.id).deleted
+    assert Repo.get(User, user.id).deleted_at
   end
 end
