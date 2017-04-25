@@ -5,7 +5,7 @@ defmodule CoursePlanner.Types.UserRole do
   @behaviour Ecto.Type
   def type, do: :user_role
 
-  @valid_values ["Student", "Teacher", "Organizer", "Volunteer"]
+  @valid_values ["Student", "Teacher", "Coordinator", "Volunteer"]
 
   def values, do: @valid_values
 

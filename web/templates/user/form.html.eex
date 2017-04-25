@@ -44,7 +44,7 @@
   <div class="form-group">
     <%= label f, :role, class: "control-label" %>
     <%= select(f, :role,
-      ["Student", "Teacher", "Organizer"],
+      ["Student", "Teacher", "Coordinator", "Volunteer"],
        selected: "Student") %>
     <%= error_tag f, :role %>
   </div>
