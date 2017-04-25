@@ -16,8 +16,8 @@ defmodule CoursePlanner.Terms.Term do
 
     field :status, EntityStatus
     field :planned_at, :naive_datetime
-    field :activated_at, :naive_datetime
-    field :froze_at, :naive_datetime
+    field :active_at, :naive_datetime
+    field :frozen_at, :naive_datetime
     field :finished_at, :naive_datetime
     field :deleted_at, :naive_datetime
 
