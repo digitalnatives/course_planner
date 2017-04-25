@@ -24,7 +24,7 @@ defmodule CoursePlanner.CourseHelper do
     Repo.delete!(course)
   end
 
-  def all_none_deleted() do
+  def all_none_deleted do
     query = from c in Course , where: is_nil(c.deleted_at)
     Repo.all(query)
   end
