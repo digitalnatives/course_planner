@@ -1,4 +1,7 @@
 defmodule CoursePlanner.Students do
+  @moduledoc """
+    Handle Students specific logics
+  """
   alias CoursePlanner.Repo
   alias CoursePlanner.User
   import Ecto.Query
@@ -6,7 +9,7 @@ defmodule CoursePlanner.Students do
 
   @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
 
-  def all() do
+  def all do
     Repo.all(@students)
   end
 
@@ -15,7 +18,6 @@ defmodule CoursePlanner.Students do
       student ->
         student
         |> User.changeset(params, :update)
-        |> IO.inspect
         |> add_timestamps()
         |> Repo.update
         |> format_error(student)
