@@ -31,11 +31,11 @@ defmodule CoursePlanner.TermController do
 
   def edit(conn, %{"id" => id}) do
     case Terms.edit(id) do
-      nil ->
+      {:error, :not_found} ->
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
-      {term, changeset} ->
+      {:ok, term, changeset} ->
         render(conn, "edit.html", term: term, changeset: changeset)
     end
   end

@@ -24,8 +24,8 @@ defmodule CoursePlanner.Terms do
 
   def edit(id) do
     case get(id) do
-      nil -> nil
-      term -> {term, Term.changeset(term)}
+      nil -> {:error, :not_found}
+      term -> {:ok, term, Term.changeset(term)}
     end
   end
 
