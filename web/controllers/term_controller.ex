@@ -16,7 +16,7 @@ defmodule CoursePlanner.TermController do
       {:ok, _term} ->
         conn
         |> put_flash(:info, "Term created successfully.")
-        |> redirect(to: term_path(conn, :new))
+        |> redirect(to: term_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -64,7 +64,7 @@ defmodule CoursePlanner.TermController do
       {:ok, _term} ->
         conn
         |> put_flash(:info, "Term deleted successfully.")
-        |> redirect(to: term_path(conn, :new))
+        |> redirect(to: term_path(conn, :index))
       {:error, :not_found} ->
         conn
         |> put_status(404)

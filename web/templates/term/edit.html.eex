@@ -3,4 +3,4 @@
 <%= render "form.html", changeset: @changeset,
                         action: term_path(@conn, :update, @term) %>
 
-<%#= link "Back", to: term_path(@conn, :index) %>
+<%= link "Back", to: term_path(@conn, :index) %>
