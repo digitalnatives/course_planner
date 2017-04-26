@@ -4,6 +4,7 @@ defmodule CoursePlanner.Terms do
   """
   alias CoursePlanner.Repo
   alias CoursePlanner.Terms.Term
+  import Ecto.Query, only: [from: 2]
 
   def new do
     Term.changeset(%Term{})
@@ -13,5 +14,10 @@ defmodule CoursePlanner.Terms do
     %Term{}
     |> Term.changeset(params)
     |> Repo.insert
+  end
+
+  def get(id) do
+    query = from t in Term, where: is_nil(t.deleted_at)
+    Repo.get(query, id)
   end
 end
