@@ -2,8 +2,9 @@ defmodule CoursePlanner.UserControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
+  alias CoursePlanner.Users
 
-  @valid_attrs %{name: "some content", email: "some content"}
+  @valid_attrs %{name: "some content", email: "valid@email"}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -35,9 +36,8 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, user_path(conn, :show, -1)
-    end
+    conn = get conn, user_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
@@ -53,7 +53,7 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    user = Repo.insert! %User{}
+    {:ok, user} = Users.new_user(@valid_attrs, "whatever")
     conn = delete conn, user_path(conn, :delete, user)
     assert redirected_to(conn) == user_path(conn, :index)
     assert Repo.get(User, user.id).deleted_at
