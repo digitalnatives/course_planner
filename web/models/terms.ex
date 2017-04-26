@@ -4,6 +4,7 @@ defmodule CoursePlanner.Terms do
   """
   alias CoursePlanner.Repo
   alias CoursePlanner.Terms.Term
+  alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
 
   def new do
@@ -19,5 +20,16 @@ defmodule CoursePlanner.Terms do
   def get(id) do
     query = from t in Term, where: is_nil(t.deleted_at)
     Repo.get(query, id)
+  end
+
+  def delete(id) do
+    case get(id) do
+      nil -> {:error, :not_found}
+      term ->
+        term
+        |> Term.changeset()
+        |> Changeset.put_change(:deleted_at, DateTime.utc())
+        |> Repo.update()
+    end
   end
 end
