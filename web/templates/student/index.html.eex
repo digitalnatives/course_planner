@@ -1,0 +1,30 @@
+<h2>Student list</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td> First Name </td>
+      <td> Family Name </td>
+      <td> Nickname</td>
+      <td> Email</td>
+      <td> Student ID </td>
+      <td> Comments </td>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for student <- @students do %>
+    <tr>
+      <td><%= student.name %></td>
+      <td><%= student.family_name %></td>
+      <td><%= student.nickname %></td>
+      <td><%= student.email %></td>
+      <td><%= student.student_id %></td>
+      <td><%= student.comments %></td>
+      <td class="text-right">
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
