@@ -117,4 +117,9 @@ defmodule CoursePlanner.TermControllerTest do
     conn = put conn, term_path(conn, :update, 1), term: %{name: "Fall"}
     assert html_response(conn, 404)
   end
+
+  test "lists all entries on index", %{conn: conn} do
+    conn = get conn, term_path(conn, :index)
+    assert html_response(conn, 200) =~ "Listing terms"
+  end
 end

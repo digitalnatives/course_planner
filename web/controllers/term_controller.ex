@@ -3,6 +3,10 @@ defmodule CoursePlanner.TermController do
 
   alias CoursePlanner.Terms
 
+  def index(conn, _params) do
+    render(conn, "index.html", terms: Terms.all)
+  end
+
   def new(conn, _params) do
     render(conn, "new.html", changeset: Terms.new)
   end
