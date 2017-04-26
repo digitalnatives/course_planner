@@ -31,7 +31,7 @@ defmodule CoursePlanner.TermController do
 
   def delete(conn, %{"id" => id}) do
     case Terms.delete(id) do
-      {:ok, term} ->
+      {:ok, _term} ->
         conn
         |> put_flash(:info, "Term deleted successfully.")
         |> redirect(to: term_path(conn, :new))
