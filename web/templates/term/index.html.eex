@@ -1,0 +1,32 @@
+<h2>Listing terms</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Status</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for term <- @terms do %>
+    <tr>
+      <td><%= term.name %></td>
+      <td><%= term.start_date %></td>
+      <td><%= term.end_date %></td>
+      <td><%= term.status %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: term_path(@conn, :show, term), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: term_path(@conn, :edit, term), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New term", to: term_path(@conn, :new) %>
