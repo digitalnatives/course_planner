@@ -5,7 +5,7 @@ defmodule CoursePlanner.Types.EntityStatus do
   @behaviour Ecto.Type
   def type, do: :entity_status
 
-  @valid_entity_types ["Planned", "Active", "Finished", "Graduated", "Frozen", "Deleted"]
+  @valid_entity_types ["Planned", "Active", "Finished", "Graduated", "Frozen"]
 
   def values, do: @valid_entity_types
 

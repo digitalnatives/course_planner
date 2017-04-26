@@ -1,0 +1,36 @@
+<h2>Listing courses</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Number of sessions</th>
+      <th>Session duration</th>
+      <th>Syllabus</th>
+      <th>Status</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for course <- @courses do %>
+    <tr>
+      <td><%= course.name %></td>
+      <td><%= course.description %></td>
+      <td><%= course.number_of_sessions %></td>
+      <td><%= course.session_duration %></td>
+      <td><%= course.syllabus %></td>
+      <td><%= course.status %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: course_path(@conn, :show, course), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: course_path(@conn, :edit, course), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New course", to: course_path(@conn, :new) %>
