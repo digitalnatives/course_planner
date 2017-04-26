@@ -1,0 +1,41 @@
+<h2>Show student</h2>
+
+<ul>
+
+  <li>
+    <strong> First Name: </strong>
+    <%= @student.name %>
+  </li>
+  <li>
+    <strong> Family Name: </strong>
+    <%= @student.family_name %>
+  </li>
+  <li>
+    <strong> Nickname: </strong>
+    <%= @student.nickname %>
+  </li>
+  <li>
+    <strong> Email: </strong>
+    <%= @student.email %>
+  </li>
+  <li>
+    <strong> Student ID: </strong>
+    <%= @student.student_id %>
+  </li>
+  <li>
+    <strong> Participation Type: </strong>
+    <%= @student.participation_type %>
+  </li>
+  <li>
+    <strong> Status: </strong>
+    <%= @student.status %>
+  </li>
+  <li>
+    <strong> Comments: </strong>
+    <%= @student.comments %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: student_path(@conn, :edit, @student) %>
+<%= link "Back", to: student_path(@conn, :index) %>
