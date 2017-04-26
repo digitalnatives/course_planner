@@ -29,9 +29,35 @@ defmodule CoursePlanner.TermController do
     end
   end
 
+  def edit(conn, %{"id" => id}) do
+    case Terms.edit(id) do
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      {:ok, term, changeset} ->
+        render(conn, "edit.html", term: term, changeset: changeset)
+    end
+  end
+
+  def update(conn, %{"id" => id, "term" => term_params}) do
+    case Terms.update(id, term_params) do
+      {:ok, term} ->
+        conn
+        |> put_flash(:info, "Term updated successfully.")
+        |> redirect(to: term_path(conn, :show, term))
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      {:error, term, changeset} ->
+        render(conn, "edit.html", term: term, changeset: changeset)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     case Terms.delete(id) do
-      {:ok, term} ->
+      {:ok, _term} ->
         conn
         |> put_flash(:info, "Term deleted successfully.")
         |> redirect(to: term_path(conn, :new))

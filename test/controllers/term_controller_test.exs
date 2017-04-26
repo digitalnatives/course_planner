@@ -76,4 +76,45 @@ defmodule CoursePlanner.TermControllerTest do
     conn = delete conn, term_path(conn, :delete, -1)
     assert html_response(conn, 404)
   end
+
+  test "renders form for editing chosen resource", %{conn: conn} do
+    term = Repo.insert! %Term{}
+    conn = get conn, term_path(conn, :edit, term)
+    assert html_response(conn, 200) =~ "Edit term"
+  end
+
+  test "renders error for editing inexistent resource", %{conn: conn} do
+    conn = get conn, term_path(conn, :edit, -1)
+    assert html_response(conn, 404)
+  end
+
+  test "updates chosen resource and redirects when data is valid", %{conn: conn} do
+    term = Repo.insert!(
+      %Term{
+        name: "Fall",
+        start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+        end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+        status: "Planned"
+      })
+    conn = put conn, term_path(conn, :update, term), term: %{name: "Spring"}
+    assert redirected_to(conn) == term_path(conn, :show, term)
+    assert Repo.get_by(Term, name: "Spring")
+  end
+
+  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
+    term = Repo.insert!(
+      %Term{
+        name: "Fall",
+        start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+        end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+        status: "Planned"
+      })
+    conn = put conn, term_path(conn, :update, term), term: %{name: ""}
+    assert html_response(conn, 200) =~ "Edit term"
+  end
+
+  test "renders error for updating inexisting resource", %{conn: conn} do
+    conn = put conn, term_path(conn, :update, 1), term: %{name: "Fall"}
+    assert html_response(conn, 404)
+  end
 end
