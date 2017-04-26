@@ -5,7 +5,9 @@ defmodule CoursePlanner.StudentController do
   import Ecto.Query
 
   def index(conn, _params) do
-    query = from u in User, where: u.role == "Student"
+    query = from u in User,
+      where: u.role == "Student" and
+      is_nil(u.deleted_at)
     students = Repo.all(query)
     render(conn, "index.html", students: students)
   end
