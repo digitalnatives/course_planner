@@ -1,0 +1,38 @@
+<h2>Show course</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @course.name %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @course.description %>
+  </li>
+
+  <li>
+    <strong>Number of sessions:</strong>
+    <%= @course.number_of_sessions %>
+  </li>
+
+  <li>
+    <strong>Session duration:</strong>
+    <%= @course.session_duration %>
+  </li>
+
+  <li>
+    <strong>Syllabus:</strong>
+    <%= @course.syllabus %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @course.status %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: course_path(@conn, :edit, @course) %>
+<%= link "Back", to: course_path(@conn, :index) %>
