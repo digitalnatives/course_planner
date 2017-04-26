@@ -33,7 +33,7 @@ defmodule CoursePlanner.TermControllerTest do
         status: "Planned"
       }
     conn = post conn, term_path(conn, :create), term: valid_attrs
-    assert redirected_to(conn) == term_path(conn, :new)
+    assert redirected_to(conn) == term_path(conn, :index)
     assert Repo.get_by(Term, valid_attrs)
   end
 
@@ -68,7 +68,7 @@ defmodule CoursePlanner.TermControllerTest do
   test "soft delete existing term", %{conn: conn} do
     {:ok, t} = CoursePlanner.Terms.create_term(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
     conn = delete conn, term_path(conn, :delete, t.id)
-    assert redirected_to(conn) == term_path(conn, :new)
+    assert redirected_to(conn) == term_path(conn, :index)
     assert Repo.get!(Term, t.id).deleted_at
   end
 
