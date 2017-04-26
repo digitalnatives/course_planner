@@ -62,7 +62,7 @@ defmodule CoursePlanner.CourseTest do
   end
 
   test "changeset with invalid status with :create" do
-    changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "random" })
+    changeset = Course.changeset(%Course{}, %{ @valid_attrs | status: "random" }, :create)
     refute changeset.valid?
   end
 

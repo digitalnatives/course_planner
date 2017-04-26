@@ -54,11 +54,7 @@ defmodule CoursePlanner.CourseController do
 
   def delete(conn, %{"id" => id}) do
     course = Repo.get!(Course, id)
-
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
     CourseHelper.delete(course)
-
     conn
     |> put_flash(:info, "Course deleted successfully.")
     |> redirect(to: course_path(conn, :index))
