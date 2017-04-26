@@ -7,7 +7,8 @@ defmodule CoursePlanner.UserController do
   require Logger
 
   def index(conn, _params) do
-    users = Repo.all(User)
+    query = from u in User, where: is_nil(u.deleted_at)
+    users = Repo.all(query)
     render(conn, "index.html", users: users)
   end
 
@@ -66,11 +67,19 @@ defmodule CoursePlanner.UserController do
 
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
+    changeset = User.changeset(user,
+      %{deleted_at: DateTime.utc()},
+      :delete)
 
-    Repo.delete!(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
+    case Repo.update(changeset) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "User deleted successfully.")
+        |> redirect(to: user_path(conn, :index))
+      {:error, changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: user_path(conn, :index))
+    end
   end
 end
