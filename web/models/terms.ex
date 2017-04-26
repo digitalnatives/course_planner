@@ -22,6 +22,23 @@ defmodule CoursePlanner.Terms do
     Repo.get(query, id)
   end
 
+  def edit(id) do
+    case get(id) do
+      nil -> nil
+      term -> {term, Term.changeset(term)}
+    end
+  end
+
+  def update(id, params) do
+    case get(id) do
+      nil -> {:error, :not_found}
+      term ->
+        with changeset <- Term.changeset(term, params),
+             {:error, changeset} <- Repo.update(changeset),
+             do: {:error, term, changeset}
+    end
+  end
+
   def delete(id) do
     case get(id) do
       nil -> {:error, :not_found}
