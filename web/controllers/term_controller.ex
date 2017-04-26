@@ -28,4 +28,17 @@ defmodule CoursePlanner.TermController do
         render(conn, "show.html", term: term)
     end
   end
+
+  def delete(conn, %{"id" => id}) do
+    case Terms.delete(id) do
+      {:ok, term} ->
+        conn
+        |> put_flash(:info, "Term deleted successfully.")
+        |> redirect(to: term_path(conn, :new))
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+    end
+  end
 end
