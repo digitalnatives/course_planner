@@ -41,7 +41,7 @@ defmodule CoursePlanner.Router do
 
     resources "/users", UserController
     resources "/courses", CourseController
-    resources "/terms", TermController, only: [:new, :create]
+    resources "/terms", TermController, only: [:new, :create, :show]
   end
 
   if Mix.env == :dev do
