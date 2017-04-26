@@ -60,11 +60,7 @@ defmodule CoursePlanner.TermControllerTest do
 
   test "doesn't show deleted term", %{conn: conn} do
     {:ok, term} = CoursePlanner.Terms.create_term(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
-    term
-    |> Term.changeset()
-    |> Ecto.Changeset.put_change(:deleted_at, Ecto.DateTime.utc())
-    |> CoursePlanner.Repo.update!()
-
+    {:ok, _} = CoursePlanner.Terms.delete(term.id)
     conn = get conn, term_path(conn, :show, term.id)
     assert html_response(conn, 404)
   end
