@@ -17,6 +17,9 @@
       <td><%= teacher.email %></td>
       <td><%= teacher.phone_number %></td>
       <td class="text-right">
+        <%= link "Show", to: teacher_path(@conn, :show, teacher), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: teacher_path(@conn, :edit, teacher), class: "btn btn-default btn-xs" %>
+      </td>
     </tr>
 <% end %>
   </tbody>

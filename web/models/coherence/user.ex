@@ -9,7 +9,7 @@ defmodule CoursePlanner.User do
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
       :role, :deleted_at, :status,
-      :participation_type
+      :participation_type, :phone_number
     ]
 
   schema "users" do
