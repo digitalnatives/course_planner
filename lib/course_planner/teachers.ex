@@ -1,4 +1,5 @@
 defmodule CoursePlanner.Teachers do
+  @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.User
   import Ecto.Query
