@@ -1,0 +1,21 @@
+<h2>Show teacher</h2>
+
+<ul>
+
+  <li>
+    <strong> Full name: </strong>
+    <%= @teacher.name %>
+  </li>
+  <li>
+    <strong> Email: </strong>
+    <%= @teacher.email %>
+  </li>
+  <li>
+    <strong> Phone Number: </strong>
+    <%= @teacher.phone_number %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: teacher_path(@conn, :edit, @teacher) %>
+<%= link "Back", to: teacher_path(@conn, :index) %>

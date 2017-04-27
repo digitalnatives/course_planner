@@ -17,6 +17,7 @@ defmodule CoursePlanner.User do
     field :family_name, :string
     field :nickname, :string
     field :email, :string
+    field :phone_number, :string
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
@@ -50,5 +51,13 @@ defmodule CoursePlanner.User do
     model
     |> cast(params, @target_params ++ coherence_fields())
     |> validate_coherence(params)
+  end
+
+  def changeset(model, params, :update) do
+    model
+    |> cast(params, @target_params ++ coherence_fields)
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:email)
   end
 end
