@@ -15,6 +15,8 @@ defmodule CoursePlanner.Course do
     field :status, Types.EntityStatus
     field :deleted_at, :naive_datetime
 
+    has_many :classes, CoursePlanner.Class
+
     timestamps()
   end
 
