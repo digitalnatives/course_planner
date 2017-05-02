@@ -9,6 +9,7 @@ defmodule CoursePlanner.User do
     field :family_name, :string
     field :nickname, :string
     field :email, :string
+    field :phone_number, :string
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
@@ -22,7 +23,7 @@ defmodule CoursePlanner.User do
     target_params = [
       :name,
       :family_name,
-      :nickname, :email, :student_id, :comments, :role, :deleted_at
+      :nickname, :email, :student_id, :comments, :role, :deleted_at, :phone_number
     ] ++ coherence_fields()
 
     model
@@ -36,7 +37,7 @@ defmodule CoursePlanner.User do
   def changeset(model, params, :create) do
     model
     |> cast(params,
-      [:name, :family_name, :nickname, :email, :student_id, :comments, :role,
+      [:name, :family_name, :nickname, :email, :student_id, :comments, :role, :phone_number,
        :reset_password_token, :reset_password_sent_at])
   end
 
