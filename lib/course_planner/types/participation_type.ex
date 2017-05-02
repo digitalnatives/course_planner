@@ -6,7 +6,7 @@ defmodule CoursePlanner.Types.ParticipationType do
   @behaviour Ecto.Type
   def type, do: :participation_type
 
-  @valid_values ["Oficial", "Guest"]
+  @valid_values ["Official", "Guest"]
 
   def values, do: @valid_values
 
