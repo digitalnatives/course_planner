@@ -17,6 +17,7 @@ defmodule CoursePlanner.User do
     field :family_name, :string
     field :nickname, :string
     field :email, :string
+    field :phone_number, :string
     field :student_id, :string
     field :comments, :string
     field :role, UserRole

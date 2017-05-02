@@ -40,5 +40,5 @@
 
 </ul>
 
-<%#= link "Edit", to: term_path(@conn, :edit, @term) %>
-<%#= link "Back", to: term_path(@conn, :index) %>
+<%= link "Edit", to: term_path(@conn, :edit, @term) %>
+<%= link "Back", to: term_path(@conn, :index) %>

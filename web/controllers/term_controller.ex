@@ -3,6 +3,10 @@ defmodule CoursePlanner.TermController do
 
   alias CoursePlanner.Terms
 
+  def index(conn, _params) do
+    render(conn, "index.html", terms: Terms.all)
+  end
+
   def new(conn, _params) do
     render(conn, "new.html", changeset: Terms.new)
   end
@@ -12,7 +16,7 @@ defmodule CoursePlanner.TermController do
       {:ok, _term} ->
         conn
         |> put_flash(:info, "Term created successfully.")
-        |> redirect(to: term_path(conn, :new))
+        |> redirect(to: term_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -29,12 +33,38 @@ defmodule CoursePlanner.TermController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    case Terms.delete(id) do
+  def edit(conn, %{"id" => id}) do
+    case Terms.edit(id) do
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      {:ok, term, changeset} ->
+        render(conn, "edit.html", term: term, changeset: changeset)
+    end
+  end
+
+  def update(conn, %{"id" => id, "term" => term_params}) do
+    case Terms.update(id, term_params) do
       {:ok, term} ->
         conn
+        |> put_flash(:info, "Term updated successfully.")
+        |> redirect(to: term_path(conn, :show, term))
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      {:error, term, changeset} ->
+        render(conn, "edit.html", term: term, changeset: changeset)
+    end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    case Terms.delete(id) do
+      {:ok, _term} ->
+        conn
         |> put_flash(:info, "Term deleted successfully.")
-        |> redirect(to: term_path(conn, :new))
+        |> redirect(to: term_path(conn, :index))
       {:error, :not_found} ->
         conn
         |> put_status(404)
