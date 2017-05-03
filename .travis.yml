@@ -12,6 +12,8 @@ env:
 script:
   - mix credo --strict
   - mix test
-  
+
 addons:
   postgresql: "9.4"
+
+dist: trusty
