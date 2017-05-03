@@ -18,8 +18,6 @@ defmodule CoursePlanner.StatusesTest do
   alias Ecto.Changeset
   alias CoursePlanner.Types.EntityStatus
 
-  @values EntityStatus.timestamp_field
-
   test "do nothing when changeset is invalid" do
     changeset =
       %DummySchema{}
@@ -28,26 +26,26 @@ defmodule CoursePlanner.StatusesTest do
 
     refute changeset.valid?
 
-    assert changeset == Statuses.update_status_timestamp(changeset, @values)
+    assert changeset == Statuses.update_status_timestamp(changeset, EntityStatus)
   end
 
   test "do nothing when there is no status change" do
     changeset = DummySchema.changeset(%DummySchema{})
 
     assert Changeset.get_change(changeset, :status) == nil
-    assert changeset == Statuses.update_status_timestamp(changeset, @values)
+    assert changeset == Statuses.update_status_timestamp(changeset, EntityStatus)
   end
 
   test "do nothing when the status is not one of EntityStatus values" do
     changeset = DummySchema.changeset(%DummySchema{}, %{status: "Dummy"})
-    assert changeset == Statuses.update_status_timestamp(changeset, @values)
+    assert changeset == Statuses.update_status_timestamp(changeset, EntityStatus)
   end
 
   test "set timestamp status when the status is one of EntityStatus values" do
     changeset = DummySchema.changeset(%DummySchema{}, %{status: "Active"})
     assert Changeset.get_change(changeset, :active_at) == nil
 
-    changeset = Statuses.update_status_timestamp(changeset, @values)
+    changeset = Statuses.update_status_timestamp(changeset, EntityStatus)
     refute Changeset.get_change(changeset, :active_at) == nil
   end
 end

@@ -3,33 +3,26 @@ defmodule CoursePlanner.Types.EntityStatus do
     This module introduces a custom type for Etco for checking status in the model
   """
   @behaviour Ecto.Type
+  @behaviour EnumTimestamp
   def type, do: :entity_status
 
   @valid_entity_types ["Planned", "Active", "Finished", "Graduated", "Frozen"]
 
+  def valid_entity_types, do: @valid_entity_types
+
   def values, do: @valid_entity_types
 
-  def cast(value) do
-    case Enum.member?(@valid_entity_types, value) do
-      :true  -> {:ok, value}
-      :false -> :error
-    end
-  end
+  def cast(value) when value in @valid_entity_types, do: {:ok, value}
+  def cast(_value), do: :error
 
   def load(value), do: {:ok, value}
 
-  def dump(value) do
-    case Enum.member?(@valid_entity_types, value) do
-      :true  -> {:ok, value}
-      :false -> :error
-    end
-  end
+  def dump(value) when value in @valid_entity_types, do: {:ok, value}
+  def dump(_value), do: :error
 
-  def timestamp_field do
-    Enum.into(
-      values, %{}, fn status ->
-        {status, :"#{String.downcase(status)}_at"}
-      end)
+  def valid_types, do: @valid_entity_types
+  def types_timestamp do
+    Enum.into(valid_types(), %{}, &({&1, :"#{String.downcase(&1)}_at"}))
   end
 
 end

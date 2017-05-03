@@ -4,9 +4,9 @@ defmodule CoursePlanner.Statuses do
   """
   import Ecto.Changeset, only: [put_change: 3, get_change: 2]
 
-  def update_status_timestamp(changeset, vals) do
+  def update_status_timestamp(changeset, enum_timestamp) do
     if changeset.valid? && get_change(changeset, :status) do
-      case vals[get_change(changeset, :status)] do
+      case enum_timestamp.types_timestamp()[get_change(changeset, :status)] do
         nil -> changeset
         timestamp_field -> put_change(changeset, timestamp_field, Timex.now)
       end
