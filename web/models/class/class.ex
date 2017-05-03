@@ -8,7 +8,7 @@ defmodule CoursePlanner.Class do
   alias Ecto.{Time, Date, DateTime}
 
   schema "classes" do
-    field :class_date, Date
+    field :date, Date
     field :starting_at, Time
     field :finishes_at, Time
     field :status, Types.EntityStatus
@@ -23,8 +23,8 @@ defmodule CoursePlanner.Class do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:course_id, :class_date, :starting_at, :finishes_at, :status, :deleted_at])
-    |> validate_required([:course_id, :class_date, :starting_at, :finishes_at, :status])
+    |> cast(params, [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at])
+    |> validate_required([:course_id, :date, :starting_at, :finishes_at, :status])
   end
 
   def changeset(struct, params, :create) do

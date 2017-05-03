@@ -6,7 +6,7 @@ defmodule CoursePlanner.ClassTest do
   alias CoursePlanner.Repo
 
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
-  @valid_attrs %{course_id: nil, class_date: %{day: 17, month: 4, year: 2010}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}, status: "Planned"}
+  @valid_attrs %{course_id: nil, date: %{day: 17, month: 4, year: 2010}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}, status: "Planned"}
   @invalid_attrs %{}
 
   defp create_course do

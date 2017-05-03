@@ -12,9 +12,9 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :class_date, class: "control-label" %>
-    <%= date_select f, :class_date, class: "form-control" %>
-    <%= error_tag f, :class_date %>
+    <%= label f, :date, class: "control-label" %>
+    <%= date_select f, :date, class: "form-control" %>
+    <%= error_tag f, :date %>
   </div>
 
   <div class="form-group">

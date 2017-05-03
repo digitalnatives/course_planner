@@ -7,7 +7,7 @@ defmodule CoursePlanner.ClassControllerTest do
   alias CoursePlanner.Repo
 
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
-  @valid_attrs %{course_id: nil, class_date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
+  @valid_attrs %{course_id: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -34,7 +34,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "lists all entries on index except if delete", %{conn: conn} do
     {:ok, created_course} = create_course()
-    class_deleted_completed_attributes =  %{course_id: created_course.id, deleted_at: %{day: 17, month: 4, year: 2010}, class_date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
+    class_deleted_completed_attributes =  %{course_id: created_course.id, deleted_at: %{day: 17, month: 4, year: 2010}, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
     Repo.insert(Class.changeset(%Class{}, class_deleted_completed_attributes))
     conn = get conn, class_path(conn, :index)
     assert html_response(conn, 200) =~ "Listing classes"

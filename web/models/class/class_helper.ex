@@ -5,7 +5,7 @@ defmodule CoursePlanner.ClassHelper do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{Repo, Class}
-  alias Ecto.TimeDate
+  alias Ecto.DateTime
 
   def delete(class) do
     case class.status do
@@ -15,7 +15,7 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   defp soft_delete_class(class) do
-    changeset = change(class, %{deleted_at: TimeDate.utc()})
+    changeset = change(class, %{deleted_at: DateTime.utc()})
     Repo.update(changeset)
   end
 
@@ -29,8 +29,8 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   def is_class_duration_correct?(class) do
-    TimeDate.compare(class.starting_at, class.finishes.at) == :lt
-      && TimeDate.to_erl(class.starting_at) != 0
+    DateTime.compare(class.starting_at, class.finishes.at) == :lt
+      && DateTime.to_erl(class.starting_at) != 0
   end
 
   def get_class_name(class_id) do

@@ -3,7 +3,7 @@ defmodule CoursePlanner.Repo.Migrations.CreateClass do
 
   def change do
     create table(:classes) do
-      add :class_date, :date
+      add :date, :date
       add :starting_at, :time
       add :finishes_at, :time
       add :status, :entity_status
