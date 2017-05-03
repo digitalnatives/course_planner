@@ -24,4 +24,12 @@ defmodule CoursePlanner.Types.EntityStatus do
       :false -> :error
     end
   end
+
+  def timestamp_field do
+    Enum.into(
+      values, %{}, fn status ->
+        {status, :"#{String.downcase(status)}_at"}
+      end)
+  end
+
 end
