@@ -4,7 +4,7 @@ defmodule CoursePlanner.Repo.Migrations.AddStudentStatusAndType do
   def change do
     execute("""
           CREATE TYPE participation_type AS ENUM (
-            'Oficial',
+            'Official',
             'Guest'
           )
     """)

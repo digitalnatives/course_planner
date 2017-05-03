@@ -37,7 +37,7 @@
 
   <div class="form-group">
     <%= label f, :participation_type, class: "control-label" %>
-    <%= select f, :participation_type, ["Oficial", "Guest"], class: "form-control", required: ""%>
+    <%= select f, :participation_type, ["Official", "Guest"], class: "form-control", required: ""%>
     <%= error_tag f, :participation_type %>
   </div>
 
