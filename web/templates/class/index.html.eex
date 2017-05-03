@@ -1,0 +1,32 @@
+<h2>Listing classes</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Course</th>
+      <th>Class date</th>
+      <th>Starting at</th>
+      <th>Finishes at</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for class <- @classes do %>
+    <tr>
+      <td><%= CourseHelper.get_course_name(class.course_id) %></td>
+      <td><%= class.date %></td>
+      <td><%= class.starting_at %></td>
+      <td><%= class.finishes_at %></td>
+      <td><%= class.status %></td>
+
+      <td class="text-right">
+        <%#= link "Show", to: class_path(@conn, :show, class), class: "btn btn-default btn-xs" %>
+        <%#= link "Edit", to: class_path(@conn, :edit, class), class: "btn btn-default btn-xs" %>
+        <%#= link "Delete", to: class_path(@conn, :delete, class), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New class", to: class_path(@conn, :new) %>
