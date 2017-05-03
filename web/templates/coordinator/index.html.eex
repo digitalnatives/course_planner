@@ -19,6 +19,7 @@
       <td class="text-right">
         <%= link "Show", to: coordinator_path(@conn, :show, coordinator), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: coordinator_path(@conn, :edit, coordinator), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: coordinator_path(@conn, :delete, coordinator), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
       </td>
     </tr>
 <% end %>

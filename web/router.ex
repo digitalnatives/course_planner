@@ -40,12 +40,12 @@ defmodule CoursePlanner.Router do
     pipe_through :protected
 
     resources "/users", UserController, except: [:create, :new]
-    resources "/students", StudentController, except: [:delete]
+    resources "/students", StudentController
     resources "/courses", CourseController
     resources "/terms", TermController
     resources "/classes", ClassController, only: [:index, :new, :create]
-    resources "/teachers", TeacherController, except: [:delete]
-    resources "/coordinators", CoordinatorController, except: [:delete]
+    resources "/teachers", TeacherController
+    resources "/coordinators", CoordinatorController
   end
 
   if Mix.env == :dev do

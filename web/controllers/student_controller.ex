@@ -4,6 +4,7 @@ defmodule CoursePlanner.StudentController do
   alias CoursePlanner.Students
   alias CoursePlanner.Router.Helpers
   alias Coherence.ControllerHelpers
+  alias CoursePlanner.Users
 
   def index(conn, _params) do
     render(conn, "index.html", students: Students.all())
@@ -56,4 +57,20 @@ defmodule CoursePlanner.StudentController do
     end
   end
 
+  def delete(conn, %{"id" => id}) do
+    case Users.delete(id) do
+      {:ok, _student} ->
+        conn
+        |> put_flash(:info, "Student deleted successfully.")
+        |> redirect(to: student_path(conn, :index))
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "Student was not found.")
+        |> redirect(to: student_path(conn, :index))
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: student_path(conn, :index))
+    end
+  end
 end

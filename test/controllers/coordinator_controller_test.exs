@@ -2,6 +2,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
+  alias CoursePlanner.Coordinators
 
   @valid_attrs %{name: "some content", email: "valid@email"}
   @invalid_attrs %{}
@@ -52,5 +53,17 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     coordinator = Repo.insert! %User{}
     conn = put conn, coordinator_path(conn, :update, coordinator), user: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit coordinator"
+  end
+
+  test "deletes chosen resource", %{conn: conn} do
+    {:ok, coordinator} = Coordinators.new(@valid_attrs, "whatever")
+    conn = delete conn, coordinator_path(conn, :delete, coordinator)
+    assert redirected_to(conn) == coordinator_path(conn, :index)
+    assert Repo.get(User, coordinator.id).deleted_at
+  end
+
+  test "renders form for new resources", %{conn: conn} do
+    conn = get conn, coordinator_path(conn, :new)
+    assert html_response(conn, 200) =~ "New coordinator"
   end
 end
