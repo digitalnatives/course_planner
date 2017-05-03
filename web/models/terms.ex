@@ -8,7 +8,7 @@ defmodule CoursePlanner.Terms do
   import Ecto.Query, only: [from: 2]
 
   def all do
-    Repo.all(non_deleted_query)
+    Repo.all(non_deleted_query())
   end
 
   def new do
@@ -22,7 +22,7 @@ defmodule CoursePlanner.Terms do
   end
 
   def get(id) do
-    Repo.get(non_deleted_query, id)
+    Repo.get(non_deleted_query(), id)
   end
 
   def edit(id) do

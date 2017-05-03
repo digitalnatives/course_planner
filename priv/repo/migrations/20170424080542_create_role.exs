@@ -1,6 +1,5 @@
 defmodule CoursePlanner.Repo.Migrations.CreateRole do
   use Ecto.Migration
-  alias CoursePlanner.Types.UserRole
 
   def change do
     execute("""
