@@ -2,9 +2,32 @@ defmodule CoursePlanner.TeacherController do
   use CoursePlanner.Web, :controller
   alias CoursePlanner.User
   alias CoursePlanner.Teachers
+  alias CoursePlanner.Router.Helpers
+  alias Coherence.ControllerHelpers
 
   def index(conn, _params) do
     render(conn, "index.html", teachers: Teachers.all())
+  end
+
+  def new(conn, _params) do
+    changeset = User.changeset(%User{})
+    render(conn, "new.html", changeset: changeset)
+  end
+
+  def create(conn, %{"user" => user}) do
+    token = ControllerHelpers.random_string 48
+    url = Helpers.password_url(conn, :edit, token)
+    case Teachers.new(user, token) do
+      {:ok, teacher} ->
+        ControllerHelpers.send_user_email :password, teacher, url
+        conn
+        |> put_flash(:info, "Teacher created and notified by.")
+        |> redirect(to: teacher_path(conn, :index))
+      {:error, changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> render("new.html", changeset: changeset)
+    end
   end
 
   def show(conn, %{"id" => id}) do

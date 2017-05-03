@@ -25,3 +25,4 @@
   </tbody>
 </table>
 
+<%= link "New teacher", to: teacher_path(@conn, :new) %>

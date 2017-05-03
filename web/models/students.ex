@@ -13,6 +13,16 @@ defmodule CoursePlanner.Students do
     Repo.all(@students)
   end
 
+  def new(user, token) do
+    %User{}
+    |> User.changeset(user)
+    |> Changeset.put_change(:reset_password_token, token)
+    |> Changeset.put_change(:reset_password_sent_at, DateTime.utc())
+    |> Changeset.put_change(:password, "fakepassword")
+    |> Changeset.put_change(:role, "Student")
+    |> Repo.insert()
+  end
+
   def update(id, params) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}

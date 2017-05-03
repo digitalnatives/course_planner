@@ -25,3 +25,4 @@
   </tbody>
 </table>
 
+<%= link "New coordinator", to: coordinator_path(@conn, :new) %>

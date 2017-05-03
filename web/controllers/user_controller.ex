@@ -18,6 +18,7 @@ defmodule CoursePlanner.UserController do
   end
 
   def create(conn, %{"user" => user}) do
+    IO.inspect conn
     token = ControllerHelpers.random_string 48
     url = Helpers.password_url(conn, :edit, token)
     case Users.new_user(user, token) do
@@ -26,7 +27,7 @@ defmodule CoursePlanner.UserController do
         conn
         |> put_flash(:info, "User created and notified by.")
         |> redirect(to: user_path(conn, :index))
-      {:error, changeset} -> Logger.warn("Something went wrong creating a new user: #{changeset}")
+      {:error, changeset} ->
         conn
         |> put_flash(:error, "Something went wrong.")
         |> render("new.html", changeset: changeset)
