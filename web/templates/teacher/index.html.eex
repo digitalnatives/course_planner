@@ -1,0 +1,24 @@
+<h2>Teacher list</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td> Full name </td>
+      <td> Email</td>
+      <td> Phone number </td>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for teacher <- @teachers do %>
+    <tr>
+      <td><%= teacher.name %></td>
+      <td><%= teacher.email %></td>
+      <td><%= teacher.phone_number %></td>
+      <td class="text-right">
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
