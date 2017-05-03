@@ -1,4 +1,4 @@
-defmodule CoursePlanner.TeacherControllerTest do
+defmodule CoursePlanner.CoordinatorControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
@@ -19,38 +19,38 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    conn = get conn, teacher_path(conn, :index)
-    assert html_response(conn, 200) =~ "Teacher list"
+    conn = get conn, coordinator_path(conn, :index)
+    assert html_response(conn, 200) =~ "Coordinator list"
   end
 
   test "shows chosen resource", %{conn: conn} do
-    teacher = Repo.insert! %User{}
-    conn = get conn, teacher_path(conn, :show, teacher)
-    assert html_response(conn, 200) =~ "Show teacher"
+    coordinator = Repo.insert! %User{}
+    conn = get conn, coordinator_path(conn, :show, coordinator)
+    assert html_response(conn, 200) =~ "Show coordinator"
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
     assert_error_sent 404, fn ->
-      get conn, teacher_path(conn, :show, -1)
+      get conn, coordinator_path(conn, :show, -1)
     end
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    teacher = Repo.insert! %User{}
-    conn = get conn, teacher_path(conn, :edit, teacher)
-    assert html_response(conn, 200) =~ "Edit teacher"
+    coordinator = Repo.insert! %User{}
+    conn = get conn, coordinator_path(conn, :edit, coordinator)
+    assert html_response(conn, 200) =~ "Edit coordinator"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    teacher = Repo.insert! %User{}
-    conn = put conn, teacher_path(conn, :update, teacher), user: @valid_attrs
-    assert redirected_to(conn) == teacher_path(conn, :show, teacher)
+    coordinator = Repo.insert! %User{}
+    conn = put conn, coordinator_path(conn, :update, coordinator), user: @valid_attrs
+    assert redirected_to(conn) == coordinator_path(conn, :show, coordinator)
     assert Repo.get_by(User, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    teacher = Repo.insert! %User{}
-    conn = put conn, teacher_path(conn, :update, teacher), user: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit teacher"
+    coordinator = Repo.insert! %User{}
+    conn = put conn, coordinator_path(conn, :update, coordinator), user: @invalid_attrs
+    assert html_response(conn, 200) =~ "Edit coordinator"
   end
 end

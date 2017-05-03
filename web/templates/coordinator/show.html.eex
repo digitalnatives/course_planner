@@ -1,0 +1,24 @@
+<h2>Show coordinator</h2>
+
+<ul>
+
+  <li>
+    <strong> Full name: </strong>
+    <%= @coordinator.name %>
+  </li>
+  <li>
+    <strong> Email: </strong>
+    <%= @coordinator.email %>
+  </li>
+  <li>
+    <strong> Phone Number: </strong>
+    <%= @coordinator.phone_number %>
+  </li>
+    <li>
+    <strong> Status: </strong>
+    <%= @coordinator.status %>
+  </li>
+</ul>
+
+<%= link "Edit", to: coordinator_path(@conn, :edit, @coordinator) %>
+<%= link "Back", to: coordinator_path(@conn, :index) %>

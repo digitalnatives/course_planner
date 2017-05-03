@@ -1,32 +1,26 @@
-defmodule CoursePlanner.Students do
-  @moduledoc """
-    Handle Students specific logics
-  """
+defmodule CoursePlanner.Coordinators do
+  @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.User
   import Ecto.Query
   alias Ecto.{Changeset, DateTime}
 
-  @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
+  @coordinators from u in User, where: u.role == "Coordinator" and is_nil(u.deleted_at)
 
   def all do
-    Repo.all(@students)
+    Repo.all(@coordinators)
   end
 
   def update(id, params) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}
-      student ->
-        student
-        |> User.changeset(params)
+      coordinator ->
+        coordinator
+        |> User.changeset(params, :update)
         |> add_timestamps()
         |> Repo.update
-        |> format_error(student)
+        |> format_error(coordinator)
     end
-  end
-
-  defp add_timestamps(%{changes: %{status: "Graduated"}} = changeset) do
-    Changeset.put_change(changeset, :graduated_at, DateTime.utc())
   end
 
   defp add_timestamps(%{changes: %{status: "Active"}} = changeset) do
@@ -39,7 +33,7 @@ defmodule CoursePlanner.Students do
 
   defp add_timestamps(changeset), do: changeset
 
-  defp format_error({:ok, student}, _), do: {:ok, student}
-  defp format_error({:error, changeset}, student), do: {:error, student, changeset}
+  defp format_error({:ok, coordinator}, _), do: {:ok, coordinator}
+  defp format_error({:error, changeset}, coordinator), do: {:error, coordinator, changeset}
 
 end

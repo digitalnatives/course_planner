@@ -1,4 +1,6 @@
 language: elixir
+dist: trusty
+sudo: false
 elixir:
   - 1.4.1
 

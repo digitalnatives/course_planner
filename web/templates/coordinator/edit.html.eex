@@ -1,0 +1,6 @@
+<h2>Edit coordinator</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: coordinator_path(@conn, :update, @coordinator) %>
+
+<%= link "Back", to: coordinator_path(@conn, :index) %>
