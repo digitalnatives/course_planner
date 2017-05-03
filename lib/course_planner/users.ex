@@ -10,7 +10,7 @@ defmodule CoursePlanner.Users do
     %User{}
     |> User.changeset(user)
     |> Changeset.put_change(:reset_password_token, token)
-    |> Changeset.put_change(:reset_password_sent_at, DateTime.utc)
+    |> Changeset.put_change(:reset_password_sent_at, DateTime.utc())
     |> Changeset.put_change(:password, "fakepassword")
     |> Repo.insert()
   end

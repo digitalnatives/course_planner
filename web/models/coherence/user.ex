@@ -55,7 +55,7 @@ defmodule CoursePlanner.User do
 
   def changeset(model, params, :update) do
     model
-    |> cast(params, @target_params ++ coherence_fields)
+    |> cast(params, @target_params ++ coherence_fields())
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)

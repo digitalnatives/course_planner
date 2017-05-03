@@ -1,8 +1,6 @@
 defmodule CoursePlanner.CoordinatorController do
   use CoursePlanner.Web, :controller
   alias CoursePlanner.User
-  alias CoursePlanner.Router.Helpers
-  import Ecto.Query
   alias CoursePlanner.Coordinators
 
   def index(conn, _params) do

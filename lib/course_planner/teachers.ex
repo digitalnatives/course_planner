@@ -13,13 +13,13 @@ defmodule CoursePlanner.Teachers do
 
   def update(id, params) do
     case Repo.get(User, id) do
+      nil -> {:error, :not_found}
       teacher ->
         teacher
         |> User.changeset(params, :update)
         |> add_timestamps()
         |> Repo.update
         |> format_error(teacher)
-      nil -> {:error, :not_found}
     end
   end
 
