@@ -1,4 +1,6 @@
 language: elixir
+dist: trusty
+sudo: false
 elixir:
   - 1.4.1
 
@@ -12,6 +14,6 @@ env:
 script:
   - mix credo --strict
   - mix test
-  
+
 addons:
   postgresql: "9.4"
