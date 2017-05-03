@@ -39,7 +39,7 @@ defmodule CoursePlanner.Router do
   scope "/", CoursePlanner do
     pipe_through :protected
 
-    resources "/users", UserController
+    resources "/users", UserController, except: [:create, :new]
     resources "/students", StudentController, except: [:delete]
     resources "/courses", CourseController
     resources "/terms", TermController

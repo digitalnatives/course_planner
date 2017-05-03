@@ -6,6 +6,7 @@ defmodule CoursePlanner.Students do
   alias CoursePlanner.User
   import Ecto.Query
   alias Ecto.{Changeset, DateTime}
+  alias CoursePlanner.Users
 
   @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
 
@@ -14,11 +15,8 @@ defmodule CoursePlanner.Students do
   end
 
   def new(user, token) do
-    %User{}
-    |> User.changeset(user)
-    |> Changeset.put_change(:reset_password_token, token)
-    |> Changeset.put_change(:reset_password_sent_at, DateTime.utc())
-    |> Changeset.put_change(:password, "fakepassword")
+    user
+    |> Users.new_user(token)
     |> Changeset.put_change(:role, "Student")
     |> Repo.insert()
   end
