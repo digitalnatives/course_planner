@@ -5,8 +5,8 @@ defmodule CoursePlanner.Students do
   alias CoursePlanner.Repo
   alias CoursePlanner.User
   import Ecto.Query
-  alias CoursePlanner.Types.EntityStatus
   alias CoursePlanner.Statuses
+  alias CoursePlanner.StudentStatus
 
   @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
 
@@ -20,7 +20,7 @@ defmodule CoursePlanner.Students do
       student ->
         student
         |> User.changeset(params)
-        |> Statuses.update_status_timestamp(EntityStatus)
+        |> Statuses.update_status_timestamp(StudentStatus)
         |> Repo.update
         |> format_error(student)
     end
