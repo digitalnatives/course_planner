@@ -1,11 +1,11 @@
-defmodule EnumTimestamp do
+defmodule CoursePlanner.Enum do
   @moduledoc """
   Behaviour to represent Enum with mapping to timestamp
   """
   defmacro __using__(_) do
     quote do
       @behaviour Ecto.Type
-      @behaviour EnumTimestamp
+      @behaviour CoursePlanner.Enum
       @callback valid_types :: [String.t]
       def cast(value) do
         if Enum.member?(valid_types(), value), do: {:ok, value}, else: :error
