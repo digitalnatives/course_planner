@@ -2,6 +2,7 @@ defmodule CoursePlanner.StudentControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
+  alias CoursePlanner.Students
 
   @valid_attrs %{name: "some content", email: "valid@email"}
   @invalid_attrs %{}
@@ -52,5 +53,17 @@ defmodule CoursePlanner.StudentControllerTest do
     student = Repo.insert! %User{}
     conn = put conn, student_path(conn, :update, student), user: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit student"
+  end
+
+  test "deletes chosen resource", %{conn: conn} do
+    {:ok, student} = Students.new(@valid_attrs, "whatever")
+    conn = delete conn, student_path(conn, :delete, student)
+    assert redirected_to(conn) == student_path(conn, :index)
+    assert Repo.get(User, student.id).deleted_at
+  end
+
+  test "renders form for new resources", %{conn: conn} do
+    conn = get conn, student_path(conn, :new)
+    assert html_response(conn, 200) =~ "New student"
   end
 end

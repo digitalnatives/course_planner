@@ -2,9 +2,7 @@ defmodule CoursePlanner.UserControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
-  alias CoursePlanner.Users
 
-  @valid_attrs %{name: "some content", email: "valid@email"}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -22,11 +20,6 @@ defmodule CoursePlanner.UserControllerTest do
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
     assert html_response(conn, 200) =~ "User list"
-  end
-
-  test "renders form for new resources", %{conn: conn} do
-    conn = get conn, user_path(conn, :new)
-    assert html_response(conn, 200) =~ "New user"
   end
 
   test "shows chosen resource", %{conn: conn} do

@@ -4,11 +4,19 @@ defmodule CoursePlanner.Coordinators do
   alias CoursePlanner.User
   import Ecto.Query
   alias Ecto.{Changeset, DateTime}
+  alias CoursePlanner.Users
 
   @coordinators from u in User, where: u.role == "Coordinator" and is_nil(u.deleted_at)
 
   def all do
     Repo.all(@coordinators)
+  end
+
+  def new(user, token) do
+    user
+    |> Users.new_user(token)
+    |> Changeset.put_change(:role, "Coordinator")
+    |> Repo.insert()
   end
 
   def update(id, params) do
