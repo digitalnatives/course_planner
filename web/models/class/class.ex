@@ -34,6 +34,13 @@ defmodule CoursePlanner.Class do
     |> validate_duration()
   end
 
+  def changeset(struct, params, :update) do
+    struct
+    |> changeset(params)
+    |> validate_inclusion(:status, ["Planned", "Active"])
+    |> validate_duration()
+  end
+
   def validate_duration(%{changes: changes, valid?: true} = changeset) do
     cond do
       Time.compare(changes.starting_at, Time.from_erl({0, 0, 0})) == :eq ->

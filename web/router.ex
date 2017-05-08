@@ -43,7 +43,7 @@ defmodule CoursePlanner.Router do
     resources "/students", StudentController, only: [:index, :show, :edit, :update]
     resources "/courses", CourseController
     resources "/terms", TermController
-    resources "/classes", ClassController, only: [:index, :new, :create]
+    resources "/classes", ClassController, only: [:index, :new, :create, :show, :edit, :update]
     resources "/teachers", TeacherController, only: [:index]
   end
 
