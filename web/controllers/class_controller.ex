@@ -51,12 +51,12 @@ defmodule CoursePlanner.ClassController do
     end
   end
 
-#  def delete(conn, %{"id" => id}) do
-#    class = Repo.get!(Class, id)
-#    ClassHelper.delete(class)
+  def delete(conn, %{"id" => id}) do
+    class = Repo.get!(Class, id)
+    ClassHelper.delete(class)
 
-#    conn
-#    |> put_flash(:info, "Class deleted successfully.")
-#    |> redirect(to: class_path(conn, :index))
-#  end
+    conn
+    |> put_flash(:info, "Class deleted successfully.")
+    |> redirect(to: class_path(conn, :index))
+  end
 end
