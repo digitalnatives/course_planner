@@ -121,37 +121,106 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "New class"
   end
 
-#  test "shows chosen resource", %{conn: conn} do
-#    class = Repo.insert! %Class{}
-#    conn = get conn, class_path(conn, :show, class)
-#    assert html_response(conn, 200) =~ "Show class"
-#  end
-#
-#  test "renders page not found when id is nonexistent", %{conn: conn} do
-#    assert_error_sent 404, fn ->
-#      get conn, class_path(conn, :show, -1)
-#    end
-#  end
-#
-#  test "renders form for editing chosen resource", %{conn: conn} do
-#    class = Repo.insert! %Class{}
-#    conn = get conn, class_path(conn, :edit, class)
-#    assert html_response(conn, 200) =~ "Edit class"
-#  end
-#
-#  test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-#    class = Repo.insert! %Class{}
-#    conn = put conn, class_path(conn, :update, class), class: @valid_attrs
-#    assert redirected_to(conn) == class_path(conn, :show, class)
-#    assert Repo.get_by(Class, @valid_attrs)
-#  end
-#
-#  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-#    class = Repo.insert! %Class{}
-#    conn = put conn, class_path(conn, :update, class), class: @invalid_attrs
-#    assert html_response(conn, 200) =~ "Edit class"
-#  end
-#
+  test "shows chosen resource", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class = Repo.insert! %Class{course_id: created_course.id}
+    conn = get conn, class_path(conn, :show, class)
+    assert html_response(conn, 200) =~ "Show class"
+  end
+
+  test "renders page not found when id is nonexistent", %{conn: conn} do
+    assert_error_sent 404, fn ->
+      get conn, class_path(conn, :show, -1)
+    end
+  end
+
+  test "renders form for editing chosen resource", %{conn: conn} do
+    class = Repo.insert! %Class{}
+    conn = get conn, class_path(conn, :edit, class)
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "updates chosen resource and redirects when data is valid", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert redirected_to(conn) == class_path(conn, :show, class)
+    assert Repo.get_by(Class, update_params)
+  end
+
+  test "updates chosen resource status to active", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, status: "Active"}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert redirected_to(conn) == class_path(conn, :show, class)
+    assert Repo.get_by(Class, update_params)
+  end
+
+  test "updates chosen resource time", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, starting_at: %{hour: 18, min: 0, sec: 0},  finishes_at: %{hour: 19, min: 0, sec: 0}}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert redirected_to(conn) == class_path(conn, :show, class)
+    assert Repo.get_by(Class, update_params)
+  end
+
+  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
+    class = Repo.insert! %Class{}
+    conn = put conn, class_path(conn, :update, class), class: @invalid_attrs
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "does not update chosen resource if course not selected", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: nil}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "does not update chosen resource if starting time is zero", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, starting_at: %{hour: 0, min: 0, sec: 0}}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "does not update chosen resource if finishing time is zero", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, finishes_at: %{hour: 0, min: 0, sec: 0}}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "does not update chosen resource if finishing time is less than starting time", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, starting_at: %{hour: 2, min: 0, sec: 0}, finishes_at: %{hour: 1, min: 0, sec: 0}}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
+  test "does not update chosen resource if finishing time is equal to starting time", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | course_id: created_course.id, starting_at: %{hour: 2, min: 0, sec: 0}, finishes_at: %{hour: 2, min: 0, sec: 0}}
+    conn = put conn, class_path(conn, :update, class), class: update_params
+    assert html_response(conn, 200) =~ "Edit class"
+  end
+
 #  test "deletes chosen resource", %{conn: conn} do
 #    class = Repo.insert! %Class{}
 #    conn = delete conn, class_path(conn, :delete, class)
