@@ -1,0 +1,33 @@
+<h2>Show class</h2>
+
+<ul>
+
+  <li>
+    <strong>Course:</strong>
+    <%= CourseHelper.get_course_name(@class.course_id) %>
+  </li>
+
+  <li>
+    <strong>Class date:</strong>
+    <%= @class.date %>
+  </li>
+
+  <li>
+    <strong>Starting at:</strong>
+    <%= @class.starting_at %>
+  </li>
+
+  <li>
+    <strong>Finishes at:</strong>
+    <%= @class.finishes_at %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @class.status %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: class_path(@conn, :edit, @class) %>
+<%= link "Back", to: class_path(@conn, :index) %>

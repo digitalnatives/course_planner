@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Coordinators do
+defmodule CoursePlanner.Volunteers do
   @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.User
@@ -6,28 +6,28 @@ defmodule CoursePlanner.Coordinators do
   alias Ecto.{Changeset, DateTime}
   alias CoursePlanner.Users
 
-  @coordinators from u in User, where: u.role == "Coordinator" and is_nil(u.deleted_at)
+  @volunteers from u in User, where: u.role == "Volunteer" and is_nil(u.deleted_at)
 
   def all do
-    Repo.all(@coordinators)
+    Repo.all(@volunteers)
   end
 
   def new(user, token) do
     user
     |> Users.new_user(token)
-    |> Changeset.put_change(:role, "Coordinator")
+    |> Changeset.put_change(:role, "Volunteer")
     |> Repo.insert()
   end
 
   def update(id, params) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}
-      coordinator ->
-        coordinator
+      volunteer ->
+        volunteer
         |> User.changeset(params, :update)
         |> add_timestamps()
         |> Repo.update
-        |> format_error(coordinator)
+        |> format_error(volunteer)
     end
   end
 
@@ -41,7 +41,7 @@ defmodule CoursePlanner.Coordinators do
 
   defp add_timestamps(changeset), do: changeset
 
-  defp format_error({:ok, coordinator}, _), do: {:ok, coordinator}
-  defp format_error({:error, changeset}, coordinator), do: {:error, coordinator, changeset}
+  defp format_error({:ok, volunteer}, _), do: {:ok, volunteer}
+  defp format_error({:error, changeset}, volunteer), do: {:error, volunteer, changeset}
 
 end

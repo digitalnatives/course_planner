@@ -29,9 +29,11 @@
       <td class="text-right">
         <%= link "Show", to: student_path(@conn, :show, student), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: student_path(@conn, :edit, student), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: student_path(@conn, :delete, student), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
       </td>
     </tr>
 <% end %>
   </tbody>
 </table>
 
+<%= link "New student", to: student_path(@conn, :new) %>

@@ -1,8 +1,6 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
   alias CoursePlanner.User
-  alias CoursePlanner.Router.Helpers
-  alias Coherence.ControllerHelpers
   require Logger
   alias CoursePlanner.Users
 
@@ -10,27 +8,6 @@ defmodule CoursePlanner.UserController do
     query = from u in User, where: is_nil(u.deleted_at)
     users = Repo.all(query)
     render(conn, "index.html", users: users)
-  end
-
-  def new(conn, _params) do
-    changeset = User.changeset(%User{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
-  def create(conn, %{"user" => user}) do
-    token = ControllerHelpers.random_string 48
-    url = Helpers.password_url(conn, :edit, token)
-    case Users.new_user(user, token) do
-      {:ok, user} ->
-        ControllerHelpers.send_user_email :password, user, url
-        conn
-        |> put_flash(:info, "User created and notified by.")
-        |> redirect(to: user_path(conn, :index))
-      {:error, changeset} -> Logger.warn("Something went wrong creating a new user: #{changeset}")
-        conn
-        |> put_flash(:error, "Something went wrong.")
-        |> render("new.html", changeset: changeset)
-    end
   end
 
   def show(conn, %{"id" => id}) do
