@@ -43,9 +43,9 @@ defmodule CoursePlanner.Router do
     resources "/students", StudentController
     resources "/courses", CourseController
     resources "/terms", TermController
-    resources "/classes", ClassController, only: [:index, :new, :create]
     resources "/teachers", TeacherController
     resources "/coordinators", CoordinatorController
+    resources "/classes", ClassController, except: [:delete]
     resources "/volunteers", VolunteerController
   end
 
