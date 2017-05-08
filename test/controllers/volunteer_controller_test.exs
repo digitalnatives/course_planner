@@ -55,12 +55,12 @@ defmodule CoursePlanner.VolunteerControllerTest do
     assert html_response(conn, 200) =~ "Edit volunteer"
   end
 
-  test "deletes chosen resource", %{conn: conn} do
-    {:ok, volunteer} = Volunteers.new(@valid_attrs, "whatever")
-    conn = delete conn, volunteer_path(conn, :delete, volunteer)
-    assert redirected_to(conn) == volunteer_path(conn, :index)
-    assert Repo.get(User, volunteer.id).deleted_at
-  end
+  # test "deletes chosen resource", %{conn: conn} do
+  #   {:ok, volunteer} = Volunteers.new(@valid_attrs, "whatever")
+  #   conn = delete conn, volunteer_path(conn, :delete, volunteer)
+  #   assert redirected_to(conn) == volunteer_path(conn, :index)
+  #   assert Repo.get(User, volunteer.id).deleted_at
+  # end
 
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, volunteer_path(conn, :new)
