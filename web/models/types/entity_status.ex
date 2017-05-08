@@ -2,26 +2,9 @@ defmodule CoursePlanner.Types.EntityStatus do
   @moduledoc """
     This module introduces a custom type for Etco for checking status in the model
   """
-  @behaviour Ecto.Type
+  use CoursePlanner.Enum
+
   def type, do: :entity_status
+  def valid_types, do: ["Planned", "Active", "Finished", "Graduated", "Frozen"]
 
-  @valid_entity_types ["Planned", "Active", "Finished", "Graduated", "Frozen"]
-
-  def values, do: @valid_entity_types
-
-  def cast(value) do
-    case Enum.member?(@valid_entity_types, value) do
-      :true  -> {:ok, value}
-      :false -> :error
-    end
-  end
-
-  def load(value), do: {:ok, value}
-
-  def dump(value) do
-    case Enum.member?(@valid_entity_types, value) do
-      :true  -> {:ok, value}
-      :false -> :error
-    end
-  end
 end
