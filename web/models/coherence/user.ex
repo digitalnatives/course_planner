@@ -21,12 +21,12 @@ defmodule CoursePlanner.User do
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
-    field :deleted_at, Ecto.DateTime
+    field :deleted_at, :naive_datetime
     field :status, EntityStatus
     field :participation_type, ParticipationType
-    field :activated_at, Ecto.DateTime
-    field :froze_at, Ecto.DateTime
-    field :graduated_at, Ecto.DateTime
+    field :activated_at, :naive_datetime
+    field :froze_at, :naive_datetime
+    field :graduated_at, :naive_datetime
 
     coherence_schema()
     timestamps()
