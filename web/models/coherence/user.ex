@@ -5,6 +5,7 @@ defmodule CoursePlanner.User do
   alias CoursePlanner.Types.UserRole
   alias CoursePlanner.Types.ParticipationType
   alias CoursePlanner.Types.EntityStatus
+  alias CoursePlanner.Tasks.Task
   @target_params [
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
@@ -27,6 +28,7 @@ defmodule CoursePlanner.User do
     field :active_at, :naive_datetime
     field :frozen_at, :naive_datetime
     field :graduated_at, :naive_datetime
+    has_many :tasks, Task
 
     coherence_schema()
     timestamps()
