@@ -14,7 +14,6 @@ defmodule CoursePlanner.Users do
     |> Changeset.put_change(:password, "fakepassword")
     |> Changeset.put_change(:status, "Active")
     |> Changeset.put_change(:activated_at, DateTime.utc())
-    |> Repo.insert()
   end
 
   def get(id) do
