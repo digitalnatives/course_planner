@@ -46,6 +46,7 @@ defmodule CoursePlanner.Router do
     resources "/classes", ClassController, only: [:index, :new, :create]
     resources "/teachers", TeacherController
     resources "/coordinators", CoordinatorController
+    resources "/volunteers", VolunteerController
   end
 
   if Mix.env == :dev do

@@ -4,7 +4,8 @@
   <thead>
     <tr>
       <td> Full name </td>
-      <td> Email</td>
+      <td> Nickname </td>
+      <td> Email </td>
       <td> Phone number </td>
 
       <th></th>

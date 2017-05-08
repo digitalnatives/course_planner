@@ -44,5 +44,4 @@ defmodule CoursePlanner.UserControllerTest do
     conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit user"
   end
-
 end
