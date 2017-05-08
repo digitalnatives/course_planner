@@ -1,0 +1,27 @@
+<h2>Coordinator list</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td> Full name </td>
+      <td> Email</td>
+      <td> Phone number </td>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for coordinator <- @coordinators do %>
+    <tr>
+      <td><%= coordinator.name %></td>
+      <td><%= coordinator.email %></td>
+      <td><%= coordinator.phone_number %></td>
+      <td class="text-right">
+        <%= link "Show", to: coordinator_path(@conn, :show, coordinator), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: coordinator_path(@conn, :edit, coordinator), class: "btn btn-default btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+

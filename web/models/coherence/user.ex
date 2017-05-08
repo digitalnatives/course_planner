@@ -9,7 +9,7 @@ defmodule CoursePlanner.User do
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
       :role, :deleted_at, :status,
-      :participation_type
+      :participation_type, :phone_number
     ]
 
   schema "users" do
@@ -34,17 +34,10 @@ defmodule CoursePlanner.User do
 
   def changeset(model, params \\ %{}) do
     model
-    |> cast(params, @target_params ++ coherence_fields)
+    |> cast(params, @target_params ++ coherence_fields())
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
-    |> validate_coherence(params)
-  end
-
-  def changeset(model, params, :create) do
-    model
-    |> cast(params,
-      @target_params ++ [:reset_password_token, :reset_password_sent_at])
   end
 
   def changeset(model, params, :password) do
@@ -54,15 +47,15 @@ defmodule CoursePlanner.User do
     |> validate_coherence_password_reset(params)
   end
 
-  def changeset(model, params, :delete) do
+  def changeset(model, params, :seed) do
     model
-    |> cast(params,
-      [:deleted_at])
+    |> cast(params, @target_params ++ coherence_fields())
+    |> validate_coherence(params)
   end
 
   def changeset(model, params, :update) do
     model
-    |> cast(params, @target_params ++ coherence_fields)
+    |> cast(params, @target_params ++ coherence_fields())
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)

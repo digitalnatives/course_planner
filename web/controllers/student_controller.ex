@@ -1,7 +1,6 @@
 defmodule CoursePlanner.StudentController do
   use CoursePlanner.Web, :controller
   alias CoursePlanner.User
-  alias CoursePlanner.Router.Helpers
   alias CoursePlanner.Students
 
   def index(conn, _params) do
