@@ -1,0 +1,6 @@
+<h2>Edit volunteer</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: volunteer_path(@conn, :update, @volunteer) %>
+
+<%= link "Back", to: volunteer_path(@conn, :index) %>

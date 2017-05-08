@@ -51,11 +51,4 @@ defmodule CoursePlanner.UserControllerTest do
     conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit user"
   end
-
-  test "deletes chosen resource", %{conn: conn} do
-    {:ok, user} = Users.new_user(@valid_attrs, "whatever")
-    conn = delete conn, user_path(conn, :delete, user)
-    assert redirected_to(conn) == user_path(conn, :index)
-    assert Repo.get(User, user.id).deleted_at
-  end
 end
