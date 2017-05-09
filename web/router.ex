@@ -47,6 +47,7 @@ defmodule CoursePlanner.Router do
     resources "/coordinators", CoordinatorController
     resources "/classes", ClassController, except: [:delete]
     resources "/volunteers", VolunteerController
+    resources "/tasks", TaskController
   end
 
   if Mix.env == :dev do
