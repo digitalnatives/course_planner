@@ -221,10 +221,35 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Edit class"
   end
 
-#  test "deletes chosen resource", %{conn: conn} do
-#    class = Repo.insert! %Class{}
-#    conn = delete conn, class_path(conn, :delete, class)
-#    assert redirected_to(conn) == class_path(conn, :index)
-#    refute Repo.get(Class, class.id)
-#  end
+  test "deletes a non-existing id", %{conn: conn} do
+    conn = delete conn, class_path(conn, :delete, -1)
+    assert html_response(conn, 404)
+  end
+
+  test "hard deletes chosen resource when status is Planned", %{conn: conn} do
+    {:ok, created_course} = create_course()
+    class_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_args
+    conn = delete conn, class_path(conn, :delete, class)
+    assert redirected_to(conn) == class_path(conn, :index)
+    refute Repo.get(Class, class.id)
+  end
+
+
+  test "all values which will be soft deleted", %{conn: conn} do
+    ["Active", "Finished", "Graduated", "Frozen"]
+    |> Enum.map(fn(status)->
+         delete_and_check_soft_delete_with_status(status, conn)
+       end)
+  end
+
+  defp delete_and_check_soft_delete_with_status(status, conn) do
+    {:ok, created_course} = create_course()
+    class_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: status}
+    class = Repo.insert! class_args
+    conn = delete conn, class_path(conn, :delete, class)
+    assert redirected_to(conn) == class_path(conn, :index)
+    soft_deleted_course = Repo.get(Class, class.id)
+    assert soft_deleted_course.deleted_at
+  end
 end
