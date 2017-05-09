@@ -29,8 +29,7 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   def all_none_deleted do
-    query = from c in Class , where: is_nil(c.deleted_at)
-    Repo.all(query)
+    Repo.all(non_deleted_query())
   end
 
   def is_class_duration_correct?(class) do
@@ -40,5 +39,9 @@ defmodule CoursePlanner.ClassHelper do
 
   def get_class_name(class_id) do
     Repo.get!(Class, class_id).name
+  end
+
+  defp non_deleted_query do
+    from c in Class , where: is_nil(c.deleted_at)
   end
 end
