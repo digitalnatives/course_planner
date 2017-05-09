@@ -1,0 +1,28 @@
+<h2>Show task</h2>
+
+<ul>
+
+  <li>
+    <strong> Name: </strong>
+    <%= @task.name %>
+  </li>
+  <li>
+    <strong> Deadline: </strong>
+    <%= @task.deadline %>
+  </li>
+  <li>
+    <strong> Status: </strong>
+    <%= @task.status %>
+  </li>
+  <li>
+    <strong> Assigned to: </strong>
+  <%= if @task.user != nil do %>
+    <%= link @task.user.name, to: volunteer_path(@conn, :show, @task.user)%>
+  <%= else %>
+    no one
+  <% end %>
+  </li>
+</ul>
+
+<%= link "Edit", to: task_path(@conn, :edit, @task) %>
+<%= link "Back", to: task_path(@conn, :index) %>

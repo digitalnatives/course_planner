@@ -1,0 +1,31 @@
+<h2>Listing tasks</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deadline</th>
+      <th>Status</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for task <- @tasks do %>
+    <tr>
+      <td><%= task.name %></td>
+      <td><%= task.deadline %></td>
+      <td><%= task.status %></td>
+      <%= if task.user != nil do %>
+        <td><%= link task.user.name, to: volunteer_path(@conn, :show, task.user)%></td>
+      <%= else %>
+        <td>no one</td>
+      <% end %>
+      <td class="text-right">
+        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: task_path(@conn, :edit, task), class: "btn btn-default btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
