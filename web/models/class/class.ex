@@ -53,7 +53,7 @@ defmodule CoursePlanner.Class do
       Time.compare(starting_at, Time.from_erl({0, 0, 0})) == :eq ->
         add_error(changeset, :starting_at, "Starting time cannot be zero")
 
-      Time.compare(starting_at, Time.from_erl({0, 0, 0})) == :eq ->
+      Time.compare(finishes_at, Time.from_erl({0, 0, 0})) == :eq ->
         add_error(changeset, :finishes_at, "Finishing time cannot be zero")
 
       Time.compare(starting_at, finishes_at) != :lt ->
