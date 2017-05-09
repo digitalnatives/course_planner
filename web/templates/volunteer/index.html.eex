@@ -1,0 +1,31 @@
+<h2>Volunteer list</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td> Full name </td>
+      <td> Nickname </td>
+      <td> Email</td>
+      <td> Phone number </td>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for volunteer <- @volunteers do %>
+    <tr>
+      <td><%= volunteer.name %></td>
+      <td><%= volunteer.nickname %></td>
+      <td><%= volunteer.email %></td>
+      <td><%= volunteer.phone_number %></td>
+      <td class="text-right">
+        <%= link "Show", to: volunteer_path(@conn, :show, volunteer), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: volunteer_path(@conn, :edit, volunteer), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: volunteer_path(@conn, :delete, volunteer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New volunteer", to: volunteer_path(@conn, :new) %>

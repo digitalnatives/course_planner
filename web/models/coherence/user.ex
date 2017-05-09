@@ -8,8 +8,8 @@ defmodule CoursePlanner.User do
   @target_params [
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
-      :role, :deleted_at, :status,
-      :participation_type, :phone_number
+      :role, :status, :participation_type,
+      :phone_number
     ]
 
   schema "users" do
@@ -21,12 +21,12 @@ defmodule CoursePlanner.User do
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
-    field :deleted_at, Ecto.DateTime
+    field :deleted_at, :naive_datetime
     field :status, EntityStatus
     field :participation_type, ParticipationType
-    field :activated_at, Ecto.DateTime
-    field :froze_at, Ecto.DateTime
-    field :graduated_at, Ecto.DateTime
+    field :active_at, :naive_datetime
+    field :frozen_at, :naive_datetime
+    field :graduated_at, :naive_datetime
 
     coherence_schema()
     timestamps()

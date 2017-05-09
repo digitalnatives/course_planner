@@ -1,0 +1,28 @@
+<h2>Show volunteer</h2>
+
+<ul>
+
+  <li>
+    <strong> Full name: </strong>
+    <%= @volunteer.name %>
+  </li>
+  <li>
+    <strong> Nickname: </strong>
+    <%= @volunteer.nickname %>
+  </li>
+  <li>
+    <strong> Email: </strong>
+    <%= @volunteer.email %>
+  </li>
+  <li>
+    <strong> Phone Number: </strong>
+    <%= @volunteer.phone_number %>
+  </li>
+    <li>
+    <strong> Status: </strong>
+    <%= @volunteer.status %>
+  </li>
+</ul>
+
+<%= link "Edit", to: volunteer_path(@conn, :edit, @volunteer) %>
+<%= link "Back", to: volunteer_path(@conn, :index) %>
