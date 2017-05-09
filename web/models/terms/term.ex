@@ -29,6 +29,6 @@ defmodule CoursePlanner.Terms.Term do
     |> cast(params, [:name, :start_date, :end_date, :status])
     |> validate_required([:name, :start_date, :end_date, :status])
     |> cast_embed(:holidays)
-    |> Statuses.update_status_timestamp()
+    |> Statuses.update_status_timestamp(EntityStatus)
   end
 end

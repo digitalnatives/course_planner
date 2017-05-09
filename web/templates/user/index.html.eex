@@ -7,8 +7,7 @@
       <td> Family Name </td>
       <td> Nickname</td>
       <td> Email</td>
-      <td> Student ID </td>
-      <td> Comments </td>
+      <td> Role </td>
 
       <th></th>
     </tr>
@@ -20,8 +19,7 @@
       <td><%= user.family_name %></td>
       <td><%= user.nickname %></td>
       <td><%= user.email %></td>
-      <td><%= user.student_id %></td>
-      <td><%= user.comments %></td>
+      <td><%= user.role %></td>
       <td class="text-right">
         <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %>
@@ -30,5 +28,3 @@
 <% end %>
   </tbody>
 </table>
-
-<%= link "New user", to: user_path(@conn, :new) %>
