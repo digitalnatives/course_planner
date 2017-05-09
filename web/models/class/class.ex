@@ -24,7 +24,7 @@ defmodule CoursePlanner.Class do
   """
   def changeset(struct, params \\ %{}) do
     cast_params =
-      [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at]
+      [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
 
     struct
     |> cast(params, cast_params)
