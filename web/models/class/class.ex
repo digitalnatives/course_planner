@@ -13,6 +13,7 @@ defmodule CoursePlanner.Class do
     field :finishes_at, Time
     field :status, Types.EntityStatus
     field :deleted_at, DateTime
+    field :classroom, :string
     belongs_to :course, CoursePlanner.Course
 
     timestamps()

@@ -30,6 +30,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :classroom, class: "control-label" %>
+    <%= text_input f, :classroom, class: "form-control" %>
+    <%= error_tag f, :classroom %>
+  </div>
+
+  <div class="form-group">
     <%= select(f, :status, ["Planned", "Active"], prompt: "Choose the status", selected: "Planned") %>
     <%= error_tag f, :status %>
   </div>
