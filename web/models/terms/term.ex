@@ -12,7 +12,7 @@ defmodule CoursePlanner.Terms.Term do
     field :name, :string
     field :start_date, :date
     field :end_date, :date
-    embeds_many :holidays, Holiday
+    embeds_many :holidays, Holiday, on_replace: :delete
 
     field :status, EntityStatus
     field :planned_at, :naive_datetime

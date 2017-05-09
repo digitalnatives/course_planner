@@ -1,0 +1,13 @@
+<%= inputs_for @f, :holidays, fn fh -> %>
+  <li id="<%= fh.id %>">
+    <div class="form-group">
+      <%= label fh, :date, class: "control-label" %>
+      <%= date_select fh, :date, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= label fh, :description, class: "control-label" %>
+      <%= text_input fh, :description, class: "form-control" %>
+    </div>
+    <%= link("Remove", to: "#", "data-id": fh.id , title: "Remove", class: "remove-form-field") %>
+  </li>
+<% end %>
