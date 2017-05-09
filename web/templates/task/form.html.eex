@@ -13,7 +13,7 @@
 
   <div class="form-group">
     <%= label f, :deadline, class: "control-label" %>
-    <%= text_input f, :deadline, class: "form-control", required: ""%>
+    <%= date_select f, :deadline, class: "form-control", required: ""%>
     <%= error_tag f, :deadline %>
   </div>
 
