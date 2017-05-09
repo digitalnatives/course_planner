@@ -7,7 +7,8 @@ defmodule CoursePlanner.ClassHelper do
   alias CoursePlanner.{Repo, Class}
   alias Ecto.DateTime
 
-  def delete(class) do
+  def delete(id) do
+    class = Repo.get!(Class, id)
     case class.status do
       "Planned" -> hard_delete_class(class)
       _         -> soft_delete_class(class)
@@ -20,7 +21,7 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   defp hard_delete_class(class) do
-    Repo.delete!(class)
+    Repo.delete(class)
   end
 
   def all_none_deleted do
