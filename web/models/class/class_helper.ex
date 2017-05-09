@@ -8,10 +8,14 @@ defmodule CoursePlanner.ClassHelper do
   alias Ecto.DateTime
 
   def delete(id) do
-    class = Repo.get!(Class, id)
-    case class.status do
-      "Planned" -> hard_delete_class(class)
-      _         -> soft_delete_class(class)
+    class = Repo.get(Class, id)
+    if is_nil(class) do
+      {:error, :not_found}
+    else
+      case class.status do
+        "Planned" -> hard_delete_class(class)
+        _         -> soft_delete_class(class)
+      end
     end
   end
 

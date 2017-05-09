@@ -221,6 +221,11 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Edit class"
   end
 
+  test "deletes a non-existing id", %{conn: conn} do
+    conn = delete conn, class_path(conn, :delete, -1)
+    assert html_response(conn, 404)
+  end
+
   test "hard deletes chosen resource when status is Planned", %{conn: conn} do
     {:ok, created_course} = create_course()
     class_args = %Class{course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
