@@ -16,11 +16,7 @@
   </li>
   <li>
     <strong> Assigned to: </strong>
-  <%= if @task.user != nil do %>
-    <%= link @task.user.name, to: volunteer_path(@conn, :show, @task.user)%>
-  <%= else %>
-    no one
-  <% end %>
+    <%= task_user(@conn, @task) %>
   </li>
 </ul>
 
