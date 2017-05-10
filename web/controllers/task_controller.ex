@@ -31,13 +31,25 @@ defmodule CoursePlanner.TaskController do
   end
 
   def show(conn, %{"id" => id}) do
-    render(conn, "show.html", task: Tasks.get(id))
+    case Tasks.get(id) do
+      {:ok, task} ->
+        render(conn, "show.html", task: task)
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      end
   end
 
   def edit(conn, %{"id" => id}) do
-    task = Tasks.get(id)
-    changeset = Task.changeset(task)
-    render(conn, "edit.html", task: task, changeset: changeset, users: Volunteers.all())
+    case Tasks.get(id) do
+      {:ok, task} ->
+        render(conn, "edit.html", task: task, changeset: Task.changeset(task), users: Volunteers.all())
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+    end
   end
 
   def update(conn, %{"id" => id, "task" => params}) do
