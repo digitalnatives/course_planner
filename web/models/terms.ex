@@ -36,6 +36,7 @@ defmodule CoursePlanner.Terms do
     case get(id) do
       nil -> {:error, :not_found}
       term ->
+        params = Map.put_new(params, "holidays", [])
         with changeset <- Term.changeset(term, params),
              {:error, changeset} <- Repo.update(changeset),
              do: {:error, term, changeset}

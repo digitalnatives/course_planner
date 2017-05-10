@@ -19,3 +19,39 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+
+window.onload = () => {
+  const removeElement = ({target}) => {
+    let li = document.getElementById(target.dataset.id)
+    let hidden_id = document.getElementById(`${target.dataset.id}_id`)
+    li.parentNode.removeChild(hidden_id)
+    li.parentNode.removeChild(li)
+  }
+  Array.from(document.querySelectorAll(".remove-form-field"))
+  .forEach(el => {
+     el.onclick = (e) => {
+       removeElement(e)
+     }
+  })
+  Array.from(document.querySelectorAll(".add-form-field"))
+  .forEach(el => {
+    el.onclick = ({target: {dataset}}) => {
+      let container = document.getElementById(dataset.container)
+      let index = dataset.index
+      let newRow =
+        dataset
+        .template
+        .replace(/\[0\]/g, `[${index}]`)
+        .replace(/_0_/g, `_${index}_`)
+        .replace(/_0/g, `_${index}`)
+      container.insertAdjacentHTML("beforeend", newRow)
+      dataset.index = parseInt(dataset.index) + 1
+      Array.from(container.querySelectorAll("a.remove-form-field"))
+      .forEach(el => {
+        el.onclick = (e) => {
+          removeElement(e)
+        }
+      })
+    }
+  })
+}
