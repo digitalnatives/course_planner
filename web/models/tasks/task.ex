@@ -7,7 +7,8 @@ defmodule CoursePlanner.Tasks.Task do
   alias CoursePlanner.Tasks.TaskStatus
   alias CoursePlanner.Statuses
 
-  @target_params [:name, :deadline, :status]
+  @cast_params [:name, :deadline, :status, :user_id]
+  @required_params [:name, :deadline, :status]
 
   schema "tasks" do
     field :name, :string
@@ -24,9 +25,8 @@ defmodule CoursePlanner.Tasks.Task do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @target_params)
-    # |> cast_assoc(:user)
-    |> validate_required(@target_params)
+    |> cast(params, @cast_params)
+    |> validate_required(@required_params)
     |> Statuses.update_status_timestamp(TaskStatus)
   end
 end

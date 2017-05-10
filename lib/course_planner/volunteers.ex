@@ -12,6 +12,10 @@ defmodule CoursePlanner.Volunteers do
     Repo.all(@volunteers)
   end
 
+  def get!(id) do
+    Repo.get!(User, id)
+  end
+
   def new(user, token) do
     user
     |> Users.new_user(token)

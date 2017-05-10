@@ -3,13 +3,17 @@ defmodule CoursePlanner.TaskController do
 
   alias CoursePlanner.Tasks
   alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.Volunteers
+  alias Ecto.Changeset
 
   def index(conn, _params) do
     render(conn, "index.html", tasks: Tasks.all())
   end
 
   def new(conn, _params) do
-    render(conn, "new.html", changeset: %Task{} |> Task.changeset())
+    render(conn, "new.html",
+      changeset: %Task{} |> Task.changeset(),
+      users: Volunteers.all())
   end
 
   def create(conn, %{"task" => task}) do
@@ -18,8 +22,12 @@ defmodule CoursePlanner.TaskController do
         conn
         |> put_flash(:info, "Task created successfully.")
         |> redirect(to: task_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
+      {:error, changeset} -> IO.inspect changeset
+        render(conn, "new.html", changeset: changeset, users: Volunteers.all())
+      error ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: task_path(conn, :index))
     end
   end
 
@@ -30,7 +38,7 @@ defmodule CoursePlanner.TaskController do
   def edit(conn, %{"id" => id}) do
     task = Tasks.get(id)
     changeset = Task.changeset(task)
-    render(conn, "edit.html", task: task, changeset: changeset)
+    render(conn, "edit.html", task: task, changeset: changeset, users: Volunteers.all())
   end
 
   def update(conn, %{"id" => id, "task" => params}) do
@@ -44,7 +52,7 @@ defmodule CoursePlanner.TaskController do
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
       {:error, task, changeset} ->
-        render(conn, "edit.html", task: task, changeset: changeset)
+        render(conn, "edit.html", task: task, changeset: changeset, users: Volunteers.all())
     end
   end
 
