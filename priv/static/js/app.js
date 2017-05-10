@@ -1502,7 +1502,7 @@ window.onload = function () {
 
       var container = document.getElementById(dataset.container);
       var index = dataset.index;
-      var newRow = dataset.template.replace(/\[0\]/g, "[" + index + "]").replace(/_0_/g, "_" + index + "_");
+      var newRow = dataset.template.replace(/\[0\]/g, "[" + index + "]").replace(/_0_/g, "_" + index + "_").replace(/_0/g, "_" + index);
       container.insertAdjacentHTML("beforeend", newRow);
       dataset.index = parseInt(dataset.index) + 1;
       Array.from(container.querySelectorAll("a.remove-form-field")).forEach(function (el) {

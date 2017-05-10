@@ -38,7 +38,12 @@ window.onload = () => {
     el.onclick = ({target: {dataset}}) => {
       let container = document.getElementById(dataset.container)
       let index = dataset.index
-      let newRow = dataset.template.replace(/\[0\]/g, `[${index}]`).replace(/_0_/g, `_${index}_`)
+      let newRow =
+        dataset
+        .template
+        .replace(/\[0\]/g, `[${index}]`)
+        .replace(/_0_/g, `_${index}_`)
+        .replace(/_0/g, `_${index}`)
       container.insertAdjacentHTML("beforeend", newRow)
       dataset.index = parseInt(dataset.index) + 1
       Array.from(container.querySelectorAll("a.remove-form-field"))
