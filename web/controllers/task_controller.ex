@@ -4,7 +4,6 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
-  alias Ecto.Changeset
 
   def index(conn, _params) do
     render(conn, "index.html", tasks: Tasks.all())
@@ -22,9 +21,9 @@ defmodule CoursePlanner.TaskController do
         conn
         |> put_flash(:info, "Task created successfully.")
         |> redirect(to: task_path(conn, :index))
-      {:error, changeset} -> IO.inspect changeset
+      {:error, changeset} ->
         render(conn, "new.html", changeset: changeset, users: Volunteers.all())
-      error ->
+      _ ->
         conn
         |> put_flash(:error, "Something went wrong.")
         |> redirect(to: task_path(conn, :index))
