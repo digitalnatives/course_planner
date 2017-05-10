@@ -27,6 +27,5 @@ defmodule CoursePlanner.Tasks.Task do
     struct
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
-    |> Statuses.update_status_timestamp(TaskStatus)
   end
 end

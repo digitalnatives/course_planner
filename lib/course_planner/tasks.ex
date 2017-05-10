@@ -7,32 +7,35 @@ defmodule CoursePlanner.Tasks do
   import Ecto.Query
 
   @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
+  @task
 
   def all do
     Repo.all(@tasks)
   end
 
   def get(id) do
-    Task
-    |> Repo.get!(id)
-    |> Repo.preload(:user)
+    case Repo.one(from t in Task, where: is_nil(t.deleted_at) and t.id == ^id) do
+      nil  -> {:error, :not_found}
+      task -> {:ok, Repo.preload(task, :user)}
+    end
   end
 
   def new(params) do
     %Task{}
     |> Task.changeset(params)
+    |> Statuses.update_status_timestamp(TaskStatus)
     |> Repo.insert()
   end
 
   def update(id, params) do
-    case Repo.get(Task, id) do
-      nil -> {:error, :not_found}
-      task ->
+    case get(id) do
+      {:ok, task} ->
         task
         |> Task.changeset(params)
         |> Statuses.update_status_timestamp(TaskStatus)
         |> Repo.update()
         |> format_error(task)
+      error -> error
     end
   end
 
@@ -40,13 +43,13 @@ defmodule CoursePlanner.Tasks do
   defp format_error({:error, changeset}, task), do: {:error, task, changeset}
 
   def delete(id) do
-    case Repo.get(Task, id) do
-      nil -> {:error, :not_found}
-      task ->
+    case get(id) do
+      {:ok, task} ->
         task
         |> Task.changeset()
         |> Changeset.put_change(:deleted_at, DateTime.utc())
         |> Repo.update()
+      error -> error
     end
   end
 
