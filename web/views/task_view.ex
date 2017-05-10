@@ -9,4 +9,8 @@ defmodule CoursePlanner.TaskView do
     end
   end
 
+  def format_users(users) do
+    [{"no one", 0} | Enum.map(users, &{&1.name, &1.id})]
+  end
+
 end

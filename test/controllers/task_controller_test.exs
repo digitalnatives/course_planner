@@ -1,8 +1,6 @@
 defmodule CoursePlanner.TaskControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.Repo
-  alias CoursePlanner.User
-  alias CoursePlanner.Tasks
+  alias CoursePlanner.{Tasks, Volunteers, Repo, User}
   alias CoursePlanner.Tasks.Task
 
   @valid_attrs %{name: "some content", deadline: Date.utc_today(), status: "Pending"}
@@ -12,6 +10,12 @@ defmodule CoursePlanner.TaskControllerTest do
     email: "testuser@example.com",
     password: "secret",
     password_confirmation: "secret"}
+  @volunteer %{
+    name: "Test Volunteer",
+    email: "volunteer@courseplanner.com",
+    password: "secret",
+    password_confirmation: "secret",
+    role: "Volunteer"}
 
   setup do
     conn =
@@ -65,5 +69,19 @@ defmodule CoursePlanner.TaskControllerTest do
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, task_path(conn, :new)
     assert html_response(conn, 200) =~ "New task"
+  end
+
+  test "create task without assigned volunteer", %{conn: conn} do
+    conn = post conn, task_path(conn, :create), task: @valid_attrs
+    assert redirected_to(conn) == task_path(conn, :index)
+    assert Repo.get_by(Task, name: "some content")
+  end
+
+  test "create task with assigned volunteer", %{conn: conn} do
+    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    task = Map.put(@valid_attrs, :user_id, volunteer.id)
+    conn = post conn, task_path(conn, :create), task: task
+    assert redirected_to(conn) == task_path(conn, :index)
+    assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
   end
 end

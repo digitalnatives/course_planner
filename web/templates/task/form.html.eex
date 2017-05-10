@@ -25,7 +25,7 @@
 
   <div class="form-group">
     <%= label f, :user_id, class: "control-label" %>
-    <%= select(f, :user_id, @users |> Enum.map(&{&1.name, &1.id})) %>
+    <%= select f, :user_id, format_users(@users) %>
     <%= error_tag f, :user_id %>
   </div>
 
