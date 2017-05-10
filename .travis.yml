@@ -11,6 +11,9 @@ addons:
 env:
   - MIX_ENV=test
 
+before_script:
+  - mix deps.compile
+
 script:
   - mix compile --warnings-as-errors
   - mix credo --strict
