@@ -53,4 +53,12 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
+  def get_user_id(id) do
+    Repo.all(from t in Task, where: is_nil(t.deleted_at) and t.user_id == ^id, preload: [:user])
+  end
+
+  def get_unassigned do
+    Repo.all(from t in Task, where: is_nil(t.deleted_at) and is_nil(t.user_id))
+  end
+
 end
