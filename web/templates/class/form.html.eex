@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= select(f, :course_id, CoursePlanner.CourseHelper.all_none_deleted()
-                              |> Enum.map(&{&1.name, &1.id}), prompt: "Choose a course", selected: "Planned") %>
+                              |> Enum.map(&{&1.name, &1.id}), prompt: "Choose a course", selected: f.data.course_id) %>
     <%= error_tag f, :status %>
   </div>
 
@@ -27,6 +27,12 @@
     <%= label f, :finishes_at, class: "control-label" %>
     <%= time_select f, :finishes_at, class: "form-control" %>
     <%= error_tag f, :finishes_at %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :classroom, class: "control-label" %>
+    <%= text_input f, :classroom, class: "form-control" %>
+    <%= error_tag f, :classroom %>
   </div>
 
   <div class="form-group">
