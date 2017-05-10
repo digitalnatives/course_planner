@@ -7,7 +7,7 @@ defmodule CoursePlanner.Students do
   import Ecto.Query
   alias CoursePlanner.Statuses
   alias CoursePlanner.StudentStatus
-  alias Ecto.{Changeset, DateTime}
+  alias Ecto.Changeset
   alias CoursePlanner.Users
 
   @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
