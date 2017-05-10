@@ -5,7 +5,6 @@ defmodule CoursePlanner.Tasks do
   alias CoursePlanner.Statuses
   alias Ecto.{DateTime, Changeset}
   import Ecto.Query
-  alias CoursePlanner.Volunteers
 
   @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
 
