@@ -5,6 +5,7 @@ defmodule CoursePlanner.Tasks do
   alias CoursePlanner.Statuses
   alias Ecto.{DateTime, Changeset}
   import Ecto.Query
+  alias CoursePlanner.Volunteers
 
   @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
 
@@ -31,7 +32,7 @@ defmodule CoursePlanner.Tasks do
         task
         |> Task.changeset(params)
         |> Statuses.update_status_timestamp(TaskStatus)
-        |> Repo.update
+        |> Repo.update()
         |> format_error(task)
     end
   end
