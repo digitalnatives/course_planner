@@ -20,6 +20,7 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
+  def new(%{"user_id" => "0"} = params), do: new(Map.delete(params, "user_id"))
   def new(params) do
     %Task{}
     |> Task.changeset(params)
