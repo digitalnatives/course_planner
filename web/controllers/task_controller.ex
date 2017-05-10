@@ -4,6 +4,12 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
+  alias CoursePlanner.User
+
+  def index(conn = %{assigns: %{current_user: %{id: id, role: "Volunteer"}}}, _params) do
+    tasks = Tasks.get_user_id(id) ++ Tasks.get_unassigned()
+    render(conn, "index.html", tasks: tasks)
+  end
 
   def index(conn, _params) do
     render(conn, "index.html", tasks: Tasks.all())
