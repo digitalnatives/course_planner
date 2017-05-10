@@ -1,21 +1,17 @@
 language: elixir
+
+elixir: 1.4.1
+otp_release: 19.2
+
 dist: trusty
 sudo: false
-elixir:
-  - 1.4.1
-
-otp_release:
-  - 19.2
+addons:
+  postgresql: 9.4
 
 env:
   - MIX_ENV=test
 
-
 script:
+  - mix compile --warnings-as-errors
   - mix credo --strict
   - mix test
-
-addons:
-  postgresql: "9.4"
-
-dist: trusty
