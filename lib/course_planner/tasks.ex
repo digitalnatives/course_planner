@@ -7,7 +7,6 @@ defmodule CoursePlanner.Tasks do
   import Ecto.Query
 
   @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
-  @task
 
   def all do
     Repo.all(@tasks)
