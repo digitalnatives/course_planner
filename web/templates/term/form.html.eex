@@ -30,6 +30,15 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :holidays %>
+    <ul id="<%= container_id(f, :holidays) %>">
+      <%= render "holiday_fields.html", f: f %>
+    </ul>
+    <%= error_tag f, :holidays %>
+    <%= link_to_holiday_fields(f, :holidays) %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>

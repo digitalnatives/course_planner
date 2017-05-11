@@ -23,6 +23,11 @@
   </li>
 
   <li>
+    <strong>Classroom:</strong>
+    <%= @class.classroom %>
+  </li>
+
+  <li>
     <strong>Status:</strong>
     <%= @class.status %>
   </li>

@@ -13,6 +13,7 @@ defmodule CoursePlanner.Class do
     field :finishes_at, Time
     field :status, Types.EntityStatus
     field :deleted_at, DateTime
+    field :classroom, :string
     belongs_to :course, CoursePlanner.Course
 
     timestamps()
@@ -22,8 +23,11 @@ defmodule CoursePlanner.Class do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
+    cast_params =
+      [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
+
     struct
-    |> cast(params, [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at])
+    |> cast(params, cast_params)
     |> validate_required([:course_id, :date, :starting_at, :finishes_at, :status])
   end
 
@@ -42,20 +46,24 @@ defmodule CoursePlanner.Class do
   end
 
   def validate_duration(%{changes: changes, valid?: true} = changeset) do
+    starting_at = Map.get(changes, :starting_at) || Map.get(changeset.data, :starting_at)
+    finishes_at = Map.get(changes, :finishes_at) || Map.get(changeset.data, :finishes_at)
+
     cond do
-      Time.compare(changes.starting_at, Time.from_erl({0, 0, 0})) == :eq ->
+      Time.compare(starting_at, Time.from_erl({0, 0, 0})) == :eq ->
         add_error(changeset, :starting_at, "Starting time cannot be zero")
 
-      Time.compare(changes.starting_at, Time.from_erl({0, 0, 0})) == :eq ->
+      Time.compare(finishes_at, Time.from_erl({0, 0, 0})) == :eq ->
         add_error(changeset, :finishes_at, "Finishing time cannot be zero")
 
-      Time.compare(changes.starting_at, changes.finishes_at) != :lt ->
+      Time.compare(starting_at, finishes_at) != :lt ->
         add_error(changeset, :finishes_at,
           "Finishing time should be greater than the starting time")
 
       true -> changeset
     end
   end
+
   def validate_duration(changeset), do: changeset
 
 end
