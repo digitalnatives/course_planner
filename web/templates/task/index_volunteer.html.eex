@@ -1,0 +1,53 @@
+<h2>Your tasks</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deadline</th>
+      <th>Status</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for task <- @your_tasks do %>
+    <tr>
+      <td><%= task.name %></td>
+      <td><%= task.deadline %></td>
+      <td><%= task.status %></td>
+      <td><%= task_user(@conn, task) %></td>
+      <td class="text-right">
+        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
+        <%= link "Mark as Done", to: task_done_path(@conn, :done, task), method: :post, class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h2>Available tasks</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deadline</th>
+      <th>Status</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for task <- @available_tasks do %>
+    <tr>
+      <td><%= task.name %></td>
+      <td><%= task.deadline %></td>
+      <td><%= task.status %></td>
+      <td><%= task_user(@conn, task) %></td>
+      <td class="text-right">
+        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
+        <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post, class: "btn btn-default btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>

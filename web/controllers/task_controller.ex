@@ -7,8 +7,9 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.User
 
   def index(conn = %{assigns: %{current_user: %{id: id, role: "Volunteer"}}}, _params) do
-    tasks = Tasks.get_user_id(id) ++ Tasks.get_unassigned()
-    render(conn, "index.html", tasks: tasks)
+    render(conn, "index_volunteer.html",
+      available_tasks: Tasks.get_unassigned(),
+      your_tasks: Tasks.get_user_id(id))
   end
 
   def index(conn, _params) do
@@ -89,4 +90,39 @@ defmodule CoursePlanner.TaskController do
         |> redirect(to: task_path(conn, :index))
     end
   end
+
+  def done(conn, %{"task_id" => id}) do
+    case Tasks.mark_as_done(id) do
+      {:ok, _task} ->
+        conn
+        |> put_flash(:info, "Task marked as done.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "Task was not found.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: task_path(conn, :index))
+    end
+  end
+
+  def grab(conn = %{assigns: %{current_user: %{id: user_id}}}, %{"task_id" => task_id}) do
+    case Tasks.grab(task_id, user_id) do
+      {:ok, _task} ->
+        conn
+        |> put_flash(:info, "Task grabbed.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "Task was not found.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: task_path(conn, :index))
+    end
+  end
+
 end

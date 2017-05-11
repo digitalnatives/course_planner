@@ -47,7 +47,10 @@ defmodule CoursePlanner.Router do
     resources "/teachers", TeacherController
     resources "/coordinators", CoordinatorController
     resources "/volunteers", VolunteerController
-    resources "/tasks", TaskController
+    resources "/tasks", TaskController do
+      post "/done", TaskController, :done, as: :done
+      post "/grab", TaskController, :grab, as: :grab
+    end
   end
 
   if Mix.env == :dev do
