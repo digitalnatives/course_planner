@@ -1,11 +1,9 @@
 defmodule CoursePlanner.TasksTest do
   use CoursePlanner.ModelCase
 
-  alias CoursePlanner.{Tasks, User, Volunteers}
-  alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.{Tasks, Volunteers}
 
   @valid_task %{name: "task name", deadline: Date.utc_today(), status: "Pending"}
-  @invalid_task %{}
   @volunteer %{
     name: "Test Volunteer",
     email: "volunteer@courseplanner.com",

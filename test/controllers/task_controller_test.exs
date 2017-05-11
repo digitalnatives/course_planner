@@ -97,8 +97,7 @@ defmodule CoursePlanner.TaskControllerTest do
   test "grab task", %{conn: conn} do
     {:ok, task} = Tasks.new(@valid_attrs)
     {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
-    conn = Phoenix.ConnTest.build_conn()
-        |> assign(:current_user, volunteer)
+    conn = assign(conn, :current_user, volunteer)
     conn = post conn, task_grab_path(conn, :grab, task)
     assert redirected_to(conn) == task_path(conn, :index)
     assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id

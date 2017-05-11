@@ -4,9 +4,8 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
-  alias CoursePlanner.User
 
-  def index(conn = %{assigns: %{current_user: %{id: id, role: "Volunteer"}}}, _params) do
+  def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
     render(conn, "index_volunteer.html",
       available_tasks: Tasks.get_unassigned(),
       your_tasks: Tasks.get_user_id(id))
@@ -108,7 +107,7 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def grab(conn = %{assigns: %{current_user: %{id: user_id}}}, %{"task_id" => task_id}) do
+  def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
     case Tasks.grab(task_id, user_id) do
       {:ok, _task} ->
         conn
