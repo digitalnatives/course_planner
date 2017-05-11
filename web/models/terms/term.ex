@@ -4,7 +4,7 @@ defmodule CoursePlanner.Terms.Term do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Course, OfferedCourse, Statuses, Terms.Holiday, Types.EntityStatus}
+  alias CoursePlanner.{OfferedCourse, Statuses, Terms.Holiday, Types.EntityStatus}
 
   schema "terms" do
     field :name, :string

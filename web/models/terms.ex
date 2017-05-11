@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{OfferedCourse, Repo}
+  alias CoursePlanner.{Repo, OfferedCourse}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
