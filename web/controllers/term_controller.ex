@@ -18,6 +18,7 @@ defmodule CoursePlanner.TermController do
         |> put_flash(:info, "Term created successfully.")
         |> redirect(to: term_path(conn, :index))
       {:error, changeset} ->
+        changeset = Ecto.Changeset.put_change(changeset, :courses, [])
         render(conn, "new.html", changeset: changeset)
     end
   end
