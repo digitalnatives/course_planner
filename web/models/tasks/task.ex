@@ -5,7 +5,6 @@ defmodule CoursePlanner.Tasks.Task do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.Tasks.TaskStatus
-  alias CoursePlanner.Statuses
 
   @cast_params [:name, :deadline, :status, :user_id]
   @required_params [:name, :deadline, :status]
