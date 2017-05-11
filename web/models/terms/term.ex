@@ -4,15 +4,16 @@ defmodule CoursePlanner.Terms.Term do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.Statuses
-  alias CoursePlanner.Terms.Holiday
-  alias CoursePlanner.Types.EntityStatus
+  alias CoursePlanner.{Course, OfferedCourse, Statuses, Terms.Holiday, Types.EntityStatus}
 
   schema "terms" do
     field :name, :string
     field :start_date, :date
     field :end_date, :date
     embeds_many :holidays, Holiday, on_replace: :delete
+
+    has_many :offered_courses, OfferedCourse, on_replace: :delete
+    has_many :courses, through: [:offered_courses, :course]
 
     field :status, EntityStatus
     field :planned_at, :naive_datetime
