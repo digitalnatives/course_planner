@@ -58,4 +58,27 @@ defmodule CoursePlanner.Tasks do
     Repo.all(from t in Task, where: is_nil(t.deleted_at) and is_nil(t.user_id))
   end
 
+  def mark_as_done(id) do
+    case get(id) do
+      {:ok, task} ->
+        task
+        |> Task.changeset()
+        |> Changeset.put_change(:status, "Accomplished")
+        |> Statuses.update_status_timestamp(TaskStatus)
+        |> Repo.update()
+      error -> error
+    end
+  end
+
+  def grab(task_id, user_id) do
+    case get(task_id) do
+      {:ok, task} ->
+        task
+        |> Task.changeset()
+        |> Changeset.put_change(:user_id, user_id)
+        |> Repo.update()
+      error -> error
+    end
+  end
+
 end

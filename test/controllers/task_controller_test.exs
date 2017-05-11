@@ -84,4 +84,23 @@ defmodule CoursePlanner.TaskControllerTest do
     assert redirected_to(conn) == task_path(conn, :index)
     assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
   end
+
+  test "mark task as done", %{conn: conn} do
+    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    task = Map.put(@valid_attrs, :user_id, volunteer.id)
+    {:ok, task} = Tasks.new(task)
+    conn = post conn, task_done_path(conn, :done, task)
+    assert redirected_to(conn) == task_path(conn, :index)
+    assert Repo.get_by!(Task, name: "some content").status == "Accomplished"
+  end
+
+  test "grab task", %{conn: conn} do
+    {:ok, task} = Tasks.new(@valid_attrs)
+    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    conn = Phoenix.ConnTest.build_conn()
+        |> assign(:current_user, volunteer)
+    conn = post conn, task_grab_path(conn, :grab, task)
+    assert redirected_to(conn) == task_path(conn, :index)
+    assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
+  end
 end
