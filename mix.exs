@@ -41,7 +41,8 @@ defmodule CoursePlanner.Mixfile do
      {:credo, "~> 0.7.2", only: [:dev, :test]},
      {:dogma, "~> 0.1.14", only: [:dev, :test]},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, github: "smpallen99/coherence", ref: "590222b"}
+     {:coherence, github: "smpallen99/coherence", ref: "590222b"},
+     {:canada, github: "jarednorman/canada", ref: "2dff411"},
    ]
   end
 
