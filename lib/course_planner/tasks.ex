@@ -27,6 +27,7 @@ defmodule CoursePlanner.Tasks do
     |> Repo.insert()
   end
 
+  def update(id, %{"user_id" => "0"} = params), do: CoursePlanner.Tasks.update(id, Map.delete(params, "user_id"))
   def update(id, params) do
     case get(id) do
       {:ok, task} ->
