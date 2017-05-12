@@ -15,6 +15,9 @@ defmodule CoursePlanner.OfferedCourseController do
 
   def create(conn, %{"offered_course" => offered_course_params}) do
     changeset = OfferedCourse.changeset(%OfferedCourse{}, offered_course_params)
+    student_ids = Map.get(offered_course_params, "student_ids", [])
+    students = Repo.all(Ecto.Query.from s in CoursePlanner.Students.query(), where: s.id in ^student_ids)
+    changeset = Ecto.Changeset.put_assoc(changeset, :students, students)
 
     case Repo.insert(changeset) do
       {:ok, _offered_course} ->
@@ -27,19 +30,22 @@ defmodule CoursePlanner.OfferedCourseController do
   end
 
   def show(conn, %{"id" => id}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course])
+    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students])
     render(conn, "show.html", offered_course: offered_course)
   end
 
   def edit(conn, %{"id" => id}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course])
+    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students])
     changeset = OfferedCourse.changeset(offered_course)
     render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "offered_course" => offered_course_params}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course])
+    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students])
     changeset = OfferedCourse.changeset(offered_course, offered_course_params)
+    student_ids = Map.get(offered_course_params, "student_ids", [])
+    students = Repo.all(Ecto.Query.from s in CoursePlanner.Students.query(), where: s.id in ^student_ids)
+    changeset = Ecto.Changeset.put_assoc(changeset, :students, students)
 
     case Repo.update(changeset) do
       {:ok, offered_course} ->

@@ -35,6 +35,17 @@
   </li>
 
 </ul>
+<%= if length(@offered_course.students) > 0 do %>
+  <h3>Students</h3>
+  <ul>
+    <%= for s <- @offered_course.students do %>
+      <li>
+        <strong>Name</strong>
+        <%= "#{s.name} #{s.family_name}" %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
 
 <%= link "Edit", to: offered_course_path(@conn, :edit, @offered_course) %>
 <%= link "Back", to: offered_course_path(@conn, :index) %>

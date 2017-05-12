@@ -18,6 +18,12 @@
   </div>
 
   <div class="form-group">
+    <%= label f, :student_ids, class: "control-label" %>
+    <%= multiple_select f, :student_ids, students_to_select(), selected: selected_students(@changeset), class: "form-control" %>
+    <%= error_tag f, :student_ids %>
+  </div>
+
+  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
