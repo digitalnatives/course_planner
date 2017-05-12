@@ -13,6 +13,10 @@ defmodule CoursePlanner.OfferedCourse do
       join_through: "offered_courses_students",
       join_keys: [offered_course_id: :id, student_id: :id],
       on_replace: :delete
+    many_to_many :teachers, User,
+      join_through: "offered_courses_teachers",
+      join_keys: [offered_course_id: :id, teacher_id: :id],
+      on_replace: :delete
 
     timestamps()
   end

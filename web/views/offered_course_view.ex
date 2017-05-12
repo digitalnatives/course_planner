@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseView do
   use CoursePlanner.Web, :view
 
-  alias CoursePlanner.{CourseHelper, Terms, Students}
+  alias CoursePlanner.{CourseHelper, Teachers, Terms, Students}
   alias Ecto.Changeset
 
   def terms_to_select do
@@ -30,6 +30,17 @@ defmodule CoursePlanner.OfferedCourseView do
   def selected_students(changeset) do
     changeset
     |> Changeset.get_field(:students)
+    |> Enum.map(&(&1.id))
+  end
+
+  def teachers_to_select do
+    Teachers.all()
+    |> Enum.map(&{"#{&1.name} #{&1.family_name}", &1.id})
+  end
+
+  def selected_teachers(changeset) do
+    changeset
+    |> Changeset.get_field(:teachers)
     |> Enum.map(&(&1.id))
   end
 end
