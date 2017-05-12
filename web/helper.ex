@@ -1,4 +1,7 @@
 defmodule CoursePlanner.Helper do
+  @moduledoc """
+    Helper function for canary
+  """
   import Plug.Conn
   import Phoenix.Controller
 
