@@ -3,6 +3,7 @@ defmodule CoursePlanner.TermView do
 
   alias CoursePlanner.Terms.{Term, Holiday}
   alias CoursePlanner.CourseHelper
+  alias Ecto.Changeset
   alias Phoenix.HTML.{Form, FormData}
 
   def link_to_holiday_fields(form, field) do
@@ -40,7 +41,7 @@ defmodule CoursePlanner.TermView do
 
   def selected_courses(changeset) do
     changeset
-    |> Ecto.Changeset.get_field(:courses)
+    |> Changeset.get_field(:courses)
     |> Enum.map(&(&1.id))
   end
 end

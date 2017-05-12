@@ -2,6 +2,7 @@ defmodule CoursePlanner.TermController do
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.Terms
+  alias Ecto.Changeset
 
   def index(conn, _params) do
     render(conn, "index.html", terms: Terms.all)
@@ -18,7 +19,7 @@ defmodule CoursePlanner.TermController do
         |> put_flash(:info, "Term created successfully.")
         |> redirect(to: term_path(conn, :index))
       {:error, changeset} ->
-        changeset = Ecto.Changeset.put_change(changeset, :courses, [])
+        changeset = Changeset.put_change(changeset, :courses, [])
         render(conn, "new.html", changeset: changeset)
     end
   end
