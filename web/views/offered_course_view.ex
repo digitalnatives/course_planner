@@ -28,7 +28,8 @@ defmodule CoursePlanner.OfferedCourseView do
   end
 
   def selected_students(changeset) do
-    Changeset.get_field(changeset, :students)
+    changeset
+    |> Changeset.get_field(:students)
     |> Enum.map(&(&1.id))
   end
 end

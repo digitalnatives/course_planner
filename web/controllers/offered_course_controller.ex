@@ -1,7 +1,9 @@
 defmodule CoursePlanner.OfferedCourseController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.OfferedCourse
+  alias CoursePlanner.{OfferedCourse, Students}
+  alias Ecto.Changeset
+  import Ecto.Query, only: [from: 2]
 
   def index(conn, _params) do
     offered_courses = OfferedCourse |> Repo.all() |> Repo.preload([:term, :course])
@@ -16,8 +18,8 @@ defmodule CoursePlanner.OfferedCourseController do
   def create(conn, %{"offered_course" => offered_course_params}) do
     changeset = OfferedCourse.changeset(%OfferedCourse{}, offered_course_params)
     student_ids = Map.get(offered_course_params, "student_ids", [])
-    students = Repo.all(Ecto.Query.from s in CoursePlanner.Students.query(), where: s.id in ^student_ids)
-    changeset = Ecto.Changeset.put_assoc(changeset, :students, students)
+    students = Repo.all(from s in Students.query(), where: s.id in ^student_ids)
+    changeset = Changeset.put_assoc(changeset, :students, students)
 
     case Repo.insert(changeset) do
       {:ok, _offered_course} ->
@@ -44,8 +46,8 @@ defmodule CoursePlanner.OfferedCourseController do
     offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students])
     changeset = OfferedCourse.changeset(offered_course, offered_course_params)
     student_ids = Map.get(offered_course_params, "student_ids", [])
-    students = Repo.all(Ecto.Query.from s in CoursePlanner.Students.query(), where: s.id in ^student_ids)
-    changeset = Ecto.Changeset.put_assoc(changeset, :students, students)
+    students = Repo.all(from s in Students.query(), where: s.id in ^student_ids)
+    changeset = Changeset.put_assoc(changeset, :students, students)
 
     case Repo.update(changeset) do
       {:ok, offered_course} ->
