@@ -9,7 +9,8 @@ defmodule CoursePlanner.TaskControllerTest do
     name: "Test User",
     email: "testuser@example.com",
     password: "secret",
-    password_confirmation: "secret"}
+    password_confirmation: "secret",
+    role: "Coordinator"}
   @volunteer %{
     name: "Test Volunteer",
     email: "volunteer@courseplanner.com",

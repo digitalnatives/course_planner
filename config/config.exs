@@ -30,4 +30,8 @@ config :coherence, CoursePlanner.Coherence.Mailer,
   adapter: Swoosh.Adapters.Local
 # %% End Coherence Configuration %%
 
+config :canary,
+  repo: CoursePlanner.Repo,
+  unauthorized_handler: {CoursePlanner.Helper, :handle_unauthorized}
+
 import_config "#{Mix.env}.exs"
