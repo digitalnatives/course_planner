@@ -6,7 +6,10 @@ defmodule CoursePlanner.OfferedCourseController do
   import Ecto.Query, only: [from: 2]
 
   def index(conn, _params) do
-    offered_courses = OfferedCourse |> Repo.all() |> Repo.preload([:term, :course])
+    offered_courses =
+      OfferedCourse
+      |> Repo.all()
+      |> Repo.preload([:term, :course])
     render(conn, "index.html", offered_courses: offered_courses)
   end
 
@@ -37,18 +40,27 @@ defmodule CoursePlanner.OfferedCourseController do
   end
 
   def show(conn, %{"id" => id}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students, :teachers])
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
     render(conn, "show.html", offered_course: offered_course)
   end
 
   def edit(conn, %{"id" => id}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students, :teachers])
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
     changeset = OfferedCourse.changeset(offered_course)
     render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "offered_course" => offered_course_params}) do
-    offered_course = OfferedCourse |> Repo.get!(id) |> Repo.preload([:term, :course, :students, :teachers])
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
     changeset = OfferedCourse.changeset(offered_course, offered_course_params)
 
     student_ids = Map.get(offered_course_params, "student_ids", [])
