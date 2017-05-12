@@ -17,5 +17,7 @@ defmodule CoursePlanner.OfferedCourse do
     struct
     |> cast(params, [:term_id, :course_id])
     |> validate_required([:term_id, :course_id])
+    |> assoc_constraint(:term)
+    |> assoc_constraint(:course)
   end
 end
