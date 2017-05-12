@@ -4,7 +4,7 @@ defmodule CoursePlanner.Tasks do
   alias CoursePlanner.Tasks.{Task, TaskStatus}
   alias CoursePlanner.Statuses
   alias Ecto.{DateTime, Changeset}
-  import Ecto.Query
+  import Ecto.Query, except: [update: 2]
 
   @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
 
@@ -27,7 +27,7 @@ defmodule CoursePlanner.Tasks do
     |> Repo.insert()
   end
 
-  def update(id, %{"user_id" => "0"} = params), do: CoursePlanner.Tasks.update(id, Map.delete(params, "user_id"))
+  def update(id, %{"user_id" => "0"} = params), do: update(id, Map.delete(params, "user_id"))
   def update(id, params) do
     case get(id) do
       {:ok, task} ->
