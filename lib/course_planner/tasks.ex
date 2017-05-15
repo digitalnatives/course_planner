@@ -1,7 +1,7 @@
 defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.Repo
-  alias CoursePlanner.Tasks.{Task, TaskStatus}
+  alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Statuses
   alias Ecto.{DateTime, Changeset}
   import Ecto.Query, except: [update: 2]
@@ -23,7 +23,6 @@ defmodule CoursePlanner.Tasks do
   def new(params) do
     %Task{}
     |> Task.changeset(params)
-    |> Statuses.update_status_timestamp(TaskStatus)
     |> Repo.insert()
   end
 
@@ -33,7 +32,6 @@ defmodule CoursePlanner.Tasks do
       {:ok, task} ->
         task
         |> Task.changeset(params)
-        |> Statuses.update_status_timestamp(TaskStatus)
         |> Repo.update()
         |> format_error(task)
       error -> error
@@ -60,18 +58,6 @@ defmodule CoursePlanner.Tasks do
 
   def get_unassigned do
     Repo.all(from t in Task, where: is_nil(t.deleted_at) and is_nil(t.user_id))
-  end
-
-  def mark_as_done(id) do
-    case get(id) do
-      {:ok, task} ->
-        task
-        |> Task.changeset()
-        |> Changeset.put_change(:status, "Accomplished")
-        |> Statuses.update_status_timestamp(TaskStatus)
-        |> Repo.update()
-      error -> error
-    end
   end
 
   def grab(task_id, user_id) do

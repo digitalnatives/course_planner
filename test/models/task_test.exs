@@ -8,7 +8,7 @@ defmodule CoursePlanner.TaskTest do
   alias Ecto.Changeset
 
   @user %{name: "user name", email: "valid@email"}
-  @valid_attrs %{name: "mahname", start_time: DateTime.utc_now(), finish_time: DateTime.utc_now()}
+  @valid_attrs %{name: "mahname", start_time: Timex.now(), finish_time: Timex.now()}
   @invalid_attrs %{}
 
   defp create_task(user \\ nil) do

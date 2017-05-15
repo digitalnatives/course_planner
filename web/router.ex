@@ -48,7 +48,6 @@ defmodule CoursePlanner.Router do
     resources "/coordinators", CoordinatorController
     resources "/volunteers", VolunteerController
     resources "/tasks", TaskController do
-      post "/done", TaskController, :done, as: :done
       post "/grab", TaskController, :grab, as: :grab
     end
   end
