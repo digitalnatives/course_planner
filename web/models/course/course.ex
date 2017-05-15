@@ -4,7 +4,7 @@ defmodule CoursePlanner.Course do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.Types, as: Types
+  alias CoursePlanner.{OfferedCourse, Types}
 
   schema "courses" do
     field :name, :string
@@ -16,6 +16,9 @@ defmodule CoursePlanner.Course do
     field :deleted_at, :naive_datetime
 
     has_many :classes, CoursePlanner.Class
+
+    has_many :offered_courses, OfferedCourse, on_replace: :delete
+    has_many :terms, through: [:offered_courses, :term]
 
     timestamps()
   end
