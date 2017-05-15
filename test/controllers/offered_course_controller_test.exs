@@ -71,7 +71,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
-    conn = post conn, offered_course_path(conn, :create), offered_course: invalid_attrs
+    conn = post conn, offered_course_path(conn, :create), offered_course: invalid_attrs()
     assert html_response(conn, 200) =~ "New offered course"
   end
 
@@ -103,7 +103,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: invalid_attrs
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: invalid_attrs()
     assert html_response(conn, 200) =~ "Edit offered course"
   end
 

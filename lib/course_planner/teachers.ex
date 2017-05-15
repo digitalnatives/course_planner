@@ -4,7 +4,7 @@ defmodule CoursePlanner.Teachers do
   alias CoursePlanner.User
   import Ecto.Query
   alias Ecto.{Changeset, DateTime}
-  alias CoursePlanner.{Users, Course, OfferedCourse}
+  alias CoursePlanner.{Users, OfferedCourse}
 
   @teachers from u in User, where: u.role == "Teacher" and is_nil(u.deleted_at)
 

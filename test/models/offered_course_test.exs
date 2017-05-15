@@ -2,7 +2,6 @@ defmodule CoursePlanner.OfferedCourseTest do
   use CoursePlanner.ModelCase
 
   alias CoursePlanner.{Course, OfferedCourse, Repo, Terms.Term}
-  alias Ecto.Changeset
 
   test "changeset with valid attributes" do
     changeset =
