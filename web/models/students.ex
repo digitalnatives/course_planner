@@ -8,7 +8,7 @@ defmodule CoursePlanner.Students do
   alias CoursePlanner.Statuses
   alias CoursePlanner.StudentStatus
   alias Ecto.Changeset
-  alias CoursePlanner.Users
+  alias CoursePlanner.{Users, OfferedCourse}
 
   @students from u in User, where: u.role == "Student" and is_nil(u.deleted_at)
 
@@ -45,7 +45,7 @@ defmodule CoursePlanner.Students do
   def courses(student_id) do
     Repo.all(from oc in OfferedCourse,
       left_join: oct in "offered_courses_students", on: oct.offered_course_id == oc.id,
-      left_join: u in User, on: u.id == oct.teacher_id,
+      left_join: u in User, on: u.id == oct.student_id,
       join: t in assoc(oc, :term),
       preload: [term: t],
       preload: [:course],

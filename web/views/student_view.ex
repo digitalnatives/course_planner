@@ -1,7 +1,7 @@
 defmodule CoursePlanner.StudentView do
   use CoursePlanner.Web, :view
 
-  alias CoursePlanner.Teachers
+  alias CoursePlanner.Students
 
   def student_courses(student) do
     Students.courses(student)
