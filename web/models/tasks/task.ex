@@ -4,15 +4,13 @@ defmodule CoursePlanner.Tasks.Task do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.Tasks.TaskStatus
-
-  @cast_params [:name, :deadline, :status, :user_id]
-  @required_params [:name, :deadline, :status]
+  @cast_params [:name, :start_time, :finish_time, :user_id]
+  @required_params [:name, :start_time, :finish_time]
 
   schema "tasks" do
     field :name, :string
-    field :deadline, :date
-    field :status, TaskStatus
+    field :start_time, :naive_datetime
+    field :finish_time, :naive_datetime
     belongs_to :user, CoursePlanner.User
 
     field :pending_at, :naive_datetime
