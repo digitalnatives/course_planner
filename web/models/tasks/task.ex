@@ -13,8 +13,6 @@ defmodule CoursePlanner.Tasks.Task do
     field :finish_time, :naive_datetime
     belongs_to :user, CoursePlanner.User
 
-    field :pending_at, :naive_datetime
-    field :accomplished_at, :naive_datetime
     field :deleted_at, :naive_datetime
 
     timestamps()

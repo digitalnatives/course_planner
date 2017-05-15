@@ -8,8 +8,6 @@ defmodule CoursePlanner.Repo.Migrations.CreateTasks do
       add :finish_time, :naive_datetime
       add :user_id, references(:users)
 
-      add :pending_at, :naive_datetime
-      add :accomplished_at, :naive_datetime
       add :deleted_at, :naive_datetime
 
       timestamps()

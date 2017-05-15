@@ -90,23 +90,6 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def done(conn, %{"task_id" => id}) do
-    case Tasks.mark_as_done(id) do
-      {:ok, _task} ->
-        conn
-        |> put_flash(:info, "Task marked as done.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, :not_found} ->
-        conn
-        |> put_flash(:error, "Task was not found.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, _changeset} ->
-        conn
-        |> put_flash(:error, "Something went wrong.")
-        |> redirect(to: task_path(conn, :index))
-    end
-  end
-
   def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
     case Tasks.grab(task_id, user_id) do
       {:ok, _task} ->
