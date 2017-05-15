@@ -12,6 +12,10 @@ defmodule CoursePlanner.Teachers do
     Repo.all(@teachers)
   end
 
+  def query do
+    @teachers
+  end
+
   def new(user, token) do
     user
     |> Users.new_user(token)
