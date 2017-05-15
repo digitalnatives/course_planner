@@ -2,6 +2,7 @@ defmodule CoursePlanner.TasksTest do
   use CoursePlanner.ModelCase
 
   alias CoursePlanner.{Tasks, Volunteers}
+  import Timex
 
   @valid_task %{name: "some content", start_time: Timex.now(), finish_time: Timex.now()}
   @volunteer %{
