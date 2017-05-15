@@ -86,18 +86,6 @@ defmodule CoursePlanner.TaskControllerTest do
     assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
   end
 
-<<<<<<< HEAD
-=======
-  test "mark task as done", %{conn: conn} do
-    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
-    task = Map.put(@valid_attrs, :user_id, volunteer.id)
-    {:ok, task} = Tasks.new(task)
-    conn = post conn, task_done_path(conn, :done, task)
-    assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get_by!(Task, name: "some content").status == "Accomplished"
-  end
-
->>>>>>> Remove commented code.
   test "grab task", %{conn: conn} do
     {:ok, task} = Tasks.new(@valid_attrs)
     {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
