@@ -4,7 +4,7 @@ defmodule CoursePlanner.Teachers do
   alias CoursePlanner.User
   import Ecto.Query
   alias Ecto.{Changeset, DateTime}
-  alias CoursePlanner.Users
+  alias CoursePlanner.{Users, Course, OfferedCourse}
 
   @teachers from u in User, where: u.role == "Teacher" and is_nil(u.deleted_at)
 
@@ -48,4 +48,11 @@ defmodule CoursePlanner.Teachers do
   defp format_error({:ok, teacher}, _), do: {:ok, teacher}
   defp format_error({:error, changeset}, teacher), do: {:error, teacher, changeset}
 
+  def courses(teacher_id) do
+    Repo.all(from oc in OfferedCourse,
+      left_join: oct in "offered_courses_teachers", on: oct.offered_course_id == oc.id,
+      left_join: u in User, on: u.id == oct.teacher_id,
+      preload: [:term, :course],
+      where: u.id == ^teacher_id)
+  end
 end

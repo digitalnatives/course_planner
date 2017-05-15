@@ -1,7 +1,6 @@
 <h2>Show teacher</h2>
 
 <ul>
-
   <li>
     <strong> Full name: </strong>
     <%= @teacher.name %>
@@ -19,6 +18,33 @@
     <%= @teacher.status %>
   </li>
 </ul>
+
+<table class="table">
+  <thead>
+    <tr>
+      <td> Term </td>
+      <td> Course </td>
+      <td> Number of sessions </td>
+      <td> Action </td>
+    </tr>
+  </thead>
+  <tbody>
+  <%= for offered_course <- teacher_courses(@teacher.id) do %>
+      <tr>
+        <td>
+          <%= link "Term", to: term_path(@conn, :show, offered_course.term), class: "btn btn-default btn-xs" %>
+        </td>
+        <td>
+          <%= link "#{offered_course.course.name}", to: course_path(@conn, :show, offered_course.course), class: "btn btn-default btn-xs" %>
+        </td>
+        <td><%= offered_course.course.number_of_sessions %></td>
+        <td>
+          <%= link "Show", to: offered_course_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
 
 <%= link "Edit", to: teacher_path(@conn, :edit, @teacher) %>
 <%= link "Back", to: teacher_path(@conn, :index) %>
