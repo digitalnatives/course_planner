@@ -7,12 +7,12 @@
     <%= @task.name %>
   </li>
   <li>
-    <strong> Deadline: </strong>
-    <%= @task.deadline %>
+    <strong> Start time: </strong>
+    <%= @task.start_time %>
   </li>
   <li>
-    <strong> Status: </strong>
-    <%= @task.status %>
+    <strong> Finish time: </strong>
+    <%= @task.finish_time %>
   </li>
   <li>
     <strong> Assigned to: </strong>

@@ -2,16 +2,10 @@ defmodule CoursePlanner.Repo.Migrations.CreateTasks do
   use Ecto.Migration
 
   def change do
-    execute("""
-          CREATE TYPE task_status AS ENUM (
-            'Pending',
-            'Accomplished'
-          )
-    """)
     create table(:tasks) do
       add :name, :string
-      add :deadline, :date
-      add :status, :task_status
+      add :start_time, :naive_datetime
+      add :finish_time, :naive_datetime
       add :user_id, references(:users)
 
       add :pending_at, :naive_datetime

@@ -3,7 +3,7 @@ defmodule CoursePlanner.TaskControllerTest do
   alias CoursePlanner.{Tasks, Volunteers, Repo, User}
   alias CoursePlanner.Tasks.Task
 
-  @valid_attrs %{name: "some content", deadline: Date.utc_today(), status: "Pending"}
+  @valid_attrs %{name: "some content", start_time: DateTime.utc_now(), finish_time: DateTime.utc_now()}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",

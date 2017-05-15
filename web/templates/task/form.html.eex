@@ -12,15 +12,15 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :deadline, class: "control-label" %>
-    <%= date_select f, :deadline, class: "form-control", required: ""%>
-    <%= error_tag f, :deadline %>
+    <%= label f, :start_time, class: "control-label" %>
+    <%= datetime_select f, :start_time, class: "form-control", required: ""%>
+    <%= error_tag f, :start_time %>
   </div>
 
   <div class="form-group">
-    <%= label f, :status, class: "control-label" %>
-    <%= select f, :status, ["Pending", "Accomplished"], class: "form-control", required: ""%>
-    <%= error_tag f, :status %>
+    <%= label f, :finish_time, class: "control-label" %>
+    <%= datetime_select f, :finish_time, class: "form-control", required: ""%>
+    <%= error_tag f, :finish_time %>
   </div>
 
   <div class="form-group">

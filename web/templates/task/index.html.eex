@@ -4,8 +4,8 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Deadline</th>
-      <th>Status</th>
+      <th>Start time</th>
+      <th>Finish time</th>
       <th>Assigned to</th>
     </tr>
   </thead>
@@ -13,8 +13,8 @@
 <%= for task <- @tasks do %>
     <tr>
       <td><%= task.name %></td>
-      <td><%= task.deadline %></td>
-      <td><%= task.status %></td>
+      <td><%= task.start_time %></td>
+      <td><%= task.finish_time %></td>
       <td><%= task_user(@conn, task) %></td>
       <td class="text-right">
         <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
