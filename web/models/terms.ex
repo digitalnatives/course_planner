@@ -23,9 +23,7 @@ defmodule CoursePlanner.Terms do
   end
 
   def course_changesets(%{"course_ids" => ids}) do
-    Enum.map(ids, fn id ->
-      Changeset.cast(%OfferedCourse{}, %{course_id: id}, [:course_id])
-    end)
+    Enum.map(ids, &OfferedCourse.add_to_term_changeset/1)
   end
   def course_changesets(_), do: []
 
