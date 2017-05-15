@@ -43,6 +43,7 @@ defmodule CoursePlanner.Router do
     resources "/students", StudentController
     resources "/courses", CourseController
     resources "/terms", TermController
+    resources "/offered_courses", OfferedCourseController
     resources "/classes", ClassController
     resources "/teachers", TeacherController
     resources "/coordinators", CoordinatorController
