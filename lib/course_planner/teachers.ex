@@ -49,10 +49,13 @@ defmodule CoursePlanner.Teachers do
   defp format_error({:error, changeset}, teacher), do: {:error, teacher, changeset}
 
   def courses(teacher_id) do
-    Repo.all(from oc in OfferedCourse,
+    IO.inspect(Repo.all(from oc in OfferedCourse,
       left_join: oct in "offered_courses_teachers", on: oct.offered_course_id == oc.id,
       left_join: u in User, on: u.id == oct.teacher_id,
-      preload: [:term, :course],
-      where: u.id == ^teacher_id)
+      join: t in assoc(oc, :term),
+      preload: [term: t],
+      preload: [:course],
+      where: u.id == ^teacher_id,
+      order_by: [desc: t.start_date]))
   end
 end
