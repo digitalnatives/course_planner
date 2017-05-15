@@ -103,7 +103,7 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "gets empty list when teacher has no course assigned" do
-    teacher = Repo.insert!(%{@user | role: "Teacher"})
+    {:ok, teacher} = Teachers.new(@valid_attrs, "whatever")
     assert Teachers.courses(teacher.id) == []
   end
 
@@ -113,7 +113,7 @@ defmodule CoursePlanner.TeacherControllerTest do
                        %Ecto.Date{day: 1, month: 1, year: 2017},
                        %Ecto.Date{day: 1, month: 6, year: 2017},
                        course)
-    teacher = Repo.insert!(%{@user | role: "Teacher", email: "random1@test.com"})
+    {:ok, teacher} = Teachers.new(@valid_attrs, "whatever")
     create_offered_course(term, course, [teacher])
     teacher_courses = Teachers.courses(teacher.id)
 
@@ -127,7 +127,7 @@ defmodule CoursePlanner.TeacherControllerTest do
                        %Ecto.Date{day: 1, month: 1, year: 2017},
                        %Ecto.Date{day: 1, month: 6, year: 2017},
                        course)
-    teacher = Repo.insert!(%{@user | role: "Teacher", email: "random2@test.com"})
+    {:ok, teacher} = Teachers.new(@valid_attrs, "whatever")
     term2 = create_term("FALL",
                        %Ecto.Date{day: 1, month: 1, year: 2018},
                        %Ecto.Date{day: 1, month: 6, year: 2018},
