@@ -42,4 +42,14 @@ defmodule CoursePlanner.Students do
   defp format_error({:ok, student}, _), do: {:ok, student}
   defp format_error({:error, changeset}, student), do: {:error, student, changeset}
 
+  def courses(student_id) do
+    Repo.all(from oc in OfferedCourse,
+      left_join: oct in "offered_courses_students", on: oct.offered_course_id == oc.id,
+      left_join: u in User, on: u.id == oct.teacher_id,
+      join: t in assoc(oc, :term),
+      preload: [term: t],
+      preload: [:course],
+      where: u.id == ^student_id,
+      order_by: [desc: t.start_date])
+  end
 end
