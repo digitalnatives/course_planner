@@ -1,0 +1,35 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :term_id, class: "control-label" %>
+    <%= select f, :term_id, terms_to_select(), selected: selected_term(@changeset), class: "form-control", required: ""%>
+    <%= error_tag f, :term_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :course_id, class: "control-label" %>
+    <%= select f, :course_id, courses_to_select(), selected: selected_course(@changeset), class: "form-control", required: ""%>
+    <%= error_tag f, :course_id %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :student_ids, class: "control-label" %>
+    <%= multiple_select f, :student_ids, students_to_select(), selected: selected_students(@changeset), class: "form-control" %>
+    <%= error_tag f, :student_ids %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :teacher_ids, class: "control-label" %>
+    <%= multiple_select f, :teacher_ids, teachers_to_select(), selected: selected_teachers(@changeset), class: "form-control" %>
+    <%= error_tag f, :teacher_ids %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

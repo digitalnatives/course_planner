@@ -25,24 +25,22 @@ defmodule CoursePlanner.Router do
     coherence_routes()
   end
 
-  scope "/" do
-    pipe_through :protected
-    coherence_routes :protected
-  end
-
   scope "/", CoursePlanner do
-    pipe_through :browser
+    pipe_through :protected
+
+    coherence_routes :protected
 
     get "/", PageController, :index
-  end
-
-  scope "/", CoursePlanner do
-    pipe_through :protected
 
     resources "/users", UserController, except: [:create, :new]
+    resources "/coordinators", CoordinatorController
     resources "/students", StudentController
+    resources "/teachers", TeacherController
+    resources "/volunteers", VolunteerController
+
     resources "/courses", CourseController
     resources "/terms", TermController
+    resources "/offered_courses", OfferedCourseController
     resources "/classes", ClassController
     resources "/teachers", TeacherController
     resources "/coordinators", CoordinatorController

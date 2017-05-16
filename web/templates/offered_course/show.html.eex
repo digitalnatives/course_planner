@@ -1,0 +1,62 @@
+<h2>Show offered course</h2>
+<h3>Term</h3>
+<ul>
+  <li>
+    <strong>ID:</strong>
+    <%= @offered_course.term.id %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @offered_course.term.name %>
+  </li>
+
+  <li>
+    <strong>Start Date:</strong>
+    <%= @offered_course.term.start_date %>
+  </li>
+
+  <li>
+    <strong>End Date:</strong>
+    <%= @offered_course.term.end_date %>
+  </li>
+
+</ul>
+<h3>Course</h3>
+<ul>
+  <li>
+    <strong>ID:</strong>
+    <%= @offered_course.course.id %>
+  </li>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @offered_course.course.name %>
+  </li>
+
+</ul>
+<%= if length(@offered_course.students) > 0 do %>
+  <h3>Students</h3>
+  <ul>
+    <%= for s <- @offered_course.students do %>
+      <li>
+        <strong>Name</strong>
+        <%= "#{s.name} #{s.family_name}" %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+<%= if length(@offered_course.teachers) > 0 do %>
+  <h3>Teachers</h3>
+  <ul>
+    <%= for s <- @offered_course.teachers do %>
+      <li>
+        <strong>Name:</strong>
+        <%= "#{s.name} #{s.family_name}" %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link "Edit", to: offered_course_path(@conn, :edit, @offered_course) %>
+<%= link "Back", to: offered_course_path(@conn, :index) %>

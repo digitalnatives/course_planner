@@ -1488,7 +1488,9 @@ window.onload = function () {
 
     var li = document.getElementById(target.dataset.id);
     var hidden_id = document.getElementById(target.dataset.id + "_id");
-    li.parentNode.removeChild(hidden_id);
+    if (hidden_id) {
+      li.parentNode.removeChild(hidden_id);
+    }
     li.parentNode.removeChild(li);
   };
   Array.from(document.querySelectorAll(".remove-form-field")).forEach(function (el) {

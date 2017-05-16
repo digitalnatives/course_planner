@@ -14,12 +14,42 @@
   <body>
     <div class="container">
       <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
+        <nav class="navbar navbar-default">
+          <ul class="nav navbar-nav">
+            <li>
+              <%= link "Home", to: page_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Users", to: user_path(@conn, :index)%>
+            </li>
+
+            <li>
+              <%= link "Coordinators", to: coordinator_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Students", to: student_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Teachers", to: teacher_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Volunteers", to: volunteer_path(@conn, :index)%>
+            </li>
+
+            <li>
+              <%= link "Courses", to: course_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Terms", to: term_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Offered Courses By Term", to: offered_course_path(@conn, :index)%>
+            </li>
+            <li>
+              <%= link "Classes", to: class_path(@conn, :index)%>
+            </li>
           </ul>
         </nav>
-        <span class="logo"></span>
       </header>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>

@@ -1,0 +1,31 @@
+<h2>Listing offered courses by term</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Course Name</th>
+      <th>Term Name</th>
+      <th>Term Start Date</th>
+      <th>Term End Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for offered_course <- @offered_courses do %>
+    <tr>
+      <td><%= offered_course.course.name %></td>
+      <td><%= offered_course.term.name %></td>
+      <td><%= offered_course.term.start_date %></td>
+      <td><%= offered_course.term.end_date %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: offered_course_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New offered course", to: offered_course_path(@conn, :new) %>
