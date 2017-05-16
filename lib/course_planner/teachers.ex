@@ -55,7 +55,7 @@ defmodule CoursePlanner.Teachers do
       join: t in assoc(oc, :term),
       preload: [term: t],
       preload: [:course],
-      where: u.id == ^teacher_id,
+      where: oct.teacher_id == ^teacher_id,
       order_by: [desc: t.start_date])
   end
 end
