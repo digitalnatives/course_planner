@@ -48,6 +48,9 @@
             <li>
               <%= link "Classes", to: class_path(@conn, :index)%>
             </li>
+            <li>
+              <%= link "Tasks", to: task_path(@conn, :index)%>
+            </li>
           </ul>
         </nav>
       </header>
