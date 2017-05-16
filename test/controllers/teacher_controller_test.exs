@@ -121,7 +121,7 @@ defmodule CoursePlanner.TeacherControllerTest do
     assert term.id == List.first(teacher_courses).term.id
   end
 
-  test "gets list of courses ordered decesdingly by term starting_date when teacher has multiple courses assigned to" do
+  test "gets list of courses ordered descendingly by term starting_date when teacher has multiple courses assigned to" do
     course = create_course("english")
     term1 = create_term("FALL",
                        %Ecto.Date{day: 1, month: 1, year: 2017},
