@@ -1,0 +1,24 @@
+<h2>Show task</h2>
+
+<ul>
+
+  <li>
+    <strong> Name: </strong>
+    <%= @task.name %>
+  </li>
+  <li>
+    <strong> Start time: </strong>
+    <%= @task.start_time %>
+  </li>
+  <li>
+    <strong> Finish time: </strong>
+    <%= @task.finish_time %>
+  </li>
+  <li>
+    <strong> Assigned to: </strong>
+    <%= task_user(@conn, @task) %>
+  </li>
+</ul>
+
+<%= link "Edit", to: task_path(@conn, :edit, @task) %>
+<%= link "Back", to: task_path(@conn, :index) %>

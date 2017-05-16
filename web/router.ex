@@ -42,6 +42,9 @@ defmodule CoursePlanner.Router do
     resources "/terms", TermController
     resources "/offered_courses", OfferedCourseController
     resources "/classes", ClassController
+    resources "/tasks", TaskController do
+      post "/grab", TaskController, :grab, as: :grab
+    end
   end
 
   if Mix.env == :dev do
