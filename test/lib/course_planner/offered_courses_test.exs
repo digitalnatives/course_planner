@@ -1,0 +1,64 @@
+defmodule CoursePlanner.OfferedCoursesTest do
+  use CoursePlanner.ModelCase
+
+  alias CoursePlanner.{Course, OfferedCourse, OfferedCourses, Repo, Students, Terms}
+  alias Ecto.Changeset
+
+  defp create_term do
+    Terms.create(
+      %{
+        name: "Fall",
+        start_date: "2017-01-01",
+        end_date: "2017-06-01",
+        status: "Active"
+      })
+  end
+
+  defp create_student(name) do
+    Students.new(%{name: name, email: "#{name}@example.com"}, "token")
+  end
+
+  defp create_course(name, term, students) do
+    course =
+      %Course{}
+      |> Course.changeset(
+        %{
+          name: name,
+          description: "Description",
+          number_of_sessions: 1,
+          session_duration: "01:00:00",
+          status: "Active"
+        })
+      |> Repo.insert!
+
+    offered_course =
+      %OfferedCourse{}
+      |> OfferedCourse.changeset(%{term_id: term.id, course_id: course.id})
+      |> Changeset.put_assoc(:students, students)
+      |> Repo.insert
+  end
+
+  test "should return the amount of common students by pair of courses" do
+    {:ok, term} = create_term()
+
+    {:ok, student1} = create_student("student1")
+    {:ok, student2} = create_student("student2")
+    {:ok, student3} = create_student("student3")
+
+    {:ok, course1} = create_course("Course1", term, [student1, student2])
+    {:ok, course2} = create_course("Course2", term, [student1])
+    {:ok, course3} = create_course("Course3", term, [student3])
+
+    students = OfferedCourses.student_matrix(term.id)
+
+    assert {course1.id, 2} in Map.get(students, course1.id)
+    assert {course2.id, 1} in Map.get(students, course1.id)
+    assert {course3.id, 0} in Map.get(students, course1.id)
+    assert {course1.id, 1} in Map.get(students, course2.id)
+    assert {course2.id, 1} in Map.get(students, course2.id)
+    assert {course3.id, 0} in Map.get(students, course2.id)
+    assert {course1.id, 0} in Map.get(students, course3.id)
+    assert {course2.id, 0} in Map.get(students, course3.id)
+    assert {course3.id, 1} in Map.get(students, course3.id)
+  end
+end

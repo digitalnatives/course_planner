@@ -20,6 +20,7 @@
       <td><%= term.status %></td>
 
       <td class="text-right">
+        <%= link "Courses Conflicts", to: term_course_matrix_path(@conn, :index, term), class: "btn btn-default btn-xs" %>
         <%= link "Show", to: term_path(@conn, :show, term), class: "btn btn-default btn-xs" %>
         <%= link "Edit", to: term_path(@conn, :edit, term), class: "btn btn-default btn-xs" %>
         <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
