@@ -24,7 +24,9 @@ window.onload = () => {
   const removeElement = ({target}) => {
     let li = document.getElementById(target.dataset.id)
     let hidden_id = document.getElementById(`${target.dataset.id}_id`)
-    li.parentNode.removeChild(hidden_id)
+    if (hidden_id){
+      li.parentNode.removeChild(hidden_id)
+    }
     li.parentNode.removeChild(li)
   }
   Array.from(document.querySelectorAll(".remove-form-field"))
