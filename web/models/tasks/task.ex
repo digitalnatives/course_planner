@@ -24,5 +24,6 @@ defmodule CoursePlanner.Tasks.Task do
     struct
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
+    |> assoc_constraint(:user)
   end
 end
