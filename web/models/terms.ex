@@ -15,7 +15,7 @@ defmodule CoursePlanner.Terms do
     Term.changeset(%Term{holidays: [], courses: []})
   end
 
-  def create_term(params) do
+  def create(params) do
     %Term{}
     |> Term.changeset(params)
     |> Changeset.put_assoc(:offered_courses, course_changesets(params))

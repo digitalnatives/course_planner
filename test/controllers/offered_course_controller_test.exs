@@ -14,7 +14,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   defp term do
-    {:ok, term} = Terms.create_term(
+    {:ok, term} = Terms.create(
       %{
         name: "Name",
         start_date: "2017-01-01",

@@ -13,7 +13,7 @@ defmodule CoursePlanner.TermController do
   end
 
   def create(conn, %{"term" => term_params}) do
-    case Terms.create_term(term_params) do
+    case Terms.create(term_params) do
       {:ok, _term} ->
         conn
         |> put_flash(:info, "Term created successfully.")
