@@ -49,7 +49,7 @@ defmodule CoursePlanner.Students do
       join: t in assoc(oc, :term),
       preload: [term: t],
       preload: [:course],
-      where: u.id == ^student_id,
+      where: oct.student_id == ^student_id,
       order_by: [desc: t.start_date])
   end
 end
