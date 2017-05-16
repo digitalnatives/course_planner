@@ -11,6 +11,11 @@ addons:
 env:
   - MIX_ENV=test
 
+cache:
+  directories:
+    - _build
+    - deps
+
 before_script:
   - mix deps.compile
 
