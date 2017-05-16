@@ -1,8 +1,7 @@
 defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.Repo
-  alias CoursePlanner.Tasks.{Task, TaskStatus}
-  alias CoursePlanner.Statuses
+  alias CoursePlanner.Tasks.Task
   alias Ecto.{DateTime, Changeset}
   import Ecto.Query
 
@@ -23,7 +22,6 @@ defmodule CoursePlanner.Tasks do
   def new(params) do
     %Task{}
     |> Task.changeset(params)
-    |> Statuses.update_status_timestamp(TaskStatus)
     |> Repo.insert()
   end
 
@@ -32,7 +30,6 @@ defmodule CoursePlanner.Tasks do
       {:ok, task} ->
         task
         |> Task.changeset(params)
-        |> Statuses.update_status_timestamp(TaskStatus)
         |> Repo.update()
         |> format_error(task)
       error -> error
