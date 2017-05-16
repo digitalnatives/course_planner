@@ -5,6 +5,10 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
 
+  import Canary.Plugs
+  plug :authorize_resource, model: Task, id_name: "task_id", only: :grab
+  plug :authorize_resource, model: Task, except: :grab
+
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
     render(conn, "index_volunteer.html",
       available_tasks: Tasks.get_unassigned(),
