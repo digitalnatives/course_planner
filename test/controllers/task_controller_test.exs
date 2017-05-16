@@ -3,7 +3,7 @@ defmodule CoursePlanner.TaskControllerTest do
   alias CoursePlanner.{Tasks, Volunteers, Repo, User}
   alias CoursePlanner.Tasks.Task
 
-  @valid_attrs %{name: "some content", start_time: DateTime.utc_now(), finish_time: DateTime.utc_now()}
+  @valid_attrs %{name: "some content", start_time: Timex.now(), finish_time: Timex.now()}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -81,6 +81,15 @@ defmodule CoursePlanner.TaskControllerTest do
     {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
     task = Map.put(@valid_attrs, :user_id, volunteer.id)
     conn = post conn, task_path(conn, :create), task: task
+    assert redirected_to(conn) == task_path(conn, :index)
+    assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
+  end
+
+  test "grab task", %{conn: conn} do
+    {:ok, task} = Tasks.new(@valid_attrs)
+    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    conn = assign(conn, :current_user, volunteer)
+    conn = post conn, task_grab_path(conn, :grab, task)
     assert redirected_to(conn) == task_path(conn, :index)
     assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
   end

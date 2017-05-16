@@ -5,6 +5,12 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
 
+  def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
+    render(conn, "index_volunteer.html",
+      available_tasks: Tasks.get_unassigned(),
+      your_tasks: Tasks.get_user_id(id))
+  end
+
   def index(conn, _params) do
     render(conn, "index.html", tasks: Tasks.all())
   end
@@ -83,4 +89,22 @@ defmodule CoursePlanner.TaskController do
         |> redirect(to: task_path(conn, :index))
     end
   end
+
+  def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
+    case Tasks.grab(task_id, user_id) do
+      {:ok, _task} ->
+        conn
+        |> put_flash(:info, "Task grabbed.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "Task was not found.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: task_path(conn, :index))
+    end
+  end
+
 end
