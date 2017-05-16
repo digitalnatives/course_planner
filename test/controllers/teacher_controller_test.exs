@@ -1,8 +1,7 @@
 defmodule CoursePlanner.TeacherControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.Repo
-  alias CoursePlanner.User
-  alias CoursePlanner.Teachers
+
+  alias CoursePlanner.{Repo, User, Teachers}
 
   @valid_attrs %{name: "some content", email: "valid@email"}
   @invalid_attrs %{}
