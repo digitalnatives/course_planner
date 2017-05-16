@@ -28,16 +28,12 @@ defmodule CoursePlanner.PermissionsTest do
     end
   end)
 
-  Enum.map([:create, :update, :delete, :edit, :done], fn action ->
+  Enum.map([:create, :update, :delete, :edit], fn action ->
     @action action
     test "volunteer cannot perform #{@action} in unassigned tasks" do
       refute Canada.Can.can?(@volunteer, @action, %Task{user_id: nil})
     end
   end)
-
-  test "volunteer can mark its own tasks as done" do
-    assert Canada.Can.can?(@volunteer, :done, %Task{user_id: @volunteer.id})
-  end
 
   test "volunteer can show its own tasks" do
     assert Canada.Can.can?(@volunteer, :show, %Task{user_id: @volunteer.id})
