@@ -1,0 +1,28 @@
+<h3>Course Conflict</h3>
+<ul>
+  <%= for {course1_id, courses} <- @matrix do %>
+    <li>
+      <p>
+        <strong>Course:</strong> <%= course_name(@courses, course1_id) %>
+      </p>
+      <p>
+        <strong>Total students:</strong> <%= total_students(@courses, course1_id) %>
+      </p>
+      <ul>
+      <%= for {course2_id, students} <- courses do %>
+        <li>
+          <p>
+            <strong>Course:</strong> <%= course_name(@courses, course2_id) %>
+          </p>
+          <p>
+            <strong>Total students:</strong> <%= total_students(@courses, course2_id) %>
+          </p>
+          <p>
+            <strong>Students in common:</strong> <%= students %>
+          </p>
+        </li>
+      <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ul>

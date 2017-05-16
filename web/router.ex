@@ -39,7 +39,9 @@ defmodule CoursePlanner.Router do
     resources "/volunteers", VolunteerController
 
     resources "/courses", CourseController
-    resources "/terms", TermController
+    resources "/terms", TermController do
+      get "/course_matrix", CourseMatrixController, :index, as: :course_matrix
+    end
     resources "/offered_courses", OfferedCourseController
     resources "/classes", ClassController
     resources "/tasks", TaskController do
