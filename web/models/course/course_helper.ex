@@ -28,8 +28,4 @@ defmodule CoursePlanner.CourseHelper do
     query = from c in Course , where: is_nil(c.deleted_at)
     Repo.all(query)
   end
-
-  def get_course_name(course_id) do
-    Repo.get!(Course, course_id).name
-  end
 end
