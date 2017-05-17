@@ -37,10 +37,6 @@ defmodule CoursePlanner.ClassHelper do
       && DateTime.to_erl(class.starting_at) != 0
   end
 
-  def get_class_name(class_id) do
-    Repo.get!(Class, class_id).name
-  end
-
   defp non_deleted_query do
     from c in Class , where: is_nil(c.deleted_at)
   end

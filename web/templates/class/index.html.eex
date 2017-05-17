@@ -3,6 +3,7 @@
 <table class="table">
   <thead>
     <tr>
+      <th>Term</th>
       <th>Course</th>
       <th>Class date</th>
       <th>Starting at</th>
@@ -13,7 +14,8 @@
   <tbody>
 <%= for class <- @classes do %>
     <tr>
-      <td><%= CourseHelper.get_course_name(class.course_id) %></td>
+      <td><%= class.offered_course.term.name %></td>
+      <td><%= class.offered_course.course.name %></td>
       <td><%= class.date %></td>
       <td><%= class.starting_at %></td>
       <td><%= class.finishes_at %></td>

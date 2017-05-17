@@ -3,8 +3,13 @@
 <ul>
 
   <li>
+    <strong>Term:</strong>
+    <%= @class.offered_course.term.name %>
+  </li>
+
+  <li>
     <strong>Course:</strong>
-    <%= CourseHelper.get_course_name(@class.course_id) %>
+    <%= @class.offered_course.course.name %>
   </li>
 
   <li>

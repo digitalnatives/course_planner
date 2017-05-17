@@ -4,7 +4,9 @@ defmodule CoursePlanner.ClassController do
   alias CoursePlanner.{Class, ClassHelper}
 
   def index(conn, _params) do
-    classes = ClassHelper.all_none_deleted()
+    classes =
+      ClassHelper.all_none_deleted()
+      |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
     render(conn, "index.html", classes: classes)
   end
 
@@ -27,7 +29,10 @@ defmodule CoursePlanner.ClassController do
   end
 
   def show(conn, %{"id" => id}) do
-    class = Repo.get!(Class, id)
+    class =
+      Class
+      |> Repo.get!(id)
+      |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
     render(conn, "show.html", class: class)
   end
 
