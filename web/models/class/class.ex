@@ -4,7 +4,7 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.Types, as: Types
+  alias CoursePlanner.{OfferedCourse, Types}
   alias Ecto.{Time, Date, DateTime}
 
   schema "classes" do
@@ -14,7 +14,7 @@ defmodule CoursePlanner.Class do
     field :status, Types.EntityStatus
     field :deleted_at, DateTime
     field :classroom, :string
-    belongs_to :course, CoursePlanner.Course
+    belongs_to :offered_course, OfferedCourse
 
     timestamps()
   end
@@ -24,11 +24,11 @@ defmodule CoursePlanner.Class do
   """
   def changeset(struct, params \\ %{}) do
     cast_params =
-      [:course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
+      [:offered_course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
 
     struct
     |> cast(params, cast_params)
-    |> validate_required([:course_id, :date, :starting_at, :finishes_at, :status])
+    |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at, :status])
   end
 
   def changeset(struct, params, :create) do

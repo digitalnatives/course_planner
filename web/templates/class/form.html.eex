@@ -6,8 +6,7 @@
   <% end %>
 
   <div class="form-group">
-    <%= select(f, :course_id, CoursePlanner.CourseHelper.all_none_deleted()
-                              |> Enum.map(&{&1.name, &1.id}), prompt: "Choose a course", selected: f.data.course_id) %>
+    <%= select(f, :offered_course_id, offered_courses_to_select(), prompt: "Choose a course", selected: selected_offered_course(@changeset)) %>
     <%= error_tag f, :status %>
   </div>
 
