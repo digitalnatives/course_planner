@@ -17,7 +17,7 @@ defmodule CoursePlanner.UserEmailTest do
   end
 
   test "notify user update" do
-    email = @valid_user
+    @valid_user
     |> UserEmail.build_email(:user_modified)
     |> Mailer.deliver()
     assert_email_sent subject: "Your profile was updated"

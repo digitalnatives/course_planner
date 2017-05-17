@@ -1,8 +1,7 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.User
+  alias CoursePlanner.{User, Users, Notifier}
   require Logger
-  alias CoursePlanner.Users
 
   def index(conn, _params) do
     query = from u in User, where: is_nil(u.deleted_at)
@@ -32,6 +31,7 @@ defmodule CoursePlanner.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
+        Notifier.notify_user(user, :user_modified)
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))
