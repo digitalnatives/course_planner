@@ -31,8 +31,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
         })
       |> Repo.insert!
 
-    offered_course =
-      %OfferedCourse{}
+    %OfferedCourse{}
       |> OfferedCourse.changeset(%{term_id: term.id, course_id: course.id})
       |> Changeset.put_assoc(:students, students)
       |> Repo.insert
