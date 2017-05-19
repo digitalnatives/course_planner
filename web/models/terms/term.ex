@@ -36,8 +36,8 @@ defmodule CoursePlanner.Terms.Term do
   end
 
   defp validate_date_range(%{errors: []} = changeset) do
-    st = Changeset.get_field(changeset, :start_date) |> Date.cast!
-    en = Changeset.get_field(changeset, :end_date) |> Date.cast!
+    st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
+    en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
     case Date.compare(st, en) do
       :lt -> changeset
       :eq -> Changeset.add_error(changeset, :start_date, "Start date can't be the same than end date.")
