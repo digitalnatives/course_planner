@@ -3,7 +3,6 @@ defmodule CoursePlanner.Attendance do
   This module holds the model for the attendance table
   """
   use CoursePlanner.Web, :model
-  alias CoursePlanner.Repo
 
   schema "attendances" do
     field :attendance_type, :string
