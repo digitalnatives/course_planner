@@ -1,7 +1,7 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User }
+  alias CoursePlanner.{ClassHelper, AttendanceHelper, Class, Course, OfferedCourse, Repo, Terms, User, Factory }
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
@@ -236,7 +236,6 @@ defmodule CoursePlanner.ClassControllerTest do
     refute Repo.get(Class, class.id)
   end
 
-
   test "all values which will be soft deleted", %{conn: conn} do
     ["Active", "Finished", "Graduated", "Frozen"]
     |> Enum.map(fn(status) ->
@@ -252,5 +251,33 @@ defmodule CoursePlanner.ClassControllerTest do
     assert redirected_to(conn) == class_path(conn, :index)
     soft_deleted_course = Repo.get(Class, class.id)
     assert soft_deleted_course.deleted_at
+  end
+
+  test "creates class and all attendance", %{conn: conn} do
+    course = Factory.create_course("english")
+    term1 = Factory.create_term("FALL",
+                       %Ecto.Date{day: 1, month: 1, year: 2017},
+                       %Ecto.Date{day: 1, month: 6, year: 2017},
+                       course)
+    students =
+      [
+        Factory.create_student("john", "john@smith.com"),
+        Factory.create_student("joh", "joh@smith.com"),
+        Factory.create_student("jo", "jo@smith.com")
+      ]
+    offered_course = Factory.create_offered_course(term1, course, students)
+
+    completed_attributes = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
+
+    conn = post conn, class_path(conn, :create), class: completed_attributes
+    assert redirected_to(conn) == class_path(conn, :index)
+    assert Repo.get_by(Class, completed_attributes)
+
+    class = List.first(ClassHelper.all_none_deleted())
+    attendances = AttendanceHelper.get_class_attendance_info(class.id)
+
+    Enum.map(students, fn(item_student) ->
+      assert true == Enum.any?(attendances, fn(attendance) ->  attendance.student.id == item_student.id end)
+    end)
   end
 end
