@@ -41,10 +41,10 @@ defmodule CoursePlanner.ClassHelper do
     from c in Class , where: is_nil(c.deleted_at)
   end
 
-  def notify_class_students(class) do
+  def notify_class_students(class, notification_type) do
     class
     |> get_subscribed_students()
-    |> Enum.each(&(Notifier.notify_user(&1, :class_subscribed)))
+    |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
   end
 
   defp get_subscribed_students(class) do
