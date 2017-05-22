@@ -37,4 +37,11 @@ defmodule CoursePlanner.UserEmailTest do
     assert_email_sent subject: "A term you are enrolled in was updated"
   end
 
+  test "notify term deleted" do
+    @valid_user
+    |> UserEmail.build_email(:term_deleted)
+    |> Mailer.deliver()
+    assert_email_sent subject: "A term you are enrolled in was deleted"
+  end
+
 end
