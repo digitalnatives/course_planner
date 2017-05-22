@@ -7,6 +7,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
   @notifications %{
     user_modified: %{subject: "Your profile was updated", template: "user_updated.html"},
     term_enrolled: %{subject: "You were enrolled to a term", template: "term_enrolled.html"},
+    term_updated: %{subject: "A term you are enrolled in was updated", template: "term_updated.html"},
   }
 
   def build_email(%{name: _, email: email}, _) when is_nil(email), do: {:error, :invalid_recipient}
