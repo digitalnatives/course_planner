@@ -23,13 +23,6 @@ defmodule CoursePlanner.UserEmailTest do
     assert_email_sent subject: "Your profile was updated"
   end
 
-  test "notify enrollment to term" do
-    @valid_user
-    |> UserEmail.build_email(:term_enrolled)
-    |> Mailer.deliver()
-    assert_email_sent subject: "You were enrolled to a term"
-  end
-
   test "notify term updated" do
     @valid_user
     |> UserEmail.build_email(:term_updated)

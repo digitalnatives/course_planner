@@ -1,3 +1,0 @@
-<div>
-  <h2><%= @name%>, you were enrolled in a term.</h2>
-</div>
