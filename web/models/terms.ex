@@ -79,11 +79,9 @@ defmodule CoursePlanner.Terms do
 
   defp get_enrolled_students(term) do
     term
-    |> Repo.preload([:offered_courses])
-    |> get_offered_courses()
-    |> Enum.map(&(Repo.preload(&1, [:students])))
-    |> Enum.map(&(&1.students))
+    |> Repo.preload([:offered_courses, offered_courses: :students])
+    |> Map.get(:offered_courses)
+    |> Enum.map(&(Map.get(&1, :students)))
     |> List.flatten()
   end
-  defp get_offered_courses(term), do: term.offered_courses
 end
