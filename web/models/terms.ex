@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourse}
+  alias CoursePlanner.{Repo, OfferedCourse, Notifier}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
@@ -70,4 +70,20 @@ defmodule CoursePlanner.Terms do
   defp non_deleted_query do
     from t in Term, where: is_nil(t.deleted_at)
   end
+
+  def notify_term_users(term, notification_type) do
+    term
+    |> get_enrolled_students()
+    |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
+  end
+
+  defp get_enrolled_students(term) do
+    term
+    |> Repo.preload([:offered_courses])
+    |> get_offered_courses()
+    |> Enum.map(&(Repo.preload(&1, [:students])))
+    |> Enum.map(&(&1.students))
+    |> List.flatten()
+  end
+  defp get_offered_courses(term), do: term.offered_courses
 end
