@@ -20,7 +20,7 @@ defmodule CoursePlanner.ClassController do
 
     case Repo.insert(changeset) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class)
+        ClassHelper.notify_class_students(class, :class_subscribed)
         conn
         |> put_flash(:info, "Class created successfully.")
         |> redirect(to: class_path(conn, :index))
@@ -49,6 +49,7 @@ defmodule CoursePlanner.ClassController do
 
     case Repo.update(changeset) do
       {:ok, class} ->
+        ClassHelper.notify_class_students(class, :class_updated)
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :show, class))
@@ -59,7 +60,8 @@ defmodule CoursePlanner.ClassController do
 
   def delete(conn, %{"id" => id}) do
     case ClassHelper.delete(id) do
-      {:ok, _class} ->
+      {:ok, class} ->
+        ClassHelper.notify_class_students(class, :class_deleted)
         conn
         |> put_flash(:info, "Class deleted successfully.")
         |> redirect(to: class_path(conn, :index))
