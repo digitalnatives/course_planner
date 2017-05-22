@@ -19,7 +19,8 @@ defmodule CoursePlanner.ClassController do
     changeset = Class.changeset(%Class{}, class_params, :create)
 
     case Repo.insert(changeset) do
-      {:ok, _class} ->
+      {:ok, class} ->
+        ClassHelper.notify_class_students(class)
         conn
         |> put_flash(:info, "Class created successfully.")
         |> redirect(to: class_path(conn, :index))

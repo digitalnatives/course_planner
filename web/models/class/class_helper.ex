@@ -4,7 +4,7 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class}
+  alias CoursePlanner.{Repo, Class, Notifier}
   alias Ecto.DateTime
 
   def delete(id) do
@@ -39,5 +39,17 @@ defmodule CoursePlanner.ClassHelper do
 
   defp non_deleted_query do
     from c in Class , where: is_nil(c.deleted_at)
+  end
+
+  def notify_class_students(class) do
+    class
+    |> get_subscribed_students()
+    |> Enum.each(&(Notifier.notify_user(&1, :class_subscribed)))
+  end
+
+  defp get_subscribed_students(class) do
+    class = class
+    |> Repo.preload([:offered_course, offered_course: :students])
+    class.offered_course.students
   end
 end

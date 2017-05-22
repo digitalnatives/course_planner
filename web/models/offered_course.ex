@@ -4,7 +4,7 @@ defmodule CoursePlanner.OfferedCourse do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Course, Terms.Term, User}
+  alias CoursePlanner.{Course, Terms.Term, User, Class}
 
   schema "offered_courses" do
     belongs_to :term, Term
@@ -17,6 +17,7 @@ defmodule CoursePlanner.OfferedCourse do
       join_through: "offered_courses_teachers",
       join_keys: [offered_course_id: :id, teacher_id: :id],
       on_replace: :delete
+    has_many :classes, Class, on_replace: :delete
 
     timestamps()
   end
