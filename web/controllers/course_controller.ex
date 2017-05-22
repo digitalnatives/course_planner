@@ -44,6 +44,7 @@ defmodule CoursePlanner.CourseController do
 
     case Repo.update(changeset) do
       {:ok, course} ->
+        CourseHelper.notify_user_course(course, :course_updated)
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :show, course))
@@ -55,6 +56,7 @@ defmodule CoursePlanner.CourseController do
   def delete(conn, %{"id" => id}) do
     course = Repo.get!(Course, id)
     CourseHelper.delete(course)
+    CourseHelper.notify_user_course(course, :course_deleted)
     conn
     |> put_flash(:info, "Course deleted successfully.")
     |> redirect(to: course_path(conn, :index))
