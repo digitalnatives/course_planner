@@ -15,12 +15,12 @@ defmodule CoursePlanner.ClassController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"class" => class_params}) do
+  def create(%{assigns: %{current_user: current_user}} = conn, %{"class" => class_params}) do
     changeset = Class.changeset(%Class{}, class_params, :create)
 
     case Repo.insert(changeset) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class, :class_subscribed)
+        ClassHelper.notify_class_students(class, current_user, :class_subscribed)
         conn
         |> put_flash(:info, "Class created successfully.")
         |> redirect(to: class_path(conn, :index))
@@ -43,13 +43,13 @@ defmodule CoursePlanner.ClassController do
     render(conn, "edit.html", class: class, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "class" => class_params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "class" => class_params}) do
     class = Repo.get!(Class, id)
     changeset = Class.changeset(class, class_params, :update)
 
     case Repo.update(changeset) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class, :class_updated)
+        ClassHelper.notify_class_students(class, current_user, :class_updated)
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :show, class))
@@ -58,10 +58,10 @@ defmodule CoursePlanner.ClassController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     case ClassHelper.delete(id) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class, :class_deleted)
+        ClassHelper.notify_class_students(class, current_user, :class_deleted)
         conn
         |> put_flash(:info, "Class deleted successfully.")
         |> redirect(to: class_path(conn, :index))
