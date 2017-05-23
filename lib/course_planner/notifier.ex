@@ -27,6 +27,7 @@ defmodule CoursePlanner.Notifier do
         {:noreply, [{:error, reason, email} | state]}
     end
   end
+  def handle_cast(_, state), do: {:noreply, state}
 
   @spec handle_info(any(), any()) :: {:noreply, any()}
   def handle_info(_, state), do: {:noreply, state}
