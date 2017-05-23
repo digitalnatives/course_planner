@@ -6,6 +6,7 @@ defmodule CoursePlanner.ClassHelper do
 
   alias CoursePlanner.{Repo, Class, Attendance}
   alias Ecto.DateTime
+  alias Ecto.Multi
 
   def delete(id) do
     class = Repo.get(Class, id)
@@ -48,8 +49,7 @@ defmodule CoursePlanner.ClassHelper do
     Repo.all(
     from c in Class,
       join: oc in assoc(c, :offered_course),
-      join: s in assoc(oc, :students),
-      preload: [offered_course: {oc, students: s}],
+      preload: [:students, offered_course: oc],
       where: oc.id == ^offered_course_id
       )
   end
@@ -60,24 +60,21 @@ defmodule CoursePlanner.ClassHelper do
     if is_nil(class_data) do
       {:ok, nil}
     else
+      attendances_data =
       class_data.offered_course.students
       |> Enum.map(fn(item) ->
-           ch = Attendance.changeset(%Attendance{},
-             %{
-              class_id: class.id,
-              student_id: item.id,
-              attendance_type: "Not filled"
-             })
-           Repo.insert(ch)
+           [
+             class_id: class.id,
+             student_id: item.id,
+             attendance_type: "Not filled",
+             inserted_at: DateTime.utc(),
+             updated_at: DateTime.utc()
+           ]
          end)
-      |> Enum.reduce({:ok, nil}, fn(item, out) ->
-           case item do
-             {:ok, _ch} ->
-               out
-             true ->
-               item
-           end
-         end)
+
+      Multi.new
+      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
+      |> Repo.transaction()
     end
   end
 end

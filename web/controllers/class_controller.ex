@@ -2,7 +2,6 @@ defmodule CoursePlanner.ClassController do
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{Class, ClassHelper}
-  alias Ecto.Multi
 
   def index(conn, _params) do
     classes =
@@ -19,20 +18,15 @@ defmodule CoursePlanner.ClassController do
   def create(conn, %{"class" => class_params}) do
     changeset = Class.changeset(%Class{}, class_params, :create)
 
-    multi =
-      Multi.new
-      |> Multi.insert(:class, changeset)
-      |> Multi.run(:attendance, fn %{class: class} ->
-           ClassHelper.create_class_attendance_records(class)
-         end)
+    case Repo.insert(changeset) do
+      {:ok, class} ->
+        ClassHelper.create_class_attendance_records(class)
 
-    case Repo.transaction(multi) do
-      {:ok, _class} ->
         conn
         |> put_flash(:info, "Class created successfully.")
         |> redirect(to: class_path(conn, :index))
-      {:error, _failed_operation, failed_value, _changes_so_far} ->
-        render(conn, "new.html", changeset: failed_value)
+      {:error, changeset} ->
+        render(conn, "new.html", changeset: changeset)
     end
   end
 

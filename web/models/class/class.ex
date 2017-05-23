@@ -16,6 +16,7 @@ defmodule CoursePlanner.Class do
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
     has_many :attendances, Attendance
+    has_many :students, through: [:offered_course, :students]
 
     timestamps()
   end
@@ -32,10 +33,8 @@ defmodule CoursePlanner.Class do
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at, :status])
   end
 
-  def changeset(struct, params, :fill) do
+  def changeset(struct, _params, :fill) do
     struct
-    |> cast(params, [:course_id])
-    |> validate_required([:course_id])
     |> cast_assoc(:attendances)
   end
 
