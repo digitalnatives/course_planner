@@ -1,6 +1,6 @@
 defmodule CoursePlanner.VolunteerController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.{User, Volunteers, Router.Helpers, Users, Notifier}
+  alias CoursePlanner.{User, Volunteers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
 
   def index(conn, _params) do
@@ -39,10 +39,10 @@ defmodule CoursePlanner.VolunteerController do
     render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Volunteers.update(id, params) do
       {:ok, volunteer} ->
-        Notifier.notify_user(volunteer, :user_modified)
+        Users.notify_user(volunteer, current_user, :user_modified)
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))
