@@ -35,7 +35,7 @@ defmodule CoursePlanner.Terms.Term do
     |> validate_date_range()
   end
 
-  defp validate_date_range(%{errors: []} = changeset) do
+  defp validate_date_range(%{valid?: true} = changeset) do
     st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
     en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
     case Date.compare(st, en) do
