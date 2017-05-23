@@ -62,10 +62,10 @@ defmodule CoursePlanner.TermController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     case Terms.delete(id) do
       {:ok, term} ->
-        Terms.notify_term_users(term, :term_deleted)
+        Terms.notify_term_users(term, current_user, :term_deleted)
         conn
         |> put_flash(:info, "Term deleted successfully.")
         |> redirect(to: term_path(conn, :index))
