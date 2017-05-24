@@ -15,6 +15,15 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class}
    }
  end
 
+ def student_factory do
+   %User{
+     name: sequence(:name, &"student-#{&1}"),
+     email: sequence(:email, &"student-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Student"
+   }
+ end
+
  def term_factory do
    %Term{
      name: sequence(:name, &"term-#{&1}"),

@@ -262,12 +262,7 @@ defmodule CoursePlanner.ClassControllerTest do
                             courses: [course]
                            })
 
-    students =
-      [
-         insert(:user, %{role: "Student"}),
-         insert(:user, %{role: "Student"}),
-         insert(:user, %{role: "Student"})
-      ]
+    students = insert_list(3 ,:student)
     offered_course = insert(:offered_course, %{term: term1, course: course, students: students})
     class_attrs = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
 
