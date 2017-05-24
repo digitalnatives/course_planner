@@ -1,7 +1,8 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{ClassHelper, AttendanceHelper, Class, Course, OfferedCourse, Repo, Terms, User, Factory }
+  alias CoursePlanner.{ClassHelper, AttendanceHelper, Class, Course, OfferedCourse, Repo, Terms, User}
+  import CoursePlanner.Factory
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
@@ -254,24 +255,25 @@ defmodule CoursePlanner.ClassControllerTest do
   end
 
   test "creates class and all attendance", %{conn: conn} do
-    course = Factory.create_course("english")
-    term1 = Factory.create_term("FALL",
-                       %Ecto.Date{day: 1, month: 1, year: 2017},
-                       %Ecto.Date{day: 1, month: 6, year: 2017},
-                       course)
+    course = insert(:course)
+    term1 = insert(:term, %{
+                            start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+                            end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+                            courses: [course]
+                           })
+
     students =
       [
-        Factory.create_student("john", "john@smith.com"),
-        Factory.create_student("joh", "joh@smith.com"),
-        Factory.create_student("jo", "jo@smith.com")
+         insert(:user, %{role: "Student"}),
+         insert(:user, %{role: "Student"}),
+         insert(:user, %{role: "Student"})
       ]
-    offered_course = Factory.create_offered_course(term1, course, students)
+    offered_course = insert(:offered_course, %{term: term1, course: course, students: students})
+    class_attrs = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
 
-    completed_attributes = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
-
-    conn = post conn, class_path(conn, :create), class: completed_attributes
+    conn = post conn, class_path(conn, :create), class: class_attrs
     assert redirected_to(conn) == class_path(conn, :index)
-    assert Repo.get_by(Class, completed_attributes)
+    assert Repo.get_by(Class, class_attrs)
 
     class = List.first(ClassHelper.all_none_deleted())
     attendances = AttendanceHelper.get_class_attendance_info(class.id)
