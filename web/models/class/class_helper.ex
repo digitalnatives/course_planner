@@ -45,32 +45,23 @@ defmodule CoursePlanner.ClassHelper do
       order_by: [desc: :date, desc: :starting_at]
   end
 
-  defp get_class_students(offered_course_id) do
-    Repo.all(
-    from c in Class,
-      join: oc in assoc(c, :offered_course),
-      preload: [:students, offered_course: oc],
-      where: oc.id == ^offered_course_id
-      )
-  end
-
   def create_class_attendance_records(class) do
-    class_data = List.first(get_class_students(class.offered_course_id))
+    students = class.students
 
-    if is_nil(class_data) do
+    if is_nil(students) do
       {:ok, nil}
     else
       attendances_data =
-      class_data.offered_course.students
-      |> Enum.map(fn(item) ->
-           [
-             class_id: class.id,
-             student_id: item.id,
-             attendance_type: "Not filled",
-             inserted_at: DateTime.utc(),
-             updated_at: DateTime.utc()
-           ]
-         end)
+        students
+        |> Enum.map(fn(student) ->
+             [
+               class_id: class.id,
+               student_id: student.id,
+               attendance_type: "Not filled",
+               inserted_at: DateTime.utc(),
+               updated_at: DateTime.utc()
+             ]
+           end)
 
       Multi.new
       |>  Multi.insert_all(:attendances, Attendance, attendances_data)
