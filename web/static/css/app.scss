@@ -1,0 +1,68 @@
+
+  @import "./variables.scss";
+
+  /*
+      VENDOR
+  */
+
+  @import "flexboxgrid/dist/flexboxgrid.css";
+
+  // compute color strings for material design
+
+  @function rgb-substring( $color ) {
+    @return red( $color ) + "," + green( $color ) + "," + blue( $color );
+  }
+
+  @import "sass-material-design-colors/palette.scss";
+
+  $color-primary: rgb-substring( $color: $primary );
+  $color-primary-dark: rgb-substring( $color: $primary-dark );
+  $color-primary-light: rgb-substring( $color: $primary-light );
+  $color-primary-contrast: rgb-substring( $color: white );
+
+  $color-accent: rgb-substring( $color: $secondary );
+  $color-accent-dark: rgb-substring( $color: $secondary-dark );
+  $color-accent-light: rgb-substring( $color: $secondary-light );
+  $color-accent-contrast: rgb-substring( $color: white );
+
+  @import "material-design-lite/src/material-design-lite.scss";
+
+  /*
+      APPLICATION
+  */
+
+  $row-spacing: 0.5rem;
+
+  .row {
+    margin: 0;
+
+    & > * {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .row--hspace {
+    margin-left: -$row-spacing;
+    margin-right: -$row-spacing;
+
+    & > * {
+      padding-left: $row-spacing;
+      padding-right: $row-spacing;
+    }
+  }
+
+  .row--vspace {
+    margin-top: -$row-spacing;
+    margin-bottom: -$row-spacing;
+
+    & > * {
+      padding-top: $row-spacing;
+      padding-bottom: $row-spacing;
+    }
+  }
+
+  .mdl-textfield, .mdl-button {
+    width: 100%;
+  }
+
