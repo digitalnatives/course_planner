@@ -7,13 +7,18 @@ defmodule CoursePlanner.UserEmailTest do
 
   @valid_user %User{name: "mahname", email: "valid@email"}
   @invalid_user %User{name: "mahname"}
+  @invalid_user2 %User{name: "mahname", email: nil}
 
   test "inexistent notification type" do
     assert UserEmail.build_email(@valid_user, :sometype) == {:error, :wrong_notification_type}
   end
 
-  test "invalid user" do
+  test "empty e-mail" do
     assert UserEmail.build_email(@invalid_user, :user_modified) == {:error, :invalid_recipient}
+  end
+
+  test "nil e-mail" do
+    assert UserEmail.build_email(@invalid_user2, :user_modified) == {:error, :invalid_recipient}
   end
 
   test "notify user update" do
