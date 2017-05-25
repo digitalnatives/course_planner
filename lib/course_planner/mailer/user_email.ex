@@ -6,8 +6,8 @@ defmodule CoursePlanner.Mailer.UserEmail do
 
   @notifications %{
     user_modified: %{subject: "Your profile was updated", template: "user_updated.html"},
-    course_updated: %{subject: "A course you subscribe to was updated", template: "course_updated.html"},
-    course_deleted: %{subject: "A course you subscribe to was deleted", template: "course_deleted.html"},
+    course_updated: %{subject: "A course you subscribed to was updated", template: "course_updated.html"},
+    course_deleted: %{subject: "A course you subscribed to was deleted", template: "course_deleted.html"},
   }
 
   def build_email(%{name: _, email: nil}, _), do: {:error, :invalid_recipient}
