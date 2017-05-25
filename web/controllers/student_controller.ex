@@ -1,6 +1,6 @@
 defmodule CoursePlanner.StudentController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.{User, Students, Router.Helpers, Users, Notifier}
+  alias CoursePlanner.{User, Students, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
 
   def index(conn, _params) do
@@ -39,10 +39,10 @@ defmodule CoursePlanner.StudentController do
     render(conn, "edit.html", student: student, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Students.update(id, params) do
       {:ok, student} ->
-        Notifier.notify_user(student, :user_modified)
+        Users.notify_user(student, current_user, :user_modified)
         conn
         |> put_flash(:info, "Student updated successfully.")
         |> redirect(to: student_path(conn, :show, student))
