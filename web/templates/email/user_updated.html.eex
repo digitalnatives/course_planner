@@ -1,0 +1,3 @@
+<div>
+  <h2><%= @name%>, your profile was updated.</h2>
+</div>
