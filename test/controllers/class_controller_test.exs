@@ -1,7 +1,7 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{ClassHelper, AttendanceHelper, Class, Course, OfferedCourse, Repo, Terms, User}
+  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User}
   import CoursePlanner.Factory
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
@@ -268,13 +268,11 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = post conn, class_path(conn, :create), class: class_attrs
     assert redirected_to(conn) == class_path(conn, :index)
-    assert Repo.get_by(Class, class_attrs)
+    class = Repo.get_by(Class, class_attrs) |> Repo.preload(:attendances)
 
-    class = List.first(ClassHelper.all_none_deleted())
-    attendances = AttendanceHelper.get_class_attendance_info(class.id)
+    student_ids = students |> Enum.map(&(&1.id)) |> Enum.sort()
+    attendance_student_ids = class.attendances |> Enum.map(&(&1.student_id)) |> Enum.sort()
 
-    Enum.map(students, fn(item_student) ->
-      assert true == Enum.any?(attendances, fn(attendance) ->  attendance.student.id == item_student.id end)
-    end)
+    assert student_ids == attendance_student_ids
   end
 end
