@@ -40,15 +40,15 @@ defmodule CoursePlanner.CourseHelper do
     |> Repo.preload([:offered_courses, offered_courses: :students, offered_courses: :teachers])
     |> Map.get(:offered_courses)
 
-
-    students = Enum.map(offered_courses, &(Map.get(&1, :students)))
+    students = offered_courses
+    |> Enum.map(&(Map.get(&1, :students)))
     |> List.flatten()
     |> Enum.uniq_by(fn %{id: id} -> id end)
 
-    teachers = Enum.map(offered_courses, &(Map.get(&1, :teachers)))
+    teachers = offered_courses
+    |> Enum.map(&(Map.get(&1, :teachers)))
     |> List.flatten()
     |> Enum.uniq_by(fn %{id: id} -> id end)
-
 
     students ++ teachers ++ Coordinators.all()
   end
