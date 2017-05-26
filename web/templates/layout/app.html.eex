@@ -14,57 +14,42 @@
   </head>
 
   <body>
-    <div class="container">
-      <header class="header">
-        <nav class="navbar navbar-default">
-          <ul class="nav navbar-nav">
-            <li>
-              <%= link "Home", to: page_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Users", to: user_path(@conn, :index)%>
-            </li>
-
-            <li>
-              <%= link "Coordinators", to: coordinator_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Students", to: student_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Teachers", to: teacher_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Volunteers", to: volunteer_path(@conn, :index)%>
-            </li>
-
-            <li>
-              <%= link "Courses", to: course_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Terms", to: term_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Offered Courses By Term", to: offered_course_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Classes", to: class_path(@conn, :index)%>
-            </li>
-            <li>
-              <%= link "Tasks", to: task_path(@conn, :index)%>
-            </li>
-          </ul>
-        </nav>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header container">
+        <div class="mdl-layout__header-row">
+          <!-- Title -->
+          <span class="mdl-layout-title">Course Planner</span>
+          <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Link</a>
+          </nav>
+        </div>
       </header>
 
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
+        <%= CoursePlanner.SharedView.navbar_item "Users", @conn, user_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Teachers", @conn, teacher_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
+        <%= CoursePlanner.SharedView.navbar_item "Courses", @conn, course_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Offered Courses By Term", @conn, offered_course_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
+      <% end %>
 
-    </div> <!-- /container -->
+    <main class="mdl-layout__content">
+      <div class="page-content">
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+        <div class="container">
+          <%= render @view_module, @view_template, assigns %>
+        </div>
+      </div>
+    </main>
+  </div>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
