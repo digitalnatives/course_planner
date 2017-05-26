@@ -34,7 +34,7 @@ defmodule CoursePlanner.Users do
   end
 
   def notify_user(%{id: id}, %{id: id}, _), do: nil
-  def notify_user(modified_user, _, notification_type) do
+  def notify_user(modified_user, _current_user, notification_type) do
     Notifier.notify_user(modified_user, notification_type)
   end
 end
