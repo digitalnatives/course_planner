@@ -25,7 +25,27 @@ defmodule CoursePlanner.UserEmailTest do
     @valid_user
     |> UserEmail.build_email(:user_modified)
     |> Mailer.deliver()
-    assert_email_sent subject: "Your profile was updated"
+    assert_email_sent subject: "Your profile is updated"
   end
 
+  test "notify class subscription" do
+    @valid_user
+    |> UserEmail.build_email(:class_subscribed)
+    |> Mailer.deliver()
+    assert_email_sent subject: "You were subscribed to a class"
+  end
+
+  test "notify class updated" do
+    @valid_user
+    |> UserEmail.build_email(:class_updated)
+    |> Mailer.deliver()
+    assert_email_sent subject: "A class you subscribe to was updated"
+  end
+
+  test "notify class deleted" do
+    @valid_user
+    |> UserEmail.build_email(:class_deleted)
+    |> Mailer.deliver()
+    assert_email_sent subject: "A class you subscribe to was deleted"
+  end
 end
