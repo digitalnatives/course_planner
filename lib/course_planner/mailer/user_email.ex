@@ -6,6 +6,8 @@ defmodule CoursePlanner.Mailer.UserEmail do
 
   @notifications %{
     user_modified: %{subject: "Your profile is updated", template: "user_updated.html"},
+    course_updated: %{subject: "A course you subscribed to was updated", template: "course_updated.html"},
+    course_deleted: %{subject: "A course you subscribed to was deleted", template: "course_deleted.html"},
     term_updated: %{subject: "A term you are enrolled in was updated", template: "term_updated.html"},
     term_deleted: %{subject: "A term you are enrolled in was deleted", template: "term_deleted.html"},
     class_subscribed: %{subject: "You were subscribed to a class", template: "class_subscribed.html"},
