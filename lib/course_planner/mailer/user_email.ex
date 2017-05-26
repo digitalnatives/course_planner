@@ -5,7 +5,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
   use Phoenix.Swoosh, view: CoursePlanner.EmailView, layout: {CoursePlanner.LayoutView, :email}
 
   @notifications %{
-    user_modified: %{subject: "Your profile was updated", template: "user_updated.html"}
+    user_modified: %{subject: "Your profile is updated", template: "user_updated.html"}
   }
 
   def build_email(%{name: _, email: nil}, _), do: {:error, :invalid_recipient}
