@@ -27,7 +27,11 @@ defmodule CoursePlanner.Notifier do
         {:noreply, [{:error, reason, email} | state]}
     end
   end
+  def handle_cast(_, state), do: {:noreply, state}
 
+  @doc """
+  This function is used to suppress unhandled message warnings from `Swoosh.Adapters.Test` during unit tests
+  """
   @spec handle_info(any(), any()) :: {:noreply, any()}
   def handle_info(_, state), do: {:noreply, state}
 end
