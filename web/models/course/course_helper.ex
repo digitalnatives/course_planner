@@ -41,13 +41,11 @@ defmodule CoursePlanner.CourseHelper do
     |> Map.get(:offered_courses)
 
     students = offered_courses
-    |> Enum.map(&(Map.get(&1, :students)))
-    |> List.flatten()
+    |> Enum.flat_map(&(Map.get(&1, :students)))
     |> Enum.uniq_by(fn %{id: id} -> id end)
 
     teachers = offered_courses
-    |> Enum.map(&(Map.get(&1, :teachers)))
-    |> List.flatten()
+    |> Enum.flat_map(&(Map.get(&1, :teachers)))
     |> Enum.uniq_by(fn %{id: id} -> id end)
 
     students ++ teachers ++ Coordinators.all()
