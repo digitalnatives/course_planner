@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourse, Notifier}
+  alias CoursePlanner.{Repo, OfferedCourse, Notifier, Coordinators}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
@@ -73,16 +73,24 @@ defmodule CoursePlanner.Terms do
 
   def notify_term_users(term, current_user, notification_type) do
     term
-    |> get_enrolled_students()
+    |> get_subscribed_users()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
     |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
   end
 
-  defp get_enrolled_students(term) do
-    term
-    |> Repo.preload([:offered_courses, offered_courses: :students])
+  defp get_subscribed_users(term) do
+    offered_courses = term
+    |> Repo.preload([:offered_courses, offered_courses: :students, offered_courses: :teachers])
     |> Map.get(:offered_courses)
-    |> Enum.map(&(Map.get(&1, :students)))
-    |> List.flatten()
+
+    students = offered_courses
+    |> Enum.flat_map(&(Map.get(&1, :students)))
+    |> Enum.uniq_by(fn %{id: id} -> id end)
+
+    teachers = offered_courses
+    |> Enum.flat_map(&(Map.get(&1, :teachers)))
+    |> Enum.uniq_by(fn %{id: id} -> id end)
+
+    students ++ teachers ++ Coordinators.all()
   end
 end
