@@ -83,6 +83,6 @@ defmodule CoursePlanner.Terms do
     |> Repo.preload([:offered_courses, offered_courses: :students])
     |> Map.get(:offered_courses)
     |> Enum.map(&(Map.get(&1, :students)))
-    |> List.flatten()
+    |> Enum.flat_map(&(&1))
   end
 end
