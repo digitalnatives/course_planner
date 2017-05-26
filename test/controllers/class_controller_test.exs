@@ -1,7 +1,8 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User }
+  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User}
+  import CoursePlanner.Factory
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
@@ -236,7 +237,6 @@ defmodule CoursePlanner.ClassControllerTest do
     refute Repo.get(Class, class.id)
   end
 
-
   test "all values which will be soft deleted", %{conn: conn} do
     ["Active", "Finished", "Graduated", "Frozen"]
     |> Enum.map(fn(status) ->
@@ -252,5 +252,27 @@ defmodule CoursePlanner.ClassControllerTest do
     assert redirected_to(conn) == class_path(conn, :index)
     soft_deleted_course = Repo.get(Class, class.id)
     assert soft_deleted_course.deleted_at
+  end
+
+  test "creates class and all attendance", %{conn: conn} do
+    course = insert(:course)
+    term1 = insert(:term, %{
+                            start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+                            end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+                            courses: [course]
+                           })
+
+    students = insert_list(3, :student)
+    offered_course = insert(:offered_course, %{term: term1, course: course, students: students})
+    class_attrs = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
+
+    conn = post conn, class_path(conn, :create), class: class_attrs
+    assert redirected_to(conn) == class_path(conn, :index)
+    class = Repo.get_by(Class, class_attrs) |> Repo.preload(:attendances)
+
+    student_ids = students |> Enum.map(&(&1.id)) |> Enum.sort()
+    attendance_student_ids = class.attendances |> Enum.map(&(&1.student_id)) |> Enum.sort()
+
+    assert student_ids == attendance_student_ids
   end
 end

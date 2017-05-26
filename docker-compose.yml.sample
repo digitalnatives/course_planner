@@ -13,9 +13,9 @@ services:
     environment:
       - DATABASE_HOST=db
     volumes:
-      - .:/myapp-dev
+      - .:/myapp
     ports:
       - 4000:4000
     depends_on:
       - db
-    working_dir: /myapp-dev
+    working_dir: /myapp

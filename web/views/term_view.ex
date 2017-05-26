@@ -26,7 +26,21 @@ defmodule CoursePlanner.TermView do
   end
 
   defp add_link_index(form, field) do
-    length(Form.input_value(form, field) || [])
+    add_link_index(Form.input_value(form, field) || [])
+  end
+
+  defp add_link_index(field_values) when is_list(field_values) do
+    length(field_values)
+  end
+
+  defp add_link_index(field_values) when is_map(field_values) do
+    last_index =
+      field_values
+      |> Map.keys()
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.max
+
+    last_index + 1
   end
 
   defp container_id(form, field) do
