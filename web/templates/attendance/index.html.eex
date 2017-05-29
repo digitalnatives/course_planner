@@ -17,14 +17,6 @@
           <td><%= Enum.reduce(offered_course.teachers, "", fn(teacher, out) ->
                     Enum.join([out, teacher.name, teacher.family_name], " ")
                   end) %></td>
-
-          <td class="text-right">
-            <%= link "Show", to: attendance_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
-
-            <%= if @role in [:coordinator, :teacher] do
-                link "fill", to: attendance_path(@conn, :fill_course, offered_course), class: "btn btn-default btn-xs"
-                end %>
-          </td>
         </tr>
     <% end %>
   </tbody>
