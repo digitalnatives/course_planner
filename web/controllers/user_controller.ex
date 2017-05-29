@@ -31,7 +31,7 @@ defmodule CoursePlanner.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        Users.notify_user(user, current_user, :user_modified)
+        Users.notify_user(user, current_user, :user_modified, user_path(conn, :show, user))
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))

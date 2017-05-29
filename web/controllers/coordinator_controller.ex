@@ -42,7 +42,10 @@ defmodule CoursePlanner.CoordinatorController do
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Coordinators.update(id, params) do
       {:ok, coordinator} ->
-        Users.notify_user(coordinator, current_user, :user_modified)
+        Users.notify_user(coordinator,
+          current_user,
+          :user_modified,
+          coordinator_path(conn, :show, coordinator))
         conn
         |> put_flash(:info, "Coordinator updated successfully.")
         |> redirect(to: coordinator_path(conn, :show, coordinator))

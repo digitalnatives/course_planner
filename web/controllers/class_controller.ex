@@ -21,7 +21,10 @@ defmodule CoursePlanner.ClassController do
     case Repo.insert(changeset) do
       {:ok, class} ->
 
-        ClassHelper.notify_class_students(class, current_user, :class_subscribed)
+        ClassHelper.notify_class_students(class,
+          current_user,
+          :class_subscribed,
+          class_path(conn, :show, class))
 
         class
         |> Repo.preload(:students)
@@ -55,7 +58,10 @@ defmodule CoursePlanner.ClassController do
 
     case Repo.update(changeset) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class, current_user, :class_updated)
+        ClassHelper.notify_class_students(class,
+          current_user,
+          :class_updated,
+          class_path(conn, :show, class))
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :show, class))

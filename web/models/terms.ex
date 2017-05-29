@@ -71,11 +71,11 @@ defmodule CoursePlanner.Terms do
     from t in Term, where: is_nil(t.deleted_at)
   end
 
-  def notify_term_users(term, current_user, notification_type) do
+  def notify_term_users(term, current_user, notification_type, path \\ "/") do
     term
     |> get_subscribed_users()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
+    |> Enum.each(&(Notifier.notify_user(&1, notification_type, path)))
   end
 
   defp get_subscribed_users(term) do

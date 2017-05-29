@@ -42,7 +42,10 @@ defmodule CoursePlanner.VolunteerController do
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Volunteers.update(id, params) do
       {:ok, volunteer} ->
-        Users.notify_user(volunteer, current_user, :user_modified)
+        Users.notify_user(volunteer,
+          current_user,
+          :user_modified,
+          volunteer_path(conn, :show, volunteer))
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))

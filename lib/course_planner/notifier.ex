@@ -11,14 +11,14 @@ defmodule CoursePlanner.Notifier do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  @spec notify_user(User, atom()) :: GenServer.cast
-  def notify_user(%User{} = user, notification_type) do
-    GenServer.cast(__MODULE__, {:send, user, notification_type})
+  @spec notify_user(User, atom(), String.t) :: GenServer.cast
+  def notify_user(%User{} = user, notification_type, path \\ "/") do
+    GenServer.cast(__MODULE__, {:send, user, notification_type, path})
   end
 
-  @spec handle_cast({atom(), User, atom()}, any()) :: {:noreply, any()}
-  def handle_cast({:send, user, notification_type}, state) do
-    email = UserEmail.build_email(user, notification_type)
+  @spec handle_cast({atom(), User, atom(), String.t}, any()) :: {:noreply, any()}
+  def handle_cast({:send, user, notification_type, path}, state) do
+    email = UserEmail.build_email(user, notification_type, path)
     case Mailer.deliver(email) do
       {:ok, _} ->
         {:noreply, state}
