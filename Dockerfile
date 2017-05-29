@@ -15,14 +15,4 @@ RUN mix local.hex --force \
 RUN mkdir /myapp
 WORKDIR /myapp
 
-ADD mix.* /myapp/
-RUN mix deps.get
-RUN mix deps.compile
-
-ADD package.json /myapp/
-RUN npm install
-
-ADD . /myapp/
-RUN mix compile
-
 CMD iex
