@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseTest do
   use CoursePlanner.ModelCase
 
-  alias CoursePlanner.{Course, OfferedCourse, Repo, Terms.Term}
+  alias CoursePlanner.{Course, OfferedCourse, Repo, Terms.Term, Terms}
 
   test "changeset with valid attributes" do
     changeset =
@@ -37,6 +37,20 @@ defmodule CoursePlanner.OfferedCourseTest do
 
     refute changeset.valid?
     assert changeset.errors[:course] == {"does not exist", []}
+  end
+
+  test "update term does not clear associations" do
+    term = new_term()
+    {:ok, of} =
+      %OfferedCourse{}
+      |> OfferedCourse.changeset(%{course_id: new_course().id, term_id: term.id})
+      |> Repo.insert
+
+    Terms.update(term.id, %{"name" => "newname"})
+
+    updated_of = Repo.get(OfferedCourse, of.id)
+    assert updated_of.term_id == term.id
+    # assert changeset.errors[:course] == {"does not exist", []}
   end
 
   defp new_term do
