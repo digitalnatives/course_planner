@@ -47,7 +47,7 @@ defmodule CoursePlanner.Terms do
         params = Map.put_new(params, "holidays", [])
         term
         |> Term.changeset(params)
-        |> Changeset.put_assoc(:offered_courses, course_changesets(params))
+        |> Changeset.cast_assoc(:offered_courses)
         |> Repo.update
         |> format_update_error(term)
     end
