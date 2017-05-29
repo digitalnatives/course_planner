@@ -3,7 +3,7 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.Term
-alias CoursePlanner.{User, Course, OfferedCourse, Class}
+alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -49,6 +49,12 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class}
  def class_factory do
     %Class{
       status: "Planned"
+    }
+ end
+
+ def attendance_factory do
+    %Attendance{
+      attendance_type: "Not filled"
     }
  end
 end
