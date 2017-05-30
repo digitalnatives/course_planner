@@ -1,2 +1,2 @@
 
-  <%= submit @label, class: "mdl-button mdl-js-button mdl-button--raised mdl-button--accent" %>
+  <%= submit @label, class: "mdl-button mdl-js-button mdl-button--raised mdl-button--accent #{@class}" %>

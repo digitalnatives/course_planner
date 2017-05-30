@@ -13,16 +13,19 @@ defmodule CoursePlanner.SharedView do
 
   # form components
 
-  def form_text(form, field, label) do
-    render "form_text.html", form: form, field: field, label: label
+  def form_text(form, field, label, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_text.html", form: form, field: field, label: label, class: class
   end
 
-  def form_password(form, field, label) do
-    render "form_password.html", form: form, field: field, label: label
+  def form_password(form, field, label, opts  \\ []) do
+    class = opts[:class] || ""
+    render "form_password.html", form: form, field: field, label: label, class: class
   end
 
-  def form_submit(form, label) do
-    render "form_submit.html", form: form, label: label
+  def form_submit(form, label, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_submit.html", form: form, label: label, class: class
   end
 
   def navbar(title, [do: children]) do

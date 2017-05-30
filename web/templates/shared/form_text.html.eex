@@ -1,5 +1,5 @@
 
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-    <%= text_input @form, @field, class: "mdl-textfield__input", required: "" %>
+    <%= text_input @form, @field, class: "mdl-textfield__input #{@class}", required: "" %>
     <label class="mdl-textfield__label" for="login_field"><%= @label %></label>
   </div>
