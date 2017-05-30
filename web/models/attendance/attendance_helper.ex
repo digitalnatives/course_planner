@@ -6,22 +6,36 @@ defmodule CoursePlanner.AttendanceHelper do
 
   alias CoursePlanner.{Repo, OfferedCourse}
 
+  def get_course_attendances(offered_course_id) do
+    List.first(Repo.all(from oc in OfferedCourse,
+      join: s in assoc(oc, :students),
+      join: c in assoc(oc, :classes),
+      join: a in assoc(c,  :attendances),
+      preload: [:term, :course, :teachers, students: s],
+      preload: [classes: {c, attendances: a}],
+      where: oc.id == ^offered_course_id and is_nil(s.deleted_at),
+      order_by: [asc: c.date]))
+  end
+
   def get_all_offered_courses do
-    Repo.all(from OfferedCourse,
-      preload: [:term, :course, :teachers])
+    Repo.all(from oc in OfferedCourse,
+      join: c in assoc(oc, :classes),
+      preload: [:term, :course, :teachers, classes: c])
   end
 
   def get_all_teacher_offered_courses(teacher_id) do
     Repo.all(from oc in OfferedCourse,
       join: t in assoc(oc, :teachers),
-      preload: [:term, :course, teachers: t],
+      join: c in assoc(oc, :classes),
+      preload: [:term, :course, teachers: t, classes: c],
       where: t.id == ^teacher_id)
   end
 
   def get_all_student_offered_courses(student_id) do
     Repo.all(from oc in OfferedCourse,
       join: s in assoc(oc, :students),
-      preload: [:term, :course, :teachers, students: s],
+      join: c in assoc(oc, :classes),
+      preload: [:term, :course, :teachers, students: s, classes: c],
       where: s.id == ^student_id)
   end
 end

@@ -20,4 +20,22 @@ defmodule CoursePlanner.AttendanceController do
 
     render(conn, "index_student.html", offered_courses: offered_courses)
   end
+
+  def show(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn,
+           %{"id" => offered_course_id}) do
+    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
+    render(conn, "show_coordinator.html", offered_course: offered_course)
+  end
+
+  def show(%{assigns: %{current_user: %{id: _id, role: "Teacher"}}} = conn,
+           %{"id" => offered_course_id}) do
+    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
+    render(conn, "show_teacher.html", offered_course: offered_course)
+  end
+
+  def show(%{assigns: %{current_user: %{id: id, role: "Student"}}} = conn,
+           %{"id" => offered_course_id}) do
+    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
+    render(conn, "show_student.html", offered_course: offered_course, student_id: id)
+  end
 end

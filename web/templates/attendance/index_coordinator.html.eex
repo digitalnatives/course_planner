@@ -15,6 +15,9 @@
           <td><%= offered_course.term.name %></td>
           <td><%= offered_course.course.name %></td>
           <td><%= get_teacher_display_name(offered_course.teachers) %></td>
+          <td class="text-right">
+            <%= link "Show", to: attendance_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
+          </td>
         </tr>
     <% end %>
   </tbody>

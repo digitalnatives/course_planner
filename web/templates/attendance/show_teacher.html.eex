@@ -1,0 +1,1 @@
+<%= render "show_coordinator.html", offered_course: @offered_course, conn: @conn %>

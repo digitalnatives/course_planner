@@ -9,4 +9,10 @@ defmodule CoursePlanner.AttendanceControllerTest do
     conn = get conn, attendance_path(conn, :index)
     assert html_response(conn, 200) =~ "Listing attendances"
   end
+
+  test "shows chosen resource", %{conn: conn} do
+    attendance = Repo.insert! %Attendance{}
+    conn = get conn, attendance_path(conn, :show, attendance)
+    assert html_response(conn, 200) =~ "Show attendance"
+  end
 end

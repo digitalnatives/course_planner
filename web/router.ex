@@ -48,7 +48,7 @@ defmodule CoursePlanner.Router do
       post "/grab", TaskController, :grab, as: :grab
     end
 
-    resources "/attendances", AttendanceController, only: [:index]
+    resources "/attendances", AttendanceController, only: [:index, :show]
   end
 
   if Mix.env == :dev do

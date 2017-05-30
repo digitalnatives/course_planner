@@ -1,0 +1,26 @@
+<h2>Show attendance for <%=@offered_course.course.name%></h2>
+<h3>Tought by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Class Date</th>
+
+      <%= for student <- @offered_course.students do %>
+        <th><%= Enum.join([student.name, student.family_name], " ") %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for class <- @offered_course.classes do %>
+      <tr>
+        <td><%= class.date %></td>
+        <%= for attendance <- class.attendances do %>
+          <td><%= attendance.attendance_type %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link "Back", to: attendance_path(@conn, :index) %>
