@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourse, Notifier, Coordinators}
+  alias CoursePlanner.{Repo, OfferedCourse, Notifier, Coordinators, Notifier.Notification}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
@@ -75,7 +75,15 @@ defmodule CoursePlanner.Terms do
     term
     |> get_subscribed_users()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(Notifier.notify_user(&1, notification_type, path)))
+    |> Enum.each(&(notify_user(&1, notification_type, path)))
+  end
+
+  def notify_user(user, type, path) do
+    Notification.new()
+    |> Notification.type(type)
+    |> Notification.resource_path(path)
+    |> Notification.to(user)
+    |> Notifier.notify_user()
   end
 
   defp get_subscribed_users(term) do

@@ -4,7 +4,7 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Attendance}
+  alias CoursePlanner.{Repo, Class, Notifier, Attendance, Notifier.Notification}
   alias Ecto.DateTime
   alias Ecto.Multi
 
@@ -73,7 +73,15 @@ defmodule CoursePlanner.ClassHelper do
     class
     |> get_subscribed_students()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(Notifier.notify_user(&1, notification_type, path)))
+    |> Enum.each(&(notify_user(&1, notification_type, path)))
+  end
+
+  def notify_user(user, type, path) do
+    Notification.new()
+    |> Notification.type(type)
+    |> Notification.resource_path(path)
+    |> Notification.to(user)
+    |> Notifier.notify_user()
   end
 
   defp get_subscribed_students(class) do
