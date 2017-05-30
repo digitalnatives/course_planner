@@ -1,0 +1,3 @@
+<div>
+  <h2><%= @name%>, a course you subscribed to was deleted.</h2>
+</div>
