@@ -14,9 +14,7 @@
         <tr>
           <td><%= offered_course.term.name %></td>
           <td><%= offered_course.course.name %></td>
-          <td><%= Enum.reduce(offered_course.teachers, "", fn(teacher, out) ->
-                    Enum.join([out, teacher.name, teacher.family_name], " ")
-                  end) %></td>
+          <td><%= get_teacher_display_name(offered_course.teachers) %></td>
         </tr>
     <% end %>
   </tbody>
