@@ -1,0 +1,18 @@
+
+  @function rgb-substring( $color ) {
+    @return red( $color ) + "," + green( $color ) + "," + blue( $color );
+  }
+
+  @import "sass-material-design-colors/palette.scss";
+
+  $color-primary: rgb-substring( $color: $primary );
+  $color-primary-dark: rgb-substring( $color: $primary-dark );
+  $color-primary-light: rgb-substring( $color: $primary-light );
+  $color-primary-contrast: rgb-substring( $color: white );
+
+  $color-accent: rgb-substring( $color: $secondary );
+  $color-accent-dark: rgb-substring( $color: $secondary-dark );
+  $color-accent-light: rgb-substring( $color: $secondary-light );
+  $color-accent-contrast: rgb-substring( $color: white );
+
+  @import "material-design-lite/src/material-design-lite.scss";
