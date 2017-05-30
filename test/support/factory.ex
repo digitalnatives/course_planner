@@ -24,6 +24,33 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    }
  end
 
+ def teacher_factory do
+   %User{
+     name: sequence(:name, &"teacher-#{&1}"),
+     email: sequence(:email, &"teacher-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Teacher"
+   }
+ end
+
+ def coordinator_factory do
+   %User{
+     name: sequence(:name, &"coordinator-#{&1}"),
+     email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Coordinator"
+   }
+ end
+
+ def volunteer_factory do
+   %User{
+     name: sequence(:name, &"volunteer-#{&1}"),
+     email: sequence(:email, &"volunteer-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Volunteer"
+   }
+ end
+
  def term_factory do
    %Term{
      name: sequence(:name, &"term-#{&1}"),
