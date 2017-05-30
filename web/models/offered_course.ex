@@ -18,6 +18,7 @@ defmodule CoursePlanner.OfferedCourse do
       join_keys: [offered_course_id: :id, teacher_id: :id],
       on_replace: :delete
     has_many :classes, Class, on_replace: :delete
+    has_many :attendances, through: [:classes, :attendances]
 
     timestamps()
   end

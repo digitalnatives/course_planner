@@ -15,7 +15,7 @@ defmodule CoursePlanner.Class do
     field :deleted_at, DateTime
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
-    has_many :attendances, Attendance
+    has_many :attendances, Attendance, on_delete: :delete_all
     has_many :students, through: [:offered_course, :students]
 
     timestamps()
