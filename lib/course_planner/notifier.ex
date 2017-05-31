@@ -33,13 +33,13 @@ defmodule CoursePlanner.Notifier do
   end
 
   @spec handle_cast({atom(), Notification.t}, any()) :: {:noreply, any()}
-  def handle_cast({:send_email, %{to: user, type: type, resource_path: path}}, state) do
-    email = UserEmail.build_email(user, type, path)
+  def handle_cast({:send_email, notification}, state) do
+    email = UserEmail.build_email(notification)
     case Mailer.deliver(email) do
       {:ok, _} ->
         {:noreply, state}
       {:error, reason} ->
-        Logger.error("Email delivery failed: #{reason}")
+        Logger.error("Email delivery failed: #{Kernel.inspect reason}")
         {:noreply, [{:error, reason, email} | state]}
     end
   end

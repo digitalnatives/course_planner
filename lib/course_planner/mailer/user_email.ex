@@ -15,9 +15,9 @@ defmodule CoursePlanner.Mailer.UserEmail do
     class_deleted: %{subject: "A class you subscribe to was deleted", template: "class_deleted.html"},
   }
 
-  def build_email(%{name: _, email: nil}, _, _), do: {:error, :invalid_recipient}
-  def build_email(%{name: name, email: email}, notification_type, path) do
-    case @notifications[notification_type] do
+  def build_email(%{to: %{name: _, email: nil}}), do: {:error, :invalid_recipient}
+  def build_email(%{to: %{name: name, email: email}, type: type, resource_path: path}) do
+    case @notifications[type] do
       nil -> {:error, :wrong_notification_type}
       params ->
         new()
