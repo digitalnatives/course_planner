@@ -37,6 +37,20 @@
       <% end %>
     </table>
   <% end %>
+
+  <%= if length(@term.courses) > 0 do %>
+    <strong>Courses</strong>
+    <table>
+      <tr>
+        <th>Name</th>
+      </tr>
+      <%= for t <- @term.courses do %>
+        <tr>
+          <td><%= t.name %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% end %>
 </ul>
 
 <%= link "Edit", to: term_path(@conn, :edit, @term) %>

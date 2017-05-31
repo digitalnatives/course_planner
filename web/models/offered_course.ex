@@ -30,12 +30,4 @@ defmodule CoursePlanner.OfferedCourse do
     |> assoc_constraint(:term)
     |> assoc_constraint(:course)
   end
-
-  def add_to_term_changeset(course_id) do
-    %__MODULE__{}
-    |> cast(%{"course_id" => course_id}, [:course_id])
-    |> validate_required([:course_id])
-    |> assoc_constraint(:term)
-    |> assoc_constraint(:course)
-  end
 end

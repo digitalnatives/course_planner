@@ -24,6 +24,7 @@ defmodule CoursePlanner.Terms do
   def get(id) do
     non_deleted_query()
     |> Repo.get(id)
+    |> Repo.preload([:courses])
   end
 
   def edit(id) do
