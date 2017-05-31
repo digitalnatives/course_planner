@@ -1,7 +1,7 @@
 defmodule CoursePlanner.AttendanceController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.AttendanceHelper
+  alias CoursePlanner.{AttendanceHelper, OfferedCourse}
 
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
     offered_courses = AttendanceHelper.get_all_offered_courses()
@@ -35,7 +35,13 @@ defmodule CoursePlanner.AttendanceController do
 
   def show(%{assigns: %{current_user: %{id: id, role: "Student"}}} = conn,
            %{"id" => offered_course_id}) do
-    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
-    render(conn, "show_student.html", offered_course: offered_course, student_id: id)
+    offered_course =
+     OfferedCourse
+     |> Repo.get!(offered_course_id)
+     |> Repo.preload([:term, :course, :teachers])
+
+    attendances = AttendanceHelper.get_student_attendances(offered_course_id, id)
+
+    render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
   end
 end

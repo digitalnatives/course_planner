@@ -4,7 +4,7 @@ defmodule CoursePlanner.AttendanceHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
 
   def get_course_attendances(offered_course_id) do
     List.first(Repo.all(from oc in OfferedCourse,
@@ -15,6 +15,16 @@ defmodule CoursePlanner.AttendanceHelper do
       preload: [classes: {c, attendances: a}],
       where: oc.id == ^offered_course_id and is_nil(s.deleted_at),
       order_by: [asc: c.date]))
+  end
+
+  def get_student_attendances(offered_course_id, student_id) do
+    Repo.all(from a in Attendance,
+      join: s in assoc(a, :student),
+      join: c in assoc(a, :class),
+      join: oc in assoc(a, :offered_course),
+      preload: [class: {c, [offered_course: {oc, [:course, :term]}]}, student: s],
+      where: a.student_id == ^student_id and oc.id == ^offered_course_id,
+      order_by: [asc: c.date])
   end
 
   def get_all_offered_courses do

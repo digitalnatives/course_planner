@@ -1,27 +1,20 @@
 <h2>Show attendance for <%=@offered_course.course.name%></h2>
-<h3>Tought by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
+<h3>Taught by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
 
 <table class="table">
   <thead>
     <tr>
       <th>Class Date</th>
-
-      <%= for student <- @offered_course.students do %>
-        <%= if student.id == @student_id do %>
-          <th><%= get_student_display_name(student) %></th>
-        <% end %>
-      <% end %>
+      <th>Class Time</th>
+      <th><%= get_student_display_name(List.first(@attendances).student) %></th>
     </tr>
   </thead>
   <tbody>
-    <%= for class <- @offered_course.classes do %>
+    <%= for attendance <- @attendances do %>
       <tr>
-        <td><%= class.date %></td>
-        <%= for attendance <- class.attendances do %>
-          <%= if attendance.student_id == @student_id do %>
-            <td><%= attendance.attendance_type %></td>
-          <% end %>
-        <% end %>
+        <td><%= attendance.class.date %></td>
+        <td><%= attendance.class.starting_at %></td>
+        <td><%= attendance.attendance_type %></td>
       </tr>
     <% end %>
   </tbody>
