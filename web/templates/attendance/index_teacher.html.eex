@@ -1,0 +1,1 @@
+<%= render "index_coordinator.html", offered_courses: @offered_courses %>

@@ -1,0 +1,3 @@
+<div>
+  <h2><%= @name%>, a class you subscribe to was updated.</h2>
+</div>

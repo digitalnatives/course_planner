@@ -4,7 +4,7 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{OfferedCourse, Types}
+  alias CoursePlanner.{OfferedCourse, Types, Attendance}
   alias Ecto.{Time, Date, DateTime}
 
   schema "classes" do
@@ -15,6 +15,8 @@ defmodule CoursePlanner.Class do
     field :deleted_at, DateTime
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
+    has_many :attendances, Attendance, on_delete: :delete_all
+    has_many :students, through: [:offered_course, :students]
 
     timestamps()
   end
@@ -29,6 +31,11 @@ defmodule CoursePlanner.Class do
     struct
     |> cast(params, cast_params)
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at, :status])
+  end
+
+  def changeset(struct, _params, :fill) do
+    struct
+    |> cast_assoc(:attendances)
   end
 
   def changeset(struct, params, :create) do
