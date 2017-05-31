@@ -20,8 +20,8 @@ defmodule CoursePlanner.AttendanceHelper do
   def get_student_attendances(offered_course_id, student_id) do
     Repo.all(from a in Attendance,
       join: s in assoc(a, :student),
-      join: c in assoc(a, :class),
-      join: oc in assoc(a, :offered_course),
+      join: c in assoc(a,  :class),
+      join: oc in assoc(c, :offered_course),
       preload: [class: {c, [offered_course: {oc, [:course, :term]}]}, student: s],
       where: a.student_id == ^student_id and oc.id == ^offered_course_id,
       order_by: [asc: c.date])

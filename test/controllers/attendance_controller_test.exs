@@ -2,18 +2,17 @@ defmodule CoursePlanner.AttendanceControllerTest do
   use CoursePlanner.ConnCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.Attendance
+  alias CoursePlanner.{Attendance, User}
 
   @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
 
-  defp create_attendance do
-    students = insert_list(3, :student)
+  defp create_attendance(students) do
     offered_course = insert(:offered_course, %{students: students})
     class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
     class = insert(:class, class_attrs)
 
     Enum.map(students, fn(student)->
-         insert(:attendance, %{class_id: class.id, student_id: student.id})
+         insert(:attendance, %{class: class, student: student})
        end)
 
     offered_course
@@ -53,8 +52,8 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   test "shows chosen resource by user coordinator", %{conn: _conn} do
     user_conn = login_as(:coordinator)
-
-    offered_course = create_attendance()
+    students = insert_list(3, :student)
+    offered_course = create_attendance(students)
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
     assert html_response(conn, 200) =~ "Show attendance for"
@@ -62,8 +61,8 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   test "shows chosen resource by user teacher", %{conn: _conn} do
     user_conn = login_as(:teacher)
-
-    offered_course = create_attendance()
+    students = insert_list(3, :student)
+    offered_course = create_attendance(students)
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
     assert html_response(conn, 200) =~ "Show attendance for"
@@ -72,7 +71,8 @@ defmodule CoursePlanner.AttendanceControllerTest do
   test "shows chosen resource by user student", %{conn: _conn} do
     user_conn = login_as(:student)
 
-    offered_course = create_attendance()
+    student = Repo.get!(User, user_conn.assigns.current_user.id)
+    offered_course = create_attendance([student])
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
     assert html_response(conn, 200) =~ "Show attendance for"
