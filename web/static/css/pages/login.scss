@@ -1,0 +1,39 @@
+
+  .login {
+    &__wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    &__form {
+      width: 320px;
+    }
+
+    &__title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    &__error-wrapper {
+      position: relative;
+    }
+
+    &__error {
+      position: absolute;
+      width: 100%;
+      top: 30px;
+      left: calc( 100% + 10px );
+    }
+
+    &__button {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      height: auto;
+    }
+
+    &__links {
+      margin-top: 10px;
+    }
+  }
