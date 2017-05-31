@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourse, Notifier, Coordinators}
+  alias CoursePlanner.{Repo, Notifier, Coordinators}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
@@ -18,19 +18,13 @@ defmodule CoursePlanner.Terms do
   def create(params) do
     %Term{}
     |> Term.changeset(params)
-    |> Changeset.put_assoc(:offered_courses, course_changesets(params))
     |> Repo.insert
   end
-
-  def course_changesets(%{"course_ids" => ids}) do
-    Enum.map(ids, &OfferedCourse.add_to_term_changeset/1)
-  end
-  def course_changesets(_), do: []
 
   def get(id) do
     non_deleted_query()
     |> Repo.get(id)
-    |> Repo.preload(:courses)
+    |> Repo.preload([:courses])
   end
 
   def edit(id) do
@@ -47,7 +41,6 @@ defmodule CoursePlanner.Terms do
         params = Map.put_new(params, "holidays", [])
         term
         |> Term.changeset(params)
-        |> Changeset.put_assoc(:offered_courses, course_changesets(params))
         |> Repo.update
         |> format_update_error(term)
     end
