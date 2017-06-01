@@ -4,6 +4,9 @@ defmodule CoursePlanner.TermController do
   alias CoursePlanner.Terms
   alias Ecto.Changeset
 
+  import Canary.Plugs
+  plug :authorize_resource, model: Terms.Term
+
   def index(conn, _params) do
     render(conn, "index.html", terms: Terms.all)
   end
