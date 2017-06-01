@@ -1,12 +1,13 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User}
+  alias CoursePlanner.{Class, Course, OfferedCourse, Repo, Terms, User, Attendance}
   import CoursePlanner.Factory
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
   @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
+  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -274,5 +275,41 @@ defmodule CoursePlanner.ClassControllerTest do
     attendance_student_ids = class.attendances |> Enum.map(&(&1.student_id)) |> Enum.sort()
 
     assert student_ids == attendance_student_ids
+  end
+
+  test "hard deletes class and all attendances of it", %{conn: conn} do
+    students = insert_list(3, :student)
+    offered_course = insert(:offered_course, %{students: students})
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Planned"}
+    class = insert(:class, class_attrs)
+
+
+    Enum.map(students, fn(student)->
+         insert(:attendance, %{class_id: class.id, student_id: student.id})
+       end)
+
+    assert 3 == length(Repo.all(Attendance))
+    conn2 = delete conn, class_path(conn, :delete, class)
+    assert redirected_to(conn2) == class_path(conn, :index)
+    refute Repo.get(Class, class.id)
+    assert [] == Repo.all(Attendance)
+  end
+
+  test "soft deletes class but attendances won't be impacted", %{conn: conn} do
+    students = insert_list(3, :student)
+    offered_course = insert(:offered_course, %{students: students})
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class = insert(:class, class_attrs)
+
+    Enum.map(students, fn(student)->
+         insert(:attendance, %{class_id: class.id, student_id: student.id})
+       end)
+
+    assert 3 == length(Repo.all(Attendance))
+    conn2 = delete conn, class_path(conn, :delete, class)
+    assert redirected_to(conn2) == class_path(conn, :index)
+    soft_deleted_course = Repo.get(Class, class.id)
+    assert soft_deleted_course.deleted_at
+    assert 3 == length(Repo.all(Attendance))
   end
 end

@@ -18,6 +18,7 @@ defmodule CoursePlanner.OfferedCourse do
       join_keys: [offered_course_id: :id, teacher_id: :id],
       on_replace: :delete
     has_many :classes, Class, on_replace: :delete
+    has_many :attendances, through: [:classes, :attendances]
 
     timestamps()
   end
@@ -26,14 +27,6 @@ defmodule CoursePlanner.OfferedCourse do
     struct
     |> cast(params, [:term_id, :course_id])
     |> validate_required([:term_id, :course_id])
-    |> assoc_constraint(:term)
-    |> assoc_constraint(:course)
-  end
-
-  def add_to_term_changeset(course_id) do
-    %__MODULE__{}
-    |> cast(%{"course_id" => course_id}, [:course_id])
-    |> validate_required([:course_id])
     |> assoc_constraint(:term)
     |> assoc_constraint(:course)
   end

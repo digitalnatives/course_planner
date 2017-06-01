@@ -39,12 +39,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :course_ids, class: "control-label" %>
-    <%= multiple_select f, :course_ids, courses_to_select(), selected: selected_courses(@changeset), class: "form-control" %>
-    <%= error_tag f, :status %>
-  </div>
-
-  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
