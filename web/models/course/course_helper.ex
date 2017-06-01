@@ -5,7 +5,7 @@ defmodule CoursePlanner.CourseHelper do
   use CoursePlanner.Web, :model
   import Ecto.DateTime, only: [utc: 0]
 
-  alias CoursePlanner.{Repo, Course, Notifier, Coordinators}
+  alias CoursePlanner.{Repo, Course, Notifier, Coordinators, Notifier.Notification}
 
   def delete(course) do
     case course.status do
@@ -28,11 +28,19 @@ defmodule CoursePlanner.CourseHelper do
     Repo.all(query)
   end
 
-  def notify_user_course(course, current_user, notification_type) do
+  def notify_user_course(course, current_user, notification_type, path \\ "/") do
     course
     |> get_subscribed_users()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
+    |> Enum.each(&(notify_user(&1, notification_type, path)))
+  end
+
+  def notify_user(user, type, path) do
+    Notification.new()
+    |> Notification.type(type)
+    |> Notification.resource_path(path)
+    |> Notification.to(user)
+    |> Notifier.notify_user()
   end
 
   defp get_subscribed_users(course) do

@@ -44,7 +44,10 @@ defmodule CoursePlanner.CourseController do
 
     case Repo.update(changeset) do
       {:ok, course} ->
-        CourseHelper.notify_user_course(course, current_user, :course_updated)
+        CourseHelper.notify_user_course(course,
+          current_user,
+          :course_updated,
+          course_path(conn, :show, course))
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :show, course))
