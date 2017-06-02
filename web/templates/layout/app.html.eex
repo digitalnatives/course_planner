@@ -8,36 +8,36 @@
     <meta name="author" content="">
 
     <title>Hello CoursePlanner!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
   <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Course Planner</span>
-          <div class="mdl-layout-spacer"></div>
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#">Link</a>
-          </nav>
-        </div>
-      </header>
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">Course Planner</span>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="#">Link</a>
+        </nav>
+      </div>
+    </header>
 
-      <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
-        <%= CoursePlanner.SharedView.navbar_item "Users", @conn, user_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Teachers", @conn, teacher_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
+    <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
+      <%= CoursePlanner.SharedView.navbar_item "Users", @conn, user_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Teachers", @conn, teacher_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
 
-        <%= CoursePlanner.SharedView.navbar_item "Courses", @conn, course_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Offered Courses By Term", @conn, offered_course_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
-      <% end %>
+      <%= CoursePlanner.SharedView.navbar_item "Courses", @conn, course_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Offered Courses By Term", @conn, offered_course_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
+      <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
+    <% end %>
 
     <main class="mdl-layout__content">
       <div class="page-content">
