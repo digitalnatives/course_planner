@@ -28,6 +28,22 @@ defmodule CoursePlanner.SharedView do
     render "form_submit.html", form: form, label: label, class: class
   end
 
+  # card
+
+  def card(title, [do: children]) do
+    render "card.html", title: title, children: children
+  end
+
+  def card_content([do: children]) do
+    render "card_content.html", children: children
+  end
+
+  def card_actions([do: children]) do
+    render "card_actions.html", children: children
+  end
+
+  # navbar
+
   def navbar(title, [do: children]) do
     render "navbar.html", title: title, children: children
   end
