@@ -1,6 +1,6 @@
-<h2>New volunteer</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: volunteer_path(@conn, :create) %>
-
-<%= link "Back", to: volunteer_path(@conn, :index) %>
+  <%= render "form.html", title: "New volunteer",
+                          changeset: @changeset,
+                          action: volunteer_path(@conn, :create),
+                          conn: @conn
+  %>
