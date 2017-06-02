@@ -1,6 +1,6 @@
-<h2>Edit coordinator</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: coordinator_path(@conn, :update, @coordinator) %>
-
-<%= link "Back", to: coordinator_path(@conn, :index) %>
+  <%= render "form.html", title: Enum.join([ @changeset.data.name, @changeset.data.family_name ], " "),
+                          changeset: @changeset,
+                          action: coordinator_path(@conn, :update, @coordinator),
+                          conn: @conn
+  %>
