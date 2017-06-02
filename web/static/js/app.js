@@ -9,3 +9,5 @@
       APPLICATION
   */
 
+  const { initTerms } = require( "./term.js" );
+  initTerms();
