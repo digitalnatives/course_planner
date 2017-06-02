@@ -4,7 +4,7 @@
       name: "default",
       files: %{
         included: ["lib/", "src/", "web/", "apps/"],
-        excluded: []
+        excluded: ["web/controllers/coherence/session_controller.ex"]
       },
       checks: [
         {Credo.Check.Readability.MaxLineLength, priority: :low, max_length: 100},
