@@ -1,6 +1,6 @@
-<h2>Edit student</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: student_path(@conn, :update, @student) %>
-
-<%= link "Back", to: student_path(@conn, :index) %>
+  <%= render "form.html", title: Enum.join([ @changeset.data.name, @changeset.data.family_name ], " "),
+                          changeset: @changeset,
+                          action: student_path(@conn, :update, @student),
+                          conn: @conn
+  %>

@@ -40,3 +40,8 @@
     }
 
   }
+
+  .form-error {
+    @extend .mdl-textfield__error;
+    font-size: 14px;
+  }
