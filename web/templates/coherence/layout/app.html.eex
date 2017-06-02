@@ -15,6 +15,7 @@
     <main role="main">
       <%= render @view_module, @view_template, assigns %>
     </main>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
