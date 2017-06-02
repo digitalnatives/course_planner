@@ -13,14 +13,41 @@ defmodule CoursePlanner.SharedView do
 
   # form components
 
-  def form_text(form, field, label, opts \\ []) do
+  def form_text(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_text.html", form: form, field: field, label: label, class: class
+    wrapper_class = ""
+
+    if form.errors[field] do
+      wrapper_class = "is-invalid"
+    end
+
+    required = opts[:required] || nil
+
+    render "form_text.html", form: form,
+                             field: field,
+                             wrapper_class: wrapper_class,
+                             class: class,
+                             required: required
   end
 
-  def form_password(form, field, label, opts  \\ []) do
+  def form_password(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_password.html", form: form, field: field, label: label, class: class
+    required = opts[:required] || nil
+
+    render "form_password.html", form: form,
+                                 field: field,
+                                 class: class,
+                                 required: required
+  end
+
+  def form_select(form, field, options, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_select.html", form: form, field: field, options: options, class: class
+  end
+
+  def form_button(label, to, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_button.html", label: label, to: to, class: class
   end
 
   def form_submit(form, label, opts \\ []) do

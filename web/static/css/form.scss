@@ -3,3 +3,40 @@
     width: 100%;
   }
 
+  .mdl-button {
+    padding: 0;
+  }
+
+  .form-select {
+    position: relative;
+
+    &__select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-indent: 1px;
+      text-overflow: '';
+
+      &:focus ~ .form-select__icon--up { display: inline; }
+      &:focus ~ .form-select__icon--down { display: none; }
+
+      &:focus {
+        outline: 0;
+
+        &:-moz-focusring {
+          color: transparent;
+          text-shadow: 0 0 0 #000;
+        }
+      }
+
+    }
+
+    &__icon {
+      position: absolute;
+      top: calc( 50% - 10px );
+      right: 5px;
+
+      &--up { display: none; }
+      &--down { display: inline; }
+    }
+
+  }

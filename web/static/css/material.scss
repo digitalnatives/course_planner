@@ -1,4 +1,8 @@
 
+  input:required, input:invalid {
+    box-shadow:none;
+  }
+
   @function rgb-substring( $color ) {
     @return red( $color ) + "," + green( $color ) + "," + blue( $color );
   }
