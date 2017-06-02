@@ -1,0 +1,34 @@
+<h2>Filling attendances for <%=@offered_course.course.name%></h2>
+<h3>Taught by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
+
+<%= form_for @changeset, attendance_update_fill_path(@conn, :update_fill, @offered_course), fn f -> %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Class Date</th>
+      <th>Class Time</th>
+      <%= for student <- @offered_course.students do %>
+        <th><%= get_student_display_name(student) %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%= inputs_for f, :classes, fn ch -> %>
+      <tr>
+        <td><%= ch.data.date %></td>
+        <td><%= ch.data.starting_at %></td>
+        <%= inputs_for ch, :attendances, fn fh -> %>
+          <td><%= select(fh, :attendance_type, ["Present", "Absent", "Not filled"], selected: fh.data.attendance_type) %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="form-group">
+  <%= submit "Submit", class: "btn btn-primary" %>
+</div>
+<% end %>
+
+<%= link "Back", to: attendance_path(@conn, :index) %>

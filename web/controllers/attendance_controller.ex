@@ -1,7 +1,7 @@
 defmodule CoursePlanner.AttendanceController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{AttendanceHelper, OfferedCourse}
+  alias CoursePlanner.{AttendanceHelper, Attendance, OfferedCourse}
 
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
     offered_courses = AttendanceHelper.get_all_offered_courses()
@@ -43,5 +43,50 @@ defmodule CoursePlanner.AttendanceController do
     attendances = AttendanceHelper.get_student_attendances(offered_course_id, id)
 
     render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
+  end
+
+  def fill_course(%{assigns: %{current_user: %{role: role}}} = conn, %{"attendance_id" => id})
+    when role in ["Coordinator", "Teacher"] do
+
+    offered_course = AttendanceHelper.get_course_attendances(id)
+
+    changeset = OfferedCourse.changeset(offered_course)
+
+    render(conn, "fill_course_attendance.html", offered_course: offered_course,
+           changeset: changeset)
+  end
+
+  def update_fill(%{assigns: %{current_user: %{role: role}}} = conn,
+       %{"offered_course" => %{"classes" => classes}, "attendance_id" => offered_course_id})
+    when role in ["Coordinator", "Teacher"] do
+
+      attendances_data =
+        classes
+        |> Map.values()
+        |> Enum.map(fn(class_value) ->
+             Map.values(class_value["attendances"])
+           end)
+        |> List.flatten
+
+      attendance_changeset_list =
+        attendances_data
+        |> Enum.map(fn(attendance_params) ->
+             attendance = Repo.get!(Attendance, attendance_params["id"])
+             Attendance.changeset(attendance, attendance_params)
+           end)
+
+      case AttendanceHelper.update_multiple_attendances(attendance_changeset_list) do
+        {:ok, _data} ->
+          conn
+          |> put_flash(:info, "attendances updated successfully.")
+          |> redirect(to: attendance_path(conn, :show, offered_course_id))
+        {:error, _failed_operation, _failed_value, _changes_so_far} ->
+          offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
+          changeset = OfferedCourse.changeset(offered_course)
+          conn
+          |> put_flash(:error, "Something went wrong.")
+          |> render("fill_course_attendance.html", offered_course: offered_course,
+                 changeset: changeset)
+      end
   end
 end
