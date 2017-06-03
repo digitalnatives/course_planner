@@ -1,11 +1,16 @@
 defimpl Canada.Can, for: CoursePlanner.User do
-  alias CoursePlanner.{Tasks.Task, Terms.Term, User}
+  alias CoursePlanner.{Tasks.Task, Terms.Term, User, Class}
 
   def can?(%User{role: "Coordinator"}, _, _), do: true
 
   def can?(%User{role: role}, _action, Term)
     when role in ["Teacher", "Student", "Volunteer"], do: false
-  def can?(%User{role: role}, _action, %Term{})
+  def can?(%User{role: role}, action, %Term{})
+    when role in ["Teacher", "Student", "Volunteer"], do: false
+
+  def can?(%User{role: role}, _action, Class)
+    when role in ["Teacher", "Student", "Volunteer"], do: false
+  def can?(%User{role: role}, _action, %Class{})
     when role in ["Teacher", "Student", "Volunteer"], do: false
 
   def can?(%User{role: "Volunteer", id: id}, :show, %Task{user_id: id}), do: true
