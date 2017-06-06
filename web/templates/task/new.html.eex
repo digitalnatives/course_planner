@@ -1,7 +1,8 @@
-<h2>New task</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: task_path(@conn, :create),
-                        users: @users %>
+  <%= render "form.html", title: "New task",
+                          changeset: @changeset,
+                          action: task_path(@conn, :create),
+                          conn: @conn,
+                          users: @users
+  %>
 
-<%= link "Back", to: task_path(@conn, :index) %>
