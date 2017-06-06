@@ -9,3 +9,5 @@
       APPLICATION
   */
 
+  var multiselect = require( "./multiselect" );
+  multiselect.initializeMultiselects();

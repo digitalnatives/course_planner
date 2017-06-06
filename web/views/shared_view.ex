@@ -66,6 +66,24 @@ defmodule CoursePlanner.SharedView do
                                class: class
   end
 
+  def form_multiselect(form, field, options, opts \\ []) do
+    class = opts[:class] || ""
+    selected = opts[:selected] || nil
+    tooltip_text = opts[:tooltip_text] || "Add new item"
+
+    multiselect_id = (Atom.to_string field) <> "__multiselect"
+    button_id = (Atom.to_string field) <> "__add-button"
+
+    render "form_multiselect.html", form: form,
+                               field: field,
+                               selected: selected,
+                               options: options,
+                               tooltip_text: tooltip_text,
+                               class: class,
+                               button_id: button_id,
+                               multiselect_id: multiselect_id
+  end
+
   def form_button(label, to, opts \\ []) do
     class = opts[:class] || ""
     render "form_button.html", label: label, to: to, class: class

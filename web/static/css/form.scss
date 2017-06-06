@@ -71,6 +71,28 @@
 
   }
 
+  .form-multiselect {
+
+    &__add-button {
+      margin-left: -5px;
+      margin-top: 20px;
+
+      i { pointer-events: none; }
+    }
+
+    &__select {
+      display: none;
+    }
+
+    &__tags {
+      margin-bottom: 20px;
+    }
+
+    &__delete i {
+      pointer-events: none;
+    }
+  }
+
   .form-error {
     @extend .mdl-textfield__error;
     font-size: 14px;
