@@ -3,6 +3,8 @@ defmodule CoursePlanner.CourseControllerTest do
   alias CoursePlanner.User
   alias CoursePlanner.Course
 
+  import CoursePlanner.Factory
+
   @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
   @invalid_attrs %{}
   @user %User{
@@ -16,6 +18,13 @@ defmodule CoursePlanner.CourseControllerTest do
       Phoenix.ConnTest.build_conn()
         |> assign(:current_user, @user)
     {:ok, conn: conn}
+  end
+
+  defp login_as(user_type) do
+    user = insert(user_type)
+
+    Phoenix.ConnTest.build_conn()
+    |> assign(:current_user, user)
   end
 
   test "lists all entries on index", %{conn: conn} do
@@ -46,9 +55,8 @@ defmodule CoursePlanner.CourseControllerTest do
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, course_path(conn, :show, -1)
-    end
+    conn = get conn, course_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
@@ -156,5 +164,121 @@ defmodule CoursePlanner.CourseControllerTest do
   test "does not create resource and renders errors when data value of status is Frozen", %{conn: conn} do
     conn = post conn, course_path(conn, :create), course: %{@valid_attrs | status: "Frozen"}
     assert html_response(conn, 200) =~ "New course"
+  end
+
+  test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    course = insert(:course)
+
+    conn = get student_conn, course_path(student_conn, :show, course)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, course_path(teacher_conn, :show, course)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, course_path(volunteer_conn, :show, course)
+    assert html_response(conn, 403)
+  end
+
+
+  test "does not list entries on index for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, course_path(student_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, course_path(teacher_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, course_path(volunteer_conn, :index)
+    assert html_response(conn, 403)
+  end
+
+  test "does not renders form for editing chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    course = insert(:course)
+
+    conn = get student_conn, course_path(student_conn, :edit, course)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, course_path(teacher_conn, :edit, course)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, course_path(volunteer_conn, :edit, course)
+    assert html_response(conn, 403)
+  end
+
+  test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    course = insert(:course)
+
+    conn = delete student_conn, course_path(student_conn, :delete, course.id)
+    assert html_response(conn, 403)
+
+    conn = delete teacher_conn, course_path(teacher_conn, :delete, course.id)
+    assert html_response(conn, 403)
+
+    conn = delete volunteer_conn, course_path(volunteer_conn, :delete, course.id)
+    assert html_response(conn, 403)
+  end
+
+  test "does not render form for new class for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, course_path(student_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, course_path(teacher_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, course_path(volunteer_conn, :new)
+    assert html_response(conn, 403)
+  end
+
+  test "does not create class for non coordinator use", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    course = insert(:course)
+
+    conn = post student_conn, course_path(student_conn, :create), class: course
+    assert html_response(conn, 403)
+
+    conn = post teacher_conn, course_path(teacher_conn, :create), class: course
+    assert html_response(conn, 403)
+
+    conn = post volunteer_conn, course_path(volunteer_conn, :create), class: course
+    assert html_response(conn, 403)
+  end
+
+  test "does not update chosen course for non coordinator use", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    course = Repo.insert! %Course{}
+
+    conn = put student_conn, course_path(student_conn, :update, course), course: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = put teacher_conn, course_path(teacher_conn, :update, course), course: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = put volunteer_conn, course_path(volunteer_conn, :update, course), course: @valid_attrs
+    assert html_response(conn, 403)
   end
 end
