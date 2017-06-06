@@ -21,14 +21,17 @@ defmodule CoursePlanner.Router do
   end
 
   scope "/" do
+    pipe_through :protected
+    coherence_routes :protected
+  end
+
+  scope "/" do
     pipe_through :browser
     coherence_routes()
   end
 
   scope "/", CoursePlanner do
     pipe_through :protected
-
-    coherence_routes :protected
 
     get "/", PageController, :index
 
