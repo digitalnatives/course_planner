@@ -136,8 +136,18 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Show class"
   end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    conn = get conn, class_path(conn, :show, -1)
+  test "renders page not found when id is nonexistent", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, class_path(student_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get teacher_conn, class_path(teacher_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :show, -1)
     assert html_response(conn, 404)
   end
 
