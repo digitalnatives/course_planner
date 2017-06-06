@@ -23,25 +23,42 @@ defmodule CoursePlanner.AttendanceController do
 
   def show(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn,
            %{"id" => offered_course_id}) do
-    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
-    render(conn, "show_coordinator.html", offered_course: offered_course)
+    case AttendanceHelper.get_course_attendances(offered_course_id) do
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      offered_course ->
+        render(conn, "show_coordinator.html", offered_course: offered_course)
+    end
   end
 
-  def show(%{assigns: %{current_user: %{id: _id, role: "Teacher"}}} = conn,
+  def show(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn,
            %{"id" => offered_course_id}) do
-    offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
-    render(conn, "show_teacher.html", offered_course: offered_course)
+    case AttendanceHelper.get_teacher_course_attendances(offered_course_id, id) do
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      offered_course ->
+        render(conn, "show_teacher.html", offered_course: offered_course)
+    end
   end
 
   def show(%{assigns: %{current_user: %{id: id, role: "Student"}}} = conn,
            %{"id" => offered_course_id}) do
     offered_course =
-     OfferedCourse
-     |> Repo.get!(offered_course_id)
-     |> Repo.preload([:term, :course, :teachers])
+    OfferedCourse
+    |> Repo.get(offered_course_id)
+    |> Repo.preload([:term, :course, :teachers])
 
-    attendances = AttendanceHelper.get_student_attendances(offered_course_id, id)
-
-    render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
+    case AttendanceHelper.get_student_attendances(offered_course_id, id) do
+     [] ->
+       conn
+       |> put_status(404)
+       |> render(CoursePlanner.ErrorView, "404.html")
+     attendances ->
+       render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
+    end
   end
 end
