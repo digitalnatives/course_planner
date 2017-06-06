@@ -1,6 +1,6 @@
-<h2>New offered course</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: offered_course_path(@conn, :create) %>
-
-<%= link "Back", to: offered_course_path(@conn, :index) %>
+  <%= render "form.html", title: "New offered course",
+                          changeset: @changeset,
+                          action: offered_course_path(@conn, :create),
+                          conn: @conn
+  %>
