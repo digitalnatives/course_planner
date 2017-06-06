@@ -40,6 +40,21 @@ defmodule CoursePlanner.SharedView do
                                  required: required
   end
 
+  def form_date(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_date.html", form: form, field: field, class: class
+  end
+
+  def form_time(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_time.html", form: form, field: field, class: class
+  end
+
+  def form_datetime(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_datetime.html", form: form, field: field, class: class
+  end
+
   def form_select(form, field, options, opts \\ []) do
     class = opts[:class] || ""
     render "form_select.html", form: form, field: field, options: options, class: class

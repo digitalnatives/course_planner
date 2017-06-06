@@ -1,0 +1,43 @@
+
+  <div class="row row--hspace">
+    <div class="col-xs-3">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <%= label @form, @field, class: "mdl-textfield__label" %>
+      </div>
+    </div>
+    <div class="col-xs-3">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:month, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:day, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--colon-after">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:hour, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+      </div>
+    </div>
+  </div>
