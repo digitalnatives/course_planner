@@ -45,7 +45,7 @@ defmodule CoursePlanner.VolunteerController do
         Users.notify_user(volunteer,
           current_user,
           :user_modified,
-          volunteer_path(conn, :show, volunteer))
+          volunteer_url(conn, :show, volunteer))
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))

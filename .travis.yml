@@ -22,4 +22,4 @@ before_script:
 script:
   - mix compile --warnings-as-errors
   - mix credo --strict
-  - mix test
+  - mix coveralls.travis

@@ -24,7 +24,7 @@ defmodule CoursePlanner.ClassController do
         ClassHelper.notify_class_students(class,
           current_user,
           :class_subscribed,
-          class_path(conn, :show, class))
+          class_url(conn, :show, class))
 
         class
         |> Repo.preload(:students)
@@ -61,7 +61,7 @@ defmodule CoursePlanner.ClassController do
         ClassHelper.notify_class_students(class,
           current_user,
           :class_updated,
-          class_path(conn, :show, class))
+          class_url(conn, :show, class))
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :show, class))

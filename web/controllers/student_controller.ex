@@ -42,7 +42,7 @@ defmodule CoursePlanner.StudentController do
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Students.update(id, params) do
       {:ok, student} ->
-        Users.notify_user(student, current_user, :user_modified, student_path(conn, :show, student))
+        Users.notify_user(student, current_user, :user_modified, student_url(conn, :show, student))
         conn
         |> put_flash(:info, "Student updated successfully.")
         |> redirect(to: student_path(conn, :show, student))
