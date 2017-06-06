@@ -4,10 +4,8 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Description</th>
       <th>Number of sessions</th>
       <th>Session duration</th>
-      <th>Syllabus</th>
       <th>Status</th>
 
       <th></th>
@@ -17,10 +15,8 @@
 <%= for course <- @courses do %>
     <tr>
       <td><%= course.name %></td>
-      <td><%= course.description %></td>
       <td><%= course.number_of_sessions %></td>
       <td><%= course.session_duration %></td>
-      <td><%= course.syllabus %></td>
       <td><%= course.status %></td>
 
       <td class="text-right">

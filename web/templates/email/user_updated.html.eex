@@ -1,0 +1,4 @@
+<div>
+  <h2><%= @name%>, your profile is updated.</h2>
+  <h3>Check your profile <%= link "here: ", to: @path%></h3>
+</div>

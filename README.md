@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/digitalnatives/course_planner.svg?branch=master)](https://travis-ci.org/digitalnatives/course_planner)
+[![codebeat badge](https://codebeat.co/badges/ddc1feb0-d6a0-451f-b77d-1196254ac024)](https://codebeat.co/projects/github-com-digitalnatives-course_planner-master)
 
 # Course Planner
 

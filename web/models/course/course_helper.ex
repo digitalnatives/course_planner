@@ -5,8 +5,7 @@ defmodule CoursePlanner.CourseHelper do
   use CoursePlanner.Web, :model
   import Ecto.DateTime, only: [utc: 0]
 
-  alias CoursePlanner.Repo
-  alias CoursePlanner.Course
+  alias CoursePlanner.{Repo, Course, Notifier, Coordinators, Notifier.Notification}
 
   def delete(course) do
     case course.status do
@@ -27,5 +26,36 @@ defmodule CoursePlanner.CourseHelper do
   def all_none_deleted do
     query = from c in Course , where: is_nil(c.deleted_at)
     Repo.all(query)
+  end
+
+  def notify_user_course(course, current_user, notification_type, path \\ "/") do
+    course
+    |> get_subscribed_users()
+    |> Enum.reject(fn %{id: id} -> id == current_user.id end)
+    |> Enum.each(&(notify_user(&1, notification_type, path)))
+  end
+
+  def notify_user(user, type, path) do
+    Notification.new()
+    |> Notification.type(type)
+    |> Notification.resource_path(path)
+    |> Notification.to(user)
+    |> Notifier.notify_user()
+  end
+
+  defp get_subscribed_users(course) do
+    offered_courses = course
+    |> Repo.preload([:offered_courses, offered_courses: :students, offered_courses: :teachers])
+    |> Map.get(:offered_courses)
+
+    students = offered_courses
+    |> Enum.flat_map(&(Map.get(&1, :students)))
+    |> Enum.uniq_by(fn %{id: id} -> id end)
+
+    teachers = offered_courses
+    |> Enum.flat_map(&(Map.get(&1, :teachers)))
+    |> Enum.uniq_by(fn %{id: id} -> id end)
+
+    students ++ teachers ++ Coordinators.all()
   end
 end

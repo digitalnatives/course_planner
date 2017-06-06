@@ -1,8 +1,7 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.User
+  alias CoursePlanner.{User, Users}
   require Logger
-  alias CoursePlanner.Users
 
   def index(conn, _params) do
     query = from u in User, where: is_nil(u.deleted_at)
@@ -26,12 +25,13 @@ defmodule CoursePlanner.UserController do
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
 
     case Repo.update(changeset) do
       {:ok, user} ->
+        Users.notify_user(user, current_user, :user_modified, user_path(conn, :show, user))
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))

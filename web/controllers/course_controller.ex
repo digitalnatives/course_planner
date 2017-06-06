@@ -38,12 +38,16 @@ defmodule CoursePlanner.CourseController do
     render(conn, "edit.html", course: course, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "course" => course_params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "course" => course_params}) do
     course = Repo.get!(Course, id)
     changeset = Course.changeset(course, course_params)
 
     case Repo.update(changeset) do
       {:ok, course} ->
+        CourseHelper.notify_user_course(course,
+          current_user,
+          :course_updated,
+          course_path(conn, :show, course))
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :show, course))
@@ -52,9 +56,10 @@ defmodule CoursePlanner.CourseController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     course = Repo.get!(Course, id)
     CourseHelper.delete(course)
+    CourseHelper.notify_user_course(course, current_user, :course_deleted)
     conn
     |> put_flash(:info, "Course deleted successfully.")
     |> redirect(to: course_path(conn, :index))
