@@ -2,6 +2,8 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   use CoursePlanner.ConnCase
 
   alias CoursePlanner.{Course, OfferedCourse, Repo, Terms, User}
+  import CoursePlanner.Factory
+
   def valid_attrs do
     %{
       term_id: term().id,
@@ -112,5 +114,19 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     conn = delete conn, offered_course_path(conn, :delete, offered_course)
     assert redirected_to(conn) == offered_course_path(conn, :index)
     refute Repo.get(OfferedCourse, offered_course.id)
+  end
+
+  test "does not create an offered_course if already is done in the requested term", %{conn: conn} do
+    course = insert(:course)
+    term = insert(:term)
+    insert(:offered_course, %{term: term, course: course})
+    offered_course_duplicate_attrs =
+      %{
+        term_id: term.id,
+        course_id: course.id
+      }
+
+    conn = post conn, offered_course_path(conn, :create), offered_course: offered_course_duplicate_attrs
+    assert html_response(conn, 200) =~ "This course is already offered in this term"
   end
 end
