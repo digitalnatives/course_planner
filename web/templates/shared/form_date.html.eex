@@ -6,6 +6,11 @@
           <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <%= label @form, @field, class: "mdl-textfield__label" %>
+        <%= if @form.errors[@field] do %>
+          <span class="mdl-textfield__error">
+            <%= error_tag @form, @field %>
+          </span>
+        <% end %>
       </div>
     </div>
     <div class="col-xs-3">
