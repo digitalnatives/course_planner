@@ -53,6 +53,24 @@ defmodule CoursePlanner.ClassControllerTest do
     assert Repo.get_by(Class, completed_attributes)
   end
 
+  test "creates resource fails cause no teacher is assigned", %{conn: conn} do
+    students =insert_list(3, :student)
+    created_course = insert(:offered_course, students: students)
+    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
+    conn = post conn, class_path(conn, :create), class: completed_attributes
+    assert html_response(conn, 200) =~ "New class"
+    refute Repo.get_by(Class, completed_attributes)
+  end
+
+  test "creates resource fails cause no student is assigned", %{conn: conn} do
+    teachers = [insert(:teacher)]
+    created_course = insert(:offered_course, teachers: teachers)
+    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
+    conn = post conn, class_path(conn, :create), class: completed_attributes
+    assert html_response(conn, 200) =~ "New class"
+    refute Repo.get_by(Class, completed_attributes)
+  end
+
   test "creates resource and redirects when data is valid and status is Active", %{conn: conn} do
     created_course = create_course()
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "Active"}
