@@ -30,14 +30,17 @@ defmodule CoursePlanner.AttendanceHelper do
   def get_all_offered_courses do
     Repo.all(from oc in OfferedCourse,
       join: c in assoc(oc, :classes),
-      preload: [:term, :course, :teachers, classes: c])
+      join: s in assoc(oc, :students),
+      join: t in assoc(oc, :teachers),
+      preload: [:term, :course, teachers: t, students: s, classes: c])
   end
 
   def get_all_teacher_offered_courses(teacher_id) do
     Repo.all(from oc in OfferedCourse,
       join: t in assoc(oc, :teachers),
       join: c in assoc(oc, :classes),
-      preload: [:term, :course, teachers: t, classes: c],
+      join: s in assoc(oc, :students),
+      preload: [:term, :course, teachers: t, students: s, classes: c],
       where: t.id == ^teacher_id)
   end
 
@@ -45,7 +48,8 @@ defmodule CoursePlanner.AttendanceHelper do
     Repo.all(from oc in OfferedCourse,
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
-      preload: [:term, :course, :teachers, students: s, classes: c],
+      join: t in assoc(oc, :teachers),
+      preload: [:term, :course, teachers: t, students: s, classes: c],
       where: s.id == ^student_id)
   end
 end
