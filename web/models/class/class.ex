@@ -4,7 +4,7 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{OfferedCourse, Types, Attendance}
+  alias CoursePlanner.{Repo, OfferedCourse, Types, Attendance}
   alias Ecto.{Time, Date, DateTime}
 
   schema "classes" do
@@ -41,6 +41,7 @@ defmodule CoursePlanner.Class do
   def changeset(struct, params, :create) do
     struct
     |> changeset(params)
+    |> validate_offered_course()
     |> validate_inclusion(:status, ["Planned", "Active"])
     |> validate_duration()
   end
@@ -72,5 +73,22 @@ defmodule CoursePlanner.Class do
   end
 
   def validate_duration(changeset), do: changeset
+
+  def validate_offered_course(%{changes: changes, valid?: true} = changeset) do
+    offered_course_id = Map.get(changes, :offered_course_id)
+
+    query = from oc in OfferedCourse,
+      join: t in assoc(oc, :teachers),
+      join: s in assoc(oc, :students),
+      preload: [teachers: t, students: s],
+      where: oc.id == ^offered_course_id
+
+      case Repo.one(query) do
+        nil -> add_error(changeset, :offered_course_status,
+                 "Attached course should have at least one teacher and one student")
+        _   -> changeset
+      end
+  end
+  def validate_offered_course(changeset), do: changeset
 
 end
