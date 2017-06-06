@@ -11,6 +11,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
   def can?(%User{role: role}, _action, Class)
     when role in ["Teacher", "Student", "Volunteer"], do: false
   def can?(%User{role: role}, _action, %Class{})
+   when role in ["Teacher", "Student", "Volunteer"], do: false
 
   def can?(%User{role: role}, _action, Course)
     when role in ["Teacher", "Student", "Volunteer"], do: false
