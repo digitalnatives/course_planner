@@ -57,7 +57,13 @@ defmodule CoursePlanner.SharedView do
 
   def form_select(form, field, options, opts \\ []) do
     class = opts[:class] || ""
-    render "form_select.html", form: form, field: field, options: options, class: class
+    selected = opts[:selected] || nil
+
+    render "form_select.html", form: form,
+                               field: field,
+                               selected: selected,
+                               options: options,
+                               class: class
   end
 
   def form_button(label, to, opts \\ []) do

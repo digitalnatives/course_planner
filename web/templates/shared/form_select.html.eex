@@ -1,6 +1,8 @@
 
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select">
-    <%= select @form, @field, @options, class: "form-select__select mdl-textfield__input" %>
+    <%= select @form, @field, @options, class: "form-select__select mdl-textfield__input",
+                                        selected: @selected
+    %>
     <%= label @form, @field, class: "mdl-textfield__label" %>
     <i class="material-icons form-select__icon form-select__icon--down">&#xE313;</i>
     <i class="material-icons form-select__icon form-select__icon--up">&#xE316;</i>
