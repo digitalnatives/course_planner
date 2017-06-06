@@ -47,7 +47,7 @@ defmodule CoursePlanner.CourseController do
         CourseHelper.notify_user_course(course,
           current_user,
           :course_updated,
-          course_path(conn, :show, course))
+          course_url(conn, :show, course))
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :show, course))
