@@ -48,9 +48,9 @@ defmodule CoursePlanner.ClassController do
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
       class ->
-        class
-        |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
-        |> (&render(conn, "show.html", class: &1)).()
+        class = Repo.preload(class, [:offered_course, offered_course: :term,
+                                      offered_course: :course])
+        render(conn, "show.html", class: class)
     end
   end
 
