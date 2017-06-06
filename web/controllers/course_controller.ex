@@ -4,6 +4,9 @@ defmodule CoursePlanner.CourseController do
   alias CoursePlanner.Course
   alias CoursePlanner.CourseHelper
 
+  import Canary.Plugs
+  plug :authorize_resource, model: Course
+
   def index(conn, _params) do
     courses = CourseHelper.all_none_deleted()
     render(conn, "index.html", courses: courses)
@@ -28,8 +31,14 @@ defmodule CoursePlanner.CourseController do
   end
 
   def show(conn, %{"id" => id}) do
-    course = Repo.get!(Course, id)
-    render(conn, "show.html", course: course)
+    case Repo.get(Course, id) do
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      course ->
+        render(conn, "show.html", course: course)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
@@ -47,7 +56,7 @@ defmodule CoursePlanner.CourseController do
         CourseHelper.notify_user_course(course,
           current_user,
           :course_updated,
-          course_path(conn, :show, course))
+          course_url(conn, :show, course))
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :show, course))

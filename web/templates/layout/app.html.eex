@@ -17,6 +17,9 @@
         <nav class="navbar navbar-default">
           <ul class="nav navbar-nav">
             <li>
+              <%= CoursePlanner.Coherence.ViewHelpers.coherence_links(@conn, :layout) %>
+            </li>
+            <li>
               <%= link "Home", to: page_path(@conn, :index)%>
             </li>
             <li>
