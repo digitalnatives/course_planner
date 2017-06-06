@@ -3,6 +3,9 @@ defmodule CoursePlanner.CoordinatorController do
   alias CoursePlanner.{User, Coordinators, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
 
+  import Canary.Plugs
+  plug :authorize_resource, model: User
+
   def index(conn, _params) do
     render(conn, "index.html", coordinators: Coordinators.all())
   end
