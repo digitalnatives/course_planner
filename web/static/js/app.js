@@ -5,7 +5,7 @@
 
   require( "material-design-lite" );
 
-  import "phoenix_html"
+  reqire( "phoenix_html" );
 
   /*
       APPLICATION

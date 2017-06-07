@@ -62,9 +62,9 @@ gulp.task('css-app', function() {
 gulp.task('js-app', function() {
   return gulp
     .src( jsEntryPath )
-    .pipe( concat('app.js') )
-    .pipe( babel({presets: ['es2015']}) )
     .pipe( browserify( { debug: gutil.env.env !== 'production' } ) )
+    .pipe( babel({presets: ['es2015']}) )
+    .pipe( concat('app.js') )
     .pipe( gutil.env.env === 'production' ? uglify() : gutil.noop() )
     .on( "error",
       function ( err ) {
