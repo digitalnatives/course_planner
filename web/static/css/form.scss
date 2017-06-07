@@ -35,10 +35,12 @@
       &--text-center {
         text-align: center;
         text-align-last: center;
+        padding-right: 10px;
       }
     }
 
     &__icon {
+      color: $grey-600;
       position: absolute;
       top: calc( 50% - 10px );
       right: 5px;
@@ -67,7 +69,6 @@
   }
 
   .form-multiselect {
-
     &__add-button {
       margin-left: -5px;
       margin-top: 20px;
