@@ -99,4 +99,19 @@ defmodule CoursePlanner.AttendanceControllerTest do
       get user_conn, attendance_path(user_conn, :show, attendance)
     end
   end
+
+  test "renders page not found when id is nonexistent", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    coordinator_conn = login_as(:coordinator)
+
+    conn = get student_conn, attendance_path(student_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get teacher_conn, attendance_path(teacher_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get coordinator_conn, attendance_path(coordinator_conn, :show, -1)
+    assert html_response(conn, 404)
+  end
 end
