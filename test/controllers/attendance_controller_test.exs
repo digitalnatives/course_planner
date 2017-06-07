@@ -105,9 +105,8 @@ defmodule CoursePlanner.AttendanceControllerTest do
     teacher_conn = login_as(:teacher)
     coordinator_conn = login_as(:coordinator)
 
-    assert_error_sent 404, fn ->
-      get student_conn, attendance_path(student_conn, :show, -1)
-    end
+    result_student_conn = get student_conn, attendance_path(student_conn, :show, -1)
+    assert html_response(result_student_conn, 404)
 
     result_teacher_conn = get teacher_conn, attendance_path(teacher_conn, :show, -1)
     assert html_response(result_teacher_conn, 404)
