@@ -28,6 +28,13 @@ defmodule CoursePlanner.ClassControllerTest do
     %OfferedCourse{} |> OfferedCourse.changeset(%{course_id: course.id, term_id: term.id}) |> Repo.insert
   end
 
+  defp login_as(user_type) do
+    user = insert(user_type)
+
+    Phoenix.ConnTest.build_conn()
+    |> assign(:current_user, user)
+  end
+
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, class_path(conn, :index)
     assert html_response(conn, 200) =~ "Listing classes"
@@ -129,10 +136,19 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Show class"
   end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, class_path(conn, :show, -1)
-    end
+  test "renders page not found when id is nonexistent", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, class_path(student_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get teacher_conn, class_path(teacher_conn, :show, -1)
+    assert html_response(conn, 404)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
@@ -311,5 +327,128 @@ defmodule CoursePlanner.ClassControllerTest do
     soft_deleted_course = Repo.get(Class, class.id)
     assert soft_deleted_course.deleted_at
     assert 3 == length(Repo.all(Attendance))
+  end
+
+  test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    {:ok, created_course} = create_course()
+    class = Repo.insert! %Class{offered_course_id: created_course.id}
+
+    conn = get student_conn, class_path(student_conn, :show, class)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, class_path(teacher_conn, :show, class)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :show, class)
+    assert html_response(conn, 403)
+  end
+
+  test "does not list entries on index for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, class_path(student_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, class_path(teacher_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :index)
+    assert html_response(conn, 403)
+  end
+
+  test "does not renders form for editing chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    {:ok, created_course} = create_course()
+    class = Repo.insert! %Class{offered_course_id: created_course.id}
+
+    conn = get student_conn, class_path(student_conn, :edit, class)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, class_path(teacher_conn, :edit, class)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :edit, class)
+    assert html_response(conn, 403)
+  end
+
+  test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    {:ok, created_course} = create_course()
+    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_args
+
+    conn = delete student_conn, class_path(student_conn, :delete, class.id)
+    assert html_response(conn, 403)
+
+    conn = delete teacher_conn, class_path(teacher_conn, :delete, class.id)
+    assert html_response(conn, 403)
+
+    conn = delete volunteer_conn, class_path(volunteer_conn, :delete, class.id)
+    assert html_response(conn, 403)
+  end
+
+  test "does not render form for new class for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, class_path(student_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, class_path(teacher_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, class_path(volunteer_conn, :new)
+    assert html_response(conn, 403)
+  end
+
+  test "does not create class for non coordinator use", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    {:ok, created_course} = create_course()
+    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
+
+    conn = post student_conn, class_path(student_conn, :create), class: completed_attributes
+    assert html_response(conn, 403)
+
+    conn = post teacher_conn, class_path(teacher_conn, :create), class: completed_attributes
+    assert html_response(conn, 403)
+
+    conn = post volunteer_conn, class_path(volunteer_conn, :create), class: completed_attributes
+    assert html_response(conn, 403)
+  end
+
+  test "does not update chosen class for non coordinator use", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    {:ok, created_course} = create_course()
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class = Repo.insert! class_insert_args
+    update_params = %{@valid_attrs | offered_course_id: created_course.id}
+
+    conn = put student_conn, class_path(student_conn, :update, class), class: update_params
+    assert html_response(conn, 403)
+
+    conn = put teacher_conn, class_path(teacher_conn, :update, class), class: update_params
+    assert html_response(conn, 403)
+
+    conn = put volunteer_conn, class_path(volunteer_conn, :update, class), class: update_params
+    assert html_response(conn, 403)
   end
 end

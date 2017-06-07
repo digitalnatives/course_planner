@@ -33,9 +33,9 @@ defmodule CoursePlanner.AttendanceController do
     end
   end
 
-  def show(%{assigns: %{current_user: %{id: _id, role: "Teacher"}}} = conn,
+  def show(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn,
            %{"id" => offered_course_id}) do
-    case AttendanceHelper.get_course_attendances(offered_course_id) do
+    case AttendanceHelper.get_teacher_course_attendances(offered_course_id, id) do
       nil ->
         conn
         |> put_status(404)
@@ -48,17 +48,17 @@ defmodule CoursePlanner.AttendanceController do
   def show(%{assigns: %{current_user: %{id: id, role: "Student"}}} = conn,
            %{"id" => offered_course_id}) do
     offered_course =
-     OfferedCourse
-     |> Repo.get!(offered_course_id)
-     |> Repo.preload([:term, :course, :teachers])
+    OfferedCourse
+    |> Repo.get(offered_course_id)
+    |> Repo.preload([:term, :course, :teachers])
 
     case AttendanceHelper.get_student_attendances(offered_course_id, id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-      attendances ->
-        render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
+     [] ->
+       conn
+       |> put_status(404)
+       |> render(CoursePlanner.ErrorView, "404.html")
+     attendances ->
+       render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
     end
   end
 

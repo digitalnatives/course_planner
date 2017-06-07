@@ -45,7 +45,7 @@ defmodule CoursePlanner.CoordinatorController do
         Users.notify_user(coordinator,
           current_user,
           :user_modified,
-          coordinator_path(conn, :show, coordinator))
+          coordinator_url(conn, :show, coordinator))
         conn
         |> put_flash(:info, "Coordinator updated successfully.")
         |> redirect(to: coordinator_path(conn, :show, coordinator))
