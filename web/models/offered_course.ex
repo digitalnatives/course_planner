@@ -4,7 +4,7 @@ defmodule CoursePlanner.OfferedCourse do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Course, Terms.Term, User, Class, OfferedCourse}
+  alias CoursePlanner.{Course, Terms.Term, User, Class}
 
   schema "offered_courses" do
     belongs_to :term, Term
@@ -29,24 +29,7 @@ defmodule CoursePlanner.OfferedCourse do
     |> validate_required([:term_id, :course_id])
     |> assoc_constraint(:term)
     |> assoc_constraint(:course)
-    |> validate_unique_course_term()
+    |> unique_constraint(:course_id, name: :offered_courses_term_id_course_id_index,
+                         message: "This course is already offered in this term")
   end
-
-  defp validate_unique_course_term(%{changes: changes, valid?: true} = changeset) do
-    course_id = Map.get(changes, :course_id) || Map.get(changeset.data, :course_id)
-    term_id = Map.get(changes, :term_id) || Map.get(changeset.data, :term_id)
-
-    query = from oc in OfferedCourse,
-      join: c in assoc(oc, :course),
-      join: t in assoc(oc, :term),
-      preload: [course: c, term: t],
-      where: t.id == ^term_id and c.id == ^course_id
-
-    case Repo.one(query) do
-      nil -> changeset
-      _   -> add_error(changeset, :course_id,
-                       "This course is already offered in this term")
-    end
-  end
-  defp validate_unique_course_term(changeset), do: changeset
 end
