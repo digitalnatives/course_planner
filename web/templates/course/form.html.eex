@@ -12,10 +12,10 @@
               </div>
             <% end %>
             <%= CoursePlanner.SharedView.form_text f, :name %>
-            <%= CoursePlanner.SharedView.form_text f, :description %>
+            <%= CoursePlanner.SharedView.form_textarea f, :description %>
             <%= CoursePlanner.SharedView.form_text f, :number_of_sessions %>
             <%= CoursePlanner.SharedView.form_time f, :session_duration %>
-            <%= CoursePlanner.SharedView.form_text f, :syllabus %>
+            <%= CoursePlanner.SharedView.form_textarea f, :syllabus %>
             <%= CoursePlanner.SharedView.form_select f, :status, statuses %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
