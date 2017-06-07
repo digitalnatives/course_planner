@@ -30,6 +30,26 @@ defmodule CoursePlanner.SharedView do
                              required: required
   end
 
+  def form_textarea(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    wrapper_class = ""
+
+    if form.errors[field] do
+      wrapper_class = "is-invalid"
+    end
+
+    required = opts[:required] || nil
+
+    rows = opts[:rows] || 3
+
+    render "form_textarea.html", form: form,
+                             field: field,
+                             wrapper_class: wrapper_class,
+                             class: class,
+                             required: required,
+                             rows: rows
+  end
+
   def form_password(form, field, opts \\ []) do
     class = opts[:class] || ""
     required = opts[:required] || nil
