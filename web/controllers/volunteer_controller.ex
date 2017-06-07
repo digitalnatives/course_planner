@@ -3,6 +3,9 @@ defmodule CoursePlanner.VolunteerController do
   alias CoursePlanner.{User, Volunteers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
 
+  import Canary.Plugs
+  plug :authorize_resource, model: User
+
   def index(conn, _params) do
     render(conn, "index.html", volunteers: Volunteers.all())
   end
