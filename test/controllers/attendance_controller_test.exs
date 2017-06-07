@@ -6,6 +6,18 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
 
+  defp create_attendance_with_teacher(students, teachers) do
+    offered_course = insert(:offered_course, %{students: students, teachers: teachers})
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class = insert(:class, class_attrs)
+
+    Enum.map(students, fn(student)->
+         insert(:attendance, %{class: class, student: student})
+       end)
+
+    offered_course
+  end
+
   defp create_attendance(students) do
     offered_course = insert(:offered_course, %{students: students})
     class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
@@ -62,7 +74,8 @@ defmodule CoursePlanner.AttendanceControllerTest do
   test "shows chosen resource by user teacher", %{conn: _conn} do
     user_conn = login_as(:teacher)
     students = insert_list(3, :student)
-    offered_course = create_attendance(students)
+    teachers = Repo.get(User, user_conn.assigns.current_user.id)
+    offered_course = create_attendance_with_teacher(students, [teachers])
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
     assert html_response(conn, 200) =~ "Show attendance for"
