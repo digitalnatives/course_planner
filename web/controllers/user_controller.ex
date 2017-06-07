@@ -3,6 +3,9 @@ defmodule CoursePlanner.UserController do
   alias CoursePlanner.{User, Users}
   require Logger
 
+  import Canary.Plugs
+  plug :authorize_resource, model: User
+
   def index(conn, _params) do
     query = from u in User, where: is_nil(u.deleted_at)
     users = Repo.all(query)
