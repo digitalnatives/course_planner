@@ -4,8 +4,6 @@
                                         selected: @selected
     %>
     <%= label @form, @field, class: "mdl-textfield__label" %>
-    <i class="material-icons form-select__icon form-select__icon--down">&#xE313;</i>
-    <i class="material-icons form-select__icon form-select__icon--up">&#xE316;</i>
+    <i class="material-icons form-select__icon ">&#xE5C5;</i>
   </div>
-
 

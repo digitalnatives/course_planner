@@ -6,6 +6,7 @@
           <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <%= label @form, @field, class: "mdl-textfield__label" %>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
         <%= if @form.errors[@field] do %>
           <span class="mdl-textfield__error">
             <%= error_tag @form, @field %>
@@ -19,6 +20,7 @@
           <%= b.(:month, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
       </div>
     </div>
     <div class="col-xs-2">
@@ -27,6 +29,7 @@
           <%= b.(:day, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
       </div>
     </div>
     <div class="col-xs-2">
@@ -35,6 +38,7 @@
           <%= b.(:hour, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
       </div>
     </div>
     <div class="col-xs-2">
@@ -43,6 +47,7 @@
           <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
       </div>
     </div>
   </div>

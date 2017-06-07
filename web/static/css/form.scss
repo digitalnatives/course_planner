@@ -23,9 +23,6 @@
         text-indent: -2px;
       }
 
-      &:focus ~ .form-select__icon--up { display: inline; }
-      &:focus ~ .form-select__icon--down { display: none; }
-
       &:focus {
         outline: 0;
 
@@ -45,9 +42,7 @@
       position: absolute;
       top: calc( 50% - 10px );
       right: 5px;
-
-      &--up { display: none; }
-      &--down { display: inline; }
+      pointer-events: none;
     }
 
 
