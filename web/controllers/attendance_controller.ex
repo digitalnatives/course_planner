@@ -80,10 +80,9 @@ defmodule CoursePlanner.AttendanceController do
       attendances_data =
         classes
         |> Map.values()
-        |> Enum.map(fn(class_value) ->
+        |> Enum.flat_map(fn(class_value) ->
              Map.values(class_value["attendances"])
            end)
-        |> List.flatten
 
       attendance_changeset_list =
         attendances_data
