@@ -49,22 +49,43 @@ gulp.task('css-app', function() {
     .pipe( concat('app.scss') )
     .pipe( sass( { importer: moduleImporter() } ).on('error', sass.logError ) )
     .pipe( gutil.env.env === 'production' ? cleanCSS() : gutil.noop() )
+    .on( "error",
+      function ( err ) {
+        gutil.log(
+          gutil.colors.red( "[Error]" ), JSON.stringify( err, 0, 2 )
+        );
+      }
+    )
     .pipe( gulp.dest('priv/static/css') )
 });
 
 gulp.task('js-app', function() {
   return gulp
     .src( jsEntryPath )
-    .pipe( concat('app.js') )
-    .pipe( babel({presets: ['es2015']}) )
     .pipe( browserify( { debug: gutil.env.env !== 'production' } ) )
+    .pipe( babel({presets: ['es2015']}) )
+    .pipe( concat('app.js') )
     .pipe( gutil.env.env === 'production' ? uglify() : gutil.noop() )
+    .on( "error",
+      function ( err ) {
+        gutil.log(
+          gutil.colors.red( "[Error]" ), JSON.stringify( err, 0, 2 )
+        );
+      }
+    )
     .pipe( gulp.dest('priv/static/js') )
 });
 
 gulp.task('assets', function() {
   return gulp
     .src( assetPaths )
+    .on( "error",
+      function ( err ) {
+        gutil.log(
+          gutil.colors.red( "[Error]" ), JSON.stringify( err, 0, 2 )
+        );
+      }
+    )
     .pipe( gulp.dest('priv/static') );
 });
 

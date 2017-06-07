@@ -1,2 +1,2 @@
-./node_modules/gulp/bin/gulp.js default
+./node_modules/gulp/bin/gulp.js default --env=production
 MIX_ENV=prod mix phoenix.digest
