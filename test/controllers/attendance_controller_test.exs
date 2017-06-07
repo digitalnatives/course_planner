@@ -223,4 +223,28 @@ defmodule CoursePlanner.AttendanceControllerTest do
                                                              offered_course: update_param)
     assert redirected_to(conn) == attendance_path(conn, :show, offered_course.id)
   end
+
+  test "does not update attendences if of them fails", %{conn: _conn} do
+    coordinator_conn = login_as(:coordinator)
+
+    students = [insert(:student)]
+    offered_course = insert(:offered_course, %{students: students})
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class = insert(:class, class_attrs)
+
+    attendances =
+      Enum.map(students, fn(student) ->
+           insert(:attendance, %{class: class, student: student})
+         end)
+
+    update_param = %{classes: %{"0" => %{attendances: %{"0" => %{
+                        attendance_type: nil, id: List.first(attendances).id}},
+                        id: class.id
+                        }}}
+
+    conn = put coordinator_conn, attendance_update_fill_path(coordinator_conn, :update_fill,
+                                                             offered_course.id,
+                                                             offered_course: update_param)
+    assert html_response(conn, 200) =~ "Something went wrong."
+  end
 end
