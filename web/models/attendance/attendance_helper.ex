@@ -5,14 +5,17 @@ defmodule CoursePlanner.AttendanceHelper do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendance}
+  alias Ecto.Multi
 
   def get_course_attendances(offered_course_id) do
     Repo.one(from oc in OfferedCourse,
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
       join: a in assoc(c,  :attendances),
-      preload: [:term, :course, :teachers, students: s],
-      preload: [classes: {c, attendances: a}],
+      join: as in assoc(a, :student),
+      join: ac in assoc(a, :class),
+      preload: [:term, :course, :teachers, :students],
+      preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and is_nil(s.deleted_at),
       order_by: [asc: c.date])
   end
@@ -63,5 +66,22 @@ defmodule CoursePlanner.AttendanceHelper do
       join: t in assoc(oc, :teachers),
       preload: [:term, :course, teachers: t, students: s, classes: c],
       where: s.id == ^student_id)
+  end
+
+  def update_multiple_attendances(attendance_changeset_list) do
+    multi = Multi.new
+
+    updated_multi =
+      attendance_changeset_list
+      |> Enum.reduce(multi, fn(attendance_changeset, operation_list) ->
+           operation_atom =
+             attendance_changeset.data.id
+             |> Integer.to_string()
+             |> String.to_atom()
+
+           Multi.update(operation_list, operation_atom, attendance_changeset)
+         end)
+
+    Repo.transaction(updated_multi)
   end
 end
