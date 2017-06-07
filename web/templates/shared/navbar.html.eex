@@ -1,0 +1,7 @@
+
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Course Planner</span>
+    <nav class="mdl-navigation">
+      <%= @children %>
+    </nav>
+  </div>
