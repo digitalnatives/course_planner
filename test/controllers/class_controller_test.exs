@@ -351,7 +351,7 @@ defmodule CoursePlanner.ClassControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    {:ok, created_course} = create_course()
+    created_course = create_course()
     class = Repo.insert! %Class{offered_course_id: created_course.id}
 
     conn = get student_conn, class_path(student_conn, :show, class)
@@ -384,7 +384,7 @@ defmodule CoursePlanner.ClassControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    {:ok, created_course} = create_course()
+    created_course = create_course()
     class = Repo.insert! %Class{offered_course_id: created_course.id}
 
     conn = get student_conn, class_path(student_conn, :edit, class)
@@ -402,7 +402,7 @@ defmodule CoursePlanner.ClassControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    {:ok, created_course} = create_course()
+    created_course = create_course()
     class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
     class = Repo.insert! class_args
 
@@ -436,7 +436,7 @@ defmodule CoursePlanner.ClassControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    {:ok, created_course} = create_course()
+    created_course = create_course()
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
 
     conn = post student_conn, class_path(student_conn, :create), class: completed_attributes
@@ -454,7 +454,7 @@ defmodule CoursePlanner.ClassControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    {:ok, created_course} = create_course()
+    created_course = create_course()
     class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id}
