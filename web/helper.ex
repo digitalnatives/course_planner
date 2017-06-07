@@ -9,6 +9,7 @@ defmodule CoursePlanner.Helper do
     conn
     |> put_status(403)
     |> render(CoursePlanner.ErrorView, "403.html")
+    |> halt()
   end
 
 end

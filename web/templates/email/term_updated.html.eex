@@ -1,0 +1,4 @@
+<div>
+  <h2><%= @name%>, a term you are enrolled in was updated.</h2>
+  <h3>Check the updated term <%= link "here: ", to: @path%></h3>
+</div>

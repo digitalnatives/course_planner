@@ -20,7 +20,7 @@
           <span class="mdl-layout-title">Course Planner</span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="#">Link</a>
+            <%= CoursePlanner.Coherence.ViewHelpers.signout_link(@conn, "Sign out", "mdl-navigation__link") %>
           </nav>
         </div>
       </header>

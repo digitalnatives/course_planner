@@ -1,0 +1,4 @@
+<div>
+  <h2><%= @name%>, a course you subscribed to was updated.</h2>
+  <h3>Check the updated course <%= link "here: ", to: @path%></h3>
+</div>

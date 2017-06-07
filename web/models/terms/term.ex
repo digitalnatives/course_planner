@@ -5,6 +5,7 @@ defmodule CoursePlanner.Terms.Term do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{OfferedCourse, Statuses, Terms.Holiday, Types.EntityStatus}
+  alias Ecto.{Date, Changeset}
 
   schema "terms" do
     field :name, :string
@@ -31,5 +32,17 @@ defmodule CoursePlanner.Terms.Term do
     |> validate_required([:name, :start_date, :end_date, :status])
     |> cast_embed(:holidays)
     |> Statuses.update_status_timestamp(EntityStatus)
+    |> validate_date_range()
   end
+
+  defp validate_date_range(%{valid?: true} = changeset) do
+    st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
+    en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
+    case Date.compare(st, en) do
+      :lt -> changeset
+      :eq -> Changeset.add_error(changeset, :start_date, "Start date can't be the same than end date.")
+      :gt -> Changeset.add_error(changeset, :start_date, "Start date can't be later than end date.")
+    end
+  end
+  defp validate_date_range(changeset), do: changeset
 end

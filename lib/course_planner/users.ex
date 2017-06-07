@@ -2,8 +2,7 @@ defmodule CoursePlanner.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.Repo
-  alias CoursePlanner.User
+  alias CoursePlanner.{Repo, User, Notifier, Notifier.Notification}
   alias Ecto.{Changeset, DateTime}
 
   def new_user(user, token) do
@@ -32,5 +31,14 @@ defmodule CoursePlanner.Users do
         |> Repo.update()
       error -> error
     end
+  end
+
+  def notify_user(%{id: id}, %{id: id}, _, _), do: nil
+  def notify_user(modified_user, _current_user, notification_type, path) do
+    Notification.new()
+    |> Notification.type(notification_type)
+    |> Notification.resource_path(path)
+    |> Notification.to(modified_user)
+    |> Notifier.notify_user()
   end
 end

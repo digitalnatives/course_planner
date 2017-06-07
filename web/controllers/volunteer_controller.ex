@@ -1,10 +1,10 @@
 defmodule CoursePlanner.VolunteerController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.User
-  alias CoursePlanner.Volunteers
-  alias CoursePlanner.Router.Helpers
+  alias CoursePlanner.{User, Volunteers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
-  alias CoursePlanner.Users
+
+  import Canary.Plugs
+  plug :authorize_resource, model: User
 
   def index(conn, _params) do
     render(conn, "index.html", volunteers: Volunteers.all())
@@ -42,9 +42,13 @@ defmodule CoursePlanner.VolunteerController do
     render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Volunteers.update(id, params) do
       {:ok, volunteer} ->
+        Users.notify_user(volunteer,
+          current_user,
+          :user_modified,
+          volunteer_url(conn, :show, volunteer))
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))

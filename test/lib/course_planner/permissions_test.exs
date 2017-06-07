@@ -1,8 +1,7 @@
 defmodule CoursePlanner.PermissionsTest do
   use ExUnit.Case
 
-  alias CoursePlanner.User
-  alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.{Tasks.Task, Terms.Term, User}
 
   @coordinator %User{
     email: "valid@email",
@@ -12,6 +11,14 @@ defmodule CoursePlanner.PermissionsTest do
     id: 2,
     email: "valid@email2",
     role: "Volunteer"
+  }
+  @student %User{
+    email: "student@example.com",
+    role: "Student"
+  }
+  @teacher %User{
+    email: "teacher@example.com",
+    role: "Teacher"
   }
 
   Enum.map([:index, :show, :create, :update, :delete, :edit], fn action ->
@@ -41,5 +48,37 @@ defmodule CoursePlanner.PermissionsTest do
 
   test "volunteer can index tasks" do
     assert Canada.Can.can?(@volunteer, :index, Task)
+  end
+
+  for action <- [:index, :new, :create] do
+    @action action
+    test "coordinator can perform #{action} in Term" do
+      assert Canada.Can.can?(@coordinator, @action, Term)
+    end
+  end
+
+  for action <- [:show, :edit, :update, :delete] do
+    @action action
+    test "coordinator can perform #{action} in Term" do
+      assert Canada.Can.can?(@coordinator, @action, %Term{})
+    end
+  end
+
+  for action <- [:index, :new, :create],
+        user <- [@volunteer, @student, @teacher] do
+    @action action
+    @user user
+    test "#{user.role} can't perform #{action} in Term" do
+      refute Canada.Can.can?(@user, @action, Term)
+    end
+  end
+
+  for action <- [:show, :edit, :update, :delete],
+        user <- [@volunteer, @student, @teacher] do
+    @action action
+    @user user
+    test "#{user.role} can't perform #{action} in Term" do
+      refute Canada.Can.can?(@user, @action, %Term{})
+    end
   end
 end

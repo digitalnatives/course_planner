@@ -8,7 +8,7 @@ defmodule CoursePlanner.TermTest do
       %{
         name: "Spring",
         start_date: %{day: 17, month: 4, year: 2010},
-        end_date: %{day: 17, month: 4, year: 2010},
+        end_date: %{day: 17, month: 5, year: 2010},
         status: "Planned"
       }
     changeset = Term.changeset(%Term{}, valid_attrs)
@@ -26,7 +26,7 @@ defmodule CoursePlanner.TermTest do
       %{
         name: "Spring",
         start_date: %{day: 17, month: 4, year: 2010},
-        end_date: %{day: 17, month: 4, year: 2010},
+        end_date: %{day: 17, month: 5, year: 2010},
         status: "Planned",
         holidays:
           [
@@ -47,6 +47,30 @@ defmodule CoursePlanner.TermTest do
           [
             %{name: "Labor Day", date: nil}
           ]
+      }
+    changeset = Term.changeset(%Term{}, invalid_attrs)
+    refute changeset.valid?
+  end
+
+  test "start_date same as end_date" do
+    invalid_attrs =
+      %{
+        name: "Spring",
+        start_date: %{day: 17, month: 4, year: 2010},
+        end_date: %{day: 17, month: 4, year: 2010},
+        status: "Planned"
+      }
+    changeset = Term.changeset(%Term{}, invalid_attrs)
+    refute changeset.valid?
+  end
+
+  test "start_date before end_date" do
+    invalid_attrs =
+      %{
+        name: "Spring",
+        start_date: %{day: 17, month: 4, year: 2010},
+        end_date: %{day: 17, month: 3, year: 2010},
+        status: "Planned"
       }
     changeset = Term.changeset(%Term{}, invalid_attrs)
     refute changeset.valid?

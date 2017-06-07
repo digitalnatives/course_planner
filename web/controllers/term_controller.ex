@@ -4,6 +4,9 @@ defmodule CoursePlanner.TermController do
   alias CoursePlanner.Terms
   alias Ecto.Changeset
 
+  import Canary.Plugs
+  plug :authorize_resource, model: Terms.Term
+
   def index(conn, _params) do
     render(conn, "index.html", terms: Terms.all)
   end
@@ -46,9 +49,10 @@ defmodule CoursePlanner.TermController do
     end
   end
 
-  def update(conn, %{"id" => id, "term" => term_params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "term" => term_params}) do
     case Terms.update(id, term_params) do
       {:ok, term} ->
+        Terms.notify_term_users(term, current_user, :term_updated, term_url(conn, :show, term))
         conn
         |> put_flash(:info, "Term updated successfully.")
         |> redirect(to: term_path(conn, :show, term))
@@ -61,9 +65,10 @@ defmodule CoursePlanner.TermController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     case Terms.delete(id) do
-      {:ok, _term} ->
+      {:ok, term} ->
+        Terms.notify_term_users(term, current_user, :term_deleted)
         conn
         |> put_flash(:info, "Term deleted successfully.")
         |> redirect(to: term_path(conn, :index))

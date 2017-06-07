@@ -1,10 +1,10 @@
 defmodule CoursePlanner.TeacherController do
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.User
-  alias CoursePlanner.Teachers
-  alias CoursePlanner.Router.Helpers
+  alias CoursePlanner.{User, Teachers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
-  alias CoursePlanner.Users
+
+  import Canary.Plugs
+  plug :authorize_resource, model: User
 
   def index(conn, _params) do
     render(conn, "index.html", teachers: Teachers.all())
@@ -42,9 +42,10 @@ defmodule CoursePlanner.TeacherController do
     render(conn, "edit.html", teacher: teacher, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Teachers.update(id, params) do
       {:ok, teacher} ->
+        Users.notify_user(teacher, current_user, :user_modified, teacher_url(conn, :show, teacher))
         conn
         |> put_flash(:info, "Teacher updated successfully.")
         |> redirect(to: teacher_path(conn, :show, teacher))

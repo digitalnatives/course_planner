@@ -1,0 +1,24 @@
+<h2>Listing Course for attendance</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Term</th>
+      <th>Course</th>
+      <th>Teachers</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for offered_course <- @offered_courses do %>
+        <tr>
+          <td><%= offered_course.term.name %></td>
+          <td><%= offered_course.course.name %></td>
+          <td><%= get_teacher_display_name(offered_course.teachers) %></td>
+          <td class="text-right">
+            <%= link "Show", to: attendance_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
+          </td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>

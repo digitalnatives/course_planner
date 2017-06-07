@@ -1,0 +1,23 @@
+<h2>Show attendance for <%=@offered_course.course.name%></h2>
+<h3>Taught by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Class Date</th>
+      <th>Class Time</th>
+      <th><%= get_student_display_name(List.first(@attendances).student) %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for attendance <- @attendances do %>
+      <tr>
+        <td><%= attendance.class.date %></td>
+        <td><%= attendance.class.starting_at %></td>
+        <td><%= attendance.attendance_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link "Back", to: attendance_path(@conn, :index) %>
