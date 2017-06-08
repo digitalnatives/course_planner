@@ -39,11 +39,16 @@ defmodule CoursePlanner.TermControllerTest do
         name: "Spring",
         start_date: %{day: 01, month: 01, year: 2010},
         end_date: %{day: 01, month: 06, year: 2010},
-        status: "Planned"
+        status: "Planned",
+        holidays:
+        [
+          %{name: "Labor Day 1", date: %{day: 01, month: 05, year: 2010}},
+          %{name: "Labor Day 2", date: %{day: 01, month: 02, year: 2010}}
+        ]
       }
     conn = post conn, term_path(conn, :create), term: valid_attrs
     assert redirected_to(conn) == term_path(conn, :index)
-    assert Repo.get_by(Term, valid_attrs)
+    assert Repo.get_by(Term, Map.delete(valid_attrs, :holidays))
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -54,6 +59,40 @@ defmodule CoursePlanner.TermControllerTest do
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
     assert html_response(conn, 200) =~ "New term"
+  end
+
+  test "does not create resource and renders errors when holiday is before term start", %{conn: conn} do
+    invalid_attrs =
+      %{
+        name: "Spring",
+        start_date: %{day: 01, month: 01, year: 2010},
+        end_date: %{day: 01, month: 06, year: 2010},
+        status: "Planned",
+        holidays:
+        [
+          %{name: "Labor Day 1", date: %{day: 01, month: 5, year: 2008}},
+          %{name: "Labor Day 2", date: %{day: 02, month: 5, year: 2009}}
+        ]
+      }
+    conn = post conn, term_path(conn, :create), term: invalid_attrs
+    assert html_response(conn, 200) =~ "This holiday does not fall in the term range"
+  end
+
+  test "does not create resource and renders errors when holiday is after term end", %{conn: conn} do
+    invalid_attrs =
+      %{
+        name: "Spring",
+        start_date: %{day: 01, month: 01, year: 2010},
+        end_date: %{day: 01, month: 06, year: 2010},
+        status: "Planned",
+        holidays:
+        [
+          %{name: "Labor Day 1", date: %{day: 02, month: 01, year: 2010}},
+          %{name: "Labor Day 2", date: %{day: 02, month: 5, year: 2011}}
+        ]
+      }
+    conn = post conn, term_path(conn, :create), term: invalid_attrs
+    assert html_response(conn, 200) =~ "This holiday does not fall in the term range"
   end
 
   test "doesn't create resource for forbidden user", %{conn: conn} do

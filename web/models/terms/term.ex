@@ -39,7 +39,6 @@ defmodule CoursePlanner.Terms.Term do
   defp validate_holiday_date(%{valid?: true, changes: %{holidays: holidays_changesets}} = changeset) do
     st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
     en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
-    holidays_changesets = changeset.changes.holidays
 
     validated_changesets =
       holidays_changesets
@@ -54,7 +53,7 @@ defmodule CoursePlanner.Terms.Term do
            end
          end)
 
-    IO.inspect Changeset.put_embed(changeset, :holidays, validated_changesets)
+    Changeset.put_embed(changeset, :holidays, validated_changesets)
   end
   defp validate_holiday_date(changeset), do: changeset
 
