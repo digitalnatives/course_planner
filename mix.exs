@@ -44,7 +44,7 @@ defmodule CoursePlanner.Mixfile do
      {:coherence, github: "smpallen99/coherence", ref: "590222b"},
      {:canada, "~> 1.0.1"},
      {:canary, "~> 1.1.1"},
-     {:credo, "~> 0.7.2", only: [:dev, :test]},
+     {:credo, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test}
    ]
