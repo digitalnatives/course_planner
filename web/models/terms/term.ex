@@ -33,7 +33,30 @@ defmodule CoursePlanner.Terms.Term do
     |> cast_embed(:holidays)
     |> Statuses.update_status_timestamp(EntityStatus)
     |> validate_date_range()
+    |> validate_holiday_date()
   end
+
+  defp validate_holiday_date(%{valid?: true, changes: %{holidays: holidays_changesets}} = changeset) do
+    st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
+    en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
+    holidays_changesets = changeset.changes.holidays
+
+    validated_changesets =
+      holidays_changesets
+      |> Enum.map(fn(holiday_changeset) ->
+           hl = holiday_changeset.changes.date |> Date.cast!
+           case {Date.compare(st, hl), Date.compare(en, hl)} do
+             {:gt,   _} -> Changeset.add_error(holiday_changeset, :date,
+                                         "This holiday does not fall in the term range")
+             {_  , :lt} -> Changeset.add_error(holiday_changeset, :date,
+                                        "This holiday does not fall in the term range")
+             {_, _} -> holiday_changeset
+           end
+         end)
+
+    IO.inspect Changeset.put_embed(changeset, :holidays, validated_changesets)
+  end
+  defp validate_holiday_date(changeset), do: changeset
 
   defp validate_date_range(%{valid?: true} = changeset) do
     st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
@@ -45,4 +68,5 @@ defmodule CoursePlanner.Terms.Term do
     end
   end
   defp validate_date_range(changeset), do: changeset
+
 end
