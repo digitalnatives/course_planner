@@ -31,11 +31,6 @@ defmodule CoursePlanner.Class do
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
   end
 
-  def changeset(struct, _params, :fill) do
-    struct
-    |> cast_assoc(:attendances)
-  end
-
   def changeset(struct, params, :create) do
     struct
     |> changeset(params)
