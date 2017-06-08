@@ -1,0 +1,37 @@
+<h2>Show setting</h2>
+
+<ul>
+
+  <li>
+    <strong>Notification frequency:</strong>
+    <%= @setting.notification_frequency %>
+  </li>
+
+  <li>
+    <strong>Program name:</strong>
+    <%= @setting.program_name %>
+  </li>
+
+  <li>
+    <strong>Program description:</strong>
+    <%= @setting.program_description %>
+  </li>
+
+  <li>
+    <strong>Program phone number:</strong>
+    <%= @setting.program_phone_number %>
+  </li>
+
+  <li>
+    <strong>Program email address:</strong>
+    <%= @setting.program_email_address %>
+  </li>
+
+  <li>
+    <strong>Program address:</strong>
+    <%= @setting.program_address %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: setting_path(@conn, :edit) %>
