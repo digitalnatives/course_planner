@@ -8,7 +8,8 @@ defmodule CoursePlanner.ClassController do
 
   def index(conn, _params) do
     classes =
-      ClassHelper.all_none_deleted()
+      Class
+      |> Repo.all()
       |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
     render(conn, "index.html", classes: classes)
   end
@@ -89,6 +90,10 @@ defmodule CoursePlanner.ClassController do
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: class_path(conn, :index))
     end
   end
 end

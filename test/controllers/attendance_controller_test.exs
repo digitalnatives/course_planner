@@ -4,11 +4,11 @@ defmodule CoursePlanner.AttendanceControllerTest do
   import CoursePlanner.Factory
   alias CoursePlanner.{Attendance, User}
 
-  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
+  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
 
   defp create_attendance_with_teacher(students, teachers) do
     offered_course = insert(:offered_course, %{students: students, teachers: teachers})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
     Enum.map(students, fn(student)->
@@ -20,7 +20,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   defp create_attendance(students) do
     offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
     Enum.map(students, fn(student)->
@@ -178,7 +178,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
     students = [insert(:student)]
     offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
     attendances =
@@ -202,7 +202,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
     students = insert_list(2, :student)
     offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
     attendances =
@@ -229,7 +229,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
     students = [insert(:student)]
     offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
     attendances =

@@ -32,11 +32,6 @@
     <%= @class.classroom %>
   </li>
 
-  <li>
-    <strong>Status:</strong>
-    <%= @class.status %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: class_path(@conn, :edit, @class) %>

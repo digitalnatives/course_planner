@@ -79,8 +79,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
 
  def class_factory do
     %Class{
-      offered_course: build(:offered_course),
-      status: "Planned"
+      offered_course: build(:offered_course)
     }
  end
 
