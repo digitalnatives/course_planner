@@ -17,11 +17,6 @@ defmodule CoursePlanner.ClassHelper do
     end
   end
 
-  def is_class_duration_correct?(class) do
-    DateTime.compare(class.starting_at, class.finishes.at) == :lt
-      && DateTime.to_erl(class.starting_at) != 0
-  end
-
   def create_class_attendance_records(class) do
     students = class.students
 
