@@ -1,14 +1,13 @@
 defmodule CoursePlanner.CourseController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.Course
-  alias CoursePlanner.CourseHelper
+  alias CoursePlanner.{Repo, Course, CourseHelper}
 
   import Canary.Plugs
   plug :authorize_resource, model: Course
 
   def index(conn, _params) do
-    courses = CourseHelper.all_none_deleted()
+    courses = Repo.all(Course)
     render(conn, "index.html", courses: courses)
   end
 
@@ -66,11 +65,20 @@ defmodule CoursePlanner.CourseController do
   end
 
   def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
-    course = Repo.get!(Course, id)
-    CourseHelper.delete(course)
-    CourseHelper.notify_user_course(course, current_user, :course_deleted)
-    conn
-    |> put_flash(:info, "Course deleted successfully.")
-    |> redirect(to: course_path(conn, :index))
+    case CourseHelper.delete(id) do
+      {:ok, course} ->
+        CourseHelper.notify_user_course(course, current_user, :course_deleted)
+        conn
+        |> put_flash(:info, "Course deleted successfully.")
+        |> redirect(to: course_path(conn, :index))
+      {:error, :not_found} ->
+        conn
+        |> put_flash(:error, "Course was not found.")
+        |> redirect(to: course_path(conn, :index))
+      {:error, _changeset} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
+        |> redirect(to: course_path(conn, :index))
+    end
   end
 end

@@ -65,8 +65,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
      name: sequence(:name, &"course-#{&1}"),
      description: "Description",
      number_of_sessions: 1,
-     session_duration: "01:00:00",
-     status: "Planned"
+     session_duration: "01:00:00"
   }
  end
 

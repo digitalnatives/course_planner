@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseView do
   use CoursePlanner.Web, :view
 
-  alias CoursePlanner.{CourseHelper, Teachers, Terms, Students}
+  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course}
   alias Ecto.Changeset
 
   def terms_to_select do
@@ -14,7 +14,8 @@ defmodule CoursePlanner.OfferedCourseView do
   end
 
   def courses_to_select do
-    CourseHelper.all_none_deleted()
+    Course
+    |> Repo.all()
     |> Enum.map(&{&1.name, &1.id})
   end
 
