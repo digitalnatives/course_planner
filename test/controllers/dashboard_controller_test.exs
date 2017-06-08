@@ -1,4 +1,4 @@
-defmodule CoursePlanner.PageControllerTest do
+defmodule CoursePlanner.DashboardControllerTest do
   use CoursePlanner.ConnCase
 
   import CoursePlanner.Factory
@@ -12,8 +12,8 @@ defmodule CoursePlanner.PageControllerTest do
     {:ok, conn: conn}
   end
 
-  test "GET /", %{conn: conn} do
-    conn = get conn, "/"
-    assert redirected_to(conn, 301) == dashboard_path(conn, :show)
+  test "GET /dashboard", %{conn: conn} do
+    conn = get conn, dashboard_path(conn, :show)
+    assert html_response(conn, 200) =~ "Welcome to Phoenix"
   end
 end
