@@ -55,8 +55,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %Term{
      name: sequence(:name, &"term-#{&1}"),
      start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
-     end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
-     status: "Planned"
+     end_date: %Ecto.Date{day: 1, month: 6, year: 2017}
    }
  end
 

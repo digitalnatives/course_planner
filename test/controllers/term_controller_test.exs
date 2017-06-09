@@ -2,34 +2,37 @@ defmodule CoursePlanner.TermControllerTest do
   use CoursePlanner.ConnCase
 
   alias CoursePlanner.Terms.Term
-  alias CoursePlanner.User
-
-  @coordinator %User{
-    name: "Test Coordinator",
-    email: "testuser@example.com",
-    role: "Coordinator"
-  }
-
-  @forbidden_user %User{
-    name: "Forbidden User",
-    role: "Student"
-  }
+  import CoursePlanner.Factory
 
   setup do
-    conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, @coordinator)
+    conn = login_as(:coordinator)
     {:ok, conn: conn}
   end
 
-  test "renders form for new resources", %{conn: conn} do
+  defp login_as(user_type) do
+    user = insert(user_type)
+
+    Phoenix.ConnTest.build_conn()
+    |> assign(:current_user, user)
+  end
+
+  test "renders form for new resources for coordinator", %{conn: conn} do
     conn = get conn, term_path(conn, :new)
     assert html_response(conn, 200) =~ "New term"
   end
 
-  test "doesn't render form for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    conn = get conn, term_path(conn, :new)
+  test "doesn't render form for non coordinator users", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, term_path(student_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, term_path(teacher_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, term_path(volunteer_conn, :new)
     assert html_response(conn, 403)
   end
 
@@ -38,9 +41,9 @@ defmodule CoursePlanner.TermControllerTest do
       %{
         name: "Spring",
         start_date: %{day: 01, month: 01, year: 2010},
-        end_date: %{day: 01, month: 06, year: 2010},
-        status: "Planned"
+        end_date: %{day: 01, month: 06, year: 2010}
       }
+
     conn = post conn, term_path(conn, :create), term: valid_attrs
     assert redirected_to(conn) == term_path(conn, :index)
     assert Repo.get_by(Term, valid_attrs)
@@ -49,29 +52,47 @@ defmodule CoursePlanner.TermControllerTest do
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
     invalid_attrs =
       %{
-        name: nil,
-        status: "invalid-status"
+        name: nil
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
     assert html_response(conn, 200) =~ "New term"
   end
 
-  test "doesn't create resource for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    conn = post conn, term_path(conn, :create), term: %{}
+  test "doesn't create resource for forbidden user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = post student_conn, term_path(student_conn, :create), term: %{}
+    assert html_response(conn, 403)
+
+    conn = post teacher_conn, term_path(teacher_conn, :create), term: %{}
+    assert html_response(conn, 403)
+
+    conn = post volunteer_conn, term_path(volunteer_conn, :create), term: %{}
     assert html_response(conn, 403)
   end
 
-  test "show existing term", %{conn: conn} do
-    {:ok, t} = CoursePlanner.Terms.create(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
+  test "show existing term for coordinator", %{conn: conn} do
+    t = insert(:term)
     conn = get conn, term_path(conn, :show, t.id)
     assert html_response(conn, 200) =~ "Show term"
   end
 
-  test "doesn't show existing term for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    {:ok, t} = CoursePlanner.Terms.create(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
-    conn = get conn, term_path(conn, :show, t.id)
+  test "doesn't show existing term for non coordinator users", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    t = insert(:term)
+
+    conn = get student_conn, term_path(student_conn, :show, t.id)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, term_path(teacher_conn, :show, t.id)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, term_path(volunteer_conn, :show, t.id)
     assert html_response(conn, 403)
   end
 
@@ -80,18 +101,11 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 404)
   end
 
-  test "doesn't show deleted term", %{conn: conn} do
-    {:ok, term} = CoursePlanner.Terms.create(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
-    {:ok, _} = CoursePlanner.Terms.delete(term.id)
-    conn = get conn, term_path(conn, :show, term.id)
-    assert html_response(conn, 404)
-  end
-
-  test "soft delete existing term", %{conn: conn} do
-    {:ok, t} = CoursePlanner.Terms.create(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
+  test "delete existing term for coordinator", %{conn: conn} do
+    t = insert(:term)
     conn = delete conn, term_path(conn, :delete, t.id)
     assert redirected_to(conn) == term_path(conn, :index)
-    assert Repo.get!(Term, t.id).deleted_at
+    refute Repo.get(Term, t.id)
   end
 
   test "doesn't delete inexisting term", %{conn: conn} do
@@ -99,23 +113,43 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 404)
   end
 
-  test "doesn't delete term for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    {:ok, t} = CoursePlanner.Terms.create(%{name: "Spring", start_date: "2017-04-25", end_date: "2017-05-25", status: "Planned"})
-    conn = delete conn, term_path(conn, :delete, t.id)
+  test "doesn't delete term for forbidden user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    t = insert(:term)
+
+    conn = delete student_conn, term_path(student_conn, :delete, t.id)
+    assert html_response(conn, 403)
+
+    conn = delete teacher_conn, term_path(teacher_conn, :delete, t.id)
+    assert html_response(conn, 403)
+
+    conn = delete volunteer_conn, term_path(volunteer_conn, :delete, t.id)
     assert html_response(conn, 403)
   end
 
-  test "renders form for editing chosen resource", %{conn: conn} do
-    term = Repo.insert! %Term{}
+  test "renders form for editing chosen resource for coordinator", %{conn: conn} do
+    term = insert(:term)
     conn = get conn, term_path(conn, :edit, term)
     assert html_response(conn, 200) =~ "Edit term"
   end
 
-  test "doesn't render form for editing for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    term = Repo.insert! %Term{}
-    conn = get conn, term_path(conn, :edit, term)
+  test "doesn't render form for editing for non coordinator users", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    term = insert(:term)
+
+    conn = get student_conn, term_path(student_conn, :edit, term)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, term_path(teacher_conn, :edit, term)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, term_path(volunteer_conn, :edit, term)
     assert html_response(conn, 403)
   end
 
@@ -125,22 +159,32 @@ defmodule CoursePlanner.TermControllerTest do
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    term = create_term()
+    term = insert(:term)
     conn = put conn, term_path(conn, :update, term), term: %{name: "Spring"}
     assert redirected_to(conn) == term_path(conn, :show, term)
     assert Repo.get_by(Term, name: "Spring")
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    term = create_term()
+    term = insert(:term)
     conn = put conn, term_path(conn, :update, term), term: %{name: ""}
     assert html_response(conn, 200) =~ "Edit term"
   end
 
-  test "doesn't update resource for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    term = create_term()
-    conn = put conn, term_path(conn, :update, term), term: %{name: ""}
+  test "doesn't update resource for non coordinator users", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    term = insert(:term)
+
+    conn = put student_conn, term_path(student_conn, :update, term), term: %{name: ""}
+    assert html_response(conn, 403)
+
+    conn = put teacher_conn, term_path(teacher_conn, :update, term), term: %{name: ""}
+    assert html_response(conn, 403)
+
+    conn = put volunteer_conn, term_path(volunteer_conn, :update, term), term: %{name: ""}
     assert html_response(conn, 403)
   end
 
@@ -149,24 +193,23 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 404)
   end
 
-  test "lists all entries on index", %{conn: conn} do
+  test "lists all entries on index for coordinator", %{conn: conn} do
     conn = get conn, term_path(conn, :index)
     assert html_response(conn, 200) =~ "Listing terms"
   end
 
-  test "doesn't show index for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    conn = get conn, term_path(conn, :index)
-    assert html_response(conn, 403)
-  end
+  test "doesn't show index for non coordinator users", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
 
-  defp create_term do
-    Repo.insert!(
-      %Term{
-        name: "Fall",
-        start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
-        end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
-        status: "Planned"
-      })
+    conn = get student_conn, term_path(student_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, term_path(teacher_conn, :index)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, term_path(volunteer_conn, :index)
+    assert html_response(conn, 403)
   end
 end

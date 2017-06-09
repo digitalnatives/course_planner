@@ -6,7 +6,6 @@
       <th>Name</th>
       <th>Start date</th>
       <th>End date</th>
-      <th>Status</th>
 
       <th></th>
     </tr>
@@ -17,7 +16,6 @@
       <td><%= term.name %></td>
       <td><%= term.start_date %></td>
       <td><%= term.end_date %></td>
-      <td><%= term.status %></td>
 
       <td class="text-right">
         <%= link "Courses Conflicts", to: term_course_matrix_path(@conn, :index, term), class: "btn btn-default btn-xs" %>

@@ -17,11 +17,6 @@
     <%= @term.end_date %>
   </li>
 
-  <li>
-    <strong>Status:</strong>
-    <%= @term.status %>
-  </li>
-
   <%= if length(@term.holidays) > 0 do %>
     <strong>Holidays</strong>
     <table>

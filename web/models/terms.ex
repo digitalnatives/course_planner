@@ -4,11 +4,9 @@ defmodule CoursePlanner.Terms do
   """
   alias CoursePlanner.{Repo, Notifier, Coordinators, Notifier.Notification}
   alias CoursePlanner.Terms.Term
-  alias Ecto.{Changeset, DateTime}
-  import Ecto.Query, only: [from: 2]
 
   def all do
-    Repo.all(non_deleted_query())
+    Repo.all(Term)
   end
 
   def new do
@@ -22,7 +20,7 @@ defmodule CoursePlanner.Terms do
   end
 
   def get(id) do
-    non_deleted_query()
+    Term
     |> Repo.get(id)
     |> Repo.preload([:courses])
   end
@@ -52,16 +50,8 @@ defmodule CoursePlanner.Terms do
   def delete(id) do
     case get(id) do
       nil -> {:error, :not_found}
-      term ->
-        term
-        |> Term.changeset()
-        |> Changeset.put_change(:deleted_at, DateTime.utc())
-        |> Repo.update()
+      term -> Repo.delete(term)
     end
-  end
-
-  defp non_deleted_query do
-    from t in Term, where: is_nil(t.deleted_at)
   end
 
   def notify_term_users(term, current_user, notification_type, path \\ "/") do
