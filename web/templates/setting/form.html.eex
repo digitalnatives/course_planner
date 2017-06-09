@@ -6,6 +6,12 @@
   <% end %>
 
   <div class="form-group">
+    <%= label f, :send_attendance_notification, class: "control-label" %>
+    <%= checkbox f, :send_attendance_notification, class: "form-control" %>
+    <%= error_tag f, :send_attendance_notification %>
+  </div>
+
+  <div class="form-group">
     <%= label f, :notification_frequency, class: "control-label" %>
     <%= text_input f, :notification_frequency, class: "form-control" %>
     <%= error_tag f, :notification_frequency %>

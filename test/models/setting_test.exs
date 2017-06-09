@@ -3,7 +3,7 @@ defmodule CoursePlanner.SettingTest do
 
   alias CoursePlanner.Setting
 
-  @valid_attrs %{notification_frequency: "10", program_address: "some content", program_description: "some content", program_email_address: "some content", program_name: "some content", program_phone_number: "some content"}
+  @valid_attrs %{send_attendance_notification: true, notification_frequency: "10", program_address: "some content", program_description: "some content", program_email_address: "some content", program_name: "some content", program_phone_number: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

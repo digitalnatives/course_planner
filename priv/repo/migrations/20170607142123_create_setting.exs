@@ -3,6 +3,7 @@ defmodule CoursePlanner.Repo.Migrations.CreateSetting do
 
   def change do
     create table(:settings) do
+      add :send_attendance_notification, :boolean
       add :notification_frequency, :integer
       add :program_name, :string
       add :program_description, :text

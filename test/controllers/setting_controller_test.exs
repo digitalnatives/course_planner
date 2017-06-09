@@ -4,7 +4,7 @@ defmodule CoursePlanner.SettingControllerTest do
   alias CoursePlanner.Setting
   import CoursePlanner.Factory
 
-  @valid_attrs %{notification_frequency: "20", program_address: "some address", program_description: "some description", program_email_address: "some email address", program_name: "some name", program_phone_number: "some phone number"}
+  @valid_attrs %{send_attendance_notification: true, notification_frequency: "20", program_address: "some address", program_description: "some description", program_email_address: "some email address", program_name: "some name", program_phone_number: "some phone number"}
 
   setup do
     changeset = Setting.changeset(%Setting{}, @valid_attrs)

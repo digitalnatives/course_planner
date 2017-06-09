@@ -12,7 +12,8 @@ CoursePlanner.User.changeset(%CoursePlanner.User{},
 |> CoursePlanner.Repo.insert!
 
 CoursePlanner.Setting.changeset(%CoursePlanner.Setting{},
-  %{notification_frequency: 1,
+  %{send_attendance_notification: true,
+    notification_frequency: 1,
     program_name: "Sample program name",
     program_description: "Sample program description",
     program_phone_number: "Sample phone number",

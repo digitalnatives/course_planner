@@ -1,9 +1,13 @@
 <h2>Show setting</h2>
 
 <ul>
+  <li>
+    <strong>Should send attendance notification:</strong>
+    <%= @setting.send_attendance_notification %>
+  </li>
 
   <li>
-    <strong>Notification frequency:</strong>
+    <strong>Attendance notification frequency:</strong>
     <%= @setting.notification_frequency %>
   </li>
 
