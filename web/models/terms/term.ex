@@ -46,9 +46,9 @@ defmodule CoursePlanner.Terms.Term do
            hl = holiday_changeset.changes.date |> Date.cast!
            case {Date.compare(st, hl), Date.compare(en, hl)} do
              {:gt,   _} -> Changeset.add_error(holiday_changeset, :date,
-                                         "This holiday does not fall in the term range")
+                                         "This holiday is before term's beginning")
              {_  , :lt} -> Changeset.add_error(holiday_changeset, :date,
-                                        "This holiday does not fall in the term range")
+                                        "This holiday is after term's ending")
              {_, _} -> holiday_changeset
            end
          end)

@@ -75,7 +75,7 @@ defmodule CoursePlanner.TermControllerTest do
         ]
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
-    assert html_response(conn, 200) =~ "This holiday does not fall in the term range"
+    assert html_response(conn, 200) =~ "This holiday is before term"
   end
 
   test "does not create resource and renders errors when holiday is after term end", %{conn: conn} do
@@ -92,7 +92,7 @@ defmodule CoursePlanner.TermControllerTest do
         ]
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
-    assert html_response(conn, 200) =~ "This holiday does not fall in the term range"
+    assert html_response(conn, 200) =~ "This holiday is after term"
   end
 
   test "doesn't create resource for forbidden user", %{conn: conn} do
