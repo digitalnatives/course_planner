@@ -76,7 +76,7 @@ defmodule CoursePlanner.TermControllerTest do
 
     conn = post volunteer_conn, term_path(volunteer_conn, :create), term: %{}
   end
- 
+
   test "does not create resource and renders errors when holiday is before term start", %{conn: conn} do
     invalid_attrs =
       %{
@@ -107,12 +107,6 @@ defmodule CoursePlanner.TermControllerTest do
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
     assert html_response(conn, 200) =~ "This holiday is after term"
-  end
-
-  test "doesn't create resource for forbidden user", %{conn: conn} do
-    conn = assign(conn, :current_user, @forbidden_user)
-    conn = post conn, term_path(conn, :create), term: %{}
-    assert html_response(conn, 403)
   end
 
   test "show existing term for coordinator", %{conn: conn} do
