@@ -4,15 +4,13 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Types, Attendance}
-  alias Ecto.{Time, Date, DateTime}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
+  alias Ecto.{Time, Date}
 
   schema "classes" do
     field :date, Date
     field :starting_at, Time
     field :finishes_at, Time
-    field :status, Types.EntityStatus
-    field :deleted_at, DateTime
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
     has_many :attendances, Attendance, on_delete: :delete_all
@@ -26,30 +24,23 @@ defmodule CoursePlanner.Class do
   """
   def changeset(struct, params \\ %{}) do
     cast_params =
-      [:offered_course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
+      [:offered_course_id, :date, :starting_at, :finishes_at, :classroom]
 
     struct
     |> cast(params, cast_params)
-    |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at, :status])
-  end
-
-  def changeset(struct, _params, :fill) do
-    struct
-    |> cast_assoc(:attendances)
+    |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
   end
 
   def changeset(struct, params, :create) do
     struct
     |> changeset(params)
     |> validate_offered_course()
-    |> validate_inclusion(:status, ["Planned", "Active"])
     |> validate_duration()
   end
 
   def changeset(struct, params, :update) do
     struct
     |> changeset(params)
-    |> validate_inclusion(:status, ["Planned", "Active"])
     |> validate_duration()
   end
 

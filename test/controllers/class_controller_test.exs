@@ -4,8 +4,8 @@ defmodule CoursePlanner.ClassControllerTest do
   alias CoursePlanner.{Class, Repo, User, Attendance}
   import CoursePlanner.Factory
 
-  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
-  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
+  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
+  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -38,15 +38,6 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Listing classes"
   end
 
-  test "lists all entries on index except if delete", %{conn: conn} do
-    created_course = create_course()
-    class_deleted_completed_attributes =  %{offered_course_id: created_course.id, deleted_at: %{day: 17, month: 4, year: 2010}, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}, status: "Planned"}
-    Repo.insert(Class.changeset(%Class{}, class_deleted_completed_attributes))
-    conn = get conn, class_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing classes"
-    assert length(conn.assigns.classes) == 0
-  end
-
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, class_path(conn, :new)
     assert html_response(conn, 200) =~ "New class"
@@ -60,7 +51,7 @@ defmodule CoursePlanner.ClassControllerTest do
     assert Repo.get_by(Class, completed_attributes)
   end
 
-  test "creates resource fails cause no teacher is assigned", %{conn: conn} do
+  test "creates resource fails when no teacher is assigned", %{conn: conn} do
     students =insert_list(3, :student)
     created_course = insert(:offered_course, students: students)
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
@@ -69,21 +60,13 @@ defmodule CoursePlanner.ClassControllerTest do
     refute Repo.get_by(Class, completed_attributes)
   end
 
-  test "creates resource fails cause no student is assigned", %{conn: conn} do
+  test "creates resource fails when no student is assigned", %{conn: conn} do
     teachers = [insert(:teacher)]
     created_course = insert(:offered_course, teachers: teachers)
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
     conn = post conn, class_path(conn, :create), class: completed_attributes
     assert html_response(conn, 200) =~ "New class"
     refute Repo.get_by(Class, completed_attributes)
-  end
-
-  test "creates resource and redirects when data is valid and status is Active", %{conn: conn} do
-    created_course = create_course()
-    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "Active"}
-    conn = post conn, class_path(conn, :create), class: completed_attributes
-    assert redirected_to(conn) == class_path(conn, :index)
-    assert Repo.get_by(Class, completed_attributes)
   end
 
   test "does not create resource and renders errors when data is empty", %{conn: conn} do
@@ -113,34 +96,6 @@ defmodule CoursePlanner.ClassControllerTest do
   test "does not creates resource and redirects when starting time is after finishing time", %{conn: conn} do
     created_course = create_course()
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 12, min: 0, sec: 0},  finishes_at: %{hour: 10, min: 0, sec: 0}}
-    conn = post conn, class_path(conn, :create), class: completed_attributes
-    assert html_response(conn, 200) =~ "New class"
-  end
-
-  test "does not creates resource and redirects when status random", %{conn: conn} do
-    created_course = create_course()
-    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "random"}
-    conn = post conn, class_path(conn, :create), class: completed_attributes
-    assert html_response(conn, 200) =~ "New class"
-  end
-
-  test "does not creates resource and redirects when status Finsihed", %{conn: conn} do
-    created_course = create_course()
-    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "Finished"}
-    conn = post conn, class_path(conn, :create), class: completed_attributes
-    assert html_response(conn, 200) =~ "New class"
-  end
-
-  test "does not creates resource and redirects when status Graduated", %{conn: conn} do
-    created_course = create_course()
-    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "Graduated"}
-    conn = post conn, class_path(conn, :create), class: completed_attributes
-    assert html_response(conn, 200) =~ "New class"
-  end
-
-  test "does not creates resource and redirects when status Frozen", %{conn: conn} do
-    created_course = create_course()
-    completed_attributes = %{@valid_attrs | offered_course_id: created_course.id, status: "Frozen"}
     conn = post conn, class_path(conn, :create), class: completed_attributes
     assert html_response(conn, 200) =~ "New class"
   end
@@ -176,7 +131,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -184,19 +139,9 @@ defmodule CoursePlanner.ClassControllerTest do
     assert Repo.get_by(Class, update_params)
   end
 
-  test "updates chosen resource status to active", %{conn: conn} do
-    created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
-    class = Repo.insert! class_insert_args
-    update_params = %{@valid_attrs | offered_course_id: created_course.id, status: "Active"}
-    conn = put conn, class_path(conn, :update, class), class: update_params
-    assert redirected_to(conn) == class_path(conn, :show, class)
-    assert Repo.get_by(Class, update_params)
-  end
-
   test "updates chosen resource time", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 18, min: 0, sec: 0},  finishes_at: %{hour: 19, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -213,7 +158,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "does not update chosen resource if course not selected", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: nil}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -222,7 +167,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "does not update chosen resource if starting time is zero", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 0, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -231,7 +176,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "does not update chosen resource if finishing time is zero", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, finishes_at: %{hour: 0, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -240,7 +185,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "does not update chosen resource if finishing time is less than starting time", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 2, min: 0, sec: 0}, finishes_at: %{hour: 1, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -249,7 +194,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "does not update chosen resource if finishing time is equal to starting time", %{conn: conn} do
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 2, min: 0, sec: 0}, finishes_at: %{hour: 2, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
@@ -261,30 +206,13 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 404)
   end
 
-  test "hard deletes chosen resource when status is Planned", %{conn: conn} do
+  test "deletes chosen resource", %{conn: conn} do
     created_course = create_course()
-    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_args
     conn = delete conn, class_path(conn, :delete, class)
     assert redirected_to(conn) == class_path(conn, :index)
     refute Repo.get(Class, class.id)
-  end
-
-  test "all values which will be soft deleted", %{conn: conn} do
-    ["Active", "Finished", "Graduated", "Frozen"]
-    |> Enum.map(fn(status) ->
-         delete_and_check_soft_delete_with_status(status, conn)
-       end)
-  end
-
-  defp delete_and_check_soft_delete_with_status(status, conn) do
-    created_course = create_course()
-    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: status}
-    class = Repo.insert! class_args
-    conn = delete conn, class_path(conn, :delete, class)
-    assert redirected_to(conn) == class_path(conn, :index)
-    soft_deleted_course = Repo.get(Class, class.id)
-    assert soft_deleted_course.deleted_at
   end
 
   test "creates class and all attendance", %{conn: conn} do
@@ -298,7 +226,7 @@ defmodule CoursePlanner.ClassControllerTest do
     students = insert_list(3, :student)
     teacher = insert(:teacher)
     offered_course = insert(:offered_course, %{term: term1, course: course, students: students, teachers: [teacher]})
-    class_attrs = %{@valid_attrs | offered_course_id: offered_course.id, status: "Active"}
+    class_attrs = %{@valid_attrs | offered_course_id: offered_course.id}
 
     conn = post conn, class_path(conn, :create), class: class_attrs
     assert redirected_to(conn) == class_path(conn, :index)
@@ -310,40 +238,21 @@ defmodule CoursePlanner.ClassControllerTest do
     assert student_ids == attendance_student_ids
   end
 
-  test "hard deletes class and all attendances of it", %{conn: conn} do
+  test "deletes class and all attendances of it", %{conn: conn} do
     students = insert_list(3, :student)
     offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Planned"}
+    class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
-
 
     Enum.map(students, fn(student)->
          insert(:attendance, %{class_id: class.id, student_id: student.id})
        end)
 
     assert 3 == length(Repo.all(Attendance))
-    conn2 = delete conn, class_path(conn, :delete, class)
-    assert redirected_to(conn2) == class_path(conn, :index)
+    conn = delete conn, class_path(conn, :delete, class)
+    assert redirected_to(conn) == class_path(conn, :index)
     refute Repo.get(Class, class.id)
     assert [] == Repo.all(Attendance)
-  end
-
-  test "soft deletes class but attendances won't be impacted", %{conn: conn} do
-    students = insert_list(3, :student)
-    offered_course = insert(:offered_course, %{students: students})
-    class_attrs = %{@valid_insert_attrs | offered_course: offered_course, status: "Active"}
-    class = insert(:class, class_attrs)
-
-    Enum.map(students, fn(student)->
-         insert(:attendance, %{class_id: class.id, student_id: student.id})
-       end)
-
-    assert 3 == length(Repo.all(Attendance))
-    conn2 = delete conn, class_path(conn, :delete, class)
-    assert redirected_to(conn2) == class_path(conn, :index)
-    soft_deleted_course = Repo.get(Class, class.id)
-    assert soft_deleted_course.deleted_at
-    assert 3 == length(Repo.all(Attendance))
   end
 
   test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
@@ -403,7 +312,7 @@ defmodule CoursePlanner.ClassControllerTest do
     volunteer_conn = login_as(:volunteer)
 
     created_course = create_course()
-    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_args
 
     conn = delete student_conn, class_path(student_conn, :delete, class.id)
@@ -455,7 +364,7 @@ defmodule CoursePlanner.ClassControllerTest do
     volunteer_conn = login_as(:volunteer)
 
     created_course = create_course()
-    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0}), status: "Planned"}
+    class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id}
 
