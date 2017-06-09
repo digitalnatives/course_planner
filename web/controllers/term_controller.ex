@@ -78,8 +78,8 @@ defmodule CoursePlanner.TermController do
         |> render(CoursePlanner.ErrorView, "404.html")
       {:error, _changeset} ->
         conn
-        |> put_flash(:error, "Something went wrong.")
-        |> redirect(to: term_path(conn, :index))
+        |> put_status(500)
+        |> render(CoursePlanner.ErrorView, "500.html")
     end
   end
 end
