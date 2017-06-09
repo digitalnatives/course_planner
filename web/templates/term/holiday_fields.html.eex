@@ -3,6 +3,7 @@
     <div class="form-group">
       <%= label fh, :date, class: "control-label" %>
       <%= date_select fh, :date, class: "form-control" %>
+      <%= error_tag fh, :date %>
     </div>
     <div class="form-group">
       <%= label fh, :description, class: "control-label" %>
