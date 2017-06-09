@@ -55,8 +55,7 @@ defmodule CoursePlanner.OfferedCourseTest do
         name: "Course",
         description: "Description",
         number_of_sessions: 1,
-        session_duration: Ecto.Time.cast!("01:00:00"),
-        status: "Active"
+        session_duration: Ecto.Time.cast!("01:00:00")
       })
   end
 end
