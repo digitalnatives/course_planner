@@ -41,10 +41,10 @@ defmodule CoursePlanner.TermControllerTest do
         end_date: %{day: 01, month: 06, year: 2010},
         status: "Planned",
         holidays:
-        [
-          %{name: "Labor Day 1", date: %{day: 01, month: 05, year: 2010}},
-          %{name: "Labor Day 2", date: %{day: 01, month: 02, year: 2010}}
-        ]
+        %{
+          "0" => %{name: "Labor Day 1", date: %{day: 01, month: 05, year: 2010}},
+          "1" => %{name: "Labor Day 2", date: %{day: 01, month: 02, year: 2010}}
+        }
       }
     conn = post conn, term_path(conn, :create), term: valid_attrs
     assert redirected_to(conn) == term_path(conn, :index)
@@ -69,13 +69,12 @@ defmodule CoursePlanner.TermControllerTest do
         end_date: %{day: 01, month: 06, year: 2010},
         status: "Planned",
         holidays:
-        [
-          %{name: "Labor Day 1", date: %{day: 01, month: 5, year: 2008}},
-          %{name: "Labor Day 2", date: %{day: 02, month: 5, year: 2009}}
-        ]
+        %{
+          "0" => %{name: "Labor Day 1", date: %{day: 01, month: 5, year: 2008}}
+        }
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
-    assert html_response(conn, 200) =~ "This holiday is before term"
+    assert html_response(conn, 200) =~ "is before term"
   end
 
   test "does not create resource and renders errors when holiday is after term end", %{conn: conn} do
@@ -86,13 +85,12 @@ defmodule CoursePlanner.TermControllerTest do
         end_date: %{day: 01, month: 06, year: 2010},
         status: "Planned",
         holidays:
-        [
-          %{name: "Labor Day 1", date: %{day: 02, month: 01, year: 2010}},
-          %{name: "Labor Day 2", date: %{day: 02, month: 5, year: 2011}}
-        ]
+        %{
+          "0" => %{name: "Labor Day 1", date: %{day: 02, month: 01, year: 2011}}
+        }
       }
     conn = post conn, term_path(conn, :create), term: invalid_attrs
-    assert html_response(conn, 200) =~ "This holiday is after term"
+    assert html_response(conn, 200) =~ "is after term"
   end
 
   test "doesn't create resource for forbidden user", %{conn: conn} do
