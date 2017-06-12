@@ -3,7 +3,9 @@ defmodule CoursePlanner.Terms do
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
   alias CoursePlanner.{Repo, Notifier, Coordinators, Notifier.Notification}
-  alias CoursePlanner.Terms.Term
+  alias CoursePlanner.Terms.{Holiday, Term}
+  alias Ecto.{Changeset, DateTime}
+  import Ecto.Query, only: [from: 2]
 
   def all do
     Repo.all(Term)
@@ -15,7 +17,7 @@ defmodule CoursePlanner.Terms do
 
   def create(params) do
     %Term{}
-    |> Term.changeset(params)
+    |> term_changeset_with_holidays(params)
     |> Repo.insert
   end
 
@@ -36,9 +38,8 @@ defmodule CoursePlanner.Terms do
     case get(id) do
       nil -> {:error, :not_found}
       term ->
-        params = Map.put_new(params, "holidays", [])
         term
-        |> Term.changeset(params)
+        |> term_changeset_with_holidays(params)
         |> Repo.update
         |> format_update_error(term)
     end
@@ -46,6 +47,19 @@ defmodule CoursePlanner.Terms do
 
   defp format_update_error({:ok, _} = result, _), do: result
   defp format_update_error({:error, changeset}, term), do: {:error, term, changeset}
+
+  defp term_changeset_with_holidays(term, params) do
+    changeset = Term.changeset(term, params)
+    start_date = Changeset.get_field(changeset, :start_date)
+    end_date = Changeset.get_field(changeset, :end_date)
+    holidays =
+      params
+      |> Map.get("holidays", %{})
+      |> Map.values()
+      |> Enum.map(&Holiday.changeset(%Holiday{}, start_date, end_date, &1))
+
+    Changeset.put_embed(changeset, :holidays, holidays)
+  end
 
   def delete(id) do
     case get(id) do
