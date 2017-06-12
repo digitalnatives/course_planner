@@ -5,6 +5,8 @@
 
   require( "material-design-lite" );
 
+  require( "phoenix_html" );
+
   /*
       APPLICATION
   */
