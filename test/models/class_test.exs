@@ -5,7 +5,7 @@ defmodule CoursePlanner.ClassTest do
 
   @term_attrs %{name: "Term", start_date: "2010-01-01", end_date: "2010-12-31", status: "Active"}
   @valid_course_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, status: "Planned", syllabus: "some content"}
-  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
+  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, finishes_at: %{hour: 15, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
   @invalid_attrs %{}
   @class_before_term %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2009}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
   @class_after_term %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2011}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
@@ -43,4 +43,14 @@ defmodule CoursePlanner.ClassTest do
     changeset = Class.changeset(%Class{}, %{@class_after_term | offered_course_id: oc.id})
     refute changeset.valid?
   end
+
+  test "update class with invalid date" do
+    {:ok, oc} = create_course()
+    {:ok, class} = Class.changeset(%Class{}, %{@valid_attrs | offered_course_id: oc.id}) |> Repo.insert()
+    changeset = Class.changeset(class, %{date: %{day: 17, month: 4, year: 2011}}, :update)
+    refute changeset.valid?
+    changeset = Class.changeset(class, %{date: %{day: 17, month: 4, year: 2010}}, :update)
+    assert changeset.valid?
+  end
+
 end

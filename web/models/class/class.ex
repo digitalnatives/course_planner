@@ -37,14 +37,12 @@ defmodule CoursePlanner.Class do
     |> changeset(params)
     |> validate_offered_course()
     |> validate_duration()
-    |> validate_date()
   end
 
   def changeset(struct, params, :update) do
     struct
     |> changeset(params)
     |> validate_duration()
-    |> validate_date()
   end
 
   def validate_duration(%{changes: changes, valid?: true} = changeset) do
@@ -85,9 +83,9 @@ defmodule CoursePlanner.Class do
   end
   def validate_offered_course(changeset), do: changeset
 
-  defp validate_date(%{valid?: true, changes: %{date: date, offered_course_id: oc_id}} = changeset) do
+  defp validate_date(%{valid?: true, changes: %{date: date} = changes} = changeset) do
     term = OfferedCourse
-    |> Repo.get(oc_id)
+    |> Repo.get(changes[:offered_course_id] || changeset.data.offered_course_id)
     |> Repo.preload([:term])
     |> Map.get(:term)
 
@@ -101,9 +99,9 @@ defmodule CoursePlanner.Class do
 
     case {Date.compare(st, date), Date.compare(en, date)} do
       {:gt, _} -> Changeset.add_error(changeset, :date,
-                  "The class date is before term's beginning")
+                  "is before term's beginning")
       {_, :lt} -> Changeset.add_error(changeset, :date,
-                  "The class date is after term's end")
+                  "is after term's end")
       {_, _} -> changeset
     end
   end
