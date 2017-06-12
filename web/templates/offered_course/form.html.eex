@@ -14,8 +14,12 @@
                 <p>Oops, something went wrong! Please check the errors below.</p>
               </div>
             <% end %>
-            <%= CoursePlanner.SharedView.form_select f, :term_id, terms, selected: selected_term(@changeset) %>
-            <%= CoursePlanner.SharedView.form_select f, :course_id, courses, selected: selected_course(@changeset) %>
+            <%= CoursePlanner.SharedView.form_select f, :term_id, terms, selected: selected_term(@changeset),
+                                                                         required: true
+            %>
+            <%= CoursePlanner.SharedView.form_select f, :course_id, courses, selected: selected_course(@changeset),
+                                                                             required: true
+            %>
             <%= CoursePlanner.SharedView.form_multiselect f, :student_ids, students, selected: selected_students(@changeset),
                                                                                      label: "Students",
                                                                                      tooltip_text: "Add new student"

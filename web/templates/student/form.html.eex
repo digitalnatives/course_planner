@@ -15,7 +15,7 @@
             <%= CoursePlanner.SharedView.form_text f, :name %>
             <%= CoursePlanner.SharedView.form_text f, :family_name %>
             <%= CoursePlanner.SharedView.form_text f, :nickname %>
-            <%= CoursePlanner.SharedView.form_text f, :email %>
+            <%= CoursePlanner.SharedView.form_text f, :email, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :student_id, label: "Student ID" %>
             <%= CoursePlanner.SharedView.form_select f, :participation_type, participation_types %>
             <%= CoursePlanner.SharedView.form_select f, :status, statuses %>

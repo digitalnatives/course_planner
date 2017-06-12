@@ -12,7 +12,7 @@
               </div>
             <% end %>
             <%= CoursePlanner.SharedView.form_text f, :name %>
-            <%= CoursePlanner.SharedView.form_text f, :email %>
+            <%= CoursePlanner.SharedView.form_text f, :email, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :phone_number %>
             <%= CoursePlanner.SharedView.form_select f, :status, statuses %>
           <% end %>

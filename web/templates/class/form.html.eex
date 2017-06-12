@@ -11,10 +11,12 @@
                 <p>Oops, something went wrong! Please check the errors below.</p>
               </div>
             <% end %>
-            <%= CoursePlanner.SharedView.form_select f, :offered_course_id, offered_courses, selected: selected_offered_course(@changeset) %>
-            <%= CoursePlanner.SharedView.form_date f, :date %>
-            <%= CoursePlanner.SharedView.form_time f, :starting_at %>
-            <%= CoursePlanner.SharedView.form_time f, :finishes_at %>
+            <%= CoursePlanner.SharedView.form_select f, :offered_course_id, offered_courses, selected: selected_offered_course(@changeset),
+                                                                                             required: true
+            %>
+            <%= CoursePlanner.SharedView.form_date f, :date, required: true %>
+            <%= CoursePlanner.SharedView.form_time f, :starting_at, required: true %>
+            <%= CoursePlanner.SharedView.form_time f, :finishes_at, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :classroom %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
