@@ -26,6 +26,11 @@
     <%= @offered_course.number_of_sessions %>
   </li>
 
+  <li>
+    <strong>Syllabus:</strong>
+    <%= @offered_course.syllabus %>
+  </li>
+
 </ul>
 <h3>Course</h3>
 <ul>
