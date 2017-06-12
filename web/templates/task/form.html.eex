@@ -14,7 +14,7 @@
             <%= CoursePlanner.SharedView.form_text f, :name %>
             <%= CoursePlanner.SharedView.form_datetime f, :start_time %>
             <%= CoursePlanner.SharedView.form_datetime f, :finish_time %>
-            <%= CoursePlanner.SharedView.form_select f, :user_id, users %>
+            <%= CoursePlanner.SharedView.form_select f, :user_id, users, label: "Assignee" %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

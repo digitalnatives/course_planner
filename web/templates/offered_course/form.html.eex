@@ -17,9 +17,11 @@
             <%= CoursePlanner.SharedView.form_select f, :term_id, terms, selected: selected_term(@changeset) %>
             <%= CoursePlanner.SharedView.form_select f, :course_id, courses, selected: selected_course(@changeset) %>
             <%= CoursePlanner.SharedView.form_multiselect f, :student_ids, students, selected: selected_students(@changeset),
+                                                                                     label: "Students",
                                                                                      tooltip_text: "Add new student"
             %>
             <%= CoursePlanner.SharedView.form_multiselect f, :teacher_ids, teachers, selected: selected_teachers(@changeset),
+                                                                                     label: "Teachers",
                                                                                      tooltip_text: "Add new teacher"
             %>
           <% end %>
