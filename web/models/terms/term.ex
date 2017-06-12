@@ -23,8 +23,6 @@ defmodule CoursePlanner.Terms.Term do
     struct
     |> cast(params, [:name, :start_date, :end_date])
     |> validate_required([:name, :start_date, :end_date])
-    |> cast_embed(:holidays)
-    |> Statuses.update_status_timestamp(EntityStatus)
     |> validate_date_range()
   end
 

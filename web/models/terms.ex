@@ -4,8 +4,7 @@ defmodule CoursePlanner.Terms do
   """
   alias CoursePlanner.{Repo, Notifier, Coordinators, Notifier.Notification}
   alias CoursePlanner.Terms.{Holiday, Term}
-  alias Ecto.{Changeset, DateTime}
-  import Ecto.Query, only: [from: 2]
+  alias Ecto.Changeset
 
   def all do
     Repo.all(Term)

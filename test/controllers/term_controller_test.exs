@@ -75,6 +75,7 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 403)
 
     conn = post volunteer_conn, term_path(volunteer_conn, :create), term: %{}
+    assert html_response(conn, 403)
   end
 
   test "does not create resource and renders errors when holiday is before term start", %{conn: conn} do
