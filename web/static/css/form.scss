@@ -93,3 +93,12 @@
     @extend .mdl-textfield__error;
     font-size: 14px;
   }
+
+  .holiday-label {
+    color: $primary;
+    font-size: 12px;
+  }
+
+  .holiday-table {
+    margin: 8px 0;
+  }
