@@ -8,7 +8,6 @@
       <th>Class date</th>
       <th>Starting at</th>
       <th>Finishes at</th>
-      <th>Status</th>
     </tr>
   </thead>
   <tbody>
@@ -19,7 +18,6 @@
       <td><%= class.date %></td>
       <td><%= class.starting_at %></td>
       <td><%= class.finishes_at %></td>
-      <td><%= class.status %></td>
 
       <td class="text-right">
         <%= link "Show", to: class_path(@conn, :show, class), class: "btn btn-default btn-xs" %>

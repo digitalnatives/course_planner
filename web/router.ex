@@ -25,12 +25,17 @@ defmodule CoursePlanner.Router do
     coherence_routes()
   end
 
+  scope "/" do
+    pipe_through :protected
+    coherence_routes :protected
+  end
+
   scope "/", CoursePlanner do
     pipe_through :protected
 
-    coherence_routes :protected
-
     get "/", PageController, :index
+
+    resources "/dashboard", DashboardController, only: [:show], singleton: true
 
     resources "/users", UserController, except: [:create, :new]
     resources "/coordinators", CoordinatorController
@@ -48,7 +53,10 @@ defmodule CoursePlanner.Router do
       post "/grab", TaskController, :grab, as: :grab
     end
 
-    resources "/attendances", AttendanceController, only: [:index]
+    resources "/attendances", AttendanceController, only: [:index, :show] do
+      get "/fill_course", AttendanceController, :fill_course, as: :fill_course
+      put "/update_fill", AttendanceController, :update_fill, as: :update_fill
+    end
   end
 
   if Mix.env == :dev do

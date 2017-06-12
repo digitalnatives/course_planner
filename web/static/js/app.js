@@ -11,5 +11,8 @@
       APPLICATION
   */
 
-  var multiselect = require( "./multiselect" );
-  multiselect.initializeMultiselects();
+  const { initializeMultiselects } = require( "./multiselect" );
+  initializeMultiselects();
+
+  const { initTerms } = require( "./term.js" );
+  initTerms();

@@ -3,6 +3,9 @@ defmodule CoursePlanner.StudentController do
   alias CoursePlanner.{User, Students, Router.Helpers, Users}
   alias Coherence.ControllerHelpers
 
+  import Canary.Plugs
+  plug :authorize_resource, model: User
+
   def index(conn, _params) do
     render(conn, "index.html", students: Students.all())
   end
@@ -42,7 +45,7 @@ defmodule CoursePlanner.StudentController do
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
     case Students.update(id, params) do
       {:ok, student} ->
-        Users.notify_user(student, current_user, :user_modified)
+        Users.notify_user(student, current_user, :user_modified, student_url(conn, :show, student))
         conn
         |> put_flash(:info, "Student updated successfully.")
         |> redirect(to: student_path(conn, :show, student))

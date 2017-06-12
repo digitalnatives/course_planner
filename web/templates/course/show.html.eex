@@ -27,11 +27,6 @@
     <%= @course.syllabus %>
   </li>
 
-  <li>
-    <strong>Status:</strong>
-    <%= @course.status %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: course_path(@conn, :edit, @course) %>

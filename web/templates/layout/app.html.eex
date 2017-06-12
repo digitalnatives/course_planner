@@ -20,12 +20,13 @@
         <span class="mdl-layout-title">Course Planner</span>
         <div class="mdl-layout-spacer"></div>
         <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="#">Link</a>
+          <%= CoursePlanner.Coherence.ViewHelpers.signout_link(@conn, "Sign out", "mdl-navigation__link") %>
         </nav>
       </div>
     </header>
 
     <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
+      <%= CoursePlanner.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
       <%= CoursePlanner.SharedView.navbar_item "Users", @conn, user_path(@conn, :index) %>
       <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
       <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
@@ -49,6 +50,7 @@
       </div>
     </main>
   </div>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

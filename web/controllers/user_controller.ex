@@ -3,6 +3,9 @@ defmodule CoursePlanner.UserController do
   alias CoursePlanner.{User, Users}
   require Logger
 
+  import Canary.Plugs
+  plug :authorize_resource, model: User
+
   def index(conn, _params) do
     query = from u in User, where: is_nil(u.deleted_at)
     users = Repo.all(query)
@@ -31,7 +34,7 @@ defmodule CoursePlanner.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        Users.notify_user(user, current_user, :user_modified)
+        Users.notify_user(user, current_user, :user_modified, user_url(conn, :show, user))
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: user_path(conn, :show, user))

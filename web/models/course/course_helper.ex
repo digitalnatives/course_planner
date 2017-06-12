@@ -3,36 +3,31 @@ defmodule CoursePlanner.CourseHelper do
   This module provides custom functionality for controller over the model
   """
   use CoursePlanner.Web, :model
-  import Ecto.DateTime, only: [utc: 0]
 
-  alias CoursePlanner.{Repo, Course, Notifier, Coordinators}
+  alias CoursePlanner.{Repo, Course, Coordinators, Notifier, Notifier.Notification}
 
-  def delete(course) do
-    case course.status do
-      "Planned" -> hard_delete_course(course)
-      _         -> soft_delete_course(course)
+  def delete(id) do
+    course = Repo.get(Course, id)
+    if is_nil(course) do
+      {:error, :not_found}
+    else
+      Repo.delete(course)
     end
   end
 
-  defp soft_delete_course(course) do
-    changeset = change(course, %{deleted_at: utc()})
-    Repo.update(changeset)
-  end
-
-  defp hard_delete_course(course) do
-    Repo.delete!(course)
-  end
-
-  def all_none_deleted do
-    query = from c in Course , where: is_nil(c.deleted_at)
-    Repo.all(query)
-  end
-
-  def notify_user_course(course, current_user, notification_type) do
+  def notify_user_course(course, current_user, notification_type, path \\ "/") do
     course
     |> get_subscribed_users()
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(Notifier.notify_user(&1, notification_type)))
+    |> Enum.each(&(notify_user(&1, notification_type, path)))
+  end
+
+  def notify_user(user, type, path) do
+    Notification.new()
+    |> Notification.type(type)
+    |> Notification.resource_path(path)
+    |> Notification.to(user)
+    |> Notifier.notify_user()
   end
 
   defp get_subscribed_users(course) do

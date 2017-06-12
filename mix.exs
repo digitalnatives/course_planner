@@ -10,7 +10,9 @@ defmodule CoursePlanner.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]]
   end
 
   # Configuration for the OTP application.
@@ -38,13 +40,13 @@ defmodule CoursePlanner.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:credo, "~> 0.7.2", only: [:dev, :test]},
-     {:dogma, "~> 0.1.14", only: [:dev, :test]},
      {:swoosh, "~> 0.7.0"},
      {:coherence, github: "smpallen99/coherence", ref: "590222b"},
      {:canada, "~> 1.0.1"},
      {:canary, "~> 1.1.1"},
-     {:ex_machina, "~> 2.0", only: :test}
+     {:credo, "~> 0.7", only: [:dev, :test]},
+     {:ex_machina, "~> 2.0", only: :test},
+     {:excoveralls, "~> 0.6", only: :test}
    ]
   end
 

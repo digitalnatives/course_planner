@@ -24,6 +24,33 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    }
  end
 
+ def teacher_factory do
+   %User{
+     name: sequence(:name, &"teacher-#{&1}"),
+     email: sequence(:email, &"teacher-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Teacher"
+   }
+ end
+
+ def coordinator_factory do
+   %User{
+     name: sequence(:name, &"coordinator-#{&1}"),
+     email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Coordinator"
+   }
+ end
+
+ def volunteer_factory do
+   %User{
+     name: sequence(:name, &"volunteer-#{&1}"),
+     email: sequence(:email, &"volunteer-#{&1}@courseplanner.com"),
+     status: "Active",
+     role: "Volunteer"
+   }
+ end
+
  def term_factory do
    %Term{
      name: sequence(:name, &"term-#{&1}"),
@@ -38,8 +65,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
      name: sequence(:name, &"course-#{&1}"),
      description: "Description",
      number_of_sessions: 1,
-     session_duration: "01:00:00",
-     status: "Planned"
+     session_duration: "01:00:00"
   }
  end
 
@@ -52,8 +78,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
 
  def class_factory do
     %Class{
-      offered_course: build(:offered_course),
-      status: "Planned"
+      offered_course: build(:offered_course)
     }
  end
 

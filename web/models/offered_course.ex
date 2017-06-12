@@ -29,5 +29,7 @@ defmodule CoursePlanner.OfferedCourse do
     |> validate_required([:term_id, :course_id])
     |> assoc_constraint(:term)
     |> assoc_constraint(:course)
+    |> unique_constraint(:course_id, name: :offered_courses_term_id_course_id_index,
+                         message: "This course is already offered in this term")
   end
 end

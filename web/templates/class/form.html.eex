@@ -1,6 +1,5 @@
 
   <% offered_courses = offered_courses_to_select() %>
-  <% statuses = ["Planned", "Active"] %>
 
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
@@ -17,7 +16,6 @@
             <%= CoursePlanner.SharedView.form_time f, :starting_at %>
             <%= CoursePlanner.SharedView.form_time f, :finishes_at %>
             <%= CoursePlanner.SharedView.form_text f, :classroom %>
-            <%= CoursePlanner.SharedView.form_select f, :status, statuses %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

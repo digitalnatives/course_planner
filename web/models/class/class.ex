@@ -4,15 +4,13 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{OfferedCourse, Types, Attendance}
-  alias Ecto.{Time, Date, DateTime}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
+  alias Ecto.{Time, Date}
 
   schema "classes" do
     field :date, Date
     field :starting_at, Time
     field :finishes_at, Time
-    field :status, Types.EntityStatus
-    field :deleted_at, DateTime
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
     has_many :attendances, Attendance, on_delete: :delete_all
@@ -26,29 +24,23 @@ defmodule CoursePlanner.Class do
   """
   def changeset(struct, params \\ %{}) do
     cast_params =
-      [:offered_course_id, :date, :starting_at, :finishes_at, :status, :deleted_at, :classroom]
+      [:offered_course_id, :date, :starting_at, :finishes_at, :classroom]
 
     struct
     |> cast(params, cast_params)
-    |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at, :status])
-  end
-
-  def changeset(struct, _params, :fill) do
-    struct
-    |> cast_assoc(:attendances)
+    |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
   end
 
   def changeset(struct, params, :create) do
     struct
     |> changeset(params)
-    |> validate_inclusion(:status, ["Planned", "Active"])
+    |> validate_offered_course()
     |> validate_duration()
   end
 
   def changeset(struct, params, :update) do
     struct
     |> changeset(params)
-    |> validate_inclusion(:status, ["Planned", "Active"])
     |> validate_duration()
   end
 
@@ -72,5 +64,22 @@ defmodule CoursePlanner.Class do
   end
 
   def validate_duration(changeset), do: changeset
+
+  def validate_offered_course(%{changes: changes, valid?: true} = changeset) do
+    offered_course_id = Map.get(changes, :offered_course_id)
+
+    query = from oc in OfferedCourse,
+      join: t in assoc(oc, :teachers),
+      join: s in assoc(oc, :students),
+      preload: [teachers: t, students: s],
+      where: oc.id == ^offered_course_id
+
+      case Repo.one(query) do
+        nil -> add_error(changeset, :offered_course_status,
+                 "Attached course should have at least one teacher and one student")
+        _   -> changeset
+      end
+  end
+  def validate_offered_course(changeset), do: changeset
 
 end

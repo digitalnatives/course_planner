@@ -2,6 +2,8 @@ defmodule CoursePlanner.PageController do
   use CoursePlanner.Web, :controller
 
   def index(conn, _params) do
-    render conn, "index.html"
+    conn
+    |> put_status(301)
+    |> redirect(to: dashboard_path(conn, :show))
   end
 end
