@@ -2,7 +2,7 @@
   <div class="row row--hspace">
     <div class="col-xs-11">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select">
-        <%= label @form, @field, class: "mdl-textfield__label" %>
+        <span class="mdl-textfield__label"><%= @label %></span>
         <select
           class="form-select__select mdl-textfield__input form-multiselect__dropdown"
           data-multiselect-id="<%= @multiselect_id %>"

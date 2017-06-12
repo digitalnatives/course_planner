@@ -3,7 +3,7 @@
     <%= select @form, @field, @options, class: "form-select__select mdl-textfield__input",
                                         selected: @selected
     %>
-    <%= label @form, @field, class: "mdl-textfield__label" %>
+    <span class="mdl-textfield__label"><%= @label %></span>
     <i class="material-icons form-select__icon ">&#xE5C5;</i>
   </div>
 

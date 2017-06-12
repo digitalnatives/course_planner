@@ -15,6 +15,7 @@ defmodule CoursePlanner.SharedView do
 
   def form_text(form, field, opts \\ []) do
     class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
     wrapper_class = ""
 
     if form.errors[field] do
@@ -25,6 +26,7 @@ defmodule CoursePlanner.SharedView do
 
     render "form_text.html", form: form,
                              field: field,
+                             label: label,
                              wrapper_class: wrapper_class,
                              class: class,
                              required: required
@@ -32,6 +34,7 @@ defmodule CoursePlanner.SharedView do
 
   def form_textarea(form, field, opts \\ []) do
     class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
     wrapper_class = ""
 
     if form.errors[field] do
@@ -43,44 +46,64 @@ defmodule CoursePlanner.SharedView do
     rows = opts[:rows] || 3
 
     render "form_textarea.html", form: form,
-                             field: field,
-                             wrapper_class: wrapper_class,
-                             class: class,
-                             required: required,
-                             rows: rows
+                                 field: field,
+                                 label: label,
+                                 wrapper_class: wrapper_class,
+                                 class: class,
+                                 required: required,
+                                 rows: rows
   end
 
   def form_password(form, field, opts \\ []) do
     class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
     required = opts[:required] || nil
 
     render "form_password.html", form: form,
                                  field: field,
+                                 label: label,
                                  class: class,
                                  required: required
   end
 
   def form_date(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_date.html", form: form, field: field, class: class
+    label = opts[:label] || humanize(field)
+
+    render "form_date.html", form: form,
+                             field: field,
+                             label: label,
+                             class: class
   end
 
   def form_time(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_time.html", form: form, field: field, class: class
+    label = opts[:label] || humanize(field)
+
+    render "form_time.html", form: form,
+                             field: field,
+                             label: label,
+                             class: class
   end
 
   def form_datetime(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_datetime.html", form: form, field: field, class: class
+    label = opts[:label] || humanize(field)
+
+    render "form_datetime.html", form: form,
+                                 field: field,
+                                 label: label,
+                                 class: class
   end
 
   def form_select(form, field, options, opts \\ []) do
     class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
     selected = opts[:selected] || nil
 
     render "form_select.html", form: form,
                                field: field,
+                               label: label,
                                selected: selected,
                                options: options,
                                class: class
@@ -88,6 +111,7 @@ defmodule CoursePlanner.SharedView do
 
   def form_multiselect(form, field, options, opts \\ []) do
     class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
     selected = opts[:selected] || nil
     tooltip_text = opts[:tooltip_text] || "Add new item"
 
@@ -95,13 +119,14 @@ defmodule CoursePlanner.SharedView do
     button_id = (Atom.to_string field) <> "__add-button"
 
     render "form_multiselect.html", form: form,
-                               field: field,
-                               selected: selected,
-                               options: options,
-                               tooltip_text: tooltip_text,
-                               class: class,
-                               button_id: button_id,
-                               multiselect_id: multiselect_id
+                                    field: field,
+                                    label: label,
+                                    selected: selected,
+                                    options: options,
+                                    tooltip_text: tooltip_text,
+                                    class: class,
+                                    button_id: button_id,
+                                    multiselect_id: multiselect_id
   end
 
   def form_button(label, to, opts \\ []) do
