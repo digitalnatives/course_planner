@@ -12,21 +12,6 @@
     <%= @course.description %>
   </li>
 
-  <li>
-    <strong>Number of sessions:</strong>
-    <%= @course.number_of_sessions %>
-  </li>
-
-  <li>
-    <strong>Session duration:</strong>
-    <%= @course.session_duration %>
-  </li>
-
-  <li>
-    <strong>Syllabus:</strong>
-    <%= @course.syllabus %>
-  </li>
-
 </ul>
 
 <%= link "Edit", to: course_path(@conn, :edit, @course) %>

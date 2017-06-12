@@ -7,6 +7,8 @@
       <th>Term Name</th>
       <th>Term Start Date</th>
       <th>Term End Date</th>
+      <th>Session duration</th>
+
       <th></th>
     </tr>
   </thead>
@@ -17,6 +19,7 @@
       <td><%= offered_course.term.name %></td>
       <td><%= offered_course.term.start_date %></td>
       <td><%= offered_course.term.end_date %></td>
+      <td><%= offered_course.session_duration %></td>
 
       <td class="text-right">
         <%= link "Show", to: offered_course_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
