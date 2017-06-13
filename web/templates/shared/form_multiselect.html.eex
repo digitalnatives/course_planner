@@ -14,9 +14,9 @@
           <% end %>
         </select>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
-        <%= if @form.errors[@field] do %>
+        <%= if @error do %>
           <span class="mdl-textfield__error">
-            <%= error_tag @form, @field %>
+            <%= @error %>
           </span>
         <% end %>
       </div>
