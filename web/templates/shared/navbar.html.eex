@@ -1,6 +1,6 @@
 
   <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">Course Planner</span>
+    <img src="/images/logo.svg" class="nav-logo">
     <nav class="mdl-navigation">
       <%= @children %>
     </nav>
