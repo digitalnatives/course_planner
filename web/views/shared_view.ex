@@ -16,18 +16,18 @@ defmodule CoursePlanner.SharedView do
   def form_text(form, field, opts \\ []) do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
-    wrapper_class = ""
 
-    if form.errors[field] do
-      wrapper_class = "is-invalid"
-    end
+    wrapper_class = if form.errors[field] do "is-invalid" else "" end
 
     required = opts[:required] || nil
 
     value = Map.get form.data, field
-    if required && String.length to_string value > 0 do
-      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
-    end
+    wrapper_class =
+      if required && String.length to_string value > 0 do
+        Enum.join [wrapper_class, "form-init"], " "
+      else
+        wrapper_class
+      end
 
     render "form_text.html", form: form,
                              field: field,
@@ -40,18 +40,18 @@ defmodule CoursePlanner.SharedView do
   def form_textarea(form, field, opts \\ []) do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
-    wrapper_class = ""
 
-    if form.errors[field] do
-      wrapper_class = "is-invalid"
-    end
+    wrapper_class = if form.errors[field] do "is-invalid" else "" end
 
     required = opts[:required] || nil
 
     value = Map.get form.data, field
-    if required && String.length to_string value > 0 do
-      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
-    end
+    wrapper_class =
+      if required && String.length to_string value > 0 do
+        Enum.join [wrapper_class, "form-init"], " "
+      else
+        wrapper_class
+      end
 
     rows = opts[:rows] || 3
 
@@ -68,12 +68,14 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     required = opts[:required] || nil
-    wrapper_class = ""
 
     value = Map.get form.data, field
-    if required && String.length to_string value > 0 do
-      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
-    end
+    wrapper_class =
+      if required && String.length to_string value > 0 do
+        "form-init"
+      else
+        ""
+      end
 
     render "form_password.html", form: form,
                                  field: field,
