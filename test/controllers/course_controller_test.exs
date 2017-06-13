@@ -5,7 +5,7 @@ defmodule CoursePlanner.CourseControllerTest do
 
   import CoursePlanner.Factory
 
-  @valid_attrs %{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %{hour: 14, min: 0, sec: 0}, syllabus: "some content"}
+  @valid_attrs %{description: "some content", name: "some content"}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
@@ -79,7 +79,7 @@ defmodule CoursePlanner.CourseControllerTest do
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    course = Repo.insert! %Course{description: "some content", name: "some content", number_of_sessions: 42, session_duration: %Ecto.Time{hour: 2, min: 0, sec: 0}, syllabus: "some content"}
+    course = Repo.insert! %Course{description: "some content", name: "some content"}
     conn = delete conn, course_path(conn, :delete, course)
     assert redirected_to(conn) == course_path(conn, :index)
     refute Repo.get(Course, course.id)
@@ -90,21 +90,6 @@ defmodule CoursePlanner.CourseControllerTest do
     assert redirected_to(conn) == course_path(conn, :index)
     conn = get conn, course_path(conn, :index)
     assert html_response(conn, 200) =~ "Course was not found"
-  end
-
-  test "does not create resource and renders errors when data number_of_sessions is negative", %{conn: conn} do
-    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: -1}
-    assert html_response(conn, 200) =~ "New course"
-  end
-
-  test "does not create resource and renders errors when data number_of_sessions is zero", %{conn: conn} do
-    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: 0}
-    assert html_response(conn, 200) =~ "New course"
-  end
-
-  test "does not create resource and renders errors when data number_of_sessions is too big", %{conn: conn} do
-    conn = post conn, course_path(conn, :create), course: %{@valid_attrs | number_of_sessions: 100_000_000}
-    assert html_response(conn, 200) =~ "New course"
   end
 
   test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
@@ -123,7 +108,6 @@ defmodule CoursePlanner.CourseControllerTest do
     conn = get volunteer_conn, course_path(volunteer_conn, :show, course)
     assert html_response(conn, 403)
   end
-
 
   test "does not list entries on index for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)

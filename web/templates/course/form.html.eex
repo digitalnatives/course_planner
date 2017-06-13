@@ -18,24 +18,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :number_of_sessions, class: "control-label" %>
-    <%= number_input f, :number_of_sessions, class: "form-control" %>
-    <%= error_tag f, :number_of_sessions %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :session_duration, class: "control-label" %>
-    <%= time_select f, :session_duration, class: "form-control" %>
-    <%= error_tag f, :session_duration %>
-  </div>
-
-  <div class="form-group">
-    <%= label f, :syllabus, class: "control-label" %>
-    <%= textarea f, :syllabus, class: "form-control" %>
-    <%= error_tag f, :syllabus %>
-  </div>
-
-  <div class="form-group">
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>

@@ -7,7 +7,9 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   def valid_attrs do
     %{
       term_id: term().id,
-      course_id: course("Course1").id
+      course_id: course("Course1").id,
+      number_of_sessions: 20,
+      syllabus: "some syllabus"
     }
   end
 
@@ -32,10 +34,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
         %Course{},
         %{
           name: name,
-          description: "Description",
-          number_of_sessions: 1,
-          session_duration: "01:00:00",
-          status: "Active"
+          description: "Description"
         }))
   end
 
@@ -78,7 +77,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+    offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :show, offered_course)
     assert html_response(conn, 200) =~ "Show offered course"
   end
@@ -90,13 +89,13 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+    offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :edit, offered_course)
     assert html_response(conn, 200) =~ "Edit offered course"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+    offered_course = insert(:offered_course)
     attrs = valid_attrs()
     conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: attrs
     assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
@@ -123,10 +122,30 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     offered_course_duplicate_attrs =
       %{
         term_id: term.id,
-        course_id: course.id
+        course_id: course.id,
+        number_of_sessions: 10,
+        syllabus: "some syllabus"
       }
 
     conn = post conn, offered_course_path(conn, :create), offered_course: offered_course_duplicate_attrs
     assert html_response(conn, 200) =~ "This course is already offered in this term"
+  end
+
+  test "does not create resource and renders errors when data number_of_sessions is negative", %{conn: conn} do
+    attrs = valid_attrs()
+    conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: -1}
+    assert html_response(conn, 200) =~ "New offered course"
+  end
+
+  test "does not create resource and renders errors when data number_of_sessions is zero", %{conn: conn} do
+    attrs = valid_attrs()
+    conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: 0}
+    assert html_response(conn, 200) =~ "New offered course"
+  end
+
+  test "does not create resource and renders errors when data number_of_sessions is too big", %{conn: conn} do
+    attrs = valid_attrs()
+    conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: 100_000_000}
+    assert html_response(conn, 200) =~ "New offered course"
   end
 end

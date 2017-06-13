@@ -24,15 +24,12 @@ defmodule CoursePlanner.OfferedCoursesTest do
       |> Course.changeset(
         %{
           name: name,
-          description: "Description",
-          number_of_sessions: 1,
-          session_duration: "01:00:00",
-          status: "Active"
+          description: "Description"
         })
       |> Repo.insert!
 
     %OfferedCourse{}
-      |> OfferedCourse.changeset(%{term_id: term.id, course_id: course.id})
+      |> OfferedCourse.changeset(%{term_id: term.id, course_id: course.id, number_of_sessions: 1, syllabus: "some content"})
       |> Changeset.put_assoc(:students, students)
       |> Repo.insert
   end

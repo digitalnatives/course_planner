@@ -63,9 +63,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
  def course_factory do
   %Course{
      name: sequence(:name, &"course-#{&1}"),
-     description: "Description",
-     number_of_sessions: 1,
-     session_duration: "01:00:00"
+     description: "Description"
   }
  end
 
@@ -73,6 +71,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %OfferedCourse{
      term: build(:term),
      course: build(:course),
+     number_of_sessions: 1,
+     syllabus: "some content"
    }
  end
 
