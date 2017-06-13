@@ -83,9 +83,9 @@ defmodule CoursePlanner.Class do
   end
   def validate_offered_course(changeset), do: changeset
 
-  defp validate_date(%{valid?: true, changes: %{date: date} = changes} = changeset) do
+  defp validate_date(%{valid?: true} = changeset) do
     term = OfferedCourse
-    |> Repo.get(changes[:offered_course_id] || changeset.data.offered_course_id)
+    |> Repo.get(Changeset.get_field(changeset, :offered_course_id))
     |> Repo.preload([:term])
     |> Map.get(:term)
 
@@ -96,6 +96,8 @@ defmodule CoursePlanner.Class do
     en = term
     |> Map.get(:end_date)
     |> Date.cast!()
+
+    date = Changeset.get_field(changeset, :date)
 
     case {Date.compare(st, date), Date.compare(en, date)} do
       {:gt, _} -> Changeset.add_error(changeset, :date,
