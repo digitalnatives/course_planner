@@ -12,8 +12,7 @@ defmodule CoursePlanner.StudentsTest do
          name: name,
          start_date: start_date,
          end_date: end_date,
-         courses: [course],
-         status: "Planned"
+         courses: [course]
        })
    end
 

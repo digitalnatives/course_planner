@@ -24,12 +24,6 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :status, class: "control-label" %>
-    <%= select f, :status, ["Planned", "Active"], class: "form-control" %>
-    <%= error_tag f, :status %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :holidays %>
     <ul id="<%= container_id(f, :holidays) %>">
       <%= render "holiday_fields.html", f: f %>
