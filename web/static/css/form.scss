@@ -102,3 +102,17 @@
   .holiday-table {
     margin: 8px 0;
   }
+
+  .mdl-textfield.is-invalid.form-init {
+    .mdl-textfield__input {
+      border-color: $primary;
+    }
+
+    .mdl-textfield__label {
+      color: $primary;
+    }
+
+    .mdl-textfield__label:after {
+      background-color: $primary;
+    }
+  }

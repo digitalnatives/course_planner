@@ -24,6 +24,11 @@ defmodule CoursePlanner.SharedView do
 
     required = opts[:required] || nil
 
+    value = Map.get form.data, field
+    if required && String.length to_string value > 0 do
+      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
+    end
+
     render "form_text.html", form: form,
                              field: field,
                              label: label,
@@ -43,6 +48,11 @@ defmodule CoursePlanner.SharedView do
 
     required = opts[:required] || nil
 
+    value = Map.get form.data, field
+    if required && String.length to_string value > 0 do
+      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
+    end
+
     rows = opts[:rows] || 3
 
     render "form_textarea.html", form: form,
@@ -58,10 +68,17 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     required = opts[:required] || nil
+    wrapper_class = ""
+
+    value = Map.get form.data, field
+    if required && String.length to_string value > 0 do
+      wrapper_class = Enum.join [wrapper_class, "form-init"], " "
+    end
 
     render "form_password.html", form: form,
                                  field: field,
                                  label: label,
+                                 wrapper_class: wrapper_class,
                                  class: class,
                                  required: required
   end

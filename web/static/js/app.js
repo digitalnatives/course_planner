@@ -16,3 +16,7 @@
 
   const { initTerms } = require( "./term.js" );
   initTerms();
+
+  const { initForm } = require( "./form.js" );
+  initForm();
+
