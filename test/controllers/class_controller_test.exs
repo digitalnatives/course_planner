@@ -4,8 +4,8 @@ defmodule CoursePlanner.ClassControllerTest do
   alias CoursePlanner.{Class, Repo, User, Attendance}
   import CoursePlanner.Factory
 
-  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
-  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
+  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2017}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
+  @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2017}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
   @invalid_attrs %{}
   @user %User{
     name: "Test User",
