@@ -44,7 +44,10 @@
             .replace( /_0_/g, `_${ index }_` )
             .replace( /_0/g, `_${ index }` );
 
-          container.insertAdjacentHTML( "beforeend", newRow );
+          container.querySelector(
+            ".holiday-table__empty-text"
+          ).insertAdjacentHTML( "beforebegin", newRow );
+
           dataset.index = parseInt( dataset.index ) + 1;
 
           componentHandler.upgradeDom();

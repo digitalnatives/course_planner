@@ -29,6 +29,9 @@
               </thead>
               <tbody id="<%= container_id(f, :holidays) %>">
                 <%= render "holiday_fields.html", f: f %>
+                <tr class="holiday-table__empty-text">
+                  <td colspan="3">There are no holidays set yet.</td>
+                </tr>
               </tbody>
             </table>
             <div class="mdl-textfield__error">

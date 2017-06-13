@@ -101,6 +101,14 @@
 
   .holiday-table {
     margin: 8px 0;
+
+    &__empty-text td {
+      text-align: center;
+    }
+
+    tr + &__empty-text {
+      display: none;
+    }
   }
 
   .mdl-textfield.is-invalid.form-init {
