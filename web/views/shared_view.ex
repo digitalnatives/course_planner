@@ -176,6 +176,10 @@ defmodule CoursePlanner.SharedView do
     render "navbar.html", title: title, children: children
   end
 
+  def navbar_separator do
+    render "navbar_separator.html"
+  end
+
   def navbar_item(label, conn, path) do
     classes = if path_match(conn, path) do
       "mdl-navigation__link mdl-navigation__link--current"
