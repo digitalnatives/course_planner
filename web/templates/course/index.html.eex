@@ -4,8 +4,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Number of sessions</th>
-      <th>Session duration</th>
+      <th>Description</th>
 
       <th></th>
     </tr>
@@ -14,8 +13,7 @@
 <%= for course <- @courses do %>
     <tr>
       <td><%= course.name %></td>
-      <td><%= course.number_of_sessions %></td>
-      <td><%= course.session_duration %></td>
+      <td><%= course.description %></td>
 
       <td class="text-right">
         <%= link "Show", to: course_path(@conn, :show, course), class: "btn btn-default btn-xs" %>
