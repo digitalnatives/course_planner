@@ -105,10 +105,16 @@
 
   .mdl-textfield.is-invalid.form-init {
     .mdl-textfield__input {
-      border-color: $primary;
+      border-color: rgba(0,0,0,0.12);
     }
 
     .mdl-textfield__label {
+      color: rgba(0,0,0, 0.26);
+      font-size: 16px;
+    }
+
+    &.is-focused .mdl-textfield__label {
+      font-size: 12px;
       color: $primary;
     }
 
