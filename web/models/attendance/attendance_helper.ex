@@ -16,7 +16,7 @@ defmodule CoursePlanner.AttendanceHelper do
       join: ac in assoc(a, :class),
       preload: [:term, :course, :teachers, :students],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
-      where: oc.id == ^offered_course_id and is_nil(s.deleted_at),
+      where: oc.id == ^offered_course_id,
       order_by: [asc: c.date])
   end
 
@@ -28,7 +28,7 @@ defmodule CoursePlanner.AttendanceHelper do
       join: a in assoc(c,  :attendances),
       preload: [:term, :course, teachers: t, students: s],
       preload: [classes: {c, attendances: a}],
-      where: oc.id == ^offered_course_id and is_nil(s.deleted_at) and t.id == ^teacher_id,
+      where: oc.id == ^offered_course_id and t.id == ^teacher_id,
       order_by: [asc: c.date])
   end
 

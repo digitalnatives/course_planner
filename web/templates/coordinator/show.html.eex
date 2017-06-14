@@ -14,10 +14,6 @@
     <strong> Phone Number: </strong>
     <%= @coordinator.phone_number %>
   </li>
-    <li>
-    <strong> Status: </strong>
-    <%= @coordinator.status %>
-  </li>
 </ul>
 
 <%= link "Edit", to: coordinator_path(@conn, :edit, @coordinator) %>

@@ -7,9 +7,7 @@ defmodule CoursePlanner.UserController do
   plug :authorize_resource, model: User
 
   def index(conn, _params) do
-    query = from u in User, where: is_nil(u.deleted_at)
-    users = Repo.all(query)
-    render(conn, "index.html", users: users)
+    render(conn, "index.html", users: Users.all())
   end
 
   def show(conn, %{"id" => id}) do

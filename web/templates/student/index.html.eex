@@ -24,7 +24,6 @@
       <td><%= student.email %></td>
       <td><%= student.student_id %></td>
       <td><%= student.participation_type %></td>
-      <td><%= student.status %></td>
       <td><%= student.comments %></td>
       <td class="text-right">
         <%= link "Show", to: student_path(@conn, :show, student), class: "btn btn-default btn-xs" %>

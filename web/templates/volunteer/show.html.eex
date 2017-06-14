@@ -18,10 +18,6 @@
     <strong> Phone Number: </strong>
     <%= @volunteer.phone_number %>
   </li>
-    <li>
-    <strong> Status: </strong>
-    <%= @volunteer.status %>
-  </li>
 </ul>
 
 <%= link "Edit", to: volunteer_path(@conn, :edit, @volunteer) %>

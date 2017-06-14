@@ -10,8 +10,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
  def user_factory do
    %User{
      name: sequence(:name, &"user-#{&1}"),
-     email: sequence(:email, &"user-#{&1}@courseplanner.com"),
-     status: "Active",
+     email: sequence(:email, &"user-#{&1}@courseplanner.com")
    }
  end
 
@@ -19,7 +18,6 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %User{
      name: sequence(:name, &"student-#{&1}"),
      email: sequence(:email, &"student-#{&1}@courseplanner.com"),
-     status: "Active",
      role: "Student"
    }
  end
@@ -28,7 +26,6 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %User{
      name: sequence(:name, &"teacher-#{&1}"),
      email: sequence(:email, &"teacher-#{&1}@courseplanner.com"),
-     status: "Active",
      role: "Teacher"
    }
  end
@@ -37,7 +34,6 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %User{
      name: sequence(:name, &"coordinator-#{&1}"),
      email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
-     status: "Active",
      role: "Coordinator"
    }
  end
@@ -46,7 +42,6 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %User{
      name: sequence(:name, &"volunteer-#{&1}"),
      email: sequence(:email, &"volunteer-#{&1}@courseplanner.com"),
-     status: "Active",
      role: "Volunteer"
    }
  end
