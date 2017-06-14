@@ -46,4 +46,12 @@ defmodule CoursePlanner.ClassTest do
     assert changeset.valid?
   end
 
+  test "class can't on holiday" do
+    holiday = build(:holiday, date: %Ecto.Date{day: 1, month: 1, year: 2017})
+    term = insert(:term, holidays: [holiday])
+    course = insert(:course)
+    oc = insert(:offered_course, term: term, course: course)
+    changeset = Class.changeset(%Class{}, %{@valid_attrs | date: %{day: 1, month: 1, year: 2017}, offered_course_id: oc.id})
+    refute changeset.valid?
+  end
 end
