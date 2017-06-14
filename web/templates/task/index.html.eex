@@ -31,7 +31,14 @@
             <%= task.finish_time %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= task_user(@conn, task) %>
+            <%= if task.user_id do %>
+              <%= task.user.name %> <%= task.user.family_name %>
+              <%= if String.length(to_string task.user.nickname) > 0 do %>
+                (<%= task.user.nickname %>)
+              <% end %>
+            <% else %>
+              No one
+            <% end %>
           </td>
           <td>
             <button id="tr_menu_<%= task.id %>"
