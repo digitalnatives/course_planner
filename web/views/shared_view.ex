@@ -21,7 +21,7 @@ defmodule CoursePlanner.SharedView do
 
     value = Map.get form.data, field
     wrapper_class =
-      if form.errors[field] do
+      if error do
         "is-invalid"
       else
         if required && String.length to_string value > 0 do
@@ -48,7 +48,7 @@ defmodule CoursePlanner.SharedView do
 
     value = Map.get form.data, field
     wrapper_class =
-      if form.errors[field] do
+      if error do
         "is-invalid"
       else
         if required && String.length to_string value > 0 do
@@ -77,7 +77,7 @@ defmodule CoursePlanner.SharedView do
     {error, _} = Keyword.get form.errors, field, {nil, nil}
 
     wrapper_class =
-      if form.errors[field] do
+      if error do
         "is-invalid"
       else
         if required do "form-init" else "" end
@@ -97,10 +97,13 @@ defmodule CoursePlanner.SharedView do
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
 
+    wrapper_class = if error do "is-invalid" else "" end
+
     render "form_date.html", form: form,
                              field: field,
                              label: label,
                              error: error,
+                             wrapper_class: wrapper_class,
                              class: class
   end
 
@@ -109,10 +112,13 @@ defmodule CoursePlanner.SharedView do
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
 
+    wrapper_class = if error do "is-invalid" else "" end
+
     render "form_time.html", form: form,
                              field: field,
                              label: label,
                              error: error,
+                             wrapper_class: wrapper_class,
                              class: class
   end
 
@@ -121,10 +127,13 @@ defmodule CoursePlanner.SharedView do
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
 
+    wrapper_class = if error do "is-invalid" else "" end
+
     render "form_datetime.html", form: form,
                                  field: field,
                                  label: label,
                                  error: error,
+                                 wrapper_class: wrapper_class,
                                  class: class
   end
 
@@ -134,12 +143,15 @@ defmodule CoursePlanner.SharedView do
     selected = opts[:selected] || nil
     {error, _} = Keyword.get form.errors, field, {nil, nil}
 
+    wrapper_class = if error do "is-invalid" else "" end
+
     render "form_select.html", form: form,
                                field: field,
                                label: label,
                                error: error,
                                selected: selected,
                                options: options,
+                               wrapper_class: wrapper_class,
                                class: class
   end
 
@@ -153,6 +165,8 @@ defmodule CoursePlanner.SharedView do
     multiselect_id = (Atom.to_string field) <> "__multiselect"
     button_id = (Atom.to_string field) <> "__add-button"
 
+    wrapper_class = if error do "is-invalid" else "" end
+
     render "form_multiselect.html", form: form,
                                     field: field,
                                     label: label,
@@ -160,6 +174,7 @@ defmodule CoursePlanner.SharedView do
                                     selected: selected,
                                     options: options,
                                     tooltip_text: tooltip_text,
+                                    wrapper_class: wrapper_class,
                                     class: class,
                                     button_id: button_id,
                                     multiselect_id: multiselect_id

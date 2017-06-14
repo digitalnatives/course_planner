@@ -1,5 +1,5 @@
 
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
     <%= select @form, @field, @options, class: "form-select__select mdl-textfield__input",
                                         selected: @selected
     %>
