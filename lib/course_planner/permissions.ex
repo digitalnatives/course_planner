@@ -14,8 +14,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
 
   def can?(%User{role: "Teacher"}, action, OfferedCourseController)
     when action in [:show, :edit, :update] , do: true
-  def can?(%User{role: "Student"}, action, OfferedCourseController)
-    when action == :show, do: true
+  def can?(%User{role: "Student"}, :show, OfferedCourseController), do: true
   def can?(_role, _action, OfferedCourseController), do: false
 
   def can?(%User{role: role}, _action, Term)
