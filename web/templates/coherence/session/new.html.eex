@@ -19,7 +19,7 @@
         <% end %>
       </div>
       <div class="col-xs-12">
-        <%= CoursePlanner.SharedView.form_password f, "password", required: true %>
+        <%= CoursePlanner.SharedView.form_password f, :password, required: true %>
       </div>
       <div class="col-xs-12">
         <%= CoursePlanner.SharedView.form_submit f, "Next", class: "login__button" %>
