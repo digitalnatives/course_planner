@@ -25,7 +25,6 @@
       <td> Term </td>
       <td> Course </td>
       <td> Number of sessions </td>
-      <td> Status </td>
       <td> Action </td>
     </tr>
   </thead>
@@ -38,8 +37,7 @@
         <td>
           <%= link "#{offered_course.course.name}", to: course_path(@conn, :show, offered_course.course), class: "btn btn-default btn-xs" %>
         </td>
-        <td><%= offered_course.course.number_of_sessions %></td>
-        <td><%= offered_course.course.status %></td>
+        <td><%= offered_course.number_of_sessions %></td>
         <td>
           <%= link "Show", to: offered_course_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
         </td>
