@@ -394,7 +394,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
     class_attrs = %{@valid_attrs | date: %{day: 1, month: 1, year: 2017}, offered_course_id: offered_course.id}
     conn = post conn, class_path(conn, :create), class: class_attrs
-    assert class_path(conn, :new)
-    assert html_response(conn, 200) =~ "You cannot create a class on holiday"
+    assert html_response(conn, 200) =~ "Cannot create a class on holiday"
+    refute Repo.get_by(Class, class_attrs)
   end
 end

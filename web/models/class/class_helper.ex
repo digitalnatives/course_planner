@@ -20,11 +20,14 @@ defmodule CoursePlanner.ClassHelper do
 
     class_on_holiday? =
       Enum.find(term.holidays, fn(holiday) ->
-        Date.cast!(holiday.date) == class_date
-        end)
+        holiday.date
+        |> Date.cast!
+        |> Date.compare(class_date)
+        |> Kernel.==(:eq)
+      end)
 
     if class_on_holiday? do
-      add_error(changeset, :offered_course_id, "You cannot create a class on holiday")
+      add_error(changeset, :date, "Cannot create a class on holiday")
     else
       changeset
     end
