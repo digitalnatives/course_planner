@@ -15,9 +15,8 @@ defmodule CoursePlanner.ClassHelper do
 
     term = Repo.one(from t in Term,
       join: oc in assoc(t, :offered_courses),
-      preload: [offered_courses: oc],
       where: oc.id == ^offered_course_id)
-
+      
     class_on_holiday? =
       Enum.find(term.holidays, fn(holiday) ->
         holiday.date
