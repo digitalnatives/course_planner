@@ -54,14 +54,19 @@ defmodule CoursePlanner.Coherence.UserEmail do
   end
 
   defp first_name(name) do
-    case String.split(name, " ") do
-      [first_name | _] -> first_name
-      _ -> name
+    if name do
+      name
+    else
+      "there"
     end
   end
 
   defp user_email(user) do
-    {user.name, user.email}
+    if user.name do
+      {user.name, user.email}
+    else
+      user.email
+    end
   end
 
   defp from_email do
