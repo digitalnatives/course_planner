@@ -53,21 +53,11 @@ defmodule CoursePlanner.Coherence.UserEmail do
     end
   end
 
-  defp first_name(name) do
-    if name do
-      name
-    else
-      "there"
-    end
-  end
+  defp first_name(nil), do: "there"
+  defp first_name(name), do: name
 
-  defp user_email(user) do
-    if user.name do
-      {user.name, user.email}
-    else
-      user.email
-    end
-  end
+  defp user_email(%{name: nil, email: email}), do: email
+  defp user_email(%{name: name, email: email}), do: {name, email}
 
   defp from_email do
     log_string = """
