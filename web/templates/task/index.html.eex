@@ -1,29 +1,60 @@
-<h2>Listing tasks</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Start time</th>
-      <th>Finish time</th>
-      <th>Assigned to</th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for task <- @tasks do %>
-    <tr>
-      <td><%= task.name %></td>
-      <td><%= task.start_time %></td>
-      <td><%= task.finish_time %></td>
-      <td><%= task_user(@conn, task) %></td>
-      <td class="text-right">
-        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: task_path(@conn, :edit, task), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: task_path(@conn, :delete, task), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+      Tasks
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "New task", to: task_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
+  </div>
 
-<%= link "New task", to: task_path(@conn, :new) %>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th>Start time</th>
+        <th>Finish time</th>
+        <th class="mdl-data-table__cell--non-numeric">Assignee</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for task <- @tasks do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= task.name %>
+          </td>
+          <td>
+            <%= task.start_time %>
+          </td>
+          <td>
+            <%= task.finish_time %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= task_user(@conn, task) %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= task.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= task.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: task_path(@conn, :show, task) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: task_path(@conn, :edit, task) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: task_path(@conn, :delete, task), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+

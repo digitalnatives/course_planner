@@ -1,30 +1,56 @@
-<h2>User list</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <td> First Name </td>
-      <td> Family Name </td>
-      <td> Nickname</td>
-      <td> Email</td>
-      <td> Role </td>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-12 index-list-title">
+      All users
+    </div>
+  </div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for user <- @users do %>
-    <tr>
-      <td><%= user.name %></td>
-      <td><%= user.family_name %></td>
-      <td><%= user.nickname %></td>
-      <td><%= user.email %></td>
-      <td><%= user.role %></td>
-      <td class="text-right">
-        <%= link "Show", to: user_path(@conn, :show, user), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: user_path(@conn, :edit, user), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Email</th>
+        <th class="mdl-data-table__cell--non-numeric">Role</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for user <- @users do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= user.name %> <%= user.family_name %>
+            <%= if String.length(to_string user.nickname) > 0 do %>
+              (<%= user.nickname %>)
+            <% end %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= user.email %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= user.role %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= user.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= user.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: user_path(@conn, :show, user) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: user_path(@conn, :edit, user) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
