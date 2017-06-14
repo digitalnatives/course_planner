@@ -57,9 +57,9 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   test "do not list anything for volunteer", %{conn: _conn} do
     user_conn = login_as(:volunteer)
-    assert_raise Phoenix.ActionClauseError, fn ->
-      get user_conn, attendance_path(user_conn, :index)
-    end
+
+    conn = get user_conn, attendance_path(user_conn, :index)
+    assert html_response(conn, 403)
   end
 
   test "shows chosen resource by user coordinator", %{conn: _conn} do
@@ -95,9 +95,9 @@ defmodule CoursePlanner.AttendanceControllerTest do
     user_conn = login_as(:volunteer)
 
     attendance = Repo.insert! %Attendance{}
-    assert_raise Phoenix.ActionClauseError, fn ->
-      get user_conn, attendance_path(user_conn, :show, attendance)
-    end
+
+    conn = get user_conn, attendance_path(user_conn, :show, attendance)
+    assert html_response(conn, 403)
   end
 
   test "renders page not found when id is nonexistent", %{conn: _conn} do
@@ -119,36 +119,35 @@ defmodule CoursePlanner.AttendanceControllerTest do
     volunteer_conn = login_as(:volunteer)
 
     attendance = Repo.insert! %Attendance{}
-    assert_raise Phoenix.ActionClauseError, fn ->
-      get volunteer_conn, attendance_fill_course_path(volunteer_conn, :fill_course, attendance)
-    end
+    conn = get volunteer_conn, attendance_fill_course_path(volunteer_conn, :fill_course, attendance)
+    assert html_response(conn, 403)
   end
 
   test "do not update attendence if requested by user volunteer", %{conn: _conn} do
     volunteer_conn = login_as(:volunteer)
 
     attendance = Repo.insert! %Attendance{}
-    assert_raise Phoenix.ActionClauseError, fn ->
-      put volunteer_conn, attendance_update_fill_path(volunteer_conn, :update_fill, attendance)
-    end
+
+    conn = put volunteer_conn, attendance_update_fill_path(volunteer_conn, :update_fill, attendance)
+    assert html_response(conn, 403)
   end
 
   test "do not renders form for editing course attendance if requested by by user student", %{conn: _conn} do
     student_conn = login_as(:student)
 
     attendance = Repo.insert! %Attendance{}
-    assert_raise Phoenix.ActionClauseError, fn ->
-      get student_conn, attendance_fill_course_path(student_conn, :fill_course, attendance)
-    end
+
+    conn = get student_conn, attendance_fill_course_path(student_conn, :fill_course, attendance)
+    assert html_response(conn, 403)
   end
 
   test "do not update attendence if requested by user student", %{conn: _conn} do
     student_conn = login_as(:student)
 
     attendance = Repo.insert! %Attendance{}
-    assert_raise Phoenix.ActionClauseError, fn ->
-      put student_conn, attendance_update_fill_path(student_conn, :update_fill, attendance)
-    end
+
+    conn = put student_conn, attendance_update_fill_path(student_conn, :update_fill, attendance)
+    assert html_response(conn, 403)
   end
 
   test "renders form for editing course attendance if requested by by user coordinator", %{conn: _conn} do
