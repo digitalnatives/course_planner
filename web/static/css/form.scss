@@ -11,6 +11,10 @@
     overflow: visible;
   }
 
+  .mdl-textfield__error {
+    white-space: nowrap;
+  }
+
   .form-select {
     position: relative;
 
@@ -92,6 +96,8 @@
   .form-error {
     @extend .mdl-textfield__error;
     font-size: 14px;
+    visibility: visible;
+    position: static;
   }
 
   .holiday-label {
@@ -109,6 +115,11 @@
     tr + &__empty-text {
       display: none;
     }
+  }
+
+  .holiday-error {
+    position: static;
+    visibility: visible;
   }
 
   .mdl-textfield.is-invalid.form-init {

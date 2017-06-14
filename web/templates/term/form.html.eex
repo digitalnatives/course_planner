@@ -34,9 +34,17 @@
                 </tr>
               </tbody>
             </table>
-            <div class="mdl-textfield__error">
-              <%= error_tag f, :holidays %>
-            </div>
+
+            <% holidays_change = Ecto.Changeset.get_change(f.source, :holidays, []) %>
+            <% holidays_errors = Enum.map(holidays_change, &(&1.errors)) %>
+            <% holidays_have_errors = length( holidays_errors ) > 0 %>
+
+            <%= if holidays_have_errors do  %>
+              <div class="mdl-textfield__error holiday-error">
+                  Not every holiday is valid
+              </div>
+            <% end %>
+
             <div class="row">
               <div class="col-xs-12 col-md-3">
                 <%= link_to_holiday_fields(f, :holidays) %>
