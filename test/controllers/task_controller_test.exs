@@ -64,7 +64,7 @@ defmodule CoursePlanner.TaskControllerTest do
     {:ok, task} = Tasks.new(@valid_attrs)
     conn = delete conn, task_path(conn, :delete, task)
     assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get(Task, task.id).deleted_at
+    refute Repo.get(Task, task.id)
   end
 
   test "renders form for new resources", %{conn: conn} do

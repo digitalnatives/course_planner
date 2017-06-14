@@ -28,7 +28,7 @@ defmodule CoursePlanner.User do
     field :active_at, :naive_datetime
     field :frozen_at, :naive_datetime
     field :graduated_at, :naive_datetime
-    has_many :tasks, Task
+    has_many :tasks, Task, on_delete: :nilify_all
 
     coherence_schema()
     timestamps()

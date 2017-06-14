@@ -2,17 +2,17 @@ defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.Tasks.Task
-  alias Ecto.{DateTime, Changeset}
+  alias Ecto.Changeset
   import Ecto.Query, except: [update: 2]
 
-  @tasks from t in Task, where: is_nil(t.deleted_at), preload: [:user]
-
   def all do
-    Repo.all(@tasks)
+    Task
+    |> Repo.all()
+    |> Repo.preload(:user)
   end
 
   def get(id) do
-    case Repo.one(from t in Task, where: is_nil(t.deleted_at) and t.id == ^id) do
+    case Repo.one(from t in Task, where: t.id == ^id) do
       nil  -> {:error, :not_found}
       task -> {:ok, Repo.preload(task, :user)}
     end
@@ -43,20 +43,17 @@ defmodule CoursePlanner.Tasks do
   def delete(id) do
     case get(id) do
       {:ok, task} ->
-        task
-        |> Task.changeset()
-        |> Changeset.put_change(:deleted_at, DateTime.utc())
-        |> Repo.update()
+        Repo.delete(task)
       error -> error
     end
   end
 
   def get_user_id(id) do
-    Repo.all(from t in Task, where: is_nil(t.deleted_at) and t.user_id == ^id, preload: [:user])
+    Repo.all(from t in Task, where: t.user_id == ^id, preload: [:user])
   end
 
   def get_unassigned do
-    Repo.all(from t in Task, where: is_nil(t.deleted_at) and is_nil(t.user_id))
+    Repo.all(from t in Task, where: is_nil(t.user_id))
   end
 
   def grab(task_id, user_id) do
