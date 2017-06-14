@@ -7,7 +7,7 @@
 
   <div class="form-group">
     <%= select(f, :offered_course_id, offered_courses_to_select(), prompt: "Choose a course", selected: selected_offered_course(@changeset)) %>
-    <%= error_tag f, :offered_course_status %>
+    <%= error_tag f, :offered_course_id %>
   </div>
 
   <div class="form-group">

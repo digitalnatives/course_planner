@@ -76,7 +76,7 @@ defmodule CoursePlanner.Class do
       where: oc.id == ^offered_course_id
 
       case Repo.one(query) do
-        nil -> add_error(changeset, :offered_course_status,
+        nil -> add_error(changeset, :offered_course_id,
                  "Attached course should have at least one teacher and one student")
         _   -> changeset
       end
