@@ -11,9 +11,6 @@
             <% end %>
             <%= CoursePlanner.SharedView.form_text f, :name, required: true %>
             <%= CoursePlanner.SharedView.form_textarea f, :description, required: true %>
-            <%= CoursePlanner.SharedView.form_text f, :number_of_sessions, required: true %>
-            <%= CoursePlanner.SharedView.form_time f, :session_duration, required: true %>
-            <%= CoursePlanner.SharedView.form_textarea f, :syllabus %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

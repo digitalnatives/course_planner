@@ -20,6 +20,8 @@
             <%= CoursePlanner.SharedView.form_select f, :course_id, courses, selected: selected_course(@changeset),
                                                                              required: true
             %>
+            <%= CoursePlanner.SharedView.form_text f, :number_of_sessions, required: true %>
+            <%= CoursePlanner.SharedView.form_textarea f, :syllabus %>
             <%= CoursePlanner.SharedView.form_multiselect f, :student_ids, students, selected: selected_students(@changeset),
                                                                                      label: "Students",
                                                                                      tooltip_text: "Add new student"

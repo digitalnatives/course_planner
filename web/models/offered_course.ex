@@ -20,13 +20,25 @@ defmodule CoursePlanner.OfferedCourse do
     has_many :classes, Class, on_replace: :delete
     has_many :attendances, through: [:classes, :attendances]
 
+    field :number_of_sessions, :integer
+    field :syllabus, :string
+
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
+    target_params =
+      [
+        :term_id,
+        :course_id,
+        :number_of_sessions,
+        :syllabus
+      ]
+
     struct
-    |> cast(params, [:term_id, :course_id])
-    |> validate_required([:term_id, :course_id])
+    |> cast(params, target_params)
+    |> validate_required(target_params)
+    |> validate_number(:number_of_sessions, greater_than: 0, less_than: 100_000_000)
     |> assoc_constraint(:term)
     |> assoc_constraint(:course)
     |> unique_constraint(:course_id, name: :offered_courses_term_id_course_id_index,

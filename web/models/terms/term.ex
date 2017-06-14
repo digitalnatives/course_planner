@@ -4,7 +4,7 @@ defmodule CoursePlanner.Terms.Term do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{OfferedCourse, Statuses, Terms.Holiday, Types.EntityStatus}
+  alias CoursePlanner.{OfferedCourse, Terms.Holiday}
   alias Ecto.{Date, Changeset}
 
   schema "terms" do
@@ -16,21 +16,13 @@ defmodule CoursePlanner.Terms.Term do
     has_many :offered_courses, OfferedCourse, on_replace: :delete
     has_many :courses, through: [:offered_courses, :course]
 
-    field :status, EntityStatus
-    field :planned_at, :naive_datetime
-    field :active_at, :naive_datetime
-    field :frozen_at, :naive_datetime
-    field :finished_at, :naive_datetime
-    field :deleted_at, :naive_datetime
-
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :start_date, :end_date, :status])
-    |> validate_required([:name, :start_date, :end_date, :status])
-    |> Statuses.update_status_timestamp(EntityStatus)
+    |> cast(params, [:name, :start_date, :end_date])
+    |> validate_required([:name, :start_date, :end_date])
     |> validate_date_range()
   end
 

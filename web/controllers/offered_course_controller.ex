@@ -5,6 +5,9 @@ defmodule CoursePlanner.OfferedCourseController do
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
+  import Canary.Plugs
+  plug :authorize_controller
+
   def index(conn, _params) do
     offered_courses =
       OfferedCourse

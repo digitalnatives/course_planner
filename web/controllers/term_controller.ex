@@ -76,6 +76,10 @@ defmodule CoursePlanner.TermController do
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
+      {:error, _changeset} ->
+        conn
+        |> put_status(500)
+        |> render(CoursePlanner.ErrorView, "500.html")
     end
   end
 end

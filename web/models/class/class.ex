@@ -5,7 +5,7 @@ defmodule CoursePlanner.Class do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendance}
-  alias Ecto.{Time, Date}
+  alias Ecto.{Time, Date, Changeset}
 
   schema "classes" do
     field :date, Date
@@ -29,6 +29,7 @@ defmodule CoursePlanner.Class do
     struct
     |> cast(params, cast_params)
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
+    |> validate_date()
   end
 
   def changeset(struct, params, :create) do
@@ -75,11 +76,36 @@ defmodule CoursePlanner.Class do
       where: oc.id == ^offered_course_id
 
       case Repo.one(query) do
-        nil -> add_error(changeset, :offered_course_status,
+        nil -> add_error(changeset, :offered_course_id,
                  "Attached course should have at least one teacher and one student")
         _   -> changeset
       end
   end
   def validate_offered_course(changeset), do: changeset
 
+  defp validate_date(%{valid?: true} = changeset) do
+    term = OfferedCourse
+    |> Repo.get(Changeset.get_field(changeset, :offered_course_id))
+    |> Repo.preload([:term])
+    |> Map.get(:term)
+
+    st = term
+    |> Map.get(:start_date)
+    |> Date.cast!()
+
+    en = term
+    |> Map.get(:end_date)
+    |> Date.cast!()
+
+    date = Changeset.get_field(changeset, :date)
+
+    case {Date.compare(st, date), Date.compare(en, date)} do
+      {:gt, _} -> Changeset.add_error(changeset, :date,
+                  "is before term's beginning")
+      {_, :lt} -> Changeset.add_error(changeset, :date,
+                  "is after term's end")
+      {_, _} -> changeset
+    end
+  end
+  defp validate_date(changeset), do: changeset
 end
