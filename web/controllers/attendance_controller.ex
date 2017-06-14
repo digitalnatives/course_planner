@@ -3,6 +3,9 @@ defmodule CoursePlanner.AttendanceController do
 
   alias CoursePlanner.{AttendanceHelper, Attendance, OfferedCourse}
 
+  import Canary.Plugs
+  plug :authorize_controller
+
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
     offered_courses = AttendanceHelper.get_all_offered_courses()
 
