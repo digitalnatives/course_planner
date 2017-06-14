@@ -377,4 +377,24 @@ defmodule CoursePlanner.ClassControllerTest do
     conn = put volunteer_conn, class_path(volunteer_conn, :update, class), class: update_params
     assert html_response(conn, 403)
   end
+
+  test "creates resource fails when class date is holiday", %{conn: conn} do
+    holiday = build(:holiday, date: %Ecto.Date{day: 1, month: 1, year: 2017})
+    course = insert(:course)
+    term1 = insert(:term, %{
+                            start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+                            end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+                            courses: [course],
+                            holidays: [holiday]
+                           })
+
+    students = insert_list(3, :student)
+    teacher = insert(:teacher)
+    offered_course = insert(:offered_course, %{term: term1, course: course, students: students, teachers: [teacher]})
+
+    class_attrs = %{@valid_attrs | date: %{day: 1, month: 1, year: 2017}, offered_course_id: offered_course.id}
+    conn = post conn, class_path(conn, :create), class: class_attrs
+    assert class_path(conn, :new)
+    assert html_response(conn, 200) =~ "You cannot create a class on holiday"
+  end
 end
