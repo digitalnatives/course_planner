@@ -13,7 +13,6 @@
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Name</th>
         <th class="mdl-data-table__cell--non-numeric">Email</th>
-        <th class="mdl-data-table__cell--non-numeric">Status</th>
         <th class="mdl-data-table__cell--non-numeric">Comments</th>
         <th></th>
       </tr>
@@ -29,9 +28,6 @@
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= student.email %>
-          </td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= student.status %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= student.comments %>

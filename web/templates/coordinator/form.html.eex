@@ -1,6 +1,4 @@
 
-  <% statuses = ["Active", "Frozen"] %>
-
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
       <%= form_for @changeset, @action, fn f -> %>
@@ -12,9 +10,9 @@
               </div>
             <% end %>
             <%= CoursePlanner.SharedView.form_text f, :name %>
+            <%= CoursePlanner.SharedView.form_text f, :family_name %>
             <%= CoursePlanner.SharedView.form_text f, :email, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :phone_number %>
-            <%= CoursePlanner.SharedView.form_select f, :status, statuses %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

@@ -15,7 +15,7 @@
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">
               <div class="col-xs-12 col-md-3">
-                <%= CoursePlanner.SharedView.form_button "Back", student_path(@conn, :index) %>
+                <%= CoursePlanner.SharedView.form_button "Back", course_path(@conn, :index) %>
               </div>
               <div class="col-xs-12 col-md-3 col-md-offset-6">
                 <%= CoursePlanner.SharedView.form_submit f, "Send" %>

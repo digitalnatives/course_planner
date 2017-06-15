@@ -24,6 +24,12 @@
   function removeHoliday ( id ) {
     let row = document.querySelector( `tr[data-holiday-id="${ id }"]` );
     row.parentNode.removeChild( row );
+
+    let hiddenId = document.querySelector( `#${ id }_id` );
+
+    if ( hiddenId ) {
+      hiddenId.parentNode.removeChild( hiddenId );
+    }
   };
 
   function initTerms ( ) {
