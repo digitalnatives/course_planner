@@ -42,9 +42,9 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    task = Repo.insert! %Task{}
+    task = Repo.insert! %Task{name: "Clean the whole thing"}
     conn = get conn, task_path(conn, :edit, task)
-    assert html_response(conn, 200) =~ "Edit task"
+    assert html_response(conn, 200) =~ "Clean the whole thing"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -55,9 +55,9 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    task = Repo.insert! %Task{}
+    task = Repo.insert! %Task{name: "Clean the whole thing"}
     conn = put conn, task_path(conn, :update, task), task: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit task"
+    assert html_response(conn, 200) =~ "Clean the whole thing"
   end
 
   test "deletes chosen resource", %{conn: conn} do
