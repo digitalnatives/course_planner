@@ -6,13 +6,12 @@ defmodule CoursePlanner.Tasks do
   import Ecto.Query, except: [update: 2]
 
   def all do
-    Task
-    |> Repo.all()
-    |> Repo.preload(:user)
+    Repo.all(Task)
   end
+  def all_with_users, do: all() |> Repo.preload(:user)
 
   def get(id) do
-    case Repo.one(from t in Task, where: t.id == ^id) do
+    case Repo.get(Task, id) do
       nil  -> {:error, :not_found}
       task -> {:ok, Repo.preload(task, :user)}
     end
@@ -33,7 +32,7 @@ defmodule CoursePlanner.Tasks do
         |> Task.changeset(params)
         |> Repo.update()
         |> format_error(task)
-      error -> error
+      error  -> {:error, error}
     end
   end
 
@@ -48,11 +47,11 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def get_user_id(id) do
+  def get_user_tasks(id) do
     Repo.all(from t in Task, where: t.user_id == ^id, preload: [:user])
   end
 
-  def get_unassigned do
+  def get_unassigned_tasks do
     Repo.all(from t in Task, where: is_nil(t.user_id))
   end
 
@@ -66,5 +65,4 @@ defmodule CoursePlanner.Tasks do
       error -> error
     end
   end
-
 end
