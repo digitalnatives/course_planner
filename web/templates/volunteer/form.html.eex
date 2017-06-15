@@ -16,7 +16,6 @@
             <%= CoursePlanner.SharedView.form_text f, :nickname %>
             <%= CoursePlanner.SharedView.form_text f, :email, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :phone_number %>
-            <%= CoursePlanner.SharedView.form_select f, :status, statuses %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">
