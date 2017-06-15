@@ -1,23 +1,28 @@
-<%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= CoursePlanner.SharedView.card @title do %>
+          <%= CoursePlanner.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= CoursePlanner.SharedView.form_text f, :name, required: true %>
+            <%= CoursePlanner.SharedView.form_textarea f, :description, required: true %>
+          <% end %>
+          <%= CoursePlanner.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3">
+                <%= CoursePlanner.SharedView.form_button "Back", course_path(@conn, :index) %>
+              </div>
+              <div class="col-xs-12 col-md-3 col-md-offset-6">
+                <%= CoursePlanner.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= label f, :name, class: "control-label" %>
-    <%= text_input f, :name, class: "form-control" %>
-    <%= error_tag f, :name %>
   </div>
-
-  <div class="form-group">
-    <%= label f, :description, class: "control-label" %>
-    <%= textarea f, :description, class: "form-control" %>
-    <%= error_tag f, :description %>
-  </div>
-
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
-  </div>
-<% end %>

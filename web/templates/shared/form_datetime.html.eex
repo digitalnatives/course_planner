@@ -1,0 +1,53 @@
+
+  <div class="row row--hspace">
+    <div class="col-xs-3">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after <%= @wrapper_class %>">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <span class="mdl-textfield__label"><%= @label %></span>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+        <%= if @error do %>
+          <span class="mdl-textfield__error">
+            <%= @error %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-xs-3">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after <%= @wrapper_class %>">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:month, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:day, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--colon-after <%= @wrapper_class %>">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:hour, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+      </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
+        <%= datetime_select @form, @field, builder: fn b -> %>
+          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+        <% end %>
+        <label class="mdl-textfield__label"></label>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+      </div>
+    </div>
+  </div>

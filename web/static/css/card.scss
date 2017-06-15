@@ -1,0 +1,17 @@
+
+  .mdl-card {
+    width: 100%;
+  }
+
+  .card {
+    margin: 20px 0;
+
+    &__content {
+      padding: 16px;
+      background-color: white;
+    }
+
+    &__actions {
+      padding: 16px;
+    }
+  }

@@ -1,39 +1,59 @@
-<h2>Student list</h2>
+<div class="row" style="margin-bottom: 20px">
+  <div class="col-xs-6 col-md-10 mdl-card__title-text">
+    Students
+  </div>
+  <div class="col-xs-6 col-md-2">
+    <%= link "New student", to: student_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+  </div>
+</div>
 
-<table class="table">
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
     <tr>
-      <td> First Name </td>
-      <td> Family Name </td>
-      <td> Nickname</td>
-      <td> Email</td>
-      <td> Student ID </td>
-      <td> Participation Type</td>
-      <td> Status </td>
-      <td> Comments </td>
-
+      <th class="mdl-data-table__cell--non-numeric">Name</th>
+      <th class="mdl-data-table__cell--non-numeric">Nickname</th>
+      <th class="mdl-data-table__cell--non-numeric">Email</th>
+      <th class="mdl-data-table__cell--non-numeric">Comments</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for student <- @students do %>
-    <tr>
-      <td><%= student.name %></td>
-      <td><%= student.family_name %></td>
-      <td><%= student.nickname %></td>
-      <td><%= student.email %></td>
-      <td><%= student.student_id %></td>
-      <td><%= student.participation_type %></td>
-      <td><%= student.status %></td>
-      <td><%= student.comments %></td>
-      <td class="text-right">
-        <%= link "Show", to: student_path(@conn, :show, student), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: student_path(@conn, :edit, student), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: student_path(@conn, :delete, student), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
+    <%= for student <- @students do %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= student.name %> <%= student.family_name %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= student.nickname %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= student.email %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= student.comments %>
+        </td>
+        <td>
+          <button id="tr_menu_<%= student.id %>"
+                  class="mdl-button mdl-js-button mdl-button--icon"
+          >
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+              for="tr_menu_<%= student.id %>"
+          >
+            <li class="mdl-menu__item">
+              <%= link "Show", to: student_path(@conn, :show, student) %>
+            </li>
+            <li class="mdl-menu__item">
+              <%= link "Edit", to: student_path(@conn, :edit, student) %>
+            </li>
+            <li class="mdl-menu__item">
+              <%= link "Delete", to: student_path(@conn, :delete, student), method: :delete, data: [confirm: "Are you sure?"] %>
+            </li>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 
-<%= link "New student", to: student_path(@conn, :new) %>

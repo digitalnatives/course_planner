@@ -36,9 +36,9 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    teacher = Repo.insert! %User{}
+    teacher = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = get conn, teacher_path(conn, :edit, teacher)
-    assert html_response(conn, 200) =~ "Edit teacher"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -49,9 +49,9 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    teacher = Repo.insert! %User{}
+    teacher = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = put conn, teacher_path(conn, :update, teacher), user: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit teacher"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do
@@ -191,12 +191,12 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "edit the teacher himself" do
-    teacher = insert(:teacher)
+    teacher = insert(:teacher, name: "Foo", family_name: "Bar")
     teacher_conn = Phoenix.ConnTest.build_conn()
     |> assign(:current_user, teacher)
 
     conn = get teacher_conn, teacher_path(teacher_conn, :edit, teacher)
-    assert html_response(conn, 200) =~ "Edit teacher"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "update the teacher himself" do

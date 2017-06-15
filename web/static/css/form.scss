@@ -3,3 +3,141 @@
     width: 100%;
   }
 
+  .mdl-button {
+    padding: 0;
+  }
+
+  .mdl-textfield__label {
+    overflow: visible;
+  }
+
+  .mdl-textfield__error {
+    white-space: nowrap;
+  }
+
+  .form-select {
+    position: relative;
+
+    &__select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-overflow: '';
+
+      @-moz-document url-prefix() {
+        text-indent: -2px;
+      }
+
+      &:focus {
+        outline: 0;
+
+        &:-moz-focusring {
+          color: transparent;
+          text-shadow: 0 0 0 #000;
+        }
+      }
+
+      &--text-center {
+        text-align: center;
+        text-align-last: center;
+        padding-right: 10px;
+      }
+    }
+
+    &__icon {
+      color: $grey-600;
+      position: absolute;
+      top: calc( 50% - 10px );
+      right: 5px;
+      pointer-events: none;
+    }
+
+
+    &--hyphen-after {
+      &:after {
+        content: "-";
+        position: absolute;
+        top: 25px;
+        left: calc( 100% + 5px );
+      }
+    }
+
+    &--colon-after {
+      &:after {
+        content: ":";
+        position: absolute;
+        top: 25px;
+        left: calc( 100% + 5px );
+      }
+    }
+
+  }
+
+  .form-multiselect {
+    &__add-button {
+      margin-left: -5px;
+      margin-top: 20px;
+
+      i { pointer-events: none; }
+    }
+
+    &__select {
+      display: none;
+    }
+
+    &__tags {
+      margin-bottom: 20px;
+    }
+
+    &__delete i {
+      pointer-events: none;
+    }
+  }
+
+  .form-error {
+    @extend .mdl-textfield__error;
+    font-size: 14px;
+    visibility: visible;
+    position: static;
+  }
+
+  .holiday-label {
+    color: $primary;
+    font-size: 12px;
+  }
+
+  .holiday-table {
+    margin: 8px 0;
+
+    &__empty-text td {
+      text-align: center;
+    }
+
+    tr + &__empty-text {
+      display: none;
+    }
+  }
+
+  .holiday-error {
+    position: static;
+    visibility: visible;
+  }
+
+  .mdl-textfield.is-invalid.form-init {
+    .mdl-textfield__input {
+      border-color: rgba(0,0,0,0.12);
+    }
+
+    .mdl-textfield__label {
+      color: rgba(0,0,0, 0.26);
+      font-size: 16px;
+    }
+
+    &.is-focused .mdl-textfield__label {
+      font-size: 12px;
+      color: $primary;
+    }
+
+    .mdl-textfield__label:after {
+      background-color: $primary;
+    }
+  }
