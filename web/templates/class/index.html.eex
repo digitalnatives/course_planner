@@ -32,10 +32,10 @@
             <%= class.date %>
           </td>
           <td>
-            <%= class.starting_at %>
+            <%= String.slice Ecto.Time.to_iso8601(class.starting_at), 0, 5 %>
           </td>
           <td>
-            <%= class.finishes_at %>
+            <%= String.slice Ecto.Time.to_iso8601(class.finishes_at), 0, 5 %>
           </td>
           <td>
             <button id="tr_menu_<%= class.id %>"
