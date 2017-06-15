@@ -1,6 +1,4 @@
 
-  <% statuses = ["Planned", "Active"] %>
-
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
       <%= form_for @changeset, @action, fn f -> %>
@@ -14,7 +12,6 @@
             <%= CoursePlanner.SharedView.form_text f, :name, required: true %>
             <%= CoursePlanner.SharedView.form_date f, :start_date, required: true %>
             <%= CoursePlanner.SharedView.form_date f, :end_date, required: true %>
-            <%= CoursePlanner.SharedView.form_select f, :status, statuses, required: true %>
 
             <label class="holiday-label">
               Holidays
