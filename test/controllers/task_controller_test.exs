@@ -34,10 +34,8 @@ defmodule CoursePlanner.TaskControllerTest do
     |> assign(:current_user, user)
   end
 
-  test "lists all entries on index", %{conn: _conn} do
+  test "lists all entries on index for volunteer and coordinator", %{conn: _conn} do
     volunteer_conn = login_as(:volunteer)
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
     coordinator_conn = login_as(:coordinator)
 
     conn = get volunteer_conn, task_path(volunteer_conn, :index)
@@ -45,6 +43,11 @@ defmodule CoursePlanner.TaskControllerTest do
 
     conn = get coordinator_conn, task_path(coordinator_conn, :index)
     assert html_response(conn, 200) =~ "Listing tasks"
+  end
+
+  test "does not list entries for restricted users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
 
     conn = get student_conn, task_path(student_conn, :index)
     assert html_response(conn, 403)
@@ -59,6 +62,19 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 200) =~ "Show task"
   end
 
+  test "does not show chosen resource for student and teacher", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+
+    task = Repo.insert! %Task{}
+
+    conn = get student_conn, task_path(student_conn, :show, task)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, task_path(teacher_conn, :show, task)
+    assert html_response(conn, 403)
+  end
+
   test "renders page not found when id is nonexistent", %{conn: conn} do
     conn = get conn, task_path(conn, :show, -1)
     assert html_response(conn, 404)
@@ -70,9 +86,26 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 200) =~ "Edit task"
   end
 
-  test "does not renders form for editing non existing task", %{conn: conn} do
+  test "does not renders form for editing for non-existing task", %{conn: conn} do
     conn = get conn, task_path(conn, :edit, -1)
     assert html_response(conn, 404)
+  end
+
+  test "does not renders form for editing for non-coordinator users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    task = Repo.insert! %Task{}
+
+    conn = get student_conn, task_path(student_conn, :edit, task)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, task_path(teacher_conn, :edit, task)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, task_path(volunteer_conn, :edit, task)
+    assert html_response(conn, 403)
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -93,6 +126,23 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 404)
   end
 
+  test "does not update a chosen resource for non-coordinator users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    task = Repo.insert! %Task{}
+
+    conn = put student_conn, task_path(student_conn, :update, task), task: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = put teacher_conn, task_path(teacher_conn, :update, task), task: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = put volunteer_conn, task_path(volunteer_conn, :update, task), task: @valid_attrs
+    assert html_response(conn, 403)
+  end
+
   test "deletes chosen resource", %{conn: conn} do
     {:ok, task} = Tasks.new(@valid_attrs)
     conn = delete conn, task_path(conn, :delete, task)
@@ -107,9 +157,41 @@ defmodule CoursePlanner.TaskControllerTest do
     assert  html_response(conn, 200) =~ "Task was not found"
   end
 
+  test "does not delete a chosen resource for non-coordinator users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    task = Repo.insert! %Task{}
+
+    conn = delete student_conn, task_path(student_conn, :delete, task)
+    assert html_response(conn, 403)
+
+    conn = delete teacher_conn, task_path(teacher_conn, :delete, task)
+    assert html_response(conn, 403)
+
+    conn = delete volunteer_conn, task_path(volunteer_conn, :delete, task)
+    assert html_response(conn, 403)
+  end
+
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, task_path(conn, :new)
     assert html_response(conn, 200) =~ "New task"
+  end
+
+  test "does not render for for new resources for non-coordinator users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, task_path(student_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, task_path(teacher_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, task_path(volunteer_conn, :new)
+    assert html_response(conn, 403)
   end
 
   test "create task without assigned volunteer", %{conn: conn} do
@@ -131,6 +213,21 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 200) =~ "New task"
   end
 
+  test "does not create task for non-coordinator users", %{conn: _conn} do
+    student_conn = login_as(:student)
+    teacher_conn = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    conn = post student_conn, task_path(student_conn, :create), task: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = post teacher_conn, task_path(teacher_conn, :create), task: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = post volunteer_conn, task_path(volunteer_conn, :create), task: @valid_attrs
+    assert html_response(conn, 403)
+  end
+
   test "grab task", %{conn: conn} do
     {:ok, task} = Tasks.new(@valid_attrs)
     {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
@@ -146,4 +243,6 @@ defmodule CoursePlanner.TaskControllerTest do
     conn = get conn, task_path(conn, :index)
     assert  html_response(conn, 200) =~ "Task was not found"
   end
+
+
 end
