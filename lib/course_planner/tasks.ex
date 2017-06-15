@@ -32,7 +32,7 @@ defmodule CoursePlanner.Tasks do
         |> Task.changeset(params)
         |> Repo.update()
         |> format_error(task)
-      error  -> {:error, error}
+      error  -> error
     end
   end
 
