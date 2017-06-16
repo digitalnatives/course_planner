@@ -22,7 +22,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, coordinator_path(conn, :index)
-    assert html_response(conn, 200) =~ "Coordinator list"
+    assert html_response(conn, 200) =~ "Coordinators"
   end
 
   test "shows chosen resource", %{conn: conn} do

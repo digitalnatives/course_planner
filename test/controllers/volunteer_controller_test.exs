@@ -20,7 +20,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, volunteer_path(conn, :index)
-    assert html_response(conn, 200) =~ "Volunteer list"
+    assert html_response(conn, 200) =~ "Volunteers"
   end
 
   test "shows chosen resource", %{conn: conn} do

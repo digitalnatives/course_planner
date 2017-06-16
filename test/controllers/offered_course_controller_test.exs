@@ -50,7 +50,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   @tag user_role: :coordinator
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing offered courses by term"
+    assert html_response(conn, 200) =~ "Offered courses"
   end
 
   @tag user_role: :coordinator

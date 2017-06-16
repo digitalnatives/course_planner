@@ -102,9 +102,9 @@ defmodule CoursePlanner.Class do
 
     case {Date.compare(st, date), Date.compare(en, date)} do
       {:gt, _} -> Changeset.add_error(changeset, :date,
-                  "is before term's beginning")
+                  "The date can't be before the term's beginning")
       {_, :lt} -> Changeset.add_error(changeset, :date,
-                  "is after term's end")
+                  "The date can't be after the term's end")
       {_, _} -> changeset
     end
   end

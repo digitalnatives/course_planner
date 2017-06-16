@@ -42,7 +42,7 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 200) =~ "Your tasks"
 
     conn = get coordinator_conn, task_path(coordinator_conn, :index)
-    assert html_response(conn, 200) =~ "Listing tasks"
+    assert html_response(conn, 200) =~ "Tasks"
   end
 
   test "does not list entries for restricted users", %{conn: _conn} do

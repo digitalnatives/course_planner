@@ -1,34 +1,64 @@
-<h2>Listing offered courses by term</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Course Name</th>
-      <th>Term Name</th>
-      <th>Term Start Date</th>
-      <th>Term End Date</th>
-      <th>Number of sessions</th>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+      Offered courses
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "New offered course", to: offered_course_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
+  </div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for offered_course <- @offered_courses do %>
-    <tr>
-      <td><%= offered_course.course.name %></td>
-      <td><%= offered_course.term.name %></td>
-      <td><%= offered_course.term.start_date %></td>
-      <td><%= offered_course.term.end_date %></td>
-      <td><%= offered_course.number_of_sessions %></td>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Course name</th>
+        <th class="mdl-data-table__cell--non-numeric">Term name</th>
+        <th>Term start date</th>
+        <th>Term end date</th>
+        <th>Number of sessions</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for offered_course <- @offered_courses do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= offered_course.course.name %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= offered_course.term.name %>
+          </td>
+          <td>
+            <%= offered_course.term.start_date %>
+          </td>
+          <td>
+            <%= offered_course.term.end_date %>
+          </td>
+          <td>
+            <%= offered_course.number_of_sessions %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= offered_course.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= offered_course.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: offered_course_path(@conn, :show, offered_course) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-      <td class="text-right">
-        <%= link "Show", to: offered_course_path(@conn, :show, offered_course), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New offered course", to: offered_course_path(@conn, :new) %>
