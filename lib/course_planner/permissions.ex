@@ -43,8 +43,10 @@ defimpl Canada.Can, for: CoursePlanner.User do
   def can?(%User{role: "Volunteer"}, :index, Task), do: true
   def can?(%User{role: "Volunteer"}, :grab, %Task{user_id: nil}), do: true
   def can?(%User{role: "Volunteer"}, :show, %Task{user_id: nil}), do: true
-  def can?(%User{role: "Volunteer"}, _, Task), do: false
-  def can?(%User{role: "Volunteer"}, _, %Task{}), do: false
+  def can?(%User{role: role}, _, Task)
+    when role in ["Teacher", "Student", "Volunteer"], do: false
+  def can?(%User{role: role}, _, %Task{})
+    when role in ["Teacher", "Student", "Volunteer"], do: false
 
   def can?(_, _, _), do: true
 end
