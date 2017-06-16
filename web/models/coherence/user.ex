@@ -21,7 +21,7 @@ defmodule CoursePlanner.User do
     field :comments, :string
     field :role, UserRole
     field :participation_type, ParticipationType
-    has_many :tasks, Task
+    has_many :tasks, Task, on_delete: :nilify_all
 
     coherence_schema()
     timestamps()

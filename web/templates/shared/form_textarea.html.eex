@@ -1,0 +1,13 @@
+
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label <%= @wrapper_class %>">
+    <%= textarea @form, @field, class: "mdl-textfield__input #{@class}",
+                                required: @required,
+                                rows: @rows
+    %>
+    <span class="mdl-textfield__label"><%= @label %></span>
+    <%= if @error do %>
+      <span class="mdl-textfield__error">
+        <%= @error %>
+      </span>
+    <% end %>
+  </div>

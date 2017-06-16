@@ -38,9 +38,9 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    coordinator = Repo.insert! %User{}
+    coordinator = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = get conn, coordinator_path(conn, :edit, coordinator)
-    assert html_response(conn, 200) =~ "Edit coordinator"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -51,9 +51,9 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    coordinator = Repo.insert! %User{}
+    coordinator = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = put conn, coordinator_path(conn, :update, coordinator), user: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit coordinator"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do

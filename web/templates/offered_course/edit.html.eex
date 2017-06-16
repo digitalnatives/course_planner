@@ -1,6 +1,6 @@
-<h2>Edit offered course</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: offered_course_path(@conn, :update, @offered_course) %>
-
-<%= link "Back", to: offered_course_path(@conn, :index) %>
+  <%= render "form.html", title: "Edit offered course",
+                          changeset: @changeset,
+                          action: offered_course_path(@conn, :update, @offered_course),
+                          conn: @conn
+  %>

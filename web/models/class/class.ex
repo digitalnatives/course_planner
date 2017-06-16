@@ -4,7 +4,7 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
   alias Ecto.{Time, Date, Changeset}
 
   schema "classes" do
@@ -30,6 +30,7 @@ defmodule CoursePlanner.Class do
     |> cast(params, cast_params)
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
     |> validate_date()
+    |> ClassHelper.validate_for_holiday()
   end
 
   def changeset(struct, params, :create) do

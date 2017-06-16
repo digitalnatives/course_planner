@@ -36,9 +36,9 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    volunteer = Repo.insert! %User{}
+    volunteer = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = get conn, volunteer_path(conn, :edit, volunteer)
-    assert html_response(conn, 200) =~ "Edit volunteer"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -49,9 +49,9 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    volunteer = Repo.insert! %User{}
+    volunteer = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = put conn, volunteer_path(conn, :update, volunteer), user: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit volunteer"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do
@@ -191,12 +191,12 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   test "edit the volunteer himself" do
-    volunteer = insert(:volunteer)
+    volunteer = insert(:volunteer, name: "Foo", family_name: "Bar")
     volunteer_conn = Phoenix.ConnTest.build_conn()
     |> assign(:current_user, volunteer)
 
     conn = get volunteer_conn, volunteer_path(volunteer_conn, :edit, volunteer)
-    assert html_response(conn, 200) =~ "Edit volunteer"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "update the volunteer himself" do

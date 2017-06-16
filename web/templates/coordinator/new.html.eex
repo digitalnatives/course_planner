@@ -1,6 +1,6 @@
-<h2>New coordinator</h2>
 
-<%= render "form.html", changeset: @changeset,
-                        action: coordinator_path(@conn, :create) %>
-
-<%= link "Back", to: coordinator_path(@conn, :index) %>
+  <%= render "form.html", title: "New coordinator",
+                          changeset: @changeset,
+                          action: coordinator_path(@conn, :create),
+                          conn: @conn
+  %>

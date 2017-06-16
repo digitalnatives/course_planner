@@ -1,0 +1,2 @@
+
+  <%= link @label, to: @to, class: "mdl-button mdl-js-button #{@class}" %>

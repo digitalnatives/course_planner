@@ -1,0 +1,4 @@
+
+  <div class="mdl-card__media card__content">
+    <%= @children %>
+  </div>

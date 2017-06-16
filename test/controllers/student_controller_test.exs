@@ -20,7 +20,7 @@ defmodule CoursePlanner.StudentControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, student_path(conn, :index)
-    assert html_response(conn, 200) =~ "Student list"
+    assert html_response(conn, 200) =~ "Students"
   end
 
   test "shows chosen resource", %{conn: conn} do
@@ -36,9 +36,9 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    student = Repo.insert! %User{}
+    student = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = get conn, student_path(conn, :edit, student)
-    assert html_response(conn, 200) =~ "Edit student"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -49,9 +49,9 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    student = Repo.insert! %User{}
+    student = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = put conn, student_path(conn, :update, student), user: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit student"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do
@@ -174,12 +174,12 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   test "edit the student himself" do
-    student = insert(:student)
+    student = insert(:student, name: "Foo", family_name: "Bar")
     student_conn = Phoenix.ConnTest.build_conn()
     |> assign(:current_user, student)
 
     conn = get student_conn, student_path(student_conn, :edit, student)
-    assert html_response(conn, 200) =~ "Edit student"
+    assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "update the student himself" do

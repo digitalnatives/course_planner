@@ -14,7 +14,7 @@ defmodule CoursePlanner.TermView do
           index: add_link_index(form, field),
           container: container_id(form, field)
         ],
-      class: "add-form-field")
+      class: "add-form-field mdl-button mdl-js-button")
   end
 
   defp holiday_fields_template do
