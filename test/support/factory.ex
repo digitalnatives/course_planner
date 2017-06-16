@@ -2,7 +2,7 @@ defmodule CoursePlanner.Factory do
 @moduledoc """
   provides factory function for tests
 """
-alias CoursePlanner.Terms.Term
+alias CoursePlanner.Terms.{Term,Holiday}
 alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
@@ -84,6 +84,13 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
  def attendance_factory do
     %Attendance{
       attendance_type: "Not filled"
+    }
+ end
+
+ def holiday_factory do
+    %Holiday{
+      date: %Ecto.Date{day: 1, month: 1, year: 2017},
+      description: "some description"
     }
  end
 end
