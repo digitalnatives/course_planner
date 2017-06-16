@@ -60,7 +60,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     {:ok, coordinator} = Coordinators.new(@valid_attrs, "whatever")
     conn = delete conn, coordinator_path(conn, :delete, coordinator)
     assert redirected_to(conn) == coordinator_path(conn, :index)
-    assert Repo.get(User, coordinator.id).deleted_at
+    refute Repo.get(User, coordinator.id)
   end
 
   test "renders form for new resources", %{conn: conn} do

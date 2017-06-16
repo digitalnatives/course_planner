@@ -1,12 +1,10 @@
 defmodule CoursePlanner.Teachers do
   @moduledoc false
-  alias CoursePlanner.Repo
-  alias CoursePlanner.User
   import Ecto.Query
-  alias Ecto.{Changeset, DateTime}
-  alias CoursePlanner.{Users, OfferedCourse}
+  alias Ecto.Changeset
+  alias CoursePlanner.{Repo, User, Users, OfferedCourse}
 
-  @teachers from u in User, where: u.role == "Teacher" and is_nil(u.deleted_at)
+  @teachers from u in User, where: u.role == "Teacher"
 
   def all do
     Repo.all(@teachers)
@@ -29,21 +27,10 @@ defmodule CoursePlanner.Teachers do
       teacher ->
         teacher
         |> User.changeset(params, :update)
-        |> add_timestamps()
         |> Repo.update
         |> format_error(teacher)
     end
   end
-
-  defp add_timestamps(%{changes: %{status: "Active"}} = changeset) do
-    Changeset.put_change(changeset, :activated_at, DateTime.utc())
-  end
-
-  defp add_timestamps(%{changes: %{status: "Frozen"}} = changeset) do
-    Changeset.put_change(changeset, :froze_at, DateTime.utc())
-  end
-
-  defp add_timestamps(changeset), do: changeset
 
   defp format_error({:ok, teacher}, _), do: {:ok, teacher}
   defp format_error({:error, changeset}, teacher), do: {:error, teacher, changeset}

@@ -5,14 +5,16 @@ defmodule CoursePlanner.Users do
   alias CoursePlanner.{Repo, User, Notifier, Notifier.Notification}
   alias Ecto.{Changeset, DateTime}
 
+  def all do
+    Repo.all(User)
+  end
+
   def new_user(user, token) do
     %User{}
     |> User.changeset(user)
     |> Changeset.put_change(:reset_password_token, token)
     |> Changeset.put_change(:reset_password_sent_at, DateTime.utc())
     |> Changeset.put_change(:password, "fakepassword")
-    |> Changeset.put_change(:status, "Active")
-    |> Changeset.put_change(:activated_at, DateTime.utc())
   end
 
   def get(id) do
@@ -24,11 +26,7 @@ defmodule CoursePlanner.Users do
 
   def delete(id) do
     case get(id) do
-      {:ok, user} ->
-        user
-        |> User.changeset()
-        |> Changeset.put_change(:deleted_at, DateTime.utc())
-        |> Repo.update()
+      {:ok, user} -> Repo.delete(user)
       error -> error
     end
   end

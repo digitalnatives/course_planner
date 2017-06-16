@@ -13,10 +13,6 @@
     <strong> Phone Number: </strong>
     <%= @teacher.phone_number %>
   </li>
-    <li>
-    <strong> Status: </strong>
-    <%= @teacher.status %>
-  </li>
 </ul>
 
 <table class="table">

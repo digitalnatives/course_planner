@@ -1,12 +1,10 @@
 defmodule CoursePlanner.Coordinators do
   @moduledoc false
-  alias CoursePlanner.Repo
-  alias CoursePlanner.User
   import Ecto.Query
-  alias Ecto.{Changeset, DateTime}
-  alias CoursePlanner.Users
+  alias Ecto.Changeset
+  alias CoursePlanner.{Repo, User, Users}
 
-  @coordinators from u in User, where: u.role == "Coordinator" and is_nil(u.deleted_at)
+  @coordinators from u in User, where: u.role == "Coordinator"
 
   def all do
     Repo.all(@coordinators)
@@ -25,21 +23,10 @@ defmodule CoursePlanner.Coordinators do
       coordinator ->
         coordinator
         |> User.changeset(params, :update)
-        |> add_timestamps()
         |> Repo.update
         |> format_error(coordinator)
     end
   end
-
-  defp add_timestamps(%{changes: %{status: "Active"}} = changeset) do
-    Changeset.put_change(changeset, :activated_at, DateTime.utc())
-  end
-
-  defp add_timestamps(%{changes: %{status: "Frozen"}} = changeset) do
-    Changeset.put_change(changeset, :froze_at, DateTime.utc())
-  end
-
-  defp add_timestamps(changeset), do: changeset
 
   defp format_error({:ok, coordinator}, _), do: {:ok, coordinator}
   defp format_error({:error, changeset}, coordinator), do: {:error, coordinator, changeset}

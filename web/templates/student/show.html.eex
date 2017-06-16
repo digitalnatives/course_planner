@@ -27,10 +27,6 @@
     <%= @student.participation_type %>
   </li>
   <li>
-    <strong> Status: </strong>
-    <%= @student.status %>
-  </li>
-  <li>
     <strong> Comments: </strong>
     <%= @student.comments %>
   </li>

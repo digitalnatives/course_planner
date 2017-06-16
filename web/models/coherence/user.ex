@@ -2,14 +2,12 @@ defmodule CoursePlanner.User do
   @moduledoc false
   use CoursePlanner.Web, :model
   use Coherence.Schema
-  alias CoursePlanner.Types.UserRole
-  alias CoursePlanner.Types.ParticipationType
-  alias CoursePlanner.Types.EntityStatus
+  alias CoursePlanner.Types.{UserRole, ParticipationType}
   alias CoursePlanner.Tasks.Task
   @target_params [
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
-      :role, :status, :participation_type,
+      :role, :participation_type,
       :phone_number
     ]
 
@@ -22,12 +20,7 @@ defmodule CoursePlanner.User do
     field :student_id, :string
     field :comments, :string
     field :role, UserRole
-    field :deleted_at, :naive_datetime
-    field :status, EntityStatus
     field :participation_type, ParticipationType
-    field :active_at, :naive_datetime
-    field :frozen_at, :naive_datetime
-    field :graduated_at, :naive_datetime
     has_many :tasks, Task, on_delete: :nilify_all
 
     coherence_schema()

@@ -58,7 +58,7 @@ defmodule CoursePlanner.StudentControllerTest do
     {:ok, student} = Students.new(@valid_attrs, "whatever")
     conn = delete conn, student_path(conn, :delete, student)
     assert redirected_to(conn) == student_path(conn, :index)
-    assert Repo.get(User, student.id).deleted_at
+    refute Repo.get(User, student.id)
   end
 
   test "renders form for new resources", %{conn: conn} do
