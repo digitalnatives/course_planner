@@ -1,4 +1,4 @@
 
-  <div class="mdl-card__actions mdl-card--border card__actions">
+  <div class="mdl-card__actions card__actions">
     <%= @children %>
   </div>
