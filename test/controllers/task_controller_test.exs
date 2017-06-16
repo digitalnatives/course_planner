@@ -27,7 +27,7 @@ defmodule CoursePlanner.TaskControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, task_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing tasks"
+    assert html_response(conn, 200) =~ "Tasks"
   end
 
   test "shows chosen resource", %{conn: conn} do

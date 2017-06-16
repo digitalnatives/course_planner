@@ -21,7 +21,7 @@ defmodule CoursePlanner.UserControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, user_path(conn, :index)
-    assert html_response(conn, 200) =~ "User list"
+    assert html_response(conn, 200) =~ "All users"
   end
 
   test "shows chosen resource", %{conn: conn} do

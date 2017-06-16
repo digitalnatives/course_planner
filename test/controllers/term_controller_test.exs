@@ -230,7 +230,7 @@ defmodule CoursePlanner.TermControllerTest do
 
   test "lists all entries on index for coordinator", %{conn: conn} do
     conn = get conn, term_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing terms"
+    assert html_response(conn, 200) =~ "Terms"
   end
 
   test "doesn't show index for non coordinator users", %{conn: _conn} do

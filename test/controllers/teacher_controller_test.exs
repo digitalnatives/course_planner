@@ -20,7 +20,7 @@ defmodule CoursePlanner.TeacherControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, teacher_path(conn, :index)
-    assert html_response(conn, 200) =~ "Teacher list"
+    assert html_response(conn, 200) =~ "Teachers"
   end
 
   test "shows chosen resource", %{conn: conn} do
