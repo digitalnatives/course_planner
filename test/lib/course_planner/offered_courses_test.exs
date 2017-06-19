@@ -10,6 +10,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
         name: "Fall",
         start_date: "2017-01-01",
         end_date: "2017-06-01",
+        minimum_teaching_days: 5,
         status: "Active"
       })
   end

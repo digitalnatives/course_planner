@@ -12,6 +12,7 @@ defmodule CoursePlanner.TeachersTest do
         name: name,
         start_date: start_date,
         end_date: end_date,
+        minimum_teaching_days: 5,
         courses: [course]
       })
   end

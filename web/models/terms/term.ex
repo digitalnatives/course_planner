@@ -11,6 +11,7 @@ defmodule CoursePlanner.Terms.Term do
     field :name, :string
     field :start_date, :date
     field :end_date, :date
+    field :minimum_teaching_days, :integer
     embeds_many :holidays, Holiday, on_replace: :delete
 
     has_many :offered_courses, OfferedCourse, on_replace: :delete
@@ -21,10 +22,23 @@ defmodule CoursePlanner.Terms.Term do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :start_date, :end_date])
-    |> validate_required([:name, :start_date, :end_date])
+    |> cast(params, [:name, :start_date, :end_date, :minimum_teaching_days])
+    |> validate_required([:name, :start_date, :end_date, :minimum_teaching_days])
     |> validate_date_range()
   end
+
+  def validate_minimum_teaching_days(%{valid?: true} = changeset, holidays) do
+    st = Changeset.get_field(changeset, :start_date)
+    en = Changeset.get_field(changeset, :end_date)
+    min = Changeset.get_field(changeset, :minimum_teaching_days)
+    number_of_holidays = length(holidays)
+    if Timex.diff(en, st, :days) + 1 - number_of_holidays > min do
+      changeset
+    else
+      Changeset.add_error(changeset, :minimum_teaching_days, "There's not enough minimum teaching days.")
+    end
+  end
+  def validate_minimum_teaching_days(changeset, _holidays), do: changeset
 
   defp validate_date_range(%{valid?: true} = changeset) do
     st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
