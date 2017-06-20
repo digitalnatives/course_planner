@@ -41,8 +41,8 @@ defmodule CoursePlanner.SystemVariable do
     |> validate_editable()
   end
 
-  defp validate_editable(%{changes: changes, valid?: true} = changeset) do
-    editable = changeset |> Changeset.get_field(:editable) |> Date.cast!
+  defp validate_editable(%{valid?: true} = changeset) do
+    editable = changeset |> Changeset.get_field(:editable)
 
     if editable do
       changeset
@@ -52,8 +52,7 @@ defmodule CoursePlanner.SystemVariable do
   end
   defp validate_editable(changeset), do: changeset
 
-  defp validate_value_type(%{changes: changes, valid?: true} = changeset) do
-    key   = changeset |> Changeset.get_field(:key)
+  defp validate_value_type(%{valid?: true} = changeset) do
     value = changeset |> Changeset.get_field(:value)
     type  = changeset |> Changeset.get_field(:type)
 

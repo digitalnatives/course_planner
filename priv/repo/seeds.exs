@@ -37,3 +37,12 @@ CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
     editable: true,
     visible: true})
 |> CoursePlanner.Repo.insert!
+
+CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
+  %{
+    key: "notification frequency",
+    value: "1",
+    type: "integer",
+    editable: true,
+    visible: true})
+|> CoursePlanner.Repo.insert!

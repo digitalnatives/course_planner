@@ -25,7 +25,7 @@ defmodule CoursePlanner.SettingController do
       Enum.map(system_variables, fn(system_variable) ->
         setting_id = to_string(system_variable.id)
         param = Map.get(setting_params, setting_id)
-        SystemVariable.changeset(system_variable, param)
+        SystemVariable.changeset(system_variable, param, :update)
       end)
 
     case Settings.update(changesets) do
@@ -33,7 +33,7 @@ defmodule CoursePlanner.SettingController do
         conn
         |> put_flash(:info, "Setting updated successfully.")
         |> redirect(to: setting_path(conn, :show))
-      {:error, _failed_operation, _failed_value, _changes_so_far} ->
+      {:error, failed_operation, failed_value, changes_so_far} ->
         render(conn, "edit.html", system_variable_changesets: changesets)
     end
   end
