@@ -1,4 +1,4 @@
-<%= form_tag("/settings", method: "put", name: "setting_form") do %>
+<%= form_for @conn, @action, [as: :settings, method: :put], fn f -> %>
   <table class="table">
     <thead>
       <tr>
@@ -8,18 +8,15 @@
     </thead>
     <tbody>
       <%= for svc <- @system_variable_changesets do %>
-      <div class="form-group">
         <tr>
-          <td><%= content_tag(:label, svc.data.key, for: "setting[#{svc.data.id}][value]", class: "control-label") %></td>
-          <td><%= tag(:input, type: "text", name: "setting[#{svc.data.id}][value]", value: svc.data.value, class: "form-control") %></td>
-          <%= if length(svc.errors) > 0 do %>
-            <td><%= content_tag :span, get_error_message(svc.errors), class: "help-block" %> </td>
-          <% end %>
+          <td> <%= svc.data.key %> </td>
+          <td> <%= text_input f, to_atom(svc.data.id), value: svc.data.value %> </td>
         </tr>
-      </div>
       <% end %>
     </tbody>
   </table>
 
-  <%= tag(:input, type: "submit", value: "Submit") %>
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
 <%end%>

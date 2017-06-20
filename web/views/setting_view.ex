@@ -1,10 +1,10 @@
 defmodule CoursePlanner.SettingView do
   use CoursePlanner.Web, :view
 
-  def get_error_message(errors) when is_list(errors) do
-    {:value, {message, _}} = List.first(errors)
-    message
+  def to_atom(input) do
+    input
+    |> Integer.to_string()
+    |> String.to_atom()
   end
-  def get_error_message(errors), do: ""
 
 end

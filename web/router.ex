@@ -59,6 +59,7 @@ defmodule CoursePlanner.Router do
     end
 
     resources "/settings", SettingController, only: [:show, :edit, :update], singleton: true
+    #only: [:show, :edit, :update],
   end
 
   if Mix.env == :dev do

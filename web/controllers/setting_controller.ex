@@ -18,14 +18,15 @@ defmodule CoursePlanner.SettingController do
     render(conn, "edit.html", system_variable_changesets: changesets)
   end
 
-  def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"setting" => setting_params}) do
+  def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"settings" => setting_params}) do
     system_variables = Settings.get_editable_systemvariables()
 
     changesets =
       Enum.map(system_variables, fn(system_variable) ->
         setting_id = to_string(system_variable.id)
-        param = Map.get(setting_params, setting_id)
-        SystemVariable.changeset(system_variable, param, :update)
+        %{^setting_id => param} = setting_params
+
+        SystemVariable.changeset(system_variable, %{"value" => param}, :update)
       end)
 
     case Settings.update(changesets) do
@@ -34,6 +35,8 @@ defmodule CoursePlanner.SettingController do
         |> put_flash(:info, "Setting updated successfully.")
         |> redirect(to: setting_path(conn, :show))
       {:error, failed_operation, failed_value, changes_so_far} ->
+
+        conn = Map.put conn, :errors, ["8": "test error"]
         render(conn, "edit.html", system_variable_changesets: changesets)
     end
   end

@@ -1,3 +1,3 @@
 <h2>Edit settings</h2>
 
-<%= render "form.html", system_variable_changesets: @system_variable_changesets, action: setting_path(@conn, :update) %>
+<%= render "form.html", conn: @conn, system_variable_changesets: @system_variable_changesets, action: setting_path(@conn, :update) %>
