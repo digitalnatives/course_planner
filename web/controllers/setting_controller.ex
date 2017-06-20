@@ -1,33 +1,40 @@
 defmodule CoursePlanner.SettingController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.Setting
-#
+  alias CoursePlanner.{Settings, SystemVariable}
+
   import Canary.Plugs
-  plug :authorize_resource, model: Setting, non_id_actions: [:show, :edit, :update]
+  plug :authorize_controller
 
   def show(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
-    setting = Repo.one!(Setting)
-    render(conn, "show.html", setting: setting)
+    system_variables = Settings.get_visible_systemvariables()
+    render(conn, "show.html", system_variables: system_variables)
   end
 
   def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
-    setting = Repo.one!(Setting)
-    changeset = Setting.changeset(setting)
-    render(conn, "edit.html", setting: setting, changeset: changeset)
+    variables = Settings.get_editable_systemvariables()
+    changesets = Enum.map(variables, fn(variable) -> SystemVariable.changeset(variable) end)
+
+    render(conn, "edit.html", system_variable_changesets: changesets)
   end
 
   def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"setting" => setting_params}) do
-    setting = Repo.one!(Setting)
-    changeset = Setting.changeset(setting, setting_params)
+    system_variables = Settings.get_editable_systemvariables()
 
-    case Repo.update(changeset) do
+    changesets =
+      Enum.map(system_variables, fn(system_variable) ->
+        setting_id = to_string(system_variable.id)
+        param = Map.get(setting_params, setting_id)
+        SystemVariable.changeset(system_variable, param)
+      end)
+
+    case Settings.update(changesets) do
       {:ok, _setting} ->
         conn
         |> put_flash(:info, "Setting updated successfully.")
         |> redirect(to: setting_path(conn, :show))
-      {:error, changeset} ->
-        render(conn, "edit.html", setting: setting, changeset: changeset)
+      {:error, _failed_operation, _failed_value, _changes_so_far} ->
+        render(conn, "edit.html", system_variable_changesets: changesets)
     end
   end
 end

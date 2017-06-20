@@ -1,41 +1,20 @@
-<h2>Show setting</h2>
+<h2>Show settings</h2>
 
-<ul>
-  <li>
-    <strong>Should send attendance notification:</strong>
-    <%= @setting.send_attendance_notification %>
-  </li>
-
-  <li>
-    <strong>Attendance notification frequency:</strong>
-    <%= @setting.notification_frequency %>
-  </li>
-
-  <li>
-    <strong>Program name:</strong>
-    <%= @setting.program_name %>
-  </li>
-
-  <li>
-    <strong>Program description:</strong>
-    <%= @setting.program_description %>
-  </li>
-
-  <li>
-    <strong>Program phone number:</strong>
-    <%= @setting.program_phone_number %>
-  </li>
-
-  <li>
-    <strong>Program email address:</strong>
-    <%= @setting.program_email_address %>
-  </li>
-
-  <li>
-    <strong>Program address:</strong>
-    <%= @setting.program_address %>
-  </li>
-
-</ul>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for system_variable <- @system_variables do %>
+      <tr>
+        <td><%= system_variable.key %></td>
+        <td><%= system_variable.value %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= link "Edit", to: setting_path(@conn, :edit) %>

@@ -1,4 +1,4 @@
-CoursePlanner.Repo.delete_all CoursePlanner.Setting
+CoursePlanner.Repo.delete_all CoursePlanner.SystemVariable
 CoursePlanner.Repo.delete_all CoursePlanner.User
 
 CoursePlanner.User.changeset(%CoursePlanner.User{},
@@ -11,12 +11,29 @@ CoursePlanner.User.changeset(%CoursePlanner.User{},
     :seed)
 |> CoursePlanner.Repo.insert!
 
-CoursePlanner.Setting.changeset(%CoursePlanner.Setting{},
-  %{send_attendance_notification: true,
-    notification_frequency: 1,
-    program_name: "Sample program name",
-    program_description: "Sample program description",
-    program_phone_number: "Sample phone number",
-    program_email_address: "Sample email address",
-    program_address: "sample address"})
+CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
+  %{
+    key: "program name",
+    value: "some name",
+    type: "string",
+    editable: true,
+    visible: true})
+|> CoursePlanner.Repo.insert!
+
+CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
+  %{
+    key: "program address",
+    value: "some address",
+    type: "string",
+    editable: true,
+    visible: true})
+|> CoursePlanner.Repo.insert!
+
+CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
+  %{
+    key: "program email",
+    value: "some email",
+    type: "string",
+    editable: true,
+    visible: true})
 |> CoursePlanner.Repo.insert!
