@@ -19,21 +19,21 @@ defmodule CoursePlanner.SettingController do
   end
 
   def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"settings" => setting_params}) do
-    system_variables = Settings.get_editable_systemvariables()
-
-    changesets =
-      Enum.map(system_variables, fn(system_variable) ->
-        setting_id = to_string(system_variable.id)
-        %{^setting_id => param} = setting_params
-
-        SystemVariable.changeset(system_variable, %{"value" => param}, :update)
-      end)
+    changesets = Settings.get_changesets_for_update(setting_params)
 
     case Settings.update(changesets) do
       {:ok, _setting} ->
         conn
         |> put_flash(:info, "Setting updated successfully.")
         |> redirect(to: setting_path(conn, :show))
+      {:error, :non_existing_resource, _failed_value, _changes_so_far} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      {:error, :uneditable_resource, _failed_value, _changes_so_far} ->
+        conn
+        |> put_status(403)
+        |> render(CoursePlanner.ErrorView, "403.html")
       {:error, failed_operation, failed_value, _changes_so_far} ->
         [value: {error_message, _}] = failed_value.errors
         error = %{field: failed_operation, message: error_message}

@@ -111,4 +111,8 @@ defmodule CoursePlanner.SystemVariableTest do
     refute changeset.valid?
   end
 
+  test "changeset fails for uneditable system variable" do
+    changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | editable: false}, :update)
+    refute changeset.valid?
+  end
 end

@@ -47,7 +47,7 @@ defmodule CoursePlanner.SystemVariable do
     if editable do
       changeset
     else
-      add_error(changeset, :value, "this field is not ediable by users")
+      add_error(changeset, :value, "operation is forbidden")
     end
   end
   defp validate_editable(changeset), do: changeset
