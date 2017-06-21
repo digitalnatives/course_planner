@@ -7,8 +7,8 @@ defmodule CoursePlanner.Settings do
   alias CoursePlanner.{Repo, SystemVariable}
   alias Ecto.Multi
 
-  @all_query from sv in SystemVariable, order_by: :key
-  @visible_settings_query from sv in SystemVariable, where: sv.visible == true, order_by: :key
+  @all_query               from SystemVariable, order_by: :key
+  @visible_settings_query  from sv in SystemVariable, where: sv.visible  == true, order_by: :key
   @editable_settings_query from sv in SystemVariable, where: sv.editable == true, order_by: :key
 
   def all do
