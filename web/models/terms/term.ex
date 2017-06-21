@@ -28,17 +28,22 @@ defmodule CoursePlanner.Terms.Term do
   end
 
   def validate_minimum_teaching_days(%{valid?: true} = changeset, holidays) do
-    st = Changeset.get_field(changeset, :start_date)
-    en = Changeset.get_field(changeset, :end_date)
+    teaching_days = count_teaching_days(changeset)
     min = Changeset.get_field(changeset, :minimum_teaching_days)
-    number_of_holidays = length(holidays)
-    if Timex.diff(en, st, :days) + 1 - number_of_holidays > min do
+    if teaching_days - length(holidays) > min do
       changeset
     else
       Changeset.add_error(changeset, :minimum_teaching_days, "There's not enough minimum teaching days.")
     end
   end
   def validate_minimum_teaching_days(changeset, _holidays), do: changeset
+
+  defp count_teaching_days(changeset) do
+    Timex.diff(
+      Changeset.get_field(changeset, :end_date),
+      Changeset.get_field(changeset, :start_date),
+      :days) + 1
+  end
 
   defp validate_date_range(%{valid?: true} = changeset) do
     st = changeset |> Changeset.get_field(:start_date) |> Date.cast!
