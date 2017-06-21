@@ -1,0 +1,42 @@
+
+  .user-bubble {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    height: 100%;
+    box-sizing: border-box;
+
+    text-decoration: none;
+
+    &__image-wrapper {
+      padding: 16px;
+    }
+
+    &__image {
+      width: 100%;
+      height: auto;
+      padding-bottom: 100%;
+
+      background-size: cover;
+      background-position: center center;
+      border-radius: 50%;
+
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    &__name {
+      text-align: center;
+      color: $grey-500;
+    }
+
+    transition: box-shadow 300ms ease,
+                background-color 300ms ease;
+
+    background-color: transparent;
+    box-shadow: none;
+
+    &:hover {
+      background-color: white;
+      @extend .mdl-shadow--2dp;
+    }
+  }

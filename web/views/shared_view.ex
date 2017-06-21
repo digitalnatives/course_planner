@@ -224,4 +224,26 @@ defmodule CoursePlanner.SharedView do
     render "navbar_item.html", label: label, path: path, classes: classes
   end
 
+  # show pages
+
+  def user_bubble(user) do
+    profile_picture = "/images/placeholder.png"
+
+    name = [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
+      |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
+      |> Enum.join(" ")
+
+    url = case user.role do
+      "Student" -> "/students/#{user.id}"
+      "Teacher" -> "/teachers/#{user.id}"
+      "Coordinator" -> "/coordinators/#{user.id}"
+      "Volunteer" -> "/volunteers/#{user.id}"
+      _ -> "#"
+    end
+
+    render "user_bubble.html", url: url,
+                               profile_picture: profile_picture,
+                               name: name
+  end
+
 end
