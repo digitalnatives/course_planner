@@ -31,4 +31,11 @@ defmodule CoursePlanner.Settings do
 
     Repo.transaction(multi)
   end
+
+  def insert_error(form, errors) do
+    form =  Map.put form, :valid?, false
+    Enum.reduce(errors, form, fn(error, out_form) ->
+      add_error(out_form, error.field, error.message)
+    end)
+  end
 end
