@@ -19,9 +19,7 @@ defmodule CoursePlanner.SettingController do
   end
 
   def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"settings" => setting_params}) do
-    changesets =
-      Settings.get_changesets_for_update(setting_params)
-      |> Enum.sort_by &(&1.data.key)
+    changesets = Settings.get_changesets_for_update(setting_params)
 
     case Settings.update(changesets) do
       {:ok, _setting} ->

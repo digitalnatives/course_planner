@@ -25,9 +25,10 @@ defmodule CoursePlanner.Settings do
 
   def get_changesets_for_update(setting_params) do
     system_variables = all()
+    setting_params = Enum.sort_by(setting_params, &(elem(&1, 1)["key"]))
 
     Enum.map(setting_params, fn(setting_param) ->
-      {param_id, param_value} = setting_param
+        {param_id, %{"key" => param_key, "value" => param_value}} = setting_param
 
       found_system_variable =
         Enum.find(system_variables, fn(system_variable) ->

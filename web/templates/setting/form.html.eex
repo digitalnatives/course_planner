@@ -11,8 +11,12 @@
       <%= for svc <- @system_variable_changesets do %>
         <tr>
           <td> <%= svc.data.key %> </td>
-          <td> <%= text_input f, integer_to_atom(svc.data.id), value: svc.data.value %> </td>
-          <td> <%= error_tag f, integer_to_atom(svc.data.id) %> </td>
+
+          <%= inputs_for f, :"#{svc.data.id}", fn ff -> %>
+            <td> <%= text_input ff, :value, value: svc.data.value %> </td>
+            <td> <%= error_tag  ff, :value %> </td>
+            <td> <%= hidden_input ff, :key, value: svc.data.key %> </td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
