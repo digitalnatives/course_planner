@@ -226,6 +226,12 @@ defmodule CoursePlanner.SharedView do
 
   # show pages
 
+  def user_list(users, opts \\ []) do
+    empty_text = opts[:empty_text] || "There are no users here yet"
+    render "user_list.html", users: users,
+                             empty_text: empty_text
+  end
+
   def user_bubble(user) do
     profile_picture = "/images/placeholder.png"
 
