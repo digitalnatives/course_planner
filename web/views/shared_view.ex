@@ -192,8 +192,17 @@ defmodule CoursePlanner.SharedView do
 
   # card
 
-  def card(title, [do: children]) do
-    render "card.html", title: title, children: children
+  def card(title, opts \\ [], [do: children]) do
+    title_class =
+      if opts[:highlighted_title] do
+        "card__title--highlighted"
+      else
+        ""
+      end
+
+    render "card.html", title: title,
+                        title_class: title_class,
+                        children: children
   end
 
   def card_content([do: children]) do

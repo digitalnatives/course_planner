@@ -6,6 +6,28 @@
   .card {
     margin: 20px 0;
 
+    &__title {
+      &--highlighted {
+        color: white;
+
+        position: relative;
+        margin: -4px -16px -4px -24px;
+        padding: 4px 16px 4px 24px;
+
+        &:before {
+          z-index: -1;
+          display: block;
+          content: "";
+          background-color: $secondary;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          bottom: 0px;
+          right: 0px;
+        }
+      }
+    }
+
     &__content {
       padding: 0 16px;
       background-color: white;
@@ -14,4 +36,9 @@
     &__actions {
       padding: 16px;
     }
+  }
+
+  .card-text {
+    padding: 0 0 16px 0;
+    font-size: 14px;
   }
