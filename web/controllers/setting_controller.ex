@@ -36,7 +36,7 @@ defmodule CoursePlanner.SettingController do
         |> render(CoursePlanner.ErrorView, "403.html")
       {:error, failed_operation, failed_value, _changes_so_far} ->
         [value: {error_message, _}] = failed_value.errors
-        error = %{field: failed_operation, message: error_message}
+        error = %{failed_id: failed_operation, message: error_message}
         render(conn, "edit.html", system_variable_changesets: changesets, errors: [error])
     end
   end

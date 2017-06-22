@@ -1,5 +1,4 @@
 <%= form_for @conn, @action, [as: :settings, method: :put], fn f -> %>
- <% f = populate_errors_to_form(f, @errors) %>
   <table class="table">
     <thead>
       <tr>
@@ -12,7 +11,8 @@
         <tr>
           <td> <%= svc.data.key %> </td>
 
-          <%= inputs_for f, :"#{svc.data.id}", fn ff -> %>
+          <%= inputs_for f, integer_to_atom(svc.data.id), fn ff -> %>
+            <% ff = populate_errors_to_form(ff, integer_to_atom(svc.data.id), @errors) %>
             <td> <%= text_input ff, :value, value: svc.data.value %> </td>
             <td> <%= error_tag  ff, :value %> </td>
             <td> <%= hidden_input ff, :key, value: svc.data.key %> </td>

@@ -28,7 +28,7 @@ defmodule CoursePlanner.Settings do
     setting_params = Enum.sort_by(setting_params, &(elem(&1, 1)["key"]))
 
     Enum.map(setting_params, fn(setting_param) ->
-        {param_id, %{"key" => param_key, "value" => param_value}} = setting_param
+        {param_id, %{"key" => _param_key, "value" => param_value}} = setting_param
 
       found_system_variable =
         Enum.find(system_variables, fn(system_variable) ->
@@ -64,10 +64,16 @@ defmodule CoursePlanner.Settings do
     Repo.transaction(multi)
   end
 
-  def insert_error(form, errors) do
-    form =  Map.put form, :valid?, false
-    Enum.reduce(errors, form, fn(error, out_form) ->
-      add_error(out_form, error.field, error.message)
-    end)
+  def insert_error(form, atomized_group_id, errors) do
+    releavant_error =
+      errors
+      |> Enum.find(fn(error) -> error.failed_id == atomized_group_id end)
+
+    if is_nil(releavant_error) do
+      form
+    else
+      form = Map.put form, :valid?, false
+      add_error(form, :value, releavant_error.message)
+    end
   end
 end

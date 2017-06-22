@@ -61,7 +61,7 @@ defmodule CoursePlanner.SettingControllerTest do
     volunteer_conn = login_as(:volunteer)
 
     system_variable = insert(:system_variable)
-    updated_params = %{id: system_variable.id, value: "new program name"}
+    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
 
     conn = put student_conn, setting_path(student_conn, :update), settings: updated_params
     assert html_response(conn, 403)
@@ -77,7 +77,7 @@ defmodule CoursePlanner.SettingControllerTest do
     coordinator_conn = login_as(:coordinator)
 
     system_variable = insert(:system_variable)
-    updated_params = %{"#{system_variable.id}": ""}
+    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => ""}}]
 
     conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
     assert html_response(conn, 200) =~ "Edit settings"
@@ -88,11 +88,12 @@ defmodule CoursePlanner.SettingControllerTest do
     coordinator_conn = login_as(:coordinator)
 
     system_variable = insert(:system_variable)
-    updated_params = %{"#{system_variable.id}": "new program name"}
+    updating_value = "new program name"
+    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
 
     conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
     assert redirected_to(conn) == setting_path(coordinator_conn, :show)
-    assert Repo.get(SystemVariable, system_variable.id).value == updated_params[:"#{system_variable.id}"]
+    assert Repo.get(SystemVariable, system_variable.id).value == updating_value
   end
 
   test "does not update chosen resource when is not editable", %{conn: _conn} do
@@ -100,18 +101,19 @@ defmodule CoursePlanner.SettingControllerTest do
 
     insert(:system_variable)
     system_variable = insert(:system_variable, %{editable: false})
-    updated_params = %{"#{system_variable.id}": ""}
+    updating_value = "new program name"
+    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
 
     conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
 
     assert html_response(conn, 403)
-    refute Repo.get(SystemVariable, system_variable.id).value == updated_params[:"#{system_variable.id}"]
+    refute Repo.get(SystemVariable, system_variable.id).value == updating_value
   end
 
   test "does not update chosen inexisting resource", %{conn: _conn} do
     coordinator_conn = login_as(:coordinator)
 
-    updated_params = %{"kj9as0d": "random text"}
+    updated_params = [{"-1", %{"key" => "random key", "value" => "random value"}}]
 
     conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
 
