@@ -1,8 +1,9 @@
 defmodule CoursePlanner.OfferedCourses do
   @moduledoc false
 
-  alias CoursePlanner.{OfferedCourse, Repo}
-  import Ecto.Query
+  alias CoursePlanner.{OfferedCourse, Repo, Attendance, AttendanceHelper}
+  alias Ecto.{Multi, DateTime}
+  import Ecto.{Query}
 
   def find_by_term_id(term_id) do
     term_id

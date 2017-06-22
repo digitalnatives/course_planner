@@ -1,7 +1,7 @@
 defmodule CoursePlanner.ClassController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{Class, ClassHelper}
+  alias CoursePlanner.{Class, ClassHelper, AttendanceHelper}
 
   import Canary.Plugs
   plug :authorize_resource, model: Class
@@ -32,7 +32,7 @@ defmodule CoursePlanner.ClassController do
 
         class
         |> Repo.preload(:students)
-        |> ClassHelper.create_class_attendance_records()
+        |> AttendanceHelper.create_class_attendance_records()
 
         conn
         |> put_flash(:info, "Class created successfully.")

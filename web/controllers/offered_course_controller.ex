@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{OfferedCourse, Students, Teachers}
+  alias CoursePlanner.{OfferedCourse, Students, Teachers, AttendanceHelper}
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
@@ -76,6 +76,8 @@ defmodule CoursePlanner.OfferedCourseController do
 
     case Repo.update(changeset) do
       {:ok, offered_course} ->
+        AttendanceHelper.update_class_attendance_records(offered_course.id)
+
         conn
         |> put_flash(:info, "Offered course updated successfully.")
         |> redirect(to: offered_course_path(conn, :show, offered_course))
