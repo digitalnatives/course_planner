@@ -11,6 +11,15 @@ defmodule CoursePlanner.SharedView do
     String.starts_with? conn.request_path, path
   end
 
+  def get_gravatar_url(email, size \\ 100) do
+    hash =
+      :crypto.hash(:md5, email)
+      |> Base.encode16()
+      |> String.downcase()
+
+    "https://www.gravatar.com/avatar/#{hash}?d=mm&s=#{size}"
+  end
+
   # form components
 
   def form_text(form, field, opts \\ []) do
@@ -242,7 +251,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def user_bubble(user) do
-    profile_picture = "/images/placeholder.png"
+    profile_picture = get_gravatar_url(user.email, 200)
 
     name = [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
       |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
