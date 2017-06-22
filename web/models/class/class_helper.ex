@@ -86,4 +86,38 @@ defmodule CoursePlanner.ClassHelper do
     |> Repo.preload([:offered_course, offered_course: :students])
     class.offered_course.students
   end
+
+  def classes_with_attendances(offered_course_id, user_id) do
+    query = from c in Class,
+      left_join: a in assoc(c, :attendances), on: a.student_id == ^user_id,
+      where: c.offered_course_id == ^offered_course_id,
+      order_by: [c.date, c.starting_at],
+      select: %{
+        classroom: c.classroom,
+        date: c.date,
+        starting_at: c.starting_at,
+        attendance_type: a.attendance_type
+      }
+
+    Repo.all(query)
+  end
+
+  def sort_by_starting_time(classes) do
+    Enum.sort(classes, fn (class_a, class_b) ->
+      class_a_datetime = DateTime.from_date_and_time(class_a.date, class_a.starting_at)
+      class_b_datetime = DateTime.from_date_and_time(class_b.date, class_b.starting_at)
+      DateTime.compare(class_a_datetime, class_b_datetime) == :lt
+    end)
+  end
+
+  def split_past_and_next(classes) do
+    now = DateTime.utc
+    {reversed_past_classes, next_classes} =
+      Enum.split_with(classes, fn class ->
+        class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)
+        DateTime.compare(class_datetime, now) == :lt
+      end)
+
+    {Enum.reverse(reversed_past_classes), next_classes}
+  end
 end
