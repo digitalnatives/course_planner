@@ -2,3 +2,11 @@
   .mdl-layout {
     background-color: $grey-50;
   }
+
+  .profile-bubble {
+    &__image {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+  }

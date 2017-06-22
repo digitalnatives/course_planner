@@ -21,6 +21,10 @@
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <%= CoursePlanner.Coherence.ViewHelpers.signout_link(@conn, "Sign out", "mdl-navigation__link") %>
+            <img
+              class="profile-bubble__image"
+              src="<%= CoursePlanner.SharedView.get_gravatar_url( @conn.assigns.current_user.email ) %>"
+            />
           </nav>
         </div>
       </header>
