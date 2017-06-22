@@ -2,7 +2,7 @@ defmodule CoursePlanner.OfferedCourseController do
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{OfferedCourse, Students, Teachers, AttendanceHelper}
-  alias Ecto.Changeset
+  alias Ecto.{Changeset, DateTime}
   import Ecto.Query, only: [from: 2]
 
   import Canary.Plugs
@@ -66,18 +66,18 @@ defmodule CoursePlanner.OfferedCourseController do
         offered_course.classes
       end
 
-    now = Ecto.DateTime.utc
+    now = DateTime.utc
 
     {reversed_past_classes, next_classes} =
       classes
       |> Enum.sort(fn (class_a, class_b) ->
-          class_a_datetime = Ecto.DateTime.from_date_and_time(class_a.date, class_a.starting_at)
-          class_b_datetime = Ecto.DateTime.from_date_and_time(class_b.date, class_b.starting_at)
-          Ecto.DateTime.compare(class_a_datetime, class_b_datetime) == :lt
+          class_a_datetime = DateTime.from_date_and_time(class_a.date, class_a.starting_at)
+          class_b_datetime = DateTime.from_date_and_time(class_b.date, class_b.starting_at)
+          DateTime.compare(class_a_datetime, class_b_datetime) == :lt
         end)
       |> Enum.split_with(fn class ->
-          class_datetime = Ecto.DateTime.from_date_and_time(class.date, class.starting_at)
-          Ecto.DateTime.compare(class_datetime, now) == :lt
+          class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)
+          DateTime.compare(class_datetime, now) == :lt
         end)
 
     past_classes = Enum.reverse reversed_past_classes
