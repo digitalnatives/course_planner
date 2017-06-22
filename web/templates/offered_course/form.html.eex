@@ -24,10 +24,12 @@
             <%= CoursePlanner.SharedView.form_textarea f, :syllabus %>
             <%= CoursePlanner.SharedView.form_multiselect f, :student_ids, students, selected: selected_students(@changeset),
                                                                                      label: "Students",
+                                                                                     display_images: true,
                                                                                      tooltip_text: "Add new student"
             %>
             <%= CoursePlanner.SharedView.form_multiselect f, :teacher_ids, teachers, selected: selected_teachers(@changeset),
                                                                                      label: "Teachers",
+                                                                                     display_images: true,
                                                                                      tooltip_text: "Add new teacher"
             %>
           <% end %>

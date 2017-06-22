@@ -176,6 +176,8 @@ defmodule CoursePlanner.SharedView do
 
     wrapper_class = if error do "is-invalid" else "" end
 
+    display_images = opts[:display_images] || false
+
     render "form_multiselect.html", form: form,
                                     field: field,
                                     label: label,
@@ -185,6 +187,7 @@ defmodule CoursePlanner.SharedView do
                                     tooltip_text: tooltip_text,
                                     wrapper_class: wrapper_class,
                                     class: class,
+                                    display_images: display_images,
                                     button_id: button_id,
                                     multiselect_id: multiselect_id
   end

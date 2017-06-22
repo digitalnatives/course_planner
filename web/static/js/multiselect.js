@@ -10,15 +10,19 @@
       ( domOption ) => ({
         name: domOption.textContent,
         id: domOption.getAttribute( "value" ),
+        image: domOption.getAttribute( "data-image" ),
         selected: domOption.selected
       })
     ).filter(
       ( option ) => option.selected
     );
 
+    let displayImages = select.getAttribute( "data-display-images" ) === "true";
+
     tagsContainer.innerHTML = tags.map(
       ( tag ) => `
-        <span class="mdl-chip mdl-chip--deletable">
+        <span class="mdl-chip mdl-chip--deletable${ displayImages ? ' mdl-chip--contact' : "" }">
+          ${ displayImages ? `<img class="mdl-chip__contact" src="${ tag.image }"></img>` : "" }
           <span class="mdl-chip__text">
             ${ tag.name }
           </span>
