@@ -4,10 +4,9 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Attendance, Notifier.Notification}
+  alias CoursePlanner.{Repo, Class, Notifier, Notifier.Notification}
   alias CoursePlanner.Terms.Term
-  alias Ecto.{Changeset, DateTime, Date}
-  alias Ecto.Multi
+  alias Ecto.{Changeset, Date}
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!

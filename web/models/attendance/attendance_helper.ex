@@ -86,24 +86,26 @@ defmodule CoursePlanner.AttendanceHelper do
   end
 
   def update_class_attendance_records(offered_course_id) do
-    offered_course = get_course_attendances(offered_course_id)
+    query = from oc in OfferedCourse,
+    join: s in assoc(oc, :students),
+    join: c in assoc(oc, :classes),
+    join: cs in assoc(c, :students),
+    preload: [students: s, classes: {c, students: cs}]
 
-    if is_nil(offered_course) do
-      query = from oc in OfferedCourse,
-      join: s in assoc(oc, :students),
-      join: c in assoc(oc, :classes),
-      join: cs in assoc(c, :students),
-      preload: [students: s, classes: {c, students: cs}]
+    offered_course_with_classes     = Repo.get(query, offered_course_id)
+    offered_course_with_attendances = get_course_attendances(offered_course_id)
 
-      offered_course = Repo.get(query, offered_course_id)
-
-      Enum.map(offered_course.classes, fn(class) ->
-        create_class_attendance_records(class)
-      end)
-    else
-      offered_course
-      |> get_student_with_missing_attendance()
-      |> create_missing_attendances()
+    cond do
+      is_nil(offered_course_with_attendances) && is_nil(offered_course_with_classes) ->
+        {:ok, nil}
+      is_nil(offered_course_with_attendances) ->
+        Enum.map(offered_course_with_attendances.classes, fn(class) ->
+          create_class_attendance_records(class)
+        end)
+      true ->
+        offered_course_with_attendances
+        |> get_incorrect_attendance_record()
+        |> fix_incorrect_attendance_record()
     end
   end
 
@@ -131,35 +133,37 @@ defmodule CoursePlanner.AttendanceHelper do
     end
   end
 
-  #def delete_attendance_for_unregistered_students(offered_course) do
-  #  Repo.delete_all(from a Attendance,
-  #  join: s in assoc(a, :student),
-  #  join: c in assoc(a, :class),
-  #  join: cs in assoc(c, :students),
-  #  preload: [student: s, class: {c, students: cs}]
-  #  where: c.offered_course_id == ^offered_course.id)
-
-  #end
-
-  def get_student_with_missing_attendance(offered_course) do
+  defp get_incorrect_attendance_record(offered_course) do
     offered_course_classes = offered_course.classes
 
     Enum.map(offered_course_classes, fn(class) ->
-      filtered_students =
+      missing_students =
         Enum.filter(offered_course.students, fn(student) ->
           not Enum.any?(class.attendances, fn(attendance) ->
                 attendance.student.id == student.id
               end)
         end)
-      %{students: filtered_students, class_id: class.id}
+
+        excessive_attendances =
+          Enum.filter(class.attendances, fn(attendance) ->
+            not Enum.any?(offered_course.students, fn(student) ->
+                  attendance.student.id == student.id
+                end)
+          end)
+
+        %{
+          class_id: class.id,
+          missing_students: missing_students,
+          excessive_attendances: excessive_attendances
+         }
     end)
   end
 
-  defp create_missing_attendances(missing_attendance_data)
-    when is_list(missing_attendance_data) do
+  defp fix_incorrect_attendance_record(incorrect_records)
+    when is_list(incorrect_records) do
       attendances_data =
-        Enum.flat_map(missing_attendance_data, fn(%{students: students, class_id: class_id}) ->
-          attendances_data =
+        Enum.flat_map(incorrect_records,
+          fn(%{missing_students: students, class_id: class_id, excessive_attendances: _}) ->
             students
             |> Enum.map(fn(student) ->
                  [
@@ -172,8 +176,18 @@ defmodule CoursePlanner.AttendanceHelper do
                end)
         end)
 
-      Multi.new
-      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
-      |> Repo.transaction()
+      multi =
+        Multi.new
+        |>  Multi.insert_all(:attendances, Attendance, attendances_data)
+
+      multi =
+        Enum.reduce(incorrect_records, multi, fn(item, class_multi) ->
+            Enum.reduce(item.excessive_attendances, class_multi,
+            fn(excessive_attendance, attendance_multi) ->
+              Multi.delete(attendance_multi, :"delete_#{excessive_attendance.id}", excessive_attendance)
+            end)
+        end)
+
+      Repo.transaction(multi)
   end
 end
