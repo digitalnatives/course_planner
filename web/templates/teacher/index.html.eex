@@ -1,30 +1,58 @@
-<h2>Teacher list</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <td> Full name </td>
-      <td> Nickname </td>
-      <td> Email </td>
-      <td> Phone number </td>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+      Teachers
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "New teacher", to: teacher_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
+  </div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for teacher <- @teachers do %>
-    <tr>
-      <td><%= teacher.name %></td>
-      <td><%= teacher.email %></td>
-      <td><%= teacher.phone_number %></td>
-      <td class="text-right">
-        <%= link "Show", to: teacher_path(@conn, :show, teacher), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: teacher_path(@conn, :edit, teacher), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New teacher", to: teacher_path(@conn, :new) %>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Email</th>
+        <th class="mdl-data-table__cell--non-numeric">Phone number</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for teacher <- @teachers do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= teacher.name %> <%= teacher.family_name %>
+            <%= if String.length(to_string teacher.nickname) > 0 do %>
+              (<%= teacher.nickname %>)
+            <% end %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= teacher.email %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= teacher.phone_number %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= teacher.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= teacher.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: teacher_path(@conn, :show, teacher) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: teacher_path(@conn, :edit, teacher) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

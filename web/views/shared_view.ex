@@ -13,14 +13,176 @@ defmodule CoursePlanner.SharedView do
 
   # form components
 
-  def form_text(form, field, label, opts \\ []) do
+  def form_text(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_text.html", form: form, field: field, label: label, class: class
+    label = opts[:label] || humanize(field)
+    required = opts[:required] || nil
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    value = Map.get form.data, field
+    wrapper_class =
+      if error do
+        "is-invalid"
+      else
+        if required && String.length to_string value > 0 do
+          "form-init"
+        else
+          ""
+        end
+      end
+
+    render "form_text.html", form: form,
+                             field: field,
+                             label: label,
+                             error: error,
+                             wrapper_class: wrapper_class,
+                             class: class,
+                             required: required
   end
 
-  def form_password(form, field, label, opts  \\ []) do
+  def form_textarea(form, field, opts \\ []) do
     class = opts[:class] || ""
-    render "form_password.html", form: form, field: field, label: label, class: class
+    label = opts[:label] || humanize(field)
+    required = opts[:required] || nil
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    value = Map.get form.data, field
+    wrapper_class =
+      if error do
+        "is-invalid"
+      else
+        if required && String.length to_string value > 0 do
+          "form-init"
+        else
+          ""
+        end
+      end
+
+    rows = opts[:rows] || 3
+
+    render "form_textarea.html", form: form,
+                                 field: field,
+                                 label: label,
+                                 error: error,
+                                 wrapper_class: wrapper_class,
+                                 class: class,
+                                 required: required,
+                                 rows: rows
+  end
+
+  def form_password(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    required = opts[:required] || nil
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    wrapper_class =
+      if error do
+        "is-invalid"
+      else
+        if required do "form-init" else "" end
+      end
+
+    render "form_password.html", form: form,
+                                 field: field,
+                                 label: label,
+                                 error: error,
+                                 wrapper_class: wrapper_class,
+                                 class: class,
+                                 required: required
+  end
+
+  def form_date(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    wrapper_class = if error do "is-invalid" else "" end
+
+    render "form_date.html", form: form,
+                             field: field,
+                             label: label,
+                             error: error,
+                             wrapper_class: wrapper_class,
+                             class: class
+  end
+
+  def form_time(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    wrapper_class = if error do "is-invalid" else "" end
+
+    render "form_time.html", form: form,
+                             field: field,
+                             label: label,
+                             error: error,
+                             wrapper_class: wrapper_class,
+                             class: class
+  end
+
+  def form_datetime(form, field, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    wrapper_class = if error do "is-invalid" else "" end
+
+    render "form_datetime.html", form: form,
+                                 field: field,
+                                 label: label,
+                                 error: error,
+                                 wrapper_class: wrapper_class,
+                                 class: class
+  end
+
+  def form_select(form, field, options, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    selected = opts[:selected] || nil
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    wrapper_class = if error do "is-invalid" else "" end
+
+    render "form_select.html", form: form,
+                               field: field,
+                               label: label,
+                               error: error,
+                               selected: selected,
+                               options: options,
+                               wrapper_class: wrapper_class,
+                               class: class
+  end
+
+  def form_multiselect(form, field, options, opts \\ []) do
+    class = opts[:class] || ""
+    label = opts[:label] || humanize(field)
+    selected = opts[:selected] || nil
+    tooltip_text = opts[:tooltip_text] || "Add new item"
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+
+    multiselect_id = (Atom.to_string field) <> "__multiselect"
+    button_id = (Atom.to_string field) <> "__add-button"
+
+    wrapper_class = if error do "is-invalid" else "" end
+
+    render "form_multiselect.html", form: form,
+                                    field: field,
+                                    label: label,
+                                    error: error,
+                                    selected: selected,
+                                    options: options,
+                                    tooltip_text: tooltip_text,
+                                    wrapper_class: wrapper_class,
+                                    class: class,
+                                    button_id: button_id,
+                                    multiselect_id: multiselect_id
+  end
+
+  def form_button(label, to, opts \\ []) do
+    class = opts[:class] || ""
+    render "form_button.html", label: label, to: to, class: class
   end
 
   def form_submit(form, label, opts \\ []) do
@@ -28,8 +190,28 @@ defmodule CoursePlanner.SharedView do
     render "form_submit.html", form: form, label: label, class: class
   end
 
+  # card
+
+  def card(title, [do: children]) do
+    render "card.html", title: title, children: children
+  end
+
+  def card_content([do: children]) do
+    render "card_content.html", children: children
+  end
+
+  def card_actions([do: children]) do
+    render "card_actions.html", children: children
+  end
+
+  # navbar
+
   def navbar(title, [do: children]) do
     render "navbar.html", title: title, children: children
+  end
+
+  def navbar_separator do
+    render "navbar_separator.html"
   end
 
   def navbar_item(label, conn, path) do

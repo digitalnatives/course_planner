@@ -14,5 +14,43 @@
   */
 
   @import "./form.scss";
+  @import "./card.scss";
+  @import "./modal.scss";
 
+  @import "./index-list.scss";
+  @import "./layout.scss";
   @import "./pages/login.scss";
+
+  .nav-logo {
+    margin: 20px 40px;
+  }
+
+  .nav-separator {
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+  }
+
+  .mdl-data-table {
+    width: 100%;
+  }
+
+  .mdl-button--icon {
+    width: auto;
+  }
+
+  .mdl-menu__item {
+    position: relative;
+
+    a {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+
+      padding-left: 8px;
+      padding-right: 8px;
+
+      color: inherit;
+      text-decoration: none;
+    }
+  }

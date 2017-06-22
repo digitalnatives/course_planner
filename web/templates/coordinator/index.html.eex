@@ -1,29 +1,58 @@
-<h2>Coordinator list</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <td> Full name </td>
-      <td> Email</td>
-      <td> Phone number </td>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+      Coordinators
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "New coordinator", to: coordinator_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
+  </div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for coordinator <- @coordinators do %>
-    <tr>
-      <td><%= coordinator.name %></td>
-      <td><%= coordinator.email %></td>
-      <td><%= coordinator.phone_number %></td>
-      <td class="text-right">
-        <%= link "Show", to: coordinator_path(@conn, :show, coordinator), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: coordinator_path(@conn, :edit, coordinator), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: coordinator_path(@conn, :delete, coordinator), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New coordinator", to: coordinator_path(@conn, :new) %>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Email</th>
+        <th class="mdl-data-table__cell--non-numeric">Phone number</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for coordinator <- @coordinators do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= coordinator.name %> <%= coordinator.family_name %>
+            <%= if String.length(to_string coordinator.nickname) > 0 do %>
+              (<%= coordinator.nickname %>)
+            <% end %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= coordinator.email %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= coordinator.phone_number %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= coordinator.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= coordinator.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: coordinator_path(@conn, :show, coordinator) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: coordinator_path(@conn, :edit, coordinator) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: coordinator_path(@conn, :delete, coordinator), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

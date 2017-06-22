@@ -11,7 +11,7 @@
         Welcome back!
       </div>
       <div class="col-xs-12 login__error-wrapper">
-        <%= CoursePlanner.SharedView.form_text f, login_field, "Email or username" %>
+        <%= CoursePlanner.SharedView.form_text f, login_field, required: true %>
         <%= if error do %>
           <div class="login__error">
             <%= error %>
@@ -19,7 +19,7 @@
         <% end %>
       </div>
       <div class="col-xs-12">
-        <%= CoursePlanner.SharedView.form_password f, "password", "Password" %>
+        <%= CoursePlanner.SharedView.form_password f, :password, required: true %>
       </div>
       <div class="col-xs-12">
         <%= CoursePlanner.SharedView.form_submit f, "Next", class: "login__button" %>

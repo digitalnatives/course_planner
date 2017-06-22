@@ -8,13 +8,13 @@
     <meta name="author" content="">
 
     <title>Hello CoursePlanner!</title>
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Course Planner</span>
@@ -27,30 +27,68 @@
 
       <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
         <%= CoursePlanner.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
-        <%= CoursePlanner.SharedView.navbar_item "Users", @conn, user_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_separator %>
         <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Teachers", @conn, teacher_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
-
+        <%= CoursePlanner.SharedView.navbar_item "All users", @conn, user_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_separator %>
         <%= CoursePlanner.SharedView.navbar_item "Courses", @conn, course_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
-        <%= CoursePlanner.SharedView.navbar_item "Offered Courses By Term", @conn, offered_course_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_separator %>
+        <%= CoursePlanner.SharedView.navbar_item "Offered Courses", @conn, offered_course_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
       <% end %>
 
-    <main class="mdl-layout__content">
-      <div class="page-content">
-        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-        <div class="container">
-          <%= render @view_module, @view_template, assigns %>
+      <main class="mdl-layout__content">
+        <div class="page-content">
+          <div class="container">
+            <%= render @view_module, @view_template, assigns %>
+          </div>
         </div>
-      </div>
-    </main>
-  </div>
+      </main>
+    </div>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+
+    <div class="info-snackbar mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <script>
+
+      (function (){
+
+        <%= if get_flash(@conn, :info) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :info) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+
+        <%= if get_flash(@conn, :error) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :error) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+
+      })();
+
+    </script>
   </body>
 </html>

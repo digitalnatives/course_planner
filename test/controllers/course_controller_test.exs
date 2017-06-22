@@ -29,7 +29,7 @@ defmodule CoursePlanner.CourseControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, course_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing courses"
+    assert html_response(conn, 200) =~ "Courses"
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -60,9 +60,9 @@ defmodule CoursePlanner.CourseControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    course = Repo.insert! %Course{}
+    course = Repo.insert! %Course{name: "English"}
     conn = get conn, course_path(conn, :edit, course)
-    assert html_response(conn, 200) =~ "Edit course"
+    assert html_response(conn, 200) =~ "English"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
@@ -73,9 +73,9 @@ defmodule CoursePlanner.CourseControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    course = Repo.insert! %Course{}
+    course = Repo.insert! %Course{name: "English"}
     conn = put conn, course_path(conn, :update, course), course: @invalid_attrs
-    assert html_response(conn, 200) =~ "Edit course"
+    assert html_response(conn, 200) =~ "English"
   end
 
   test "deletes chosen resource", %{conn: conn} do

@@ -35,7 +35,7 @@ defmodule CoursePlanner.ClassControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, class_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing classes"
+    assert html_response(conn, 200) =~ "Classes"
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -376,5 +376,25 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = put volunteer_conn, class_path(volunteer_conn, :update, class), class: update_params
     assert html_response(conn, 403)
+  end
+
+  test "creates resource fails when class date is holiday", %{conn: conn} do
+    holiday = build(:holiday, date: %Ecto.Date{day: 1, month: 1, year: 2017})
+    course = insert(:course)
+    term1 = insert(:term, %{
+                            start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
+                            end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+                            courses: [course],
+                            holidays: [holiday]
+                           })
+
+    students = insert_list(3, :student)
+    teacher = insert(:teacher)
+    offered_course = insert(:offered_course, %{term: term1, course: course, students: students, teachers: [teacher]})
+
+    class_attrs = %{@valid_attrs | date: %{day: 1, month: 1, year: 2017}, offered_course_id: offered_course.id}
+    conn = post conn, class_path(conn, :create), class: class_attrs
+    assert html_response(conn, 200) =~ "Cannot create a class on holiday"
+    refute Repo.get_by(Class, class_attrs)
   end
 end

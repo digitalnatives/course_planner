@@ -5,8 +5,33 @@ defmodule CoursePlanner.ClassHelper do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{Repo, Class, Notifier, Attendance, Notifier.Notification}
-  alias Ecto.DateTime
+  alias CoursePlanner.Terms.Term
+  alias Ecto.{Changeset, DateTime, Date}
   alias Ecto.Multi
+
+  def validate_for_holiday(%{valid?: true} = changeset) do
+    class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
+    offered_course_id = changeset |> Changeset.get_field(:offered_course_id)
+
+    term = Repo.one(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      where: oc.id == ^offered_course_id)
+
+    class_on_holiday? =
+      Enum.find(term.holidays, fn(holiday) ->
+        holiday.date
+        |> Date.cast!
+        |> Date.compare(class_date)
+        |> Kernel.==(:eq)
+      end)
+
+    if class_on_holiday? do
+      add_error(changeset, :date, "Cannot create a class on holiday")
+    else
+      changeset
+    end
+  end
+  def validate_for_holiday(changeset), do: changeset
 
   def delete(id) do
     class = Repo.get(Class, id)

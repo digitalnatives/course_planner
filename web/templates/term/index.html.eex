@@ -1,31 +1,58 @@
-<h2>Listing terms</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Start date</th>
-      <th>End date</th>
+  <div class="row middle-xs index-list-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+      Terms
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "New term", to: term_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
+  </div>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for term <- @terms do %>
-    <tr>
-      <td><%= term.name %></td>
-      <td><%= term.start_date %></td>
-      <td><%= term.end_date %></td>
-
-      <td class="text-right">
-        <%= link "Courses Conflicts", to: term_course_matrix_path(@conn, :index, term), class: "btn btn-default btn-xs" %>
-        <%= link "Show", to: term_path(@conn, :show, term), class: "btn btn-default btn-xs" %>
-        <%= link "Edit", to: term_path(@conn, :edit, term), class: "btn btn-default btn-xs" %>
-        <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<%= link "New term", to: term_path(@conn, :new) %>
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th>Start date</th>
+        <th>End date</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for term <- @terms do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= term.name %>
+          </td>
+          <td>
+            <%= term.start_date %>
+          </td>
+          <td>
+            <%= term.end_date %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= term.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="tr_menu_<%= term.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: term_path(@conn, :show, term) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Edit", to: term_path(@conn, :edit, term) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete, data: [confirm: "Are you sure?"] %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= link "Course conflicts", to: term_course_matrix_path(@conn, :index, term) %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

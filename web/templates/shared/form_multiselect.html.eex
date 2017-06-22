@@ -1,0 +1,45 @@
+
+  <div class="row row--hspace">
+    <div class="col-xs-11">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
+        <span class="mdl-textfield__label"><%= @label %></span>
+        <select
+          class="form-select__select mdl-textfield__input form-multiselect__dropdown"
+          data-multiselect-id="<%= @multiselect_id %>"
+        >
+          <%= Enum.map @options, fn {name, id} -> %>
+            <option value="<%= id %>">
+              <%= name %>
+            </option>
+          <% end %>
+        </select>
+        <i class="material-icons form-select__icon ">&#xE5C5;</i>
+        <%= if @error do %>
+          <span class="mdl-textfield__error">
+            <%= @error %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-xs-1">
+      <button
+        type="button"
+        class="mdl-button mdl-js-button mdl-button--icon mdl-button--colored form-multiselect__add-button"
+        id="<%= @button_id %>"
+        data-multiselect-id="<%= @multiselect_id %>"
+        data-multiselect-add
+      >
+        <i class="material-icons">&#xE145;</i>
+      </button>
+      <div class="mdl-tooltip mdl-tooltip--right" data-mdl-for="<%= @button_id %>">
+        <%= @tooltip_text %>
+      </div>
+    </div>
+  </div>
+  <div class="form-multiselect__tags" data-multiselect-id="<%= @multiselect_id %>">
+  </div>
+
+  <%= multiple_select @form, @field, @options, selected: @selected,
+                                               class: "form-multiselect__select",
+                                               data: [multiselect_id: @multiselect_id]
+  %>

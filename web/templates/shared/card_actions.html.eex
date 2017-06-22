@@ -1,0 +1,4 @@
+
+  <div class="mdl-card__actions card__actions">
+    <%= @children %>
+  </div>

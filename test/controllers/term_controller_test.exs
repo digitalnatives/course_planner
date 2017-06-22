@@ -166,9 +166,9 @@ defmodule CoursePlanner.TermControllerTest do
   end
 
   test "renders form for editing chosen resource for coordinator", %{conn: conn} do
-    term = insert(:term)
+    term = insert(:term, name: "Foo Term")
     conn = get conn, term_path(conn, :edit, term)
-    assert html_response(conn, 200) =~ "Edit term"
+    assert html_response(conn, 200) =~ "Foo Term"
   end
 
   test "doesn't render form for editing for non coordinator users", %{conn: _conn} do
@@ -201,9 +201,9 @@ defmodule CoursePlanner.TermControllerTest do
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    term = insert(:term)
+    term = insert(:term, name: "Foo Term")
     conn = put conn, term_path(conn, :update, term), term: %{name: ""}
-    assert html_response(conn, 200) =~ "Edit term"
+    assert html_response(conn, 200) =~ "Foo Term"
   end
 
   test "doesn't update resource for non coordinator users", %{conn: _conn} do
@@ -230,7 +230,7 @@ defmodule CoursePlanner.TermControllerTest do
 
   test "lists all entries on index for coordinator", %{conn: conn} do
     conn = get conn, term_path(conn, :index)
-    assert html_response(conn, 200) =~ "Listing terms"
+    assert html_response(conn, 200) =~ "Terms"
   end
 
   test "doesn't show index for non coordinator users", %{conn: _conn} do
