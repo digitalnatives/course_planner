@@ -109,30 +109,6 @@ defmodule CoursePlanner.AttendanceHelper do
     end
   end
 
-  def create_class_attendance_records(class) do
-    students = class.students
-
-    if is_nil(students) do
-      {:ok, nil}
-    else
-      attendances_data =
-        students
-        |> Enum.map(fn(student) ->
-             [
-               class_id: class.id,
-               student_id: student.id,
-               attendance_type: "Not filled",
-               inserted_at: DateTime.utc(),
-               updated_at: DateTime.utc()
-             ]
-           end)
-
-      Multi.new
-      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
-      |> Repo.transaction()
-    end
-  end
-
   defp get_incorrect_attendance_record(offered_course) do
     offered_course_classes = offered_course.classes
 
@@ -189,5 +165,29 @@ defmodule CoursePlanner.AttendanceHelper do
         end)
 
       Repo.transaction(multi)
+  end
+
+  def create_class_attendance_records(class) do
+    students = class.students
+
+    if is_nil(students) do
+      {:ok, nil}
+    else
+      attendances_data =
+        students
+        |> Enum.map(fn(student) ->
+             [
+               class_id: class.id,
+               student_id: student.id,
+               attendance_type: "Not filled",
+               inserted_at: DateTime.utc(),
+               updated_at: DateTime.utc()
+             ]
+           end)
+
+      Multi.new
+      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
+      |> Repo.transaction()
+    end
   end
 end
