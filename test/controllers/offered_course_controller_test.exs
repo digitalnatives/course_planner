@@ -23,6 +23,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
         name: "Name",
         start_date: "2017-01-01",
         end_date: "2017-01-31",
+        minimum_teaching_days: 5,
         status: "Active"
       })
     term
