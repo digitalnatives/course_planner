@@ -72,4 +72,15 @@ defmodule CoursePlanner.TermTest do
     refute changeset.valid?
     assert changeset.errors[:minimum_teaching_days] == {"There's not enough minimum teaching days.", []}
   end
+
+  test "term doesn't have minimum teaching days without holidays" do
+    {:error, changeset} = Terms.create(%{
+      "name" => "Spring",
+      "start_date" => %{day: 17, month: 3, year: 2017},
+      "end_date" => %{day: 20, month: 3, year: 2017},
+      "minimum_teaching_days" => 5
+    })
+    refute changeset.valid?
+    assert changeset.errors[:minimum_teaching_days] == {"There's not enough minimum teaching days.", []}
+  end
 end
