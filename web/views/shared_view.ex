@@ -13,7 +13,8 @@ defmodule CoursePlanner.SharedView do
 
   def get_gravatar_url(email, size \\ 100) do
     hash =
-      :crypto.hash(:md5, email)
+      :md5
+      |> :crypto.hash(email)
       |> Base.encode16()
       |> String.downcase()
 

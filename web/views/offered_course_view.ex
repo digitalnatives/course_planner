@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseView do
   use CoursePlanner.Web, :view
 
-  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course}
+  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course, SharedView}
   alias Ecto.Changeset
 
   def terms_to_select do
@@ -35,7 +35,7 @@ defmodule CoursePlanner.OfferedCourseView do
           %{
             value: student.id,
             label: full_name,
-            image: CoursePlanner.SharedView.get_gravatar_url(student.email)
+            image: SharedView.get_gravatar_url(student.email)
           }
         end
       )
@@ -59,7 +59,7 @@ defmodule CoursePlanner.OfferedCourseView do
           %{
             value: teacher.id,
             label: full_name,
-            image: CoursePlanner.SharedView.get_gravatar_url(teacher.email)
+            image: SharedView.get_gravatar_url(teacher.email)
           }
         end
       )
