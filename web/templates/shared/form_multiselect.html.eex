@@ -43,17 +43,6 @@
   >
   </div>
 
-  <%#
-    multiselect_data = [
-      display_images: @display_images
-    ]
-  %>
-
-  <%#= multiple_select @form, @field, @options, selected: @selected,
-                                               class: "form-multiselect__select",
-                                               data: multiselect_data
-  %>
-
   <select
     id="<%= input_id(@form, @field) %>"
     name="<%= input_name(@form, @field) <> "[]" %>"
