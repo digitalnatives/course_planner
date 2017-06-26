@@ -23,6 +23,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
         name: "Name",
         start_date: "2017-01-01",
         end_date: "2017-01-31",
+        minimum_teaching_days: 5,
         status: "Active"
       })
     term
@@ -39,7 +40,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   setup(%{user_role: role}) do
-    user = build(role)
+    user = insert(role)
 
     conn =
       Phoenix.ConnTest.build_conn()
@@ -77,7 +78,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "shows chosen resource", %{conn: conn} do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 200) =~ "Show offered course"
+    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
   end
 
   @tag user_role: :coordinator
@@ -160,7 +161,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "teacher can see offered course", %{conn: conn} do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 200) =~ "Show offered course"
+    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
   end
 
   @tag user_role: :teacher
@@ -209,7 +210,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "student can see offered course", %{conn: conn} do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 200) =~ "Show offered course"
+    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
   end
 
   @tag user_role: :student

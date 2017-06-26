@@ -42,6 +42,7 @@ defmodule CoursePlanner.TermControllerTest do
         name: "Spring",
         start_date: %{day: 01, month: 01, year: 2010},
         end_date: %{day: 01, month: 06, year: 2010},
+        minimum_teaching_days: 5,
         holidays:
         %{
           "0" => %{name: "Labor Day 1", date: %{day: 01, month: 05, year: 2010}},
@@ -84,6 +85,7 @@ defmodule CoursePlanner.TermControllerTest do
         name: "Spring",
         start_date: %{day: 01, month: 01, year: 2010},
         end_date: %{day: 01, month: 06, year: 2010},
+        minimum_teaching_days: 5,
         holidays:
         %{
           "0" => %{name: "Labor Day 1", date: %{day: 01, month: 5, year: 2008}}
@@ -99,6 +101,7 @@ defmodule CoursePlanner.TermControllerTest do
         name: "Spring",
         start_date: %{day: 01, month: 01, year: 2010},
         end_date: %{day: 01, month: 06, year: 2010},
+        minimum_teaching_days: 5,
         holidays:
         %{
           "0" => %{name: "Labor Day 1", date: %{day: 02, month: 01, year: 2011}}

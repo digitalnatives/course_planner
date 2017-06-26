@@ -3,7 +3,7 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
+alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -50,7 +50,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
    %Term{
      name: sequence(:name, &"term-#{&1}"),
      start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
-     end_date: %Ecto.Date{day: 1, month: 6, year: 2017}
+     end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+     minimum_teaching_days: 5
    }
  end
 
@@ -80,6 +81,14 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance}
     %Attendance{
       attendance_type: "Not filled"
     }
+ end
+
+ def task_factory do
+   %Task{
+     name: "some content",
+     start_time: ~N[2017-01-01 01:00:00],
+     finish_time: ~N[2017-02-01 01:00:00],
+   }
  end
 
  def holiday_factory do

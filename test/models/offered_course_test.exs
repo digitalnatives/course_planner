@@ -59,7 +59,8 @@ defmodule CoursePlanner.OfferedCourseTest do
       %Term{
         name: "Fall",
         start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
-        end_date: %Ecto.Date{day: 1, month: 6, year: 2017}
+        end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+        minimum_teaching_days: 5
       })
   end
 

@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{OfferedCourse, Students, Teachers, AttendanceHelper}
+  alias CoursePlanner.{ClassHelper, OfferedCourse, Students, Teachers}
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
@@ -42,45 +42,35 @@ defmodule CoursePlanner.OfferedCourseController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(%{assigns: %{current_user: %{role: user_role}}} = conn, %{"id" => id})
+  when user_role in ["Coordinator", "Teacher"] do
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
       |> Repo.preload([:term, :course, :students, :teachers, :classes])
 
-    user_role = conn.assigns.current_user.role
-    user_id = conn.assigns.current_user.id
-    attendances = AttendanceHelper.get_student_attendances(id, user_id)
+    {past_classes, next_classes} =
+      offered_course.classes
+      |> ClassHelper.sort_by_starting_time()
+      |> ClassHelper.split_past_and_next()
 
-    classes =
-      if user_role === "Student" do
-        Enum.map offered_course.classes, fn class ->
-          Map.merge class,
-            attendances
-            |> Enum.filter(fn attendance -> attendance.class_id === class.id end)
-            |> Enum.at(0)
-            |> (fn map -> map || %{} end).()
-            |> Map.take([:attendance_type])
-        end
-      else
-        offered_course.classes
-      end
+    render(conn, "show.html", offered_course: offered_course,
+                              next_classes: next_classes,
+                              past_classes: past_classes,
+                              user_role: user_role)
+  end
 
-    now = Ecto.DateTime.utc
+  def show(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn, %{"id" => id})
+  when user_role == "Student" do
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
 
-    {reversed_past_classes, next_classes} =
-      classes
-      |> Enum.sort(fn (class_a, class_b) ->
-          class_a_datetime = Ecto.DateTime.from_date_and_time(class_a.date, class_a.starting_at)
-          class_b_datetime = Ecto.DateTime.from_date_and_time(class_b.date, class_b.starting_at)
-          Ecto.DateTime.compare(class_a_datetime, class_b_datetime) == :lt
-        end)
-      |> Enum.split_with(fn class ->
-          class_datetime = Ecto.DateTime.from_date_and_time(class.date, class.starting_at)
-          Ecto.DateTime.compare(class_datetime, now) == :lt
-        end)
-
-    past_classes = Enum.reverse reversed_past_classes
+    {past_classes, next_classes} =
+      id
+      |> ClassHelper.classes_with_attendances(user_id)
+      |> ClassHelper.split_past_and_next()
 
     render(conn, "show.html", offered_course: offered_course,
                               next_classes: next_classes,
