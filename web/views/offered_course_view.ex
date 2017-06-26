@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseView do
   use CoursePlanner.Web, :view
 
-  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course}
+  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course, SharedView}
   alias Ecto.Changeset
 
   def terms_to_select do
@@ -25,7 +25,20 @@ defmodule CoursePlanner.OfferedCourseView do
 
   def students_to_select do
     Students.all()
-    |> Enum.map(&{"#{&1.name} #{&1.family_name}", &1.id})
+    |> Enum.map(
+        fn student ->
+          full_name =
+            [student.name, student.family_name, student.nickname && "(#{student.nickname})"]
+            |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
+            |> Enum.join(" ")
+
+          %{
+            value: student.id,
+            label: full_name,
+            image: SharedView.get_gravatar_url(student.email)
+          }
+        end
+      )
   end
 
   def selected_students(changeset) do
@@ -36,7 +49,20 @@ defmodule CoursePlanner.OfferedCourseView do
 
   def teachers_to_select do
     Teachers.all()
-    |> Enum.map(&{"#{&1.name} #{&1.family_name}", &1.id})
+    |> Enum.map(
+        fn teacher ->
+          full_name =
+            [teacher.name, teacher.family_name, teacher.nickname && "(#{teacher.nickname})"]
+            |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
+            |> Enum.join(" ")
+
+          %{
+            value: teacher.id,
+            label: full_name,
+            image: SharedView.get_gravatar_url(teacher.email)
+          }
+        end
+      )
   end
 
   def selected_teachers(changeset) do

@@ -7,9 +7,9 @@
           class="form-select__select mdl-textfield__input form-multiselect__dropdown"
           data-multiselect-id="<%= @multiselect_id %>"
         >
-          <%= Enum.map @options, fn {name, id} -> %>
-            <option value="<%= id %>">
-              <%= name %>
+          <%= Enum.map @options, fn option -> %>
+            <option value="<%= option.value %>">
+              <%= option.label %>
             </option>
           <% end %>
         </select>
@@ -36,10 +36,35 @@
       </div>
     </div>
   </div>
-  <div class="form-multiselect__tags" data-multiselect-id="<%= @multiselect_id %>">
+  <div
+    class="form-multiselect__tags"
+    data-multiselect-id="<%= @multiselect_id %>"
+    data-
+  >
   </div>
 
-  <%= multiple_select @form, @field, @options, selected: @selected,
-                                               class: "form-multiselect__select",
-                                               data: [multiselect_id: @multiselect_id]
-  %>
+  <select
+    id="<%= input_id(@form, @field) %>"
+    name="<%= input_name(@form, @field) <> "[]" %>"
+    multiple=""
+    class="form-multiselect__select"
+    data-multiselect-id="<%= @multiselect_id %>"
+    data-display-images="<%= @display_images %>"
+  >
+    <%= Enum.map @options, fn option -> %>
+      <option
+        value="<%= option.value %>"
+        data-image="<%= option.image || "" %>"
+        <%=
+          if Enum.member? @selected, option.value do
+            "selected=\"selected\""
+          else
+            ""
+          end
+        %>
+      >
+        <%= option.label %>
+      </option>
+    <% end %>
+  </select>
+
