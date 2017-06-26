@@ -1,7 +1,7 @@
 
 <div class="card mdl-card mdl-shadow--2dp">
   <div class="mdl-card__title">
-    <h2 class="mdl-card__title-text">
+    <h2 class="mdl-card__title-text <%= @title_class %>">
       <%= @title %>
     </h2>
   </div>

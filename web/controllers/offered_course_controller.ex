@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseController do
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{OfferedCourse, Students, Teachers}
+  alias CoursePlanner.{ClassHelper, OfferedCourse, Students, Teachers}
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
@@ -42,12 +42,40 @@ defmodule CoursePlanner.OfferedCourseController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(%{assigns: %{current_user: %{role: user_role}}} = conn, %{"id" => id})
+  when user_role in ["Coordinator", "Teacher"] do
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers, :classes])
+
+    {past_classes, next_classes} =
+      offered_course.classes
+      |> ClassHelper.sort_by_starting_time()
+      |> ClassHelper.split_past_and_next()
+
+    render(conn, "show.html", offered_course: offered_course,
+                              next_classes: next_classes,
+                              past_classes: past_classes,
+                              user_role: user_role)
+  end
+
+  def show(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn, %{"id" => id})
+  when user_role == "Student" do
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
       |> Repo.preload([:term, :course, :students, :teachers])
-    render(conn, "show.html", offered_course: offered_course)
+
+    {past_classes, next_classes} =
+      id
+      |> ClassHelper.classes_with_attendances(user_id)
+      |> ClassHelper.split_past_and_next()
+
+    render(conn, "show.html", offered_course: offered_course,
+                              next_classes: next_classes,
+                              past_classes: past_classes,
+                              user_role: user_role)
   end
 
   def edit(conn, %{"id" => id}) do
