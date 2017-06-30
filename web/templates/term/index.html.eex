@@ -1,6 +1,6 @@
 
-  <div class="row middle-xs index-list-header">
-    <div class="col-xs-6 col-sm-9 col-md-10 index-list-title">
+  <div class="row middle-xs page-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
       Terms
     </div>
     <div class="col-xs-6 col-sm-3 col-md-2">
@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp index-list">
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
     <thead>
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Name</th>

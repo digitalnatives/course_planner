@@ -57,7 +57,9 @@ defmodule CoursePlanner.Terms do
       |> Map.values()
       |> Enum.map(&Holiday.changeset(%Holiday{}, start_date, end_date, &1))
 
-    Changeset.put_embed(changeset, :holidays, holidays)
+    changeset
+    |> Changeset.put_embed(:holidays, holidays)
+    |> Term.validate_minimum_teaching_days(holidays)
   end
 
   def delete(id) do
