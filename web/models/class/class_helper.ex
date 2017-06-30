@@ -61,4 +61,8 @@ defmodule CoursePlanner.ClassHelper do
     |> Repo.preload([:offered_course, offered_course: :students])
     class.offered_course.students
   end
+
+  def get_offered_course_classes(offered_course_id) do
+    Repo.all(from c in Class, where: c.offered_course_id == ^offered_course_id)
+  end
 end

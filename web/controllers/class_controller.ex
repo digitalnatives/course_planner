@@ -30,9 +30,8 @@ defmodule CoursePlanner.ClassController do
           :class_subscribed,
           class_url(conn, :show, class))
 
-        class
-        |> Repo.preload(:students)
-        |> AttendanceHelper.create_class_attendance_records()
+        preload_class = Repo.preload(class, :students)
+        AttendanceHelper.create_class_attendance_records(preload_class.id, preload_class.students)
 
         conn
         |> put_flash(:info, "Class created successfully.")

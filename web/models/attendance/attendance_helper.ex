@@ -4,7 +4,7 @@ defmodule CoursePlanner.AttendanceHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
   alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
@@ -85,109 +85,51 @@ defmodule CoursePlanner.AttendanceHelper do
     Repo.transaction(updated_multi)
   end
 
-  def update_class_attendance_records(offered_course_id) do
-    query = from oc in OfferedCourse,
-    join: s in assoc(oc, :students),
-    join: c in assoc(oc, :classes),
-    join: cs in assoc(c, :students),
-    preload: [students: s, classes: {c, students: cs}]
-
-    offered_course_with_classes     = Repo.get(query, offered_course_id)
-    offered_course_with_attendances = get_course_attendances(offered_course_id)
-
-    cond do
-      is_nil(offered_course_with_attendances) && is_nil(offered_course_with_classes) ->
-        {:ok, nil}
-      is_nil(offered_course_with_attendances) ->
-        Enum.map(offered_course_with_attendances.classes, fn(class) ->
-          create_class_attendance_records(class)
-        end)
-      true ->
-        offered_course_with_attendances
-        |> get_incorrect_attendance_record()
-        |> fix_incorrect_attendance_record()
-    end
-  end
-
-  defp get_incorrect_attendance_record(offered_course) do
-    offered_course_classes = offered_course.classes
-
-    Enum.map(offered_course_classes, fn(class) ->
-      missing_students =
-        Enum.filter(offered_course.students, fn(student) ->
-          not Enum.any?(class.attendances, fn(attendance) ->
-                attendance.student.id == student.id
-              end)
-        end)
-
-        excessive_attendances =
-          Enum.filter(class.attendances, fn(attendance) ->
-            not Enum.any?(offered_course.students, fn(student) ->
-                  attendance.student.id == student.id
-                end)
-          end)
-
-        %{
-          class_id: class.id,
-          missing_students: missing_students,
-          excessive_attendances: excessive_attendances
-         }
-    end)
-  end
-
-  defp fix_incorrect_attendance_record(incorrect_records)
-    when is_list(incorrect_records) do
-      attendances_data =
-        Enum.flat_map(incorrect_records,
-          fn(%{missing_students: students, class_id: class_id, excessive_attendances: _}) ->
-            students
-            |> Enum.map(fn(student) ->
-                 [
-                   class_id: class_id,
-                   student_id: student.id,
-                   attendance_type: "Not filled",
-                   inserted_at: DateTime.utc(),
-                   updated_at: DateTime.utc()
-                 ]
-               end)
-        end)
-
-      multi =
-        Multi.new
-        |>  Multi.insert_all(:attendances, Attendance, attendances_data)
-
-      multi =
-        Enum.reduce(incorrect_records, multi, fn(item, class_multi) ->
-            Enum.reduce(item.excessive_attendances, class_multi,
-            fn(excessive_attendance, attendance_multi) ->
-              Multi.delete(attendance_multi, :"delete_#{excessive_attendance.id}", excessive_attendance)
-            end)
-        end)
-
-      Repo.transaction(multi)
-  end
-
-  def create_class_attendance_records(class) do
-    students = class.students
-
-    if is_nil(students) do
-      {:ok, nil}
-    else
+  def create_class_attendance_records(class_id, students)
+    when is_list(students) and length(students) > 0 do
       attendances_data =
         students
         |> Enum.map(fn(student) ->
              [
-               class_id: class.id,
+               class_id: class_id,
                student_id: student.id,
                attendance_type: "Not filled",
                inserted_at: DateTime.utc(),
                updated_at: DateTime.utc()
              ]
            end)
-
-      Multi.new
-      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
-      |> Repo.transaction()
-    end
+      Repo.insert_all(Attendance, attendances_data)
   end
+  def create_class_attendance_records(_, _), do: {:ok, nil}
+
+  def create_students_attendances(offered_course_id, offered_course_students, updated_students) do
+    students = updated_students -- offered_course_students
+
+    offered_course_id
+      |> ClassHelper.get_offered_course_classes()
+      |> Enum.map(fn(class) ->
+        create_class_attendance_records(class.id, students)
+      end)
+  end
+
+  def remove_students_attendances(offered_course_id, offered_course_students, updated_students) do
+    student_ids =
+      offered_course_students -- updated_students
+      |> Enum.map(fn(student) ->
+        student.id
+      end)
+
+    class_ids =
+      offered_course_id
+        |> ClassHelper.get_offered_course_classes()
+        |> Enum.map(fn(class) ->
+          class.id
+        end)
+
+    delete_query = from a in Attendance,
+      where: a.class_id in ^class_ids and a.student_id in ^student_ids
+
+    Repo.delete_all(delete_query)
+  end
+
 end
