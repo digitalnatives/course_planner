@@ -34,7 +34,9 @@ defmodule CoursePlanner.TermController do
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
       term ->
-        render(conn, "show.html", term: term)
+        term_with_offered_courses =
+          Repo.preload(term, [offered_courses: [:course, :term]])
+        render(conn, "show.html", term: term_with_offered_courses)
     end
   end
 
