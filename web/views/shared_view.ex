@@ -298,4 +298,11 @@ defmodule CoursePlanner.SharedView do
                                empty_text: empty_text
   end
 
+  def task_list(tasks, opts \\ []) do
+    empty_text = opts[:empty_text] || "There are no tasks here yet"
+
+    render "task_list.html", tasks: tasks,
+                             empty_text: empty_text
+  end
+
 end
