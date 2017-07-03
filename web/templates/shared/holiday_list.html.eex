@@ -1,0 +1,13 @@
+
+  <div class="holiday-list">
+    <%= for holiday <- @holidays do %>
+      <div class="holiday-list__holiday">
+        <div class="holiday-list__item">
+          <%= holiday.description %>
+        </div>
+        <div class="holiday-list__item">
+          <%= holiday.date %>
+        </div>
+      </div>
+    <% end %>
+  </div>
