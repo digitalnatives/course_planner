@@ -13,7 +13,7 @@ CoursePlanner.User.changeset(%CoursePlanner.User{},
 
 CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
   %{
-    key: "Program name",
+    key: "PROGRAM_NAME",
     value: "some name",
     type: "string",
     editable: true,
@@ -22,7 +22,7 @@ CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
 
 CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
   %{
-    key: "Program address",
+    key: "PROGRAM_ADDRESS",
     value: "some address",
     type: "string",
     editable: true,
@@ -31,7 +31,7 @@ CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
 
 CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
   %{
-    key: "Program email",
+    key: "PROGRAM_EMAIL",
     value: "some email",
     type: "string",
     editable: true,
@@ -40,7 +40,7 @@ CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
 
 CoursePlanner.SystemVariable.changeset(%CoursePlanner.SystemVariable{},
   %{
-    key: "Notification frequency",
+    key: "NOTIFICATION_FREQUENCY",
     value: "1",
     type: "integer",
     editable: true,

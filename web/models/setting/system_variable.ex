@@ -36,8 +36,16 @@ defmodule CoursePlanner.SystemVariable do
   end
 
   def changeset(struct, params, :update) do
+    target_params =
+      [
+       :value,
+       :type
+      ]
+
     struct
-    |> changeset(params)
+    |> cast(params, target_params)
+    |> validate_required(target_params)
+    |> validate_value_type()
     |> validate_editable()
   end
 
