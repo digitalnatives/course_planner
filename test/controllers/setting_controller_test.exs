@@ -4,119 +4,138 @@ defmodule CoursePlanner.SettingControllerTest do
   alias CoursePlanner.SystemVariable
   import CoursePlanner.Factory
 
-  defp login_as(user_type) do
-    user = insert(user_type)
+  setup(%{user_role: role}) do
+    user = build(role)
 
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    conn =
+      Phoenix.ConnTest.build_conn()
+      |> assign(:current_user, user)
+    {:ok, conn: conn}
   end
 
-  test "shows chosen resource only for coordinator", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
+  describe "settings functionality for coordinator user" do
+    @tag user_role: :coordinator
+    test "shows chosen resource only for coordinator", %{conn: conn} do
+      conn = get conn, setting_path(conn, :show)
+      assert html_response(conn, 200) =~ "Show settings"
+    end
 
-    conn = get coordinator_conn, setting_path(coordinator_conn, :show)
-    assert html_response(conn, 200) =~ "Show settings"
+    @tag user_role: :coordinator
+    test "renders form for editing for coordinator", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit)
+      assert html_response(conn, 200) =~ "Edit settings"
+    end
+
+    @tag user_role: :coordinator
+    test "does not update chosen resource and renders errors when data is invalid for coordinator user", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => ""}}]
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "can&#39;t be blank"
+    end
+
+    @tag user_role: :coordinator
+    test "updates chosen resource and redirects when data is valid for coordinator user", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updating_value = "new program name"
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert redirected_to(conn) == setting_path(conn, :show)
+      assert Repo.get(SystemVariable, system_variable.id).value == updating_value
+    end
+
+    @tag user_role: :coordinator
+    test "does not update chosen resource when is not editable", %{conn: conn} do
+      insert(:system_variable)
+      system_variable = insert(:system_variable, %{editable: false})
+      updating_value = "new program name"
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+
+      assert html_response(conn, 403)
+      refute Repo.get(SystemVariable, system_variable.id).value == updating_value
+    end
+
+    @tag user_role: :coordinator
+    test "does not update chosen inexisting resource", %{conn: conn} do
+      updated_params = [{"-1", %{"key" => "random key", "value" => "random value"}}]
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+
+      assert html_response(conn, 404)
+    end
   end
 
-  test "does not show chosen resource for non coordinator users", %{conn: _conn} do
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
+  describe "setting functionality for student user" do
+    @tag user_role: :student
+    test "student can't see settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :show)
+      assert html_response(conn, 403)
+    end
 
-    conn = get student_conn, setting_path(student_conn, :show)
-    assert html_response(conn, 403)
+    @tag user_role: :student
+    test "student cannot edit settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit)
+      assert html_response(conn, 403)
+    end
 
-    conn = get teacher_conn, setting_path(teacher_conn, :show)
-    assert html_response(conn, 403)
+    @tag user_role: :student
+    test "student can't update settings", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
 
-    conn = get volunteer_conn, setting_path(volunteer_conn, :show)
-    assert html_response(conn, 403)
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert html_response(conn, 403)
+    end
   end
 
-  test "renders form for editing for coordinator", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
+  describe "settings functionality for teacher user" do
+    @tag user_role: :teacher
+    test "teacher can't see settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :show)
+      assert html_response(conn, 403)
+    end
 
-    conn = get coordinator_conn, setting_path(coordinator_conn, :edit)
-    assert html_response(conn, 200) =~ "Edit settings"
+    @tag user_role: :teacher
+    test "teacher cannot edit settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher can't update settings", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert html_response(conn, 403)
+    end
   end
 
-  test "does not renders form for editing for non coordinator users", %{conn: _conn} do
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
+  describe "settings functionality for volunteer user" do
+    @tag user_role: :volunteer
+    test "volunteer can't see settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :show)
+      assert html_response(conn, 403)
+    end
 
-    conn = get student_conn, setting_path(student_conn, :edit)
-    assert html_response(conn, 403)
+    @tag user_role: :volunteer
+    test "volunteer cannot edit settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit)
+      assert html_response(conn, 403)
+    end
 
-    conn = get teacher_conn, setting_path(teacher_conn, :edit)
-    assert html_response(conn, 403)
+    @tag user_role: :volunteer
+    test "volunteer can't update settings", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
 
-    conn = get volunteer_conn, setting_path(volunteer_conn, :edit)
-    assert html_response(conn, 403)
-  end
-
-  test "does not update chosen resource and redirects when data is valid for non coordinator users", %{conn: _conn} do
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    system_variable = insert(:system_variable)
-    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
-
-    conn = put student_conn, setting_path(student_conn, :update), settings: updated_params
-    assert html_response(conn, 403)
-
-    conn = put teacher_conn, setting_path(teacher_conn, :update), setting: updated_params
-    assert html_response(conn, 403)
-
-    conn = put volunteer_conn, setting_path(volunteer_conn, :update), setting: updated_params
-    assert html_response(conn, 403)
-  end
-
-  test "does not update chosen resource and renders errors when data is invalid for coordinator user", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
-
-    system_variable = insert(:system_variable)
-    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => ""}}]
-
-    conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
-    assert html_response(conn, 200) =~ "Edit settings"
-    assert html_response(conn, 200) =~ "can&#39;t be blank"
-  end
-
-  test "updates chosen resource and redirects when data is valid for coordinator user", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
-
-    system_variable = insert(:system_variable)
-    updating_value = "new program name"
-    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
-
-    conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
-    assert redirected_to(conn) == setting_path(coordinator_conn, :show)
-    assert Repo.get(SystemVariable, system_variable.id).value == updating_value
-  end
-
-  test "does not update chosen resource when is not editable", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
-
-    insert(:system_variable)
-    system_variable = insert(:system_variable, %{editable: false})
-    updating_value = "new program name"
-    updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
-
-    conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
-
-    assert html_response(conn, 403)
-    refute Repo.get(SystemVariable, system_variable.id).value == updating_value
-  end
-
-  test "does not update chosen inexisting resource", %{conn: _conn} do
-    coordinator_conn = login_as(:coordinator)
-
-    updated_params = [{"-1", %{"key" => "random key", "value" => "random value"}}]
-
-    conn = put coordinator_conn, setting_path(coordinator_conn, :update), settings: updated_params
-
-    assert html_response(conn, 404)
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert html_response(conn, 403)
+    end
   end
 end
