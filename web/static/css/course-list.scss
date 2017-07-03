@@ -1,0 +1,22 @@
+
+  .course-list {
+    display: flex;
+    flex-direction: column;
+
+    background-color: white;
+    @extend .mdl-shadow--2dp;
+
+    &__course {
+      display: flex;
+      flex-direction: row;
+    }
+
+    &__course + &__course {
+      border-top: 1px solid rgba(0,0,0,0.1);
+    }
+
+    &__item {
+      flex: 1;
+      padding: 16px;
+    }
+  }

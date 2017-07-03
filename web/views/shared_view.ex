@@ -275,12 +275,19 @@ defmodule CoursePlanner.SharedView do
   end
 
   def class_list(classes, opts \\ []) do
-    empty_text = opts[:empty_text] || "There are no users here yet"
+    empty_text = opts[:empty_text] || "There are no classes here yet"
     show_attendances = opts[:show_attendances] || false
 
     render "class_list.html", classes: classes,
                               empty_text: empty_text,
                               show_attendances: show_attendances
+  end
+
+  def course_list(offered_courses, opts \\ []) do
+    empty_text = opts[:empty_text] || "There are no courses here yet"
+
+    render "course_list.html", offered_courses: offered_courses,
+                               empty_text: empty_text
   end
 
 end
