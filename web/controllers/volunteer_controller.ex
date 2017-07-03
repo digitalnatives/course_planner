@@ -32,7 +32,11 @@ defmodule CoursePlanner.VolunteerController do
   end
 
   def show(conn, %{"id" => id}) do
-    volunteer = Repo.get!(User, id)
+    volunteer =
+      User
+      |> Repo.get!(id)
+      |> Repo.preload([:tasks])
+
     render(conn, "show.html", volunteer: volunteer)
   end
 
