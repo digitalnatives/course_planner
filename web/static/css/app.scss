@@ -58,3 +58,25 @@
       text-decoration: none;
     }
   }
+
+  .profile-picture {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+
+  .detail {
+    &__name {
+      display: inline-block;
+      font-weight: bold;
+    }
+
+    &__value {
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    & + & {
+      margin-top: 16px;
+    }
+  }
