@@ -6,7 +6,7 @@ defmodule CoursePlanner.ClassHelper do
 
   alias CoursePlanner.{Repo, Class, Notifier, Notifier.Notification}
   alias CoursePlanner.Terms.Term
-  alias Ecto.{Changeset, Date}
+  alias Ecto.{Changeset, DateTime, Date}
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
@@ -65,7 +65,7 @@ defmodule CoursePlanner.ClassHelper do
   def get_offered_course_classes(offered_course_id) do
     Repo.all(from c in Class, where: c.offered_course_id == ^offered_course_id)
   end
- 
+
  def classes_with_attendances(offered_course_id, user_id) do
     query = from c in Class,
       left_join: a in assoc(c, :attendances), on: a.student_id == ^user_id,
@@ -98,4 +98,5 @@ defmodule CoursePlanner.ClassHelper do
       end)
 
     {Enum.reverse(reversed_past_classes), next_classes}
+  end
 end
