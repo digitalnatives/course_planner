@@ -1,6 +1,7 @@
 
   .mdl-card {
     width: 100%;
+    min-height: auto;
   }
 
   .card {
@@ -31,6 +32,11 @@
     &__content {
       padding: 0 16px;
       background-color: white;
+      font-size: 14px;
+
+      &--vpadding {
+        padding: 16px;
+      }
     }
 
     &__actions {

@@ -205,7 +205,7 @@ defmodule CoursePlanner.SharedView do
 
   # card
 
-  def card(title, opts \\ [], [do: children]) do
+  def card(title \\ nil, opts \\ [], [do: children]) do
     title_class =
       if opts[:highlighted_title] do
         "card__title--highlighted"
@@ -218,8 +218,16 @@ defmodule CoursePlanner.SharedView do
                         children: children
   end
 
-  def card_content([do: children]) do
-    render "card_content.html", children: children
+  def card_content(opts \\ [], [do: children]) do
+    class =
+      if opts[:vpadding] do
+        "card__content--vpadding"
+      else
+        ""
+      end
+
+    render "card_content.html", children: children,
+                                class: class
   end
 
   def card_actions([do: children]) do
