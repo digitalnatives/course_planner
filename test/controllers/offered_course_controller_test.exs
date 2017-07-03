@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{Course, OfferedCourse, Repo, Terms}
+  alias CoursePlanner.{Course, OfferedCourse, Repo, Terms, Attendance}
   import CoursePlanner.Factory
 
   def valid_attrs do
@@ -102,6 +102,48 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: attrs
     assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
     assert Repo.get_by(OfferedCourse, attrs)
+  end
+
+  @tag user_role: :coordinator
+  test "creates missing attendances when students added to the course", %{conn: conn} do
+    current_student = insert(:student)
+    offered_course = insert(:offered_course, students: [current_student])
+    class = insert(:class, offered_course: offered_course)
+    insert(:attendance, %{class: class, student: current_student})
+
+    new_students = insert_list(3, :student)
+    all_student_ids =
+      [current_student | new_students]
+      |> Enum.map(fn(student) ->  student.id end)
+
+    attrs =
+       %{
+          student_ids: all_student_ids
+        }
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: attrs
+    assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
+    assert length(Repo.all(Attendance)) == 4
+  end
+
+  @tag user_role: :coordinator
+  test "deletes excessive attendances when students is removed from offered_course", %{conn: conn} do
+    current_students = insert_list(3, :student)
+    offered_course = insert(:offered_course, students: current_students)
+    class = insert(:class, offered_course: offered_course)
+
+    Enum.map(current_students, fn(student) ->
+      insert(:attendance, %{class: class, student: student})
+    end)
+
+    new_student = insert(:student)
+
+    attrs =
+       %{
+          student_ids: [new_student.id]
+        }
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: attrs
+    assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
+    assert length(Repo.all(Attendance)) == 1
   end
 
   @tag user_role: :coordinator
