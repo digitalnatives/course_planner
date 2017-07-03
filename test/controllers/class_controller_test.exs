@@ -100,17 +100,14 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "New class"
   end
 
-  test "shows chosen resource", %{conn: conn} do
-    created_course = create_course()
-    class = Repo.insert! %Class{offered_course_id: created_course.id}
-    conn = get conn, class_path(conn, :show, class)
-    assert html_response(conn, 200) =~ "Show class"
-  end
-
-  test "renders page not found when id is nonexistent", %{conn: _conn} do
+  test "renders page not found on the show url", %{conn: _conn} do
+    student_conn   = login_as(:coordinator)
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+
+    conn = get student_conn, class_path(student_conn, :coordinator, -1)
+    assert html_response(conn, 404)
 
     conn = get student_conn, class_path(student_conn, :show, -1)
     assert html_response(conn, 404)
@@ -253,24 +250,6 @@ defmodule CoursePlanner.ClassControllerTest do
     assert redirected_to(conn) == class_path(conn, :index)
     refute Repo.get(Class, class.id)
     assert [] == Repo.all(Attendance)
-  end
-
-  test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    created_course = create_course()
-    class = Repo.insert! %Class{offered_course_id: created_course.id}
-
-    conn = get student_conn, class_path(student_conn, :show, class)
-    assert html_response(conn, 403)
-
-    conn = get teacher_conn, class_path(teacher_conn, :show, class)
-    assert html_response(conn, 403)
-
-    conn = get volunteer_conn, class_path(volunteer_conn, :show, class)
-    assert html_response(conn, 403)
   end
 
   test "does not list entries on index for non coordinator user", %{conn: _conn} do

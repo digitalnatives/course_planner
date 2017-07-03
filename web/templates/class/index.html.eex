@@ -51,9 +51,6 @@
                 for="tr_menu_<%= class.id %>"
             >
               <li class="mdl-menu__item">
-                <%= link "Show", to: class_path(@conn, :show, class) %>
-              </li>
-              <li class="mdl-menu__item">
                 <%= link "Edit", to: class_path(@conn, :edit, class) %>
               </li>
               <li class="mdl-menu__item">

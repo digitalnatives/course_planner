@@ -42,19 +42,6 @@ defmodule CoursePlanner.ClassController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    case Repo.get(Class, id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-      class ->
-        class = Repo.preload(class, [:offered_course, offered_course: :term,
-                                      offered_course: :course])
-        render(conn, "show.html", class: class)
-    end
-  end
-
   def edit(conn, %{"id" => id}) do
     class = Repo.get!(Class, id)
     changeset = Class.changeset(class)

@@ -48,7 +48,7 @@ defmodule CoursePlanner.Router do
       get "/course_matrix", CourseMatrixController, :index, as: :course_matrix
     end
     resources "/offered_courses", OfferedCourseController
-    resources "/classes", ClassController
+    resources "/classes", ClassController, except: [:show]
     resources "/tasks", TaskController do
       post "/grab", TaskController, :grab, as: :grab
     end
