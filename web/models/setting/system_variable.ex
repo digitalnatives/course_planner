@@ -81,12 +81,12 @@ defmodule CoursePlanner.SystemVariable do
 
   def parse_integer(value) do
     case Integer.parse(value) do
-      {parsed_value, ""} -> validate_number_rage_inclusive(parsed_value, 0, 1_000_000)
+      {parsed_value, ""} -> validate_number_range_inclusive(parsed_value, 0, 1_000_000)
       _                  -> {:error, "the given value should be a number"}
     end
   end
 
-  defp validate_number_rage_inclusive(number, min, max) do
+  defp validate_number_range_inclusive(number, min, max) do
     if number in (min..max) do
       {:ok, number}
     else
