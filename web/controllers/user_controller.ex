@@ -1,5 +1,6 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
+  import CoursePlanner.SharedView, only: [user_show_url: 1]
   alias CoursePlanner.{User, Users}
   require Logger
 
@@ -8,16 +9,6 @@ defmodule CoursePlanner.UserController do
 
   def index(conn, _params) do
     render(conn, "index.html", users: Users.all())
-  end
-
-  def show(conn, %{"id" => id}) do
-    case Users.get(id) do
-      {:ok, user} -> render(conn, "show.html", user: user)
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-    end
   end
 
   def edit(conn, %{"id" => id}) do
@@ -32,10 +23,11 @@ defmodule CoursePlanner.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        Users.notify_user(user, current_user, :user_modified, user_url(conn, :show, user))
+        user_url = CoursePlanner.Endpoint.url <> user_show_url(user)
+        Users.notify_user(user, current_user, :user_modified, user_url)
         conn
         |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
+        |> redirect(to: dashboard_path(conn, :show))
       {:error, changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end

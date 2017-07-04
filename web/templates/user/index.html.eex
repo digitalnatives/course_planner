@@ -39,7 +39,7 @@
                 for="tr_menu_<%= user.id %>"
             >
               <li class="mdl-menu__item">
-                <%= link "Show", to: user_path(@conn, :show, user) %>
+                <%= link "Show", to: CoursePlanner.SharedView.user_show_url(user) %>
               </li>
               <li class="mdl-menu__item">
                 <%= link "Edit", to: user_path(@conn, :edit, user) %>
