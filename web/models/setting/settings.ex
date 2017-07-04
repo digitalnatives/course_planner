@@ -7,7 +7,7 @@ defmodule CoursePlanner.Settings do
   alias CoursePlanner.{Repo, SystemVariable}
   alias Ecto.Multi
 
-  @all_query               from SystemVariable, order_by: :key
+  @all_query               from sv in SystemVariable, select: {sv.id, sv}, order_by: :key
   @visible_settings_query  from sv in SystemVariable, where: sv.visible  == true, order_by: :key
   @editable_settings_query from sv in SystemVariable, where: sv.editable == true, order_by: :key
 
@@ -24,17 +24,13 @@ defmodule CoursePlanner.Settings do
   end
 
   def get_changesets_for_update(setting_params) do
-    system_variables = all()
+    system_variables = all() |> Enum.into(Map.new)
     setting_params = Enum.sort_by(setting_params, &(elem(&1, 1)["key"]))
 
     Enum.map(setting_params, fn(setting_param) ->
-        {param_id, %{"key" => _param_key, "value" => param_value}} = setting_param
-
-      found_system_variable =
-        Enum.find(system_variables, fn(system_variable) ->
-          system_variable_id = to_string(system_variable.id)
-          system_variable_id == param_id
-        end)
+      {param_id, %{"key" => _param_key, "value" => param_value}} = setting_param
+      {integer_param_id, ""} = Integer.parse(param_id)
+      found_system_variable = Map.get(system_variables, integer_param_id)
 
         cond do
           is_nil(found_system_variable) -> :non_existing_resource

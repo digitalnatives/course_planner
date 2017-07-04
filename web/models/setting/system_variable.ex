@@ -87,7 +87,7 @@ defmodule CoursePlanner.SystemVariable do
   end
 
   defp validate_number_rage_inclusive(number, min, max) do
-    if number >= min && number <= max do
+    if number in (min..max) do
       {:ok, number}
     else
       {:error, "the given value should be between #{min} and #{max}"}
