@@ -24,9 +24,9 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    student = Repo.insert! %User{}
+    student = insert(:student)
     conn = get conn, student_path(conn, :show, student)
-    assert html_response(conn, 200) =~ "Show student"
+    assert html_response(conn, 200) =~ "#{student.name} #{student.family_name}"
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -170,7 +170,7 @@ defmodule CoursePlanner.StudentControllerTest do
     |> assign(:current_user, student)
 
     conn = get student_conn, student_path(student_conn, :show, student)
-    assert html_response(conn, 200) =~ "Show student"
+    assert html_response(conn, 200) =~ "#{student.name} #{student.family_name}"
   end
 
   test "edit the student himself" do
