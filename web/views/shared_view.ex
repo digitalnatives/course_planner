@@ -305,4 +305,11 @@ defmodule CoursePlanner.SharedView do
                              empty_text: empty_text
   end
 
+  def holiday_list(holidays, opts \\ []) do
+    empty_text = opts[:empty_text] || "There are no holidays here yet"
+
+    render "holiday_list.html", holidays: holidays,
+                                empty_text: empty_text
+  end
+
 end

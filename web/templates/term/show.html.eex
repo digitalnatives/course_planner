@@ -1,52 +1,67 @@
-<h2>Show term</h2>
 
-<ul>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= @term.name %>
+        </div>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: term_path(@conn, :edit, @term),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @term.name %>
-  </li>
+      <div class="page">
+        <%= CoursePlanner.SharedView.card do %>
+          <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+            <div class="row row--hspace row--vspace middle-xs">
+              <div class="col-xs-12">
+                <div class="detail">
+                  <div class="detail__name">Name</div>
+                  <div class="detail__value">
+                    <%= @term.name %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Start date</div>
+                  <div class="detail__value">
+                    <%= @term.start_date %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">End date</div>
+                  <div class="detail__value">
+                        <%= @term.end_date %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
 
-  <li>
-    <strong>Start date:</strong>
-    <%= @term.start_date %>
-  </li>
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Holidays
+          </div>
+        </div>
+        <%= CoursePlanner.SharedView.holiday_list @term.holidays %>
 
-  <li>
-    <strong>End date:</strong>
-    <%= @term.end_date %>
-  </li>
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Courses
+          </div>
+        </div>
+        <%= CoursePlanner.SharedView.course_list @term.offered_courses %>
 
-  <%= if length(@term.holidays) > 0 do %>
-    <strong>Holidays</strong>
-    <table>
-      <tr>
-        <th>Date</th>
-        <th>Description</th>
-      </tr>
-      <%= for h <- @term.holidays do %>
-        <tr>
-          <td><%= h.date %></td>
-          <td><%= h.description %></td>
-        </tr>
-      <% end %>
-    </table>
-  <% end %>
+      </div>
+    </div>
+  </div>
 
-  <%= if length(@term.courses) > 0 do %>
-    <strong>Courses</strong>
-    <table>
-      <tr>
-        <th>Name</th>
-      </tr>
-      <%= for t <- @term.courses do %>
-        <tr>
-          <td><%= t.name %></td>
-        </tr>
-      <% end %>
-    </table>
-  <% end %>
-</ul>
-
-<%= link "Edit", to: term_path(@conn, :edit, @term) %>
-<%= link "Back", to: term_path(@conn, :index) %>

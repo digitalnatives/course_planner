@@ -114,7 +114,7 @@ defmodule CoursePlanner.TermControllerTest do
   test "show existing term for coordinator", %{conn: conn} do
     t = insert(:term)
     conn = get conn, term_path(conn, :show, t.id)
-    assert html_response(conn, 200) =~ "Show term"
+    assert html_response(conn, 200) =~ t.name
   end
 
   test "doesn't show existing term for non coordinator users", %{conn: _conn} do
