@@ -1,24 +1,62 @@
-<h2>Show task</h2>
 
-<ul>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= @task.name %>
+        </div>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: task_path(@conn, :edit, @task),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
 
-  <li>
-    <strong> Name: </strong>
-    <%= @task.name %>
-  </li>
-  <li>
-    <strong> Start time: </strong>
-    <%= @task.start_time %>
-  </li>
-  <li>
-    <strong> Finish time: </strong>
-    <%= @task.finish_time %>
-  </li>
-  <li>
-    <strong> Assigned to: </strong>
-    <%= task_user(@conn, @task) %>
-  </li>
-</ul>
+      <div class="page">
+        <%= CoursePlanner.SharedView.card do %>
+          <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+            <div class="row row--hspace row--vspace middle-xs">
+              <div class="col-xs-9">
+                <div class="detail">
+                  <div class="detail__name">Name</div>
+                  <div class="detail__value">
+                    <%= @task.name %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Start time</div>
+                  <div class="detail__value">
+                    <%= String.slice NaiveDateTime.to_iso8601(@task.start_time), 0, 10 %>
+                    <%= String.slice NaiveDateTime.to_iso8601(@task.start_time), 11, 5 %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Finish time</div>
+                  <div class="detail__value">
+                    <%= String.slice NaiveDateTime.to_iso8601(@task.finish_time), 0, 10 %>
+                    <%= String.slice NaiveDateTime.to_iso8601(@task.finish_time), 11, 5 %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
 
-<%= link "Edit", to: task_path(@conn, :edit, @task) %>
-<%= link "Back", to: task_path(@conn, :index) %>
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Assignee
+          </div>
+        </div>
+        <% task_users = if @task.user_id do [@task.user] else [] end %>
+        <%= CoursePlanner.SharedView.user_list task_users %>
+
+      </div>
+    </div>
+  </div>

@@ -57,16 +57,16 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    task = Repo.insert! %Task{}
+    task = insert(:task)
     conn = get conn, task_path(conn, :show, task)
-    assert html_response(conn, 200) =~ "Show task"
+    assert html_response(conn, 200) =~ task.name
   end
 
   test "does not show chosen resource for student and teacher", %{conn: _conn} do
     student_conn = login_as(:student)
     teacher_conn = login_as(:teacher)
 
-    task = Repo.insert! %Task{}
+    task = insert(:task)
 
     conn = get student_conn, task_path(student_conn, :show, task)
     assert html_response(conn, 403)
@@ -96,7 +96,7 @@ defmodule CoursePlanner.TaskControllerTest do
     teacher_conn = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    task = Repo.insert! %Task{}
+    task = insert(:task)
 
     conn = get student_conn, task_path(student_conn, :edit, task)
     assert html_response(conn, 403)
@@ -109,7 +109,7 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    task = Repo.insert! %Task{}
+    task = insert(:task)
     conn = put conn, task_path(conn, :update, task), task: @valid_attrs
     assert redirected_to(conn) == task_path(conn, :show, task)
     assert Repo.get_by(Task, @valid_attrs)
@@ -131,7 +131,7 @@ defmodule CoursePlanner.TaskControllerTest do
     teacher_conn = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    task = Repo.insert! %Task{}
+    task = insert(:task)
 
     conn = put student_conn, task_path(student_conn, :update, task), task: @valid_attrs
     assert html_response(conn, 403)
@@ -162,7 +162,7 @@ defmodule CoursePlanner.TaskControllerTest do
     teacher_conn = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    task = Repo.insert! %Task{}
+    task = insert(:task)
 
     conn = delete student_conn, task_path(student_conn, :delete, task)
     assert html_response(conn, 403)
