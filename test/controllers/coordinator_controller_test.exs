@@ -26,9 +26,9 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    coordinator = Repo.insert! %User{}
+    coordinator = insert(:coordinator)
     conn = get conn, coordinator_path(conn, :show, coordinator)
-    assert html_response(conn, 200) =~ "Show coordinator"
+    assert html_response(conn, 200) =~ "#{coordinator.name} #{coordinator.family_name}"
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
