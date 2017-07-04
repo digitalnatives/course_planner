@@ -1,20 +1,58 @@
-<h2>Show coordinator</h2>
 
-<ul>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= Enum.join([ @coordinator.name, @coordinator.family_name ], " ") %>
+        </div>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: coordinator_path(@conn, :edit, @coordinator),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
 
-  <li>
-    <strong> Full name: </strong>
-    <%= @coordinator.name %>
-  </li>
-  <li>
-    <strong> Email: </strong>
-    <%= @coordinator.email %>
-  </li>
-  <li>
-    <strong> Phone Number: </strong>
-    <%= @coordinator.phone_number %>
-  </li>
-</ul>
+      <div class="page">
+        <%= CoursePlanner.SharedView.card do %>
+          <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+            <div class="row row--hspace row--vspace middle-xs">
+              <div class="col-xs-3">
+                <img
+                  src="<%= CoursePlanner.SharedView.get_gravatar_url(@coordinator.email, 500) %>"
+                  class="profile-picture"
+                >
+              </div>
+              <div class="col-xs-9">
+                <div class="detail">
+                  <div class="detail__name">Name</div>
+                  <div class="detail__value">
+                    <%= @coordinator.name %> <%= @coordinator.family_name %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">E-mail</div>
+                  <div class="detail__value">
+                    <%= @coordinator.email %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Phone Number</div>
+                  <div class="detail__value">
+                    <%= @coordinator.phone_number %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
 
-<%= link "Edit", to: coordinator_path(@conn, :edit, @coordinator) %>
-<%= link "Back", to: coordinator_path(@conn, :index) %>
+      </div>
+    </div>
+  </div>
