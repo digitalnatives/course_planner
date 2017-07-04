@@ -205,7 +205,7 @@ defmodule CoursePlanner.SharedView do
 
   # card
 
-  def card(title, opts \\ [], [do: children]) do
+  def card(title \\ nil, opts \\ [], [do: children]) do
     title_class =
       if opts[:highlighted_title] do
         "card__title--highlighted"
@@ -218,8 +218,16 @@ defmodule CoursePlanner.SharedView do
                         children: children
   end
 
-  def card_content([do: children]) do
-    render "card_content.html", children: children
+  def card_content(opts \\ [], [do: children]) do
+    class =
+      if opts[:vpadding] do
+        "card__content--vpadding"
+      else
+        ""
+      end
+
+    render "card_content.html", children: children,
+                                class: class
   end
 
   def card_actions([do: children]) do
@@ -275,12 +283,19 @@ defmodule CoursePlanner.SharedView do
   end
 
   def class_list(classes, opts \\ []) do
-    empty_text = opts[:empty_text] || "There are no users here yet"
+    empty_text = opts[:empty_text] || "There are no classes here yet"
     show_attendances = opts[:show_attendances] || false
 
     render "class_list.html", classes: classes,
                               empty_text: empty_text,
                               show_attendances: show_attendances
+  end
+
+  def course_list(offered_courses, opts \\ []) do
+    empty_text = opts[:empty_text] || "There are no courses here yet"
+
+    render "course_list.html", offered_courses: offered_courses,
+                               empty_text: empty_text
   end
 
 end
