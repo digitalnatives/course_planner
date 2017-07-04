@@ -24,9 +24,9 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    volunteer = Repo.insert! %User{}
+    volunteer = insert(:volunteer)
     conn = get conn, volunteer_path(conn, :show, volunteer)
-    assert html_response(conn, 200) =~ "Show volunteer"
+    assert html_response(conn, 200) =~ "#{volunteer.name} #{volunteer.family_name}"
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -187,7 +187,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
     |> assign(:current_user, volunteer)
 
     conn = get volunteer_conn, volunteer_path(volunteer_conn, :show, volunteer)
-    assert html_response(conn, 200) =~ "Show volunteer"
+    assert html_response(conn, 200) =~ "#{volunteer.name} #{volunteer.family_name}"
   end
 
   test "edit the volunteer himself" do
