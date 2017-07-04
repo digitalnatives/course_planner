@@ -52,7 +52,7 @@ defmodule CoursePlanner.ClassControllerTest do
   end
 
   test "creates resource fails when no teacher is assigned", %{conn: conn} do
-    students =insert_list(3, :student)
+    students = insert_list(3, :student)
     created_course = insert(:offered_course, students: students)
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
     conn = post conn, class_path(conn, :create), class: completed_attributes
@@ -100,25 +100,6 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "New class"
   end
 
-  test "renders page not found on the show url", %{conn: _conn} do
-    student_conn   = login_as(:coordinator)
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    conn = get student_conn, class_path(student_conn, :coordinator, -1)
-    assert html_response(conn, 404)
-
-    conn = get student_conn, class_path(student_conn, :show, -1)
-    assert html_response(conn, 404)
-
-    conn = get teacher_conn, class_path(teacher_conn, :show, -1)
-    assert html_response(conn, 404)
-
-    conn = get volunteer_conn, class_path(volunteer_conn, :show, -1)
-    assert html_response(conn, 404)
-  end
-
   test "renders form for editing chosen resource", %{conn: conn} do
     created_course = create_course()
     class = Repo.insert! %Class{offered_course_id: created_course.id}
@@ -132,7 +113,7 @@ defmodule CoursePlanner.ClassControllerTest do
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id}
     conn = put conn, class_path(conn, :update, class), class: update_params
-    assert redirected_to(conn) == class_path(conn, :show, class)
+    assert redirected_to(conn) == class_path(conn, :index)
     assert Repo.get_by(Class, update_params)
   end
 
@@ -142,7 +123,7 @@ defmodule CoursePlanner.ClassControllerTest do
     class = Repo.insert! class_insert_args
     update_params = %{@valid_attrs | offered_course_id: created_course.id, starting_at: %{hour: 18, min: 0, sec: 0},  finishes_at: %{hour: 19, min: 0, sec: 0}}
     conn = put conn, class_path(conn, :update, class), class: update_params
-    assert redirected_to(conn) == class_path(conn, :show, class)
+    assert redirected_to(conn) == class_path(conn, :index)
     assert Repo.get_by(Class, update_params)
   end
 
@@ -241,7 +222,7 @@ defmodule CoursePlanner.ClassControllerTest do
     class_attrs = %{@valid_insert_attrs | offered_course: offered_course}
     class = insert(:class, class_attrs)
 
-    Enum.map(students, fn(student)->
+    Enum.map(students, fn(student) ->
          insert(:attendance, %{class_id: class.id, student_id: student.id})
        end)
 
