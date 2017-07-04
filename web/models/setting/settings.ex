@@ -60,16 +60,12 @@ defmodule CoursePlanner.Settings do
     Repo.transaction(multi)
   end
 
-  def insert_error(form, atomized_group_id, errors) do
-    releavant_error =
-      errors
-      |> Enum.find(fn(error) -> error.failed_id == atomized_group_id end)
-
-    if is_nil(releavant_error) do
-      form
-    else
-      form = Map.put form, :valid?, false
-      add_error(form, :value, releavant_error.message)
+  def insert_error(form, atomized_group_id, error) do
+    case Map.get(error, atomized_group_id) do
+      nil -> form
+      error_message ->
+        form = Map.put form, :valid?, false
+        add_error(form, :value, error_message)
     end
   end
 end

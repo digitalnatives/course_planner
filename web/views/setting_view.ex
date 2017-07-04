@@ -9,9 +9,7 @@ defmodule CoursePlanner.SettingView do
     |> String.to_atom()
   end
 
-  def populate_errors_to_form(form, group_id, errors)
-    when is_list(errors) and length(errors) > 0 do
-    Settings.insert_error(form, group_id, errors)
+  def populate_error_to_form(form, group_id, error) do
+    Settings.insert_error(form, group_id, error)
   end
-  def populate_errors_to_form(form, _, _), do: form
 end
