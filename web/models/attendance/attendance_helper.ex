@@ -4,8 +4,8 @@ defmodule CoursePlanner.AttendanceHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendance}
-  alias Ecto.Multi
+  alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
+  alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
     Repo.one(from oc in OfferedCourse,
@@ -84,4 +84,52 @@ defmodule CoursePlanner.AttendanceHelper do
 
     Repo.transaction(updated_multi)
   end
+
+  def create_class_attendance_records(class_id, students)
+    when is_list(students) and length(students) > 0 do
+      attendances_data =
+        students
+        |> Enum.map(fn(student) ->
+             [
+               class_id: class_id,
+               student_id: student.id,
+               attendance_type: "Not filled",
+               inserted_at: DateTime.utc(),
+               updated_at: DateTime.utc()
+             ]
+           end)
+      Repo.insert_all(Attendance, attendances_data)
+  end
+  def create_class_attendance_records(_, _), do: {:ok, nil}
+
+  def create_students_attendances(offered_course_id, offered_course_students, updated_students) do
+    students = updated_students -- offered_course_students
+
+    offered_course_id
+      |> ClassHelper.get_offered_course_classes()
+      |> Enum.map(fn(class) ->
+        create_class_attendance_records(class.id, students)
+      end)
+  end
+
+  def remove_students_attendances(offered_course_id, offered_course_students, updated_students) do
+    student_ids =
+      offered_course_students -- updated_students
+      |> Enum.map(fn(student) ->
+        student.id
+      end)
+
+    class_ids =
+      offered_course_id
+        |> ClassHelper.get_offered_course_classes()
+        |> Enum.map(fn(class) ->
+          class.id
+        end)
+
+    delete_query = from a in Attendance,
+      where: a.class_id in ^class_ids and a.student_id in ^student_ids
+
+    Repo.delete_all(delete_query)
+  end
+
 end

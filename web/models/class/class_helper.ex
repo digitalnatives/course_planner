@@ -4,10 +4,9 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Attendance, Notifier.Notification}
+  alias CoursePlanner.{Repo, Class, Notifier, Notifier.Notification}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
-  alias Ecto.Multi
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
@@ -42,30 +41,6 @@ defmodule CoursePlanner.ClassHelper do
     end
   end
 
-  def create_class_attendance_records(class) do
-    students = class.students
-
-    if is_nil(students) do
-      {:ok, nil}
-    else
-      attendances_data =
-        students
-        |> Enum.map(fn(student) ->
-             [
-               class_id: class.id,
-               student_id: student.id,
-               attendance_type: "Not filled",
-               inserted_at: DateTime.utc(),
-               updated_at: DateTime.utc()
-             ]
-           end)
-
-      Multi.new
-      |>  Multi.insert_all(:attendances, Attendance, attendances_data)
-      |> Repo.transaction()
-    end
-  end
-
   def notify_class_students(class, current_user, notification_type, path \\ "/") do
     class
     |> get_subscribed_students()
@@ -87,7 +62,11 @@ defmodule CoursePlanner.ClassHelper do
     class.offered_course.students
   end
 
-  def classes_with_attendances(offered_course_id, user_id) do
+  def get_offered_course_classes(offered_course_id) do
+    Repo.all(from c in Class, where: c.offered_course_id == ^offered_course_id)
+  end
+
+ def classes_with_attendances(offered_course_id, user_id) do
     query = from c in Class,
       left_join: a in assoc(c, :attendances), on: a.student_id == ^user_id,
       where: c.offered_course_id == ^offered_course_id,
