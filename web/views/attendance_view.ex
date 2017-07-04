@@ -2,8 +2,9 @@ defmodule CoursePlanner.AttendanceView do
   use CoursePlanner.Web, :view
 
   def get_teacher_display_name(offered_course_teachers) do
-    Enum.reduce(offered_course_teachers, "", fn(teacher, out) ->
-              Enum.join([out, teacher.name, teacher.family_name], " ") end)
+    offered_course_teachers
+    |> Enum.map(fn(teacher) -> Enum.join([teacher.name, teacher.family_name], " ") end)
+    |> Enum.join(", ")
   end
 
   def get_student_display_name(student) do
