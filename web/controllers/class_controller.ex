@@ -28,7 +28,7 @@ defmodule CoursePlanner.ClassController do
         ClassHelper.notify_class_students(class,
           current_user,
           :class_subscribed,
-          class_url(conn, :show, class))
+          offered_course_url(conn, :show, class.offered_course_id))
 
         preload_class = Repo.preload(class, :students)
         AttendanceHelper.create_class_attendance_records(preload_class.id, preload_class.students)
@@ -38,19 +38,6 @@ defmodule CoursePlanner.ClassController do
         |> redirect(to: class_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
-    end
-  end
-
-  def show(conn, %{"id" => id}) do
-    case Repo.get(Class, id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-      class ->
-        class = Repo.preload(class, [:offered_course, offered_course: :term,
-                                      offered_course: :course])
-        render(conn, "show.html", class: class)
     end
   end
 
@@ -69,10 +56,10 @@ defmodule CoursePlanner.ClassController do
         ClassHelper.notify_class_students(class,
           current_user,
           :class_updated,
-          class_url(conn, :show, class))
+          offered_course_url(conn, :show, class.offered_course_id))
         conn
         |> put_flash(:info, "Class updated successfully.")
-        |> redirect(to: class_path(conn, :show, class))
+        |> redirect(to: class_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", class: class, changeset: changeset)
     end

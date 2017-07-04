@@ -13,6 +13,7 @@
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Term</th>
         <th class="mdl-data-table__cell--non-numeric">Course</th>
+        <th>Classroom</th>
         <th>Class date</th>
         <th>Starting at</th>
         <th>Finishes at</th>
@@ -27,6 +28,9 @@
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= class.offered_course.course.name %>
+          </td>
+          <td>
+            <%= class.classroom %>
           </td>
           <td>
             <%= class.date %>
@@ -46,9 +50,6 @@
             <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
                 for="tr_menu_<%= class.id %>"
             >
-              <li class="mdl-menu__item">
-                <%= link "Show", to: class_path(@conn, :show, class) %>
-              </li>
               <li class="mdl-menu__item">
                 <%= link "Edit", to: class_path(@conn, :edit, class) %>
               </li>
