@@ -70,4 +70,8 @@ defmodule CoursePlanner.OfferedCourseView do
     |> Changeset.get_field(:teachers)
     |> Enum.map(&(&1.id))
   end
+
+  def page_title do
+    "Offered courses"
+  end
 end
