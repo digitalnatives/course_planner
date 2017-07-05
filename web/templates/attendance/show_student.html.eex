@@ -1,23 +1,95 @@
-<h2>Show attendance for <%=@offered_course.course.name%></h2>
-<h3>Taught by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Class Date</th>
-      <th>Class Time</th>
-      <th><%= get_student_display_name(List.first(@attendances).student) %></th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for attendance <- @attendances do %>
-      <tr>
-        <td><%= attendance.class.date %></td>
-        <td><%= attendance.class.starting_at %></td>
-        <td><%= attendance.attendance_type %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-12 page-title">
+          Attendances for
+          <%= @offered_course.course.name %>
+          in
+          <%= @offered_course.term.name %>
+        </div>
+      </div>
 
-<%= link "Back", to: attendance_path(@conn, :index) %>
+      <div class="page">
+
+        <%= CoursePlanner.SharedView.card "Attendances" do %>
+          <%= CoursePlanner.SharedView.card_content do %>
+            <div class="row">
+              <div class="col-xs-5 col-sm-3 col-md-3">
+                <table class="attendance-date-table">
+                  <thead>
+                    <tr class="attendance-date-table__thead-tr">
+                      <th class="attendance-date-table__th">Class Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%= for attendance <- @attendances do %>
+                      <tr class="attendance-date-table__row">
+                        <td class="attendance-date-table__col">
+                          <%= attendance.class.date %>
+                          <%= String.slice Ecto.Time.to_iso8601(attendance.class.starting_at), 0, 5 %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-xs-7 col-sm-9 col-md-9  attendance-table-wrapper">
+                <table class="attendance-table">
+                  <thead>
+                    <tr class="attendance-table__thead-tr">
+                      <th class="attendance-table__th">
+                        <div class="attendance-table__th-wrapper">
+                          <% student = List.first(@attendances).student %>
+                          <div class="attendance-table__profile-picture">
+                            <img
+                              class="profile-bubble__image"
+                              src="<%= CoursePlanner.SharedView.get_gravatar_url(student.email) %>"
+                            />
+                          </div>
+                          <%= student.name %> <%= student.family_name %>
+                          <%= if String.length(to_string student.nickname) > 0 do %>
+                            (<%= student.nickname %>)
+                          <% end %>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%= for attendance <- @attendances do %>
+                      <tr class="attendance-table__row">
+                        <td class="attendance-table__col">
+                          <%= if attendance.attendance_type === "Present" do %>
+                            <i class="material-icons attendance--present">check_circle</i>
+                          <% end %>
+                          <%= if attendance.attendance_type === "Absent" do %>
+                            <i class="material-icons attendance--absent">add_circle</i>
+                          <% end %>
+                          <%= if attendance.attendance_type === "Not filled" do %>
+                            <i class="material-icons attendance--not-filled">radio_button_unchecked</i>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Teachers
+          </div>
+        </div>
+        <%= CoursePlanner.SharedView.user_list @offered_course.teachers, empty_text: "This course has no teachers yet" %>
+
+      </div>
+    </div>
+  </div>
