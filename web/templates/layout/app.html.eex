@@ -26,11 +26,7 @@
             </a>
           <% end %>
           <span class="mdl-layout-title">
-            <%= if :erlang.function_exported(@view_module, :page_title, 0) do %>
-              <%= @view_module.page_title %>
-            <% else %>
-              Course Planner
-            <% end %>
+            <%= @view_module.page_title %>
           </span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
