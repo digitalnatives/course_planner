@@ -21,16 +21,6 @@ defmodule CoursePlanner.SharedView do
     "https://www.gravatar.com/avatar/#{hash}?d=mm&s=#{size}"
   end
 
-  def user_show_url(user) do
-    case user.role do
-      "Student" -> "/students/#{user.id}"
-      "Teacher" -> "/teachers/#{user.id}"
-      "Coordinator" -> "/coordinators/#{user.id}"
-      "Volunteer" -> "/volunteers/#{user.id}"
-      _ -> "#"
-    end
-  end
-
   # form components
 
   def form_text(form, field, opts \\ []) do

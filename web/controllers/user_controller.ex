@@ -1,6 +1,5 @@
 defmodule CoursePlanner.UserController do
   use CoursePlanner.Web, :controller
-  import CoursePlanner.SharedView, only: [user_show_url: 1]
   alias CoursePlanner.{User, Users}
   require Logger
 
