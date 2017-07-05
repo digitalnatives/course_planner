@@ -35,6 +35,7 @@ defmodule CoursePlanner.Web do
       import Ecto.Query
 
       import CoursePlanner.Router.Helpers
+      import CoursePlanner.CustomRoute
       import CoursePlanner.Gettext
     end
   end
@@ -50,6 +51,7 @@ defmodule CoursePlanner.Web do
       use Phoenix.HTML
 
       import CoursePlanner.Router.Helpers
+      import CoursePlanner.CustomRoute
       import CoursePlanner.ErrorHelpers
       import CoursePlanner.Gettext
 
