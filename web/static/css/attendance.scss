@@ -86,3 +86,27 @@
       color: $grey-300;
     }
   }
+
+  .attandance-form {
+    &__attendance {
+      display: none;
+      pointer-events: none;
+    }
+
+    &__radio {
+      display: none;
+    }
+
+    &__radio[value="Present"]:checked ~ .attendance-form__button > .attendance--present {
+      display: inline;
+    }
+
+    &__radio[value="Absent"]:checked ~ .attendance-form__button > .attendance--absent {
+      display: inline;
+    }
+
+    &__radio[value="Not filled"]:checked ~ .attendance-form__button > .attendance--not-filled {
+      display: inline;
+    }
+
+  }
