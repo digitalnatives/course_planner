@@ -9,4 +9,8 @@ defmodule CoursePlanner.AttendanceView do
   def get_student_display_name(student) do
     Enum.join([student.name, student.family_name], " ")
   end
+
+  def page_title do
+    "Attendances"
+  end
 end

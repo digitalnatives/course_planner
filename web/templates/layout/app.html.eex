@@ -17,7 +17,17 @@
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
       <header class="mdl-layout__header">
         <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">Course Planner</span>
+          <%= if length(@conn.path_info) > 1 do %>
+            <a
+              href="#" onclick="location.href = document.referrer; return false;"
+              class="mdl-button mdl-js-button mdl-button--icon layout-backlink"
+            >
+              <i class="material-icons">&#xE5C4;</i>
+            </a>
+          <% end %>
+          <span class="mdl-layout-title">
+            <%= @view_module.page_title %>
+          </span>
           <div class="mdl-layout-spacer"></div>
           <nav class="mdl-navigation">
             <%= CoursePlanner.Coherence.ViewHelpers.signout_link(@conn, "Sign out", "mdl-navigation__link") %>

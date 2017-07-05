@@ -52,6 +52,9 @@ defmodule CoursePlanner.Web do
       import CoursePlanner.Router.Helpers
       import CoursePlanner.ErrorHelpers
       import CoursePlanner.Gettext
+
+      def page_title, do: "Course Planner"
+      defoverridable [page_title: 0]
     end
   end
 

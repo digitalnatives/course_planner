@@ -45,4 +45,8 @@ defmodule CoursePlanner.TermView do
     id = Form.input_id(form, field)
     id <> "_nested_form"
   end
+
+  def page_title do
+    "Terms"
+  end
 end
