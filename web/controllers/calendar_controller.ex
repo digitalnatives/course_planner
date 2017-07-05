@@ -17,7 +17,6 @@ defmodule CoursePlanner.CalendarController do
      false ->
        conn
        |> Map.put(:errors, changeset.errors)
-       |> IO.inspect
        |> put_status(406)
        |> render(CoursePlanner.ErrorView, "406.json")
     end
