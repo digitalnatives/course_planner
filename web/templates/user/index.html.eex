@@ -39,7 +39,7 @@
                 for="tr_menu_<%= user.id %>"
             >
               <li class="mdl-menu__item">
-                <%= link "Show", to: user_show_url(user) %>
+                <%= link "Show", to: user_show_path(user) %>
               </li>
               <li class="mdl-menu__item">
                 <%= link "Edit", to: user_path(@conn, :edit, user) %>

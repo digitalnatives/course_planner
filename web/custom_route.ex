@@ -3,7 +3,7 @@ defmodule CoursePlanner.CustomRoute do
     Define custom route helpers, like *_path and *_url
   """
 
-  def user_show_url(user) do
+  def user_show_path(user) do
     case user.role do
       "Student" -> "/students/#{user.id}"
       "Teacher" -> "/teachers/#{user.id}"

@@ -269,7 +269,7 @@ defmodule CoursePlanner.SharedView do
       |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
       |> Enum.join(" ")
 
-    url = user_show_url(user)
+    url = user_show_path(user)
 
     render "user_bubble.html", url: url,
                                profile_picture: profile_picture,

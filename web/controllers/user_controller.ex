@@ -22,7 +22,7 @@ defmodule CoursePlanner.UserController do
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        user_url = CoursePlanner.Endpoint.url <> user_show_url(user)
+        user_url = CoursePlanner.Endpoint.url <> user_show_path(user)
         Users.notify_user(user, current_user, :user_modified, user_url)
         conn
         |> put_flash(:info, "User updated successfully.")
