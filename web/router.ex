@@ -14,7 +14,7 @@ defmodule CoursePlanner.Router do
   end
 
   pipeline :protected do
-    plug :accepts, ["html", "json"]
+    plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
