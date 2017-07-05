@@ -7,6 +7,12 @@ defmodule CoursePlanner.ErrorView do
     "Page not found"
   end
 
+  def render("401.json", _assigns), do: "Unauthorized"
+
+  def render("406.json", assigns) do
+    %{error: assigns.errors}
+  end
+
   def render("500.html", _assigns) do
     "Internal server error"
   end
