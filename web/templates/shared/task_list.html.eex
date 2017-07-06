@@ -1,16 +1,16 @@
 
   <div class="task-list">
     <%= for task <- @tasks do %>
-      <div class="task-list__task">
-        <div class="task-list__item">
+      <div class="task-list__row">
+        <div class="task-list__col">
           <%= task.name %>
         </div>
-        <div class="task-list__item">
+        <div class="task-list__col">
           from
           <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 0, 10 %>
           <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 11, 5 %>
         </div>
-        <div class="task-list__item">
+        <div class="task-list__col">
           to
           <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 0, 10 %>
           <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 11, 5 %>
