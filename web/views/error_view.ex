@@ -11,7 +11,7 @@ defmodule CoursePlanner.ErrorView do
 
   def render("406.json", assigns) do
     json_errors =
-      Enum.map(assigns.conn.errors, fn({error_field, {error_message, _}}) ->
+      Enum.map(assigns.errors, fn({error_field, {error_message, _}}) ->
         %{error_field => error_message}
       end)
     %{error: json_errors}
