@@ -1,4 +1,4 @@
-defmodule CoursePlanner.CalenderHelper do
+defmodule CoursePlanner.CalendarHelper do
   @moduledoc """
   This module provides helper functions to populate the json for the calendar view
   """
