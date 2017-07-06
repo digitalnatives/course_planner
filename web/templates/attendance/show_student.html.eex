@@ -32,7 +32,7 @@
                       <tr class="attendance-date-table__row">
                         <td class="attendance-date-table__col">
                           <%= attendance.class.date %>
-                          <%= String.slice Ecto.Time.to_iso8601(attendance.class.starting_at), 0, 5 %>
+                          <%= Timex.format!(attendance.class.starting_at, "{h24}:{m}") %>
                         </td>
                       </tr>
                     <% end %>
