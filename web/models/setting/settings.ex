@@ -7,6 +7,16 @@ defmodule CoursePlanner.Settings do
   alias CoursePlanner.{Repo, SystemVariable}
   alias Ecto.Multi
 
+  schema "settings_fake_table" do
+    embeds_many :system_variables, SystemVariable
+  end
+
+  def wrap(system_variables) do
+    %__MODULE__{}
+    |> cast(%{}, [])
+    |> put_embed(:system_variables, system_variables)
+  end
+
   @all_query               from sv in SystemVariable, select: {sv.id, sv}, order_by: :key
   @visible_settings_query  from sv in SystemVariable, where: sv.visible  == true, order_by: :key
   @editable_settings_query from sv in SystemVariable, where: sv.editable == true, order_by: :key
@@ -23,21 +33,20 @@ defmodule CoursePlanner.Settings do
     Repo.all(@editable_settings_query)
   end
 
-  def get_changesets_for_update(setting_params) do
+  def get_changesets_for_update(param_variables) do
     system_variables = all() |> Enum.into(Map.new)
-    setting_params = Enum.sort_by(setting_params, &(elem(&1, 1)["key"]))
 
-    Enum.map(setting_params, fn(setting_param) ->
-      {param_id, %{"key" => _param_key, "value" => param_value}} = setting_param
-      {integer_param_id, ""} = Integer.parse(param_id)
-      found_system_variable = Map.get(system_variables, integer_param_id)
+    Enum.map(param_variables, fn(param_variable) ->
+      {_pos, %{"id" => param_id, "value" => param_value}} = param_variable
+      {param_id, ""} = Integer.parse(param_id)
+      found_system_variable = Map.get(system_variables, param_id)
 
-        cond do
-          is_nil(found_system_variable) -> :non_existing_resource
-          not found_system_variable.editable -> :uneditable_resource
-          found_system_variable.editable ->
-            SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :update)
-        end
+      cond do
+        is_nil(found_system_variable) -> :non_existing_resource
+        not found_system_variable.editable -> :uneditable_resource
+        found_system_variable.editable ->
+          SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :update)
+      end
     end)
   end
 
@@ -58,14 +67,5 @@ defmodule CoursePlanner.Settings do
       end)
 
     Repo.transaction(multi)
-  end
-
-  def insert_error(form, atomized_group_id, error) do
-    case Map.get(error, atomized_group_id) do
-      nil -> form
-      error_message ->
-        form = Map.put form, :valid?, false
-        add_error(form, :value, error_message)
-    end
   end
 end

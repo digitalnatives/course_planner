@@ -1,28 +1,22 @@
-<%= form_for @conn, @action, [as: :settings, method: :put], fn f -> %>
-  <table class="table">
+<%= form_for @changeset, @action, [method: :put], fn f -> %>
+  <table>
     <thead>
       <tr>
         <th>Name</th>
         <th>Value</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
-      <%= for svc <- @system_variable_changesets do %>
+      <%= inputs_for f, :system_variables, fn ff -> %>
         <tr>
-          <td> <%= svc.data.key %> </td>
-
-          <%= inputs_for f, integer_to_atom(svc.data.id), fn ff -> %>
-            <% ff = populate_error_to_form(ff, integer_to_atom(svc.data.id), @error) %>
-            <td> <%= text_input ff, :value, value: svc.data.value %> </td>
-            <td> <%= error_tag  ff, :value %> </td>
-            <td> <%= hidden_input ff, :key, value: svc.data.key %> </td>
-          <% end %>
+          <%= hidden_input(ff, :id) %>
+          <td> <%= input_value(ff, :key) %> </td>
+          <td> <%= text_input ff, :value %> </td>
+          <td> <%= error_tag ff, :value %> <td>
         </tr>
       <% end %>
     </tbody>
   </table>
-
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
-  </div>
+  <%= submit "Submit" %>
 <%end%>

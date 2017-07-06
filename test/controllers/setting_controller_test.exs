@@ -29,7 +29,7 @@ defmodule CoursePlanner.SettingControllerTest do
     @tag user_role: :coordinator
     test "does not update chosen resource and renders errors when data is invalid for coordinator user", %{conn: conn} do
       system_variable = insert(:system_variable)
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => ""}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: ""}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert html_response(conn, 200) =~ "Edit settings"
@@ -40,7 +40,7 @@ defmodule CoursePlanner.SettingControllerTest do
     test "updates chosen resource and redirects when data is valid for coordinator user", %{conn: conn} do
       system_variable = insert(:system_variable)
       updating_value = "new program name"
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert redirected_to(conn) == setting_path(conn, :show)
@@ -52,7 +52,7 @@ defmodule CoursePlanner.SettingControllerTest do
       insert(:system_variable)
       system_variable = insert(:system_variable, %{editable: false})
       updating_value = "new program name"
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => updating_value}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
 
@@ -62,7 +62,7 @@ defmodule CoursePlanner.SettingControllerTest do
 
     @tag user_role: :coordinator
     test "does not update chosen inexisting resource", %{conn: conn} do
-      updated_params = [{"-1", %{"key" => "random key", "value" => "random value"}}]
+      updated_params = %{system_variables: %{"0" => %{id: "-1", value: "random value"}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
 
@@ -86,7 +86,7 @@ defmodule CoursePlanner.SettingControllerTest do
     @tag user_role: :student
     test "student can't update settings", %{conn: conn} do
       system_variable = insert(:system_variable)
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: "new program name"}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert html_response(conn, 403)
@@ -109,7 +109,7 @@ defmodule CoursePlanner.SettingControllerTest do
     @tag user_role: :teacher
     test "teacher can't update settings", %{conn: conn} do
       system_variable = insert(:system_variable)
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: "new program name"}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert html_response(conn, 403)
@@ -132,7 +132,7 @@ defmodule CoursePlanner.SettingControllerTest do
     @tag user_role: :volunteer
     test "volunteer can't update settings", %{conn: conn} do
       system_variable = insert(:system_variable)
-      updated_params = [{system_variable.id, %{"key" => system_variable.key, "value" => "new program name"}}]
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: "new program name"}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert html_response(conn, 403)

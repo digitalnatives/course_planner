@@ -12,14 +12,17 @@ defmodule CoursePlanner.SettingController do
   end
 
   def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
-    variables = Settings.get_editable_systemvariables()
-    changesets = Enum.map(variables, &SystemVariable.changeset/1)
-
-    render(conn, "edit.html", system_variable_changesets: changesets, error: %{})
+    changeset =
+      Settings.get_editable_systemvariables()
+      |> Enum.map(&SystemVariable.changeset/1)
+      |> Settings.wrap()
+    render(conn, "edit.html", changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, %{"settings" => setting_params}) do
-    changesets = Settings.get_changesets_for_update(setting_params)
+  def update(
+    %{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
+    %{"settings" => %{"system_variables" => variables}}) do
+    changesets = Settings.get_changesets_for_update(variables)
 
     case Settings.update(changesets) do
       {:ok, _setting} ->
@@ -34,10 +37,12 @@ defmodule CoursePlanner.SettingController do
         conn
         |> put_status(403)
         |> render(CoursePlanner.ErrorView, "403.html")
-      {:error, failed_operation, failed_value, _changes_so_far} ->
-        [value: {error_message, _}] = failed_value.errors
-        error = %{failed_operation => error_message}
-        render(conn, "edit.html", system_variable_changesets: changesets, error: error)
+      {:error, _failed_operation, _failed_value, _changes_so_far} ->
+        changeset =
+          changesets
+          |> Settings.wrap()
+          |> Map.put(:action, :update)
+        render(conn, "edit.html", changeset: changeset)
     end
   end
 end
