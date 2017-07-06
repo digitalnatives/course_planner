@@ -52,10 +52,7 @@
                               src="<%= CoursePlanner.SharedView.get_gravatar_url(student.email) %>"
                             />
                           </div>
-                          <%= student.name %> <%= student.family_name %>
-                          <%= if String.length(to_string student.nickname) > 0 do %>
-                            (<%= student.nickname %>)
-                          <% end %>
+                          <%= CoursePlanner.SharedView.display_user_name(student) %>
                         </div>
                       </th>
                     </tr>

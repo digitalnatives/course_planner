@@ -271,9 +271,7 @@ defmodule CoursePlanner.SharedView do
   def user_bubble(user) do
     profile_picture = get_gravatar_url(user.email, 200)
 
-    name = [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
-      |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
-      |> Enum.join(" ")
+    name = display_user_name(user)
 
     url = case user.role do
       "Student" -> "/students/#{user.id}"
