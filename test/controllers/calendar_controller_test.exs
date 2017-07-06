@@ -57,12 +57,6 @@ defmodule CoursePlanner.CalendarControllerTest do
     |> assign(:current_user, user)
   end
 
-  #test "unauthenticated request", %{conn: conn} do
-  #  conn = get conn, calendar_path(conn, :index)
-  #  IO.inspect conn
-  #  assert html_response(conn, 401) =~ "Unauthenticated"
-  #end
-
   describe "tests api with wrongly formatted parameters" do
     @tag user_role: :coordinator
     test "fails when date is not formatted correctly", %{conn: conn} do

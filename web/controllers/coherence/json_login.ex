@@ -2,7 +2,8 @@ defmodule CoursePlanner.JsonLogin do
   @moduledoc """
   This module implements a login callback for json connection
   """
-  use CoursePlanner.Web, :controller
+  import Plug.Conn, only: [put_status: 2]
+  import Phoenix.Controller, only: [render: 3]
 
   def callback(conn) do
     conn
