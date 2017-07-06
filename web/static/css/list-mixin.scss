@@ -6,16 +6,16 @@
     background-color: white;
     @extend .mdl-shadow--2dp;
 
-    &__class {
+    &__row {
       display: flex;
       flex-direction: row;
     }
 
-    &__class + &__class {
+    &__row + &__row {
       border-top: 1px solid rgba(0,0,0,0.1);
     }
 
-    &__item {
+    &__col {
       flex: 1;
       padding: 16px;
     }

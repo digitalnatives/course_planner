@@ -1,11 +1,11 @@
 
   <div class="holiday-list">
     <%= for holiday <- @holidays do %>
-      <div class="holiday-list__holiday">
-        <div class="holiday-list__item">
+      <div class="holiday-list__row">
+        <div class="holiday-list__col">
           <%= holiday.description %>
         </div>
-        <div class="holiday-list__item">
+        <div class="holiday-list__col">
           <%= holiday.date %>
         </div>
       </div>

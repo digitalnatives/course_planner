@@ -1,12 +1,12 @@
 
   <div class="course-list">
     <%= for offered_course <- @offered_courses do %>
-      <div class="course-list__course">
-        <div class="course-list__item">
+      <div class="course-list__row">
+        <div class="course-list__col">
           <%= offered_course.course.name %> -
           <%= offered_course.term.name %>
         </div>
-        <div class="course-list__item">
+        <div class="course-list__col">
           <%= if offered_course.number_of_sessions && offered_course.number_of_sessions > 0 do %>
             <%= offered_course.number_of_sessions %> sessions
           <% end %>
