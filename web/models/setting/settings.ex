@@ -35,37 +35,35 @@ defmodule CoursePlanner.Settings do
 
   def get_changesets_for_update(param_variables) do
     system_variables = all() |> Enum.into(Map.new)
+    Enum.map(param_variables, &update_changeset(system_variables, &1))
+  end
 
-    Enum.map(param_variables, fn(param_variable) ->
-      {_pos, %{"id" => param_id, "value" => param_value}} = param_variable
-      {param_id, ""} = Integer.parse(param_id)
-      found_system_variable = Map.get(system_variables, param_id)
+  defp update_changeset(system_variables, new_value) do
+    {_pos, %{"id" => param_id, "value" => param_value}} = new_value
+    {param_id, ""} = Integer.parse(param_id)
+    found_system_variable = Map.get(system_variables, param_id)
 
-      cond do
-        is_nil(found_system_variable) -> :non_existing_resource
-        not found_system_variable.editable -> :uneditable_resource
-        found_system_variable.editable ->
-          SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :update)
-      end
-    end)
+    cond do
+      is_nil(found_system_variable) -> :non_existing_resource
+      not found_system_variable.editable -> :uneditable_resource
+      found_system_variable.editable ->
+        SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :update)
+    end
   end
 
   def update(changesets) do
-    multi =
-      Enum.reduce(changesets, Multi.new, fn(changeset, out_multi) ->
+    changesets
+    |> Enum.reduce(Multi.new, &add_update_changeset/2)
+    |> Repo.transaction()
+  end
 
-        case changeset do
-           :non_existing_resource -> Multi.error(out_multi, :non_existing_resource, "Resource does not exist")
-           :uneditable_resource   -> Multi.error(out_multi, :uneditable_resource, "Resource is not editable")
-           _  ->
-             operation_atom =
-               changeset.data.id
-               |> Integer.to_string()
-               |> String.to_atom()
-             Multi.update(out_multi, operation_atom, changeset)
-        end
-      end)
-
-    Repo.transaction(multi)
+  defp add_update_changeset(:non_existing_resource, multi) do
+    Multi.error(multi, :non_existing_resource, "Resource does not exist")
+  end
+  defp add_update_changeset(:uneditable_resource, multi) do
+    Multi.error(multi, :uneditable_resource, "Resource is not editable")
+  end
+  defp add_update_changeset(changeset, multi) do
+    Multi.update(multi, :"#{changeset.data.id}", changeset)
   end
 end
