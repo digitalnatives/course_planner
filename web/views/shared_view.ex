@@ -21,6 +21,12 @@ defmodule CoursePlanner.SharedView do
     "https://www.gravatar.com/avatar/#{hash}?d=mm&s=#{size}"
   end
 
+  def display_user_name(user) do
+    [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
+    |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
+    |> Enum.join(" ")
+  end
+
   # form components
 
   def form_text(form, field, opts \\ []) do
