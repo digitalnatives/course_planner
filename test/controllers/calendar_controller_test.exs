@@ -4,6 +4,8 @@ defmodule CoursePlanner.CalendarControllerTest do
   import CoursePlanner.Factory
 
   @empty_result %{"classes" => []}
+  @class_on_first_of_January  %{"classes" => [%{"classroom" => "r101","date" => "2017-01-01","finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
+  @class_on_the_current_week  %{"classes" => [%{"classroom" => "r106","date" => to_string(Date.utc_today()),"finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
 
   def create_test_data do
     term = insert(:term, %{name: "term1"})
@@ -94,80 +96,36 @@ defmodule CoursePlanner.CalendarControllerTest do
     test "all classes in the requested week  when my_classes is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :coordinator
     test "all classes in the requested week  when my_classes is false", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :coordinator
     test "all classes in the requested week when my_classes is true", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "true"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :coordinator
     test "all classes of the current week when date parameter is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r106",
-                          "date" => to_string(Date.utc_today()),
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_the_current_week
     end
   end
 
@@ -183,80 +141,36 @@ defmodule CoursePlanner.CalendarControllerTest do
     test "all classes in the requested week  when my_classes is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :volunteer
     test "all classes in the requested week  when my_classes is false", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :volunteer
     test "all classes in the requested week when my_classes is true", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "true"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :volunteer
     test "all classes of the current week when date parameter is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r106",
-                          "date" => to_string(Date.utc_today()),
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_the_current_week
     end
   end
 
@@ -275,59 +189,26 @@ defmodule CoursePlanner.CalendarControllerTest do
     test "all classes of the current week when not date nor my_classes are present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r106",
-                          "date" => to_string(Date.utc_today()),
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       conn = get conn, calendar_path(conn, :index)
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_the_current_week
     end
 
     @tag user_role: :teacher
     test "all classes for teacher when my_classes parameter is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :teacher
     test "all classes for teacher when my_classes parameter is false", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :teacher
@@ -368,40 +249,18 @@ defmodule CoursePlanner.CalendarControllerTest do
     test "all classes when my_classes parameter is not present", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :student
     test "all classes for student when my_classes parameter is false", %{conn: conn} do
       create_test_data()
 
-      expected_result =
-        %{"classes" => [%{"classroom" => "r101",
-                          "date" => "2017-01-01",
-                          "finishes_at" => "12:00:00",
-                          "starting_at" => "10:00:00",
-                          "course_name" => "english",
-                          "teachers" => [%{"family_name" => "tf1",
-                                           "nickname" => "tn1",
-                                           "name" => "t1"}],
-                          "term_name" => "term1"}]}
-
       params = %{date: "2017-01-01", my_classes: "false"}
       conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 200) == expected_result
+      assert json_response(conn, 200) == @class_on_first_of_January
     end
 
     @tag user_role: :student
