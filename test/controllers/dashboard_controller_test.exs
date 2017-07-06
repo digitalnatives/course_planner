@@ -4,7 +4,7 @@ defmodule CoursePlanner.DashboardControllerTest do
   import CoursePlanner.Factory
 
   setup do
-    user = build(:coordinator)
+    user = insert(:coordinator)
 
     conn =
       Phoenix.ConnTest.build_conn()
