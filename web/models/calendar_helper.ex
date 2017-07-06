@@ -21,9 +21,10 @@ defmodule CoursePlanner.CalenderHelper do
 
   def get_student_classes(user_id, week_range) do
     query = from oc in OfferedCourse,
+    join: s in assoc(oc, :students),
     join: c in assoc(oc, :classes),
     preload: [:term, :course, :teachers, classes: c],
-    where: ^user_id in oc.students and
+    where: ^user_id in s.id and
       c.date >= ^week_range.beginning_of_week and c.date <= ^week_range.end_of_week
 
     Repo.all(query)
@@ -31,9 +32,10 @@ defmodule CoursePlanner.CalenderHelper do
 
   def get_teacher_classes(user_id, week_range) do
     query = from oc in OfferedCourse,
+    join: t in assoc(oc, :teachers),
     join: c in assoc(oc, :classes),
     preload: [:term, :course, :teachers, classes: c],
-    where: ^user_id in oc.teachers and
+    where: ^user_id == t.id and
       c.date >= ^week_range.beginning_of_week and c.date <= ^week_range.end_of_week
 
     Repo.all(query)
