@@ -45,8 +45,12 @@ defmodule CoursePlanner.CalendarControllerTest do
       student_with_no_class: student_with_no_class}
   end
 
-  setup(%{user_role: role}) do
-    user = insert(role)
+  setup(params) do
+    user =
+      case Map.get(params, :user_role) do
+        nil  -> nil
+        role -> insert(role)
+      end
 
     conn =
       Phoenix.ConnTest.build_conn()
@@ -57,6 +61,11 @@ defmodule CoursePlanner.CalendarControllerTest do
   defp login_as(user) do
     Phoenix.ConnTest.build_conn()
     |> assign(:current_user, user)
+  end
+
+  test "fails when unauthenticated user request to access the calendar", %{conn: conn} do
+    conn = get conn, calendar_path(conn, :index)
+    assert json_response(conn, 401)
   end
 
   describe "tests api with wrongly formatted parameters" do
@@ -175,7 +184,6 @@ defmodule CoursePlanner.CalendarControllerTest do
   end
 
   describe "when requested by a teacher, calendar returns:" do
-    @tag user_role: :teacher
     test "empty if the teacher has no class in the requested week", %{conn: _conn} do
       test_data = create_test_data()
       teacher_conn = login_as( test_data.teacher_with_no_class )
@@ -211,7 +219,6 @@ defmodule CoursePlanner.CalendarControllerTest do
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
-    @tag user_role: :teacher
     test "teaching classes when my_classes parameter is true", %{conn: _conn} do
       test_data = create_test_data()
       teacher = List.last(test_data.teachers)
@@ -235,7 +242,6 @@ defmodule CoursePlanner.CalendarControllerTest do
   end
 
   describe "when requested by a student, calendar returns:" do
-    @tag user_role: :student
     test "empty when no class in the requested week", %{conn: _conn} do
       test_data = create_test_data()
       student_conn = login_as( test_data.student_with_no_class )
@@ -263,7 +269,6 @@ defmodule CoursePlanner.CalendarControllerTest do
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
-    @tag user_role: :student
     test "attending classes when my_classes parameter is true", %{conn: _conn} do
       test_data = create_test_data()
       student = List.last(test_data.students)
