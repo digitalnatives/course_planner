@@ -57,6 +57,8 @@ defmodule CoursePlanner.Router do
       get "/fill_course", AttendanceController, :fill_course, as: :fill_course
       put "/update_fill", AttendanceController, :update_fill, as: :update_fill
     end
+
+    resources "/settings", SettingController, only: [:show, :edit, :update], singleton: true
   end
 
   if Mix.env == :dev do

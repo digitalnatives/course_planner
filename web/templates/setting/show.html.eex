@@ -1,0 +1,20 @@
+<h2>Show settings</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for system_variable <- @system_variables do %>
+      <tr>
+        <td><%= system_variable.key %></td>
+        <td><%= system_variable.value %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link "Edit", to: setting_path(@conn, :edit) %>
