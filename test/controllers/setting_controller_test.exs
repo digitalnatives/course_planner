@@ -5,7 +5,7 @@ defmodule CoursePlanner.SettingControllerTest do
   import CoursePlanner.Factory
 
   setup(%{user_role: role}) do
-    user = build(role)
+    user = insert(role)
 
     conn =
       Phoenix.ConnTest.build_conn()
