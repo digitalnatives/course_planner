@@ -114,7 +114,8 @@ defmodule CoursePlanner.AttendanceHelper do
 
   def remove_students_attendances(offered_course_id, offered_course_students, updated_students) do
     student_ids =
-      offered_course_students -- updated_students
+      offered_course_students
+      |> Kernel.--(updated_students)
       |> Enum.map(fn(student) ->
         student.id
       end)
