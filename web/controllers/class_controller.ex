@@ -48,7 +48,10 @@ defmodule CoursePlanner.ClassController do
     render(conn, "edit.html", class: class, changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "class" => class_params}) do
+  def update(
+    %{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "class" => class_params}) do
+
     class = Repo.get!(Class, id)
     changeset = Class.changeset(class, class_params, :update)
 

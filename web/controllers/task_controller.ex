@@ -55,7 +55,10 @@ defmodule CoursePlanner.TaskController do
   def edit(conn, %{"id" => id}) do
     case Tasks.get(id) do
       {:ok, task} ->
-        render(conn, "edit.html", task: task, changeset: Task.changeset(task), users: Volunteers.all())
+        render(conn, "edit.html",
+          task: task,
+          changeset: Task.changeset(task),
+          users: Volunteers.all())
       {:error, :not_found} ->
         conn
         |> put_status(404)
