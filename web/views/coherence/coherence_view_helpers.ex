@@ -121,8 +121,8 @@ defmodule CoursePlanner.Coherence.ViewHelpers do
   end
 
   defp concat([], acc), do: Enum.reverse(acc)
-  defp concat([h|t], []), do: concat(t, [h])
-  defp concat([h|t], acc), do: concat(t, [h, @seperator | acc])
+  defp concat([h | t], []), do: concat(t, [h])
+  defp concat([h | t], acc), do: concat(t, [h, @seperator | acc])
 
   def recover_link(_conn, _user_schema, false), do: []
   def recover_link(conn, user_schema, text) do
