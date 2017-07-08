@@ -64,6 +64,7 @@ defmodule CoursePlanner.Settings do
     Multi.error(multi, :uneditable_resource, "Resource is not editable")
   end
   defp add_update_changeset(changeset, multi) do
-    Multi.update(multi, :"#{changeset.data.id}", changeset)
+    name = changeset.data.id |> Integer.to_string |> String.to_atom
+    Multi.update(multi, name, changeset)
   end
 end
