@@ -7,4 +7,5 @@ config :dogma,
   ],
   override: [
     %Rule.LineLength{ max_length: 100 },
+    %Rule.FunctionArity{ max: 5 },
   ]
