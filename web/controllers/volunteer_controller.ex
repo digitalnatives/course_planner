@@ -1,4 +1,5 @@
 defmodule CoursePlanner.VolunteerController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
   alias CoursePlanner.{User, Volunteers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers

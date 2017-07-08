@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TeacherController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
   alias CoursePlanner.{User, Teachers, Router.Helpers, Users}
   alias Coherence.ControllerHelpers

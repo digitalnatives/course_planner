@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TaskController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.Tasks

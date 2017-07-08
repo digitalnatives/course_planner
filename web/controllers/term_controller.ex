@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TermController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.Terms

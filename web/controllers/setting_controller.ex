@@ -1,4 +1,5 @@
 defmodule CoursePlanner.SettingController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{Settings, SystemVariable}

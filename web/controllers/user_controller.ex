@@ -1,4 +1,5 @@
 defmodule CoursePlanner.UserController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
   alias CoursePlanner.{User, Users}
   require Logger
