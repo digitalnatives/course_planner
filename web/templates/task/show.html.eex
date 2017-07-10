@@ -44,6 +44,12 @@
                     <%= String.slice NaiveDateTime.to_iso8601(@task.finish_time), 11, 5 %>
                   </div>
                 </div>
+                <div class="detail">
+                  <div class="detail__name">Description</div>
+                  <div class="detail__value">
+                    <%= @task.description %>
+                  </div>
+                </div>
               </div>
             </div>
           <% end %>

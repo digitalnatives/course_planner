@@ -4,13 +4,14 @@ defmodule CoursePlanner.Tasks.Task do
   """
   use CoursePlanner.Web, :model
 
-  @cast_params [:name, :start_time, :finish_time, :user_id]
+  @cast_params [:name, :start_time, :finish_time, :user_id, :description]
   @required_params [:name, :start_time, :finish_time]
 
   schema "tasks" do
     field :name, :string
     field :start_time, :naive_datetime
     field :finish_time, :naive_datetime
+    field :description, :string
     belongs_to :user, CoursePlanner.User
 
     timestamps()

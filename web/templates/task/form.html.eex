@@ -14,6 +14,7 @@
             <%= CoursePlanner.SharedView.form_text f, :name, required: true %>
             <%= CoursePlanner.SharedView.form_datetime f, :start_time, required: true %>
             <%= CoursePlanner.SharedView.form_datetime f, :finish_time, required: true %>
+            <%= CoursePlanner.SharedView.form_textarea f, :description %>
             <%= CoursePlanner.SharedView.form_select f, :user_id, users, label: "Assignee" %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
