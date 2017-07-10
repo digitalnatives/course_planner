@@ -57,7 +57,6 @@
         </div>
         <%= CoursePlanner.SharedView.user_list @offered_course.teachers, empty_text: "This course has no teachers yet" %>
 
-
         <div class="row middle-xs page-header">
           <div class="col-xs-12 page-title page-title--small">
             <%= if @user_role == "Student" do %>

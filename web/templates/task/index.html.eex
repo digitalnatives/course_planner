@@ -34,10 +34,7 @@
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= if task.user_id do %>
-              <%= task.user.name %> <%= task.user.family_name %>
-              <%= if String.length(to_string task.user.nickname) > 0 do %>
-                (<%= task.user.nickname %>)
-              <% end %>
+              <%= CoursePlanner.SharedView.display_user_name(task.user) %>
             <% else %>
               No one
             <% end %>
