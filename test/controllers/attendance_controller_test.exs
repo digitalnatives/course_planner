@@ -40,19 +40,19 @@ defmodule CoursePlanner.AttendanceControllerTest do
   test "lists all entries on index for coordinator", %{conn: _conn} do
     user_conn = login_as(:coordinator)
     conn = get user_conn, attendance_path(user_conn, :index)
-    assert html_response(conn, 200) =~ "Listing Course for attendance"
+    assert html_response(conn, 200) =~ "Attendances by courses"
   end
 
   test "lists all entries on index for teacher", %{conn: _conn} do
     user_conn = login_as(:teacher)
     conn = get user_conn, attendance_path(user_conn, :index)
-    assert html_response(conn, 200) =~ "Listing Course for attendance"
+    assert html_response(conn, 200) =~ "Attendances by courses"
   end
 
   test "lists all entries on index for student", %{conn: _conn} do
     user_conn = login_as(:student)
     conn = get user_conn, attendance_path(user_conn, :index)
-    assert html_response(conn, 200) =~ "Listing Course for attendance"
+    assert html_response(conn, 200) =~ "Attendances by courses"
   end
 
   test "do not list anything for volunteer", %{conn: _conn} do
@@ -68,7 +68,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
     offered_course = create_attendance(students)
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
-    assert html_response(conn, 200) =~ "Show attendance for"
+    assert html_response(conn, 200) =~ ~r/Attendances for\s+#{offered_course.course.name}\s+in\s+#{offered_course.term.name}/
   end
 
   test "shows chosen resource by user teacher", %{conn: _conn} do
@@ -78,7 +78,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
     offered_course = create_attendance_with_teacher(students, [teachers])
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
-    assert html_response(conn, 200) =~ "Show attendance for"
+    assert html_response(conn, 200) =~ ~r/Attendances for\s+#{offered_course.course.name}\s+in\s+#{offered_course.term.name}/
   end
 
   test "shows chosen resource by user student", %{conn: _conn} do
@@ -88,7 +88,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
     offered_course = create_attendance([student])
 
     conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
-    assert html_response(conn, 200) =~ "Show attendance for"
+    assert html_response(conn, 200) =~ ~r/Attendances for\s+#{offered_course.course.name}\s+in\s+#{offered_course.term.name}/
   end
 
   test "does not show chosen resource by user volunteer", %{conn: _conn} do
@@ -158,7 +158,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
     conn = get coordinator_conn,
                attendance_fill_course_path(coordinator_conn, :fill_course, offered_course.id)
-    assert html_response(conn, 200) =~ "Filling attendances for"
+    assert html_response(conn, 200) =~ "Fill attendances for #{offered_course.course.name} in #{offered_course.term.name}"
   end
 
   test "renders form for editing course attendance if requested by by user teacher", %{conn: _conn} do
@@ -169,7 +169,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
     conn = get teacher_conn,
                attendance_fill_course_path(teacher_conn, :fill_course, offered_course.id)
-    assert html_response(conn, 200) =~ "Filling attendances for"
+    assert html_response(conn, 200) =~ "Fill attendances for #{offered_course.course.name} in #{offered_course.term.name}"
   end
 
   test "Updates attendences if requested by user coordinator", %{conn: _conn} do
