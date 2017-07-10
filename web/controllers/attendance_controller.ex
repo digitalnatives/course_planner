@@ -1,4 +1,5 @@
 defmodule CoursePlanner.AttendanceController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{AttendanceHelper, Attendance, OfferedCourse}

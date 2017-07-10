@@ -1,4 +1,5 @@
 defmodule CoursePlanner.CourseMatrixController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.OfferedCourses

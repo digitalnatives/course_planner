@@ -3,7 +3,7 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task}
+alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task, SystemVariable}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -95,6 +95,16 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task}
     %Holiday{
       date: %Ecto.Date{day: 1, month: 1, year: 2017},
       description: "some description"
+    }
+ end
+
+ def system_variable_factory do
+    %SystemVariable{
+      key: sequence(:name, &"setting-#{&1}"),
+      value: "some value",
+      type: "string",
+      visible: true,
+      editable: true
     }
  end
 end

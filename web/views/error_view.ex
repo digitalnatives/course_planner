@@ -1,4 +1,5 @@
 defmodule CoursePlanner.ErrorView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def render("403.html", _assigns), do: "Forbidden"

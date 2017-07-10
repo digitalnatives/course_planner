@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TermController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.Terms
@@ -51,7 +52,10 @@ defmodule CoursePlanner.TermController do
     end
   end
 
-  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "term" => term_params}) do
+  def update(
+    %{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "term" => term_params}) do
+
     case Terms.update(id, term_params) do
       {:ok, term} ->
         Terms.notify_term_users(term, current_user, :term_updated, term_url(conn, :show, term))

@@ -12,7 +12,14 @@ defmodule CoursePlanner.Mixfile do
      aliases: aliases(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]]
+     preferred_cli_env:
+      [
+        "coveralls": :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
+    ]
   end
 
   # Configuration for the OTP application.
@@ -44,6 +51,7 @@ defmodule CoursePlanner.Mixfile do
      {:coherence, github: "smpallen99/coherence", ref: "590222b"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
+     {:dogma, "~> 0.1.0", only: [:dev, :test]},
      {:credo, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test}
