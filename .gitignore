@@ -27,6 +27,3 @@ erl_crash.dump
 # Docker
 scripts/docker-compose-up.sh
 docker-compose.yml
-
-# asdf version manager
-.tool-versions
