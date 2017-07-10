@@ -48,11 +48,18 @@ defmodule CoursePlanner.Tasks do
   end
 
   def get_user_tasks(id) do
-    Repo.all(from t in Task, where: t.user_id == ^id, preload: [:user])
+    Repo.all(from t in Task,
+      where: t.user_id == ^id,
+      order_by: [desc: t.inserted_at],
+      preload: [:user]
+    )
   end
 
   def get_unassigned_tasks do
-    Repo.all(from t in Task, where: is_nil(t.user_id))
+    Repo.all(from t in Task,
+      where: is_nil(t.user_id),
+      order_by: [desc: t.inserted_at]
+    )
   end
 
   def grab(task_id, user_id) do
