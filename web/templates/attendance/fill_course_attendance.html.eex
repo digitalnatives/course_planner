@@ -60,16 +60,16 @@
                       <tr class="attendance-table__row">
                         <%= inputs_for class, :attendances, fn fh -> %>
                           <td class="attendance-table__col">
-                            <%= radio_button(fh, :attendance_type, "Present", class: "attandance-form__radio") %>
-                            <%= radio_button(fh, :attendance_type, "Absent", class: "attandance-form__radio") %>
-                            <%= radio_button(fh, :attendance_type, "Not filled", class: "attandance-form__radio") %>
+                            <%= radio_button(fh, :attendance_type, "Present", class: "attendance-form__radio") %>
+                            <%= radio_button(fh, :attendance_type, "Absent", class: "attendance-form__radio") %>
+                            <%= radio_button(fh, :attendance_type, "Not filled", class: "attendance-form__radio") %>
                             <button
                               type="button"
                               class="mdl-button mdl-js-button mdl-button--icon attendance-form__button"
                             >
-                              <i class="material-icons attandance-form__attendance attendance--present">check_circle</i>
-                              <i class="material-icons attandance-form__attendance attendance--absent">add_circle</i>
-                              <i class="material-icons attandance-form__attendance attendance--not-filled">radio_button_unchecked</i>
+                              <i class="material-icons attendance-form__attendance attendance--present">check_circle</i>
+                              <i class="material-icons attendance-form__attendance attendance--absent">add_circle</i>
+                              <i class="material-icons attendance-form__attendance attendance--not-filled">radio_button_unchecked</i>
                             </button>
                           </td>
                         <% end %>

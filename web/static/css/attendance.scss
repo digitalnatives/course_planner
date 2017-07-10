@@ -75,11 +75,7 @@
     &--absent {
       color: $red-500;
 
-      -webkit-transform: rotate(45deg);
-         -moz-transform: rotate(45deg);
-          -ms-transform: rotate(45deg);
-           -o-transform: rotate(45deg);
-              transform: rotate(45deg);
+      transform: rotate(45deg);
     }
 
     &--not-filled {
@@ -87,7 +83,7 @@
     }
   }
 
-  .attandance-form {
+  .attendance-form {
     &__attendance {
       display: none;
       pointer-events: none;
@@ -97,16 +93,22 @@
       display: none;
     }
 
+    &__button {
+      .attendance--absent {
+        transform: translate(-12px, -12px) rotate(45deg);
+      }
+    }
+
     &__radio[value="Present"]:checked ~ .attendance-form__button > .attendance--present {
-      display: inline;
+      display: block;
     }
 
     &__radio[value="Absent"]:checked ~ .attendance-form__button > .attendance--absent {
-      display: inline;
+      display: block;
     }
 
     &__radio[value="Not filled"]:checked ~ .attendance-form__button > .attendance--not-filled {
-      display: inline;
+      display: block;
     }
 
   }
