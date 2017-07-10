@@ -64,4 +64,13 @@ defmodule CoursePlanner.CalendarHelper do
     {data, types}
     |> Changeset.cast(params, Map.keys(types))
   end
+
+  def format_errors(changeset_errors) do
+    errors =
+      Enum.reduce(changeset_errors, %{}, fn({error_field, {error_message, _}}, out) ->
+        Map.put(out, error_field, error_message)
+      end)
+
+    %{errors: errors}
+  end
 end

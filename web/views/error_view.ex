@@ -9,13 +9,7 @@ defmodule CoursePlanner.ErrorView do
 
   def render("401.json", _assigns), do: "Unauthorized"
 
-  def render("406.json", assigns) do
-    json_errors =
-      Enum.map(assigns.errors, fn({error_field, {error_message, _}}) ->
-        %{error_field => error_message}
-      end)
-    %{error: json_errors}
-  end
+  def render("406.json", assigns), do: assigns.errors
 
   def render("500.html", _assigns) do
     "Internal server error"

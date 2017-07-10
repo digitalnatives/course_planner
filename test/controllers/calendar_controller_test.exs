@@ -4,6 +4,9 @@ defmodule CoursePlanner.CalendarControllerTest do
   import CoursePlanner.Factory
 
   @empty_result %{"classes" => []}
+  @invalid_date_error %{"errors" => %{"date" => "is invalid"}}
+  @invalid_my_classes_error %{"errors" => %{"my_classes" => "is invalid"}}
+  @all_errors %{"errors" => %{"date" => "is invalid", "my_classes" => "is invalid"}}
   @class_on_first_of_January  %{"classes" => [%{"classroom" => "r101","date" => "2017-01-01","finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
   @class_on_the_current_week  %{"classes" => [%{"classroom" => "r106","date" => to_string(Date.utc_today()),"finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
 
@@ -64,7 +67,7 @@ defmodule CoursePlanner.CalendarControllerTest do
   end
 
   test "fails when unauthenticated user request to access the calendar", %{conn: conn} do
-    conn = get conn, calendar_path(conn, :index)
+    conn = get conn, calendar_path(conn, :show)
     assert json_response(conn, 401)
   end
 
@@ -72,24 +75,23 @@ defmodule CoursePlanner.CalendarControllerTest do
     @tag user_role: :coordinator
     test "fails when date is not formatted correctly", %{conn: conn} do
       params = %{date: "wrong date format", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 406) == %{"error" => [%{"date" => "is invalid"}]}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 406) == @invalid_date_error
     end
 
     @tag user_role: :coordinator
     test "fails when my_classes is not a boolean", %{conn: conn} do
       params = %{date: "2017-01-01", my_classes: "this is not a boolean"}
-      conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 406) == %{"error" => [%{"my_classes" => "is invalid"}]}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 406) == @invalid_my_classes_error
     end
 
     @tag user_role: :coordinator
     test "fails and shows all errors when both params are not formatted correctly", %{conn: conn} do
       params = %{date: "wrong date format", my_classes: "this is not a boolean"}
-      errors = %{"error" => [%{"date" => "is invalid"}, %{"my_classes" => "is invalid"}]}
 
-      conn = get conn, calendar_path(conn, :index), params
-      assert json_response(conn, 406) == errors
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 406) == @all_errors
     end
   end
 
@@ -97,7 +99,7 @@ defmodule CoursePlanner.CalendarControllerTest do
     @tag user_role: :coordinator
     test "empty when there is no classes on the requested date", %{conn: conn} do
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @empty_result
     end
 
@@ -106,7 +108,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -115,7 +117,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -124,7 +126,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "true"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -133,7 +135,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_the_current_week
     end
   end
@@ -142,7 +144,7 @@ defmodule CoursePlanner.CalendarControllerTest do
     @tag user_role: :volunteer
     test "empty when there is no classes on the requested date", %{conn: conn} do
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @empty_result
     end
 
@@ -151,7 +153,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -160,7 +162,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -169,7 +171,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "true"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -178,7 +180,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_the_current_week
     end
   end
@@ -189,7 +191,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       teacher_conn = login_as( test_data.teacher_with_no_class )
 
       params = %{date: "2017-01-01", my_classes: "true"}
-      conn = get teacher_conn, calendar_path(teacher_conn, :index), params
+      conn = get teacher_conn, calendar_path(teacher_conn, :show), params
       assert json_response(conn, 200) == @empty_result
     end
 
@@ -197,7 +199,7 @@ defmodule CoursePlanner.CalendarControllerTest do
     test "all classes of the current week when not date nor my_classes are present", %{conn: conn} do
       create_test_data()
 
-      conn = get conn, calendar_path(conn, :index)
+      conn = get conn, calendar_path(conn, :show)
       assert json_response(conn, 200) == @class_on_the_current_week
     end
 
@@ -206,7 +208,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -215,7 +217,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -236,7 +238,7 @@ defmodule CoursePlanner.CalendarControllerTest do
                           "term_name" => "term1"}]}
 
       params = %{date: "2017-01-05", my_classes: "true"}
-      conn = get teacher_conn, calendar_path(teacher_conn, :index), params
+      conn = get teacher_conn, calendar_path(teacher_conn, :show), params
       assert json_response(conn, 200) == expected_result
     end
   end
@@ -247,7 +249,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       student_conn = login_as( test_data.student_with_no_class )
 
       params = %{date: "2017-01-01", my_classes: "true"}
-      conn = get student_conn, calendar_path(student_conn, :index), params
+      conn = get student_conn, calendar_path(student_conn, :show), params
       assert json_response(conn, 200) == @empty_result
     end
 
@@ -256,7 +258,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -265,7 +267,7 @@ defmodule CoursePlanner.CalendarControllerTest do
       create_test_data()
 
       params = %{date: "2017-01-01", my_classes: "false"}
-      conn = get conn, calendar_path(conn, :index), params
+      conn = get conn, calendar_path(conn, :show), params
       assert json_response(conn, 200) == @class_on_first_of_January
     end
 
@@ -289,7 +291,7 @@ defmodule CoursePlanner.CalendarControllerTest do
                           "term_name" => "term1"}]}
 
       params = %{date: "2017-01-05", my_classes: "true"}
-      conn = get studen_conn, calendar_path(studen_conn, :index), params
+      conn = get studen_conn, calendar_path(studen_conn, :show), params
       assert json_response(conn, 200) == expected_result
     end
   end

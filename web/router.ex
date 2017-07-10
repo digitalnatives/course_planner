@@ -25,9 +25,6 @@ defmodule CoursePlanner.Router do
   pipeline :protected_api do
     plug :accepts, ["json"]
     plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
     plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
   end
 
@@ -44,7 +41,7 @@ defmodule CoursePlanner.Router do
   scope "/", CoursePlanner do
     pipe_through :protected_api
 
-    resources "/calendar", CalendarController, only: [:index]
+    resources "/calendar", CalendarController, only: [:show], singleton: true
   end
 
   scope "/", CoursePlanner do
