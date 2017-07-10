@@ -3,6 +3,8 @@ defmodule CoursePlanner.Router do
   use CoursePlanner.Web, :router
   use Coherence.Router
 
+  alias CoursePlanner.{JsonLogin}
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -21,6 +23,12 @@ defmodule CoursePlanner.Router do
     plug Coherence.Authentication.Session, protected: true
   end
 
+  pipeline :protected_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
+  end
+
   scope "/" do
     pipe_through :browser
     coherence_routes()
@@ -29,6 +37,12 @@ defmodule CoursePlanner.Router do
   scope "/" do
     pipe_through :protected
     coherence_routes :protected
+  end
+
+  scope "/", CoursePlanner do
+    pipe_through :protected_api
+
+    resources "/calendar", CalendarController, only: [:show], singleton: true
   end
 
   scope "/", CoursePlanner do
