@@ -27,7 +27,7 @@ defmodule CoursePlanner.OfferedCourseView do
     Students.all()
     |> Enum.map(
         fn student ->
-          full_name = CoursePlanner.SharedView.display_user_name(student)
+          full_name = SharedView.display_user_name(student)
 
           %{
             value: student.id,
@@ -48,7 +48,7 @@ defmodule CoursePlanner.OfferedCourseView do
     Teachers.all()
     |> Enum.map(
         fn teacher ->
-          full_name = CoursePlanner.SharedView.display_user_name(teacher)
+          full_name = SharedView.display_user_name(teacher)
 
           %{
             value: teacher.id,
