@@ -60,10 +60,8 @@ defmodule CoursePlanner.Coherence.UserEmail do
   defp user_email(%{name: name, email: email}), do: {name, email}
 
   defp from_email do
-    log_string = """
-    Need to configure :coherence, :email_from_name, "Name", \
-    and :email_from_email, "me@example.com"\
-    """
+    log_string = ~s{Need to configure :coherence, :email_from_name, "Name", \
+and :email_from_email, "me@example.com"}
 
     case Config.email_from do
       nil ->

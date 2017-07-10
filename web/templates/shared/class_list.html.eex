@@ -1,15 +1,15 @@
 
   <div class="class-list">
     <%= for class <- @classes do %>
-      <div class="class-list__class">
-        <div class="class-list__item">
+      <div class="class-list__row">
+        <div class="class-list__col">
           <%= class.classroom %>
         </div>
-        <div class="class-list__item">
+        <div class="class-list__col">
           <%= class.date %>
         </div>
         <%= if @show_attendances do %>
-          <div class="class-list__item">
+          <div class="class-list__col">
             <%= class.attendance_type %>
           </div>
         <% end %>

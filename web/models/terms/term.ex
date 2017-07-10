@@ -33,7 +33,10 @@ defmodule CoursePlanner.Terms.Term do
     if teaching_days > min do
       changeset
     else
-      Changeset.add_error(changeset, :minimum_teaching_days, "There's not enough minimum teaching days.")
+      Changeset.add_error(
+        changeset,
+        :minimum_teaching_days,
+        "There's not enough minimum teaching days.")
     end
   end
   def validate_minimum_teaching_days(changeset, _holidays), do: changeset
@@ -50,8 +53,8 @@ defmodule CoursePlanner.Terms.Term do
     en = changeset |> Changeset.get_field(:end_date) |> Date.cast!
     case Date.compare(st, en) do
       :lt -> changeset
-      :eq -> Changeset.add_error(changeset, :start_date, "Start date can't be the same than end date.")
-      :gt -> Changeset.add_error(changeset, :start_date, "Start date can't be later than end date.")
+      :eq -> Changeset.add_error(changeset, :start_date, "can't be the same than end date.")
+      :gt -> Changeset.add_error(changeset, :start_date, "can't be later than end date.")
     end
   end
   defp validate_date_range(changeset), do: changeset

@@ -1,4 +1,5 @@
 defmodule CoursePlanner.SharedView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   # helpers

@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TaskView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def task_user(conn, task) do

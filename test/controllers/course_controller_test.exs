@@ -1,22 +1,16 @@
 defmodule CoursePlanner.CourseControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.User
   alias CoursePlanner.Course
 
   import CoursePlanner.Factory
 
   @valid_attrs %{description: "some content", name: "some content"}
   @invalid_attrs %{}
-  @user %User{
-    name: "Test User",
-    email: "testuser@example.com",
-    password: "secret",
-    password_confirmation: "secret"}
 
   setup do
     conn =
       Phoenix.ConnTest.build_conn()
-        |> assign(:current_user, @user)
+        |> assign(:current_user, insert(:coordinator))
     {:ok, conn: conn}
   end
 

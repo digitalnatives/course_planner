@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TermView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.Terms.{Term, Holiday}

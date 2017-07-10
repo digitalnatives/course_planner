@@ -1,4 +1,5 @@
 defmodule CoursePlanner.AttendanceView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def get_teacher_display_name(offered_course_teachers) do

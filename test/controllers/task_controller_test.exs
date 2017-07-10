@@ -1,18 +1,12 @@
 defmodule CoursePlanner.TaskControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.{Tasks, Volunteers, Repo, User}
+  alias CoursePlanner.{Tasks, Volunteers, Repo}
   alias CoursePlanner.Tasks.Task
 
   import CoursePlanner.Factory
 
   @valid_attrs %{name: "some content", start_time: Timex.now(), finish_time: Timex.now()}
   @invalid_attrs %{}
-  @user %User{
-    name: "Test User",
-    email: "testuser@example.com",
-    password: "secret",
-    password_confirmation: "secret",
-    role: "Coordinator"}
   @volunteer %{
     name: "Test Volunteer",
     email: "volunteer@courseplanner.com",
@@ -23,7 +17,7 @@ defmodule CoursePlanner.TaskControllerTest do
   setup do
     conn =
       Phoenix.ConnTest.build_conn()
-        |> assign(:current_user, @user)
+        |> assign(:current_user, insert(:coordinator))
     {:ok, conn: conn}
   end
 

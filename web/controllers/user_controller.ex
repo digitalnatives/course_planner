@@ -1,4 +1,5 @@
 defmodule CoursePlanner.UserController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
   alias CoursePlanner.{User, Users}
   require Logger
@@ -16,7 +17,10 @@ defmodule CoursePlanner.UserController do
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => user_params}) do
+  def update(
+    %{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "user" => user_params}) do
+
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
 
