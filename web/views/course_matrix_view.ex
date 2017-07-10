@@ -1,4 +1,5 @@
 defmodule CoursePlanner.CourseMatrixView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def course_name(offered_courses, id) do

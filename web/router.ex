@@ -1,4 +1,5 @@
 defmodule CoursePlanner.Router do
+  @moduledoc false
   use CoursePlanner.Web, :router
   use Coherence.Router
 

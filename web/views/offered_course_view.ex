@@ -1,4 +1,5 @@
 defmodule CoursePlanner.OfferedCourseView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.{Repo, Teachers, Terms, Students, Course, SharedView}

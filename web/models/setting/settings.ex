@@ -18,8 +18,8 @@ defmodule CoursePlanner.Settings do
   end
 
   @all_query               from sv in SystemVariable, select: {sv.id, sv}, order_by: :key
-  @visible_settings_query  from sv in SystemVariable, where: sv.visible  == true, order_by: :key
-  @editable_settings_query from sv in SystemVariable, where: sv.editable == true, order_by: :key
+  @visible_settings_query  from sv in SystemVariable, where: sv.visible, order_by: :key
+  @editable_settings_query from sv in SystemVariable, where: sv.editable, order_by: :key
 
   def all do
     Repo.all(@all_query)
@@ -64,6 +64,7 @@ defmodule CoursePlanner.Settings do
     Multi.error(multi, :uneditable_resource, "Resource is not editable")
   end
   defp add_update_changeset(changeset, multi) do
-    Multi.update(multi, :"#{changeset.data.id}", changeset)
+    name = changeset.data.id |> Integer.to_string |> String.to_atom
+    Multi.update(multi, name, changeset)
   end
 end

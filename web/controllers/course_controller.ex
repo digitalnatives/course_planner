@@ -1,4 +1,5 @@
 defmodule CoursePlanner.CourseController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{Repo, Course, CourseHelper}
@@ -46,7 +47,10 @@ defmodule CoursePlanner.CourseController do
     render(conn, "edit.html", course: course, changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "course" => course_params}) do
+  def update(
+    %{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "course" => course_params}) do
+
     course = Repo.get!(Course, id)
     changeset = Course.changeset(course, course_params)
 
