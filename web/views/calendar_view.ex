@@ -1,4 +1,5 @@
 defmodule CoursePlanner.CalendarView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def render("index.json", %{offered_courses: offered_courses}) do

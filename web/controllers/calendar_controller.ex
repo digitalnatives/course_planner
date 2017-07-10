@@ -1,4 +1,5 @@
 defmodule CoursePlanner.CalendarController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.CalendarHelper
