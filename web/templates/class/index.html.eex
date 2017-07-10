@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= for class <- @classes do %>
+      <%= Enum.with_index(@classes) |> Enum.map(fn {class,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
             <%= class.offered_course.term.name %>
@@ -47,8 +47,18 @@
             >
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                for="tr_menu_<%= class.id %>"
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@classes)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= class.id %>"
             >
               <li class="mdl-menu__item">
                 <%= link "Edit", to: class_path(@conn, :edit, class) %>
@@ -59,7 +69,7 @@
             </ul>
           </td>
         </tr>
-      <% end %>
+      <% end) %>
     </tbody>
   </table>
 
