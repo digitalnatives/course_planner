@@ -64,13 +64,7 @@ defmodule CoursePlanner.SystemVariable do
     value = changeset |> Changeset.get_field(:value)
     type  = changeset |> Changeset.get_field(:type)
 
-    validation_result =
-      case type do
-        "string"  -> {:ok, value}
-        "integer" -> parse_integer(value)
-        "boolean" -> parse_boolean(value)
-        _         -> {:error, "unknown type"}
-      end
+    validation_result = parse_value(value, type)
 
     case validation_result do
       {:ok, _} -> changeset
@@ -78,6 +72,26 @@ defmodule CoursePlanner.SystemVariable do
     end
   end
   defp validate_value_type(changeset), do: changeset
+
+  def parse_value(value, type) do
+    case type do
+      "string"  -> {:ok, value}
+      "csv"     -> parse_csv(value)
+      "integer" -> parse_integer(value)
+      "boolean" -> parse_boolean(value)
+      _         -> {:error, "unknown type"}
+    end
+  end
+
+  def parse_csv(value) do
+    parse_csv =
+    value
+    |> String.split(",")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
+
+    {:ok, parse_csv}
+  end
 
   def parse_integer(value) do
     case Integer.parse(value) do

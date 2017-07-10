@@ -25,6 +25,18 @@ defmodule CoursePlanner.Settings do
     Repo.all(@all_query)
   end
 
+  def get_value(name) do
+    system_variable = Repo.get_by(SystemVariable, key: name)
+
+    {:ok, parsed_value} =
+      case system_variable do
+        nil -> {:ok, nil}
+        _   -> SystemVariable.parse_value(system_variable.value, system_variable.type)
+      end
+
+    parsed_value
+  end
+
   def get_visible_systemvariables do
     Repo.all(@visible_settings_query)
   end
