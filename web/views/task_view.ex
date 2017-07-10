@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TaskView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   def task_user(conn, task) do
@@ -13,4 +14,7 @@ defmodule CoursePlanner.TaskView do
     [{"no one", 0} | Enum.map(users, &{&1.name, &1.id})]
   end
 
+  def page_title do
+    "Tasks"
+  end
 end

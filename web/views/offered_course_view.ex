@@ -1,4 +1,5 @@
 defmodule CoursePlanner.OfferedCourseView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.{Repo, Teachers, Terms, Students, Course, SharedView}
@@ -63,5 +64,9 @@ defmodule CoursePlanner.OfferedCourseView do
     changeset
     |> Changeset.get_field(:teachers)
     |> Enum.map(&(&1.id))
+  end
+
+  def page_title do
+    "Offered courses"
   end
 end

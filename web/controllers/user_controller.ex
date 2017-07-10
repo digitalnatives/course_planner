@@ -1,4 +1,5 @@
 defmodule CoursePlanner.UserController do
+  @moduledoc false
   use CoursePlanner.Web, :controller
   alias CoursePlanner.{User, Users}
   require Logger
@@ -10,32 +11,26 @@ defmodule CoursePlanner.UserController do
     render(conn, "index.html", users: Users.all())
   end
 
-  def show(conn, %{"id" => id}) do
-    case Users.get(id) do
-      {:ok, user} -> render(conn, "show.html", user: user)
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-    end
-  end
-
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => user_params}) do
+  def update(
+    %{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "user" => user_params}) do
+
     user = Repo.get!(User, id)
     changeset = User.changeset(user, user_params)
 
     case Repo.update(changeset) do
       {:ok, user} ->
-        Users.notify_user(user, current_user, :user_modified, user_url(conn, :show, user))
+        Users.notify_user(user, current_user, :user_modified, user_show_url(user))
+
         conn
         |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
+        |> redirect(to: dashboard_path(conn, :show))
       {:error, changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end

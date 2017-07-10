@@ -1,6 +1,9 @@
 defmodule CoursePlanner.Router do
+  @moduledoc false
   use CoursePlanner.Web, :router
   use Coherence.Router
+
+  alias CoursePlanner.{JsonLogin}
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -20,6 +23,12 @@ defmodule CoursePlanner.Router do
     plug Coherence.Authentication.Session, protected: true
   end
 
+  pipeline :protected_api do
+    plug :accepts, ["json"]
+    plug :fetch_session
+    plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
+  end
+
   scope "/" do
     pipe_through :browser
     coherence_routes()
@@ -31,13 +40,19 @@ defmodule CoursePlanner.Router do
   end
 
   scope "/", CoursePlanner do
+    pipe_through :protected_api
+
+    resources "/calendar", CalendarController, only: [:show], singleton: true
+  end
+
+  scope "/", CoursePlanner do
     pipe_through :protected
 
     get "/", PageController, :index
 
     resources "/dashboard", DashboardController, only: [:show], singleton: true
 
-    resources "/users", UserController, except: [:create, :new]
+    resources "/users", UserController, except: [:create, :new, :show]
     resources "/coordinators", CoordinatorController
     resources "/students", StudentController
     resources "/teachers", TeacherController
@@ -57,6 +72,8 @@ defmodule CoursePlanner.Router do
       get "/fill_course", AttendanceController, :fill_course, as: :fill_course
       put "/update_fill", AttendanceController, :update_fill, as: :update_fill
     end
+
+    resources "/settings", SettingController, only: [:show, :edit, :update], singleton: true
   end
 
   if Mix.env == :dev do

@@ -1,4 +1,5 @@
 defmodule CoursePlanner.TermView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.Terms.{Term, Holiday}
@@ -44,5 +45,9 @@ defmodule CoursePlanner.TermView do
   defp container_id(form, field) do
     id = Form.input_id(form, field)
     id <> "_nested_form"
+  end
+
+  def page_title do
+    "Terms"
   end
 end

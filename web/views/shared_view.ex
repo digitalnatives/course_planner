@@ -1,4 +1,5 @@
 defmodule CoursePlanner.SharedView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   # helpers
@@ -273,13 +274,7 @@ defmodule CoursePlanner.SharedView do
 
     name = display_user_name(user)
 
-    url = case user.role do
-      "Student" -> "/students/#{user.id}"
-      "Teacher" -> "/teachers/#{user.id}"
-      "Coordinator" -> "/coordinators/#{user.id}"
-      "Volunteer" -> "/volunteers/#{user.id}"
-      _ -> "#"
-    end
+    url = user_show_path(user)
 
     render "user_bubble.html", url: url,
                                profile_picture: profile_picture,

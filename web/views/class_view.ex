@@ -1,4 +1,5 @@
 defmodule CoursePlanner.ClassView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.{OfferedCourse, Repo}
@@ -21,5 +22,9 @@ defmodule CoursePlanner.ClassView do
 
   def selected_offered_course(changeset) do
     Changeset.get_field(changeset, :offered_course_id)
+  end
+
+  def page_title do
+    "Classes"
   end
 end

@@ -17,7 +17,7 @@ defmodule CoursePlanner.AttendanceHelper do
       preload: [:term, :course, :teachers, :students],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
-      order_by: [asc: c.date])
+      order_by: [asc: ac.date, asc: s.name, asc: s.family_name])
   end
 
   def get_teacher_course_attendances(offered_course_id, teacher_id) do
@@ -114,7 +114,8 @@ defmodule CoursePlanner.AttendanceHelper do
 
   def remove_students_attendances(offered_course_id, offered_course_students, updated_students) do
     student_ids =
-      offered_course_students -- updated_students
+      offered_course_students
+      |> Kernel.--(updated_students)
       |> Enum.map(fn(student) ->
         student.id
       end)

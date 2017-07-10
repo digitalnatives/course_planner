@@ -1,4 +1,5 @@
 defmodule CoursePlanner.AttendanceView do
+  @moduledoc false
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.SharedView
@@ -7,5 +8,9 @@ defmodule CoursePlanner.AttendanceView do
     offered_course_teachers
     |> Enum.map(fn(teacher) -> SharedView.display_user_name(teacher) end)
     |> Enum.join(", ")
+  end
+
+  def page_title do
+    "Attendances"
   end
 end

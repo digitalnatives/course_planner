@@ -14,7 +14,4 @@ defmodule CoursePlanner.Repo.Migrations.CreateRole do
       add :role, :user_role
     end
   end
-
-
-
 end
