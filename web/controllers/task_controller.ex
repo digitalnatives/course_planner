@@ -12,8 +12,8 @@ defmodule CoursePlanner.TaskController do
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned_tasks(),
-      your_tasks: Tasks.get_user_tasks(id))
+      available_tasks: Tasks.get_unassigned(Timex.now()),
+      your_tasks: Tasks.get_for_user(id, Timex.now()))
   end
 
   def index(conn, _params) do
@@ -99,7 +99,7 @@ defmodule CoursePlanner.TaskController do
   end
 
   def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, user_id) do
+    case Tasks.grab(task_id, user_id, Timex.now()) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task grabbed.")

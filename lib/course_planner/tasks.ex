@@ -47,22 +47,32 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def get_user_tasks(id) do
-    Repo.all(from t in Task, where: t.user_id == ^id, preload: [:user])
+  def get_for_user(id, now) do
+    Repo.all(from t in Task, where: t.user_id == ^id and t.finish_time > ^now, preload: [:user])
   end
 
-  def get_unassigned_tasks do
-    Repo.all(from t in Task, where: is_nil(t.user_id))
+  def get_unassigned(now) do
+    Repo.all(from t in Task, where: is_nil(t.user_id) and t.finish_time > ^now)
   end
 
-  def grab(task_id, user_id) do
+  def grab(task_id, user_id, now) do
     case get(task_id) do
       {:ok, task} ->
         task
         |> Task.changeset()
+        |> validate_finish_time(now)
         |> Changeset.put_change(:user_id, user_id)
         |> Repo.update()
       error -> error
+    end
+  end
+
+  defp validate_finish_time(changeset, now) do
+    fin = Changeset.get_field(changeset, :finish_time)
+    case Timex.compare(fin, now) do
+      1  -> changeset
+      -1 -> Changeset.add_error(changeset, :finish_time, "is already finished, can't grab.")
+      _  -> Changeset.add_error(changeset, :finish_time, "something went wrong.")
     end
   end
 end
