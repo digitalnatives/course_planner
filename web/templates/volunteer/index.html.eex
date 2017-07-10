@@ -21,10 +21,7 @@
       <%= for volunteer <- @volunteers do %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= volunteer.name %> <%= volunteer.family_name %>
-            <%= if String.length(to_string volunteer.nickname) > 0 do %>
-              (<%= volunteer.nickname %>)
-            <% end %>
+            <%= CoursePlanner.SharedView.display_user_name(volunteer) %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= volunteer.email %>

@@ -1,34 +1,96 @@
-<h2>Filling attendances for <%=@offered_course.course.name%></h2>
-<h3>Taught by : <%= get_teacher_display_name(@offered_course.teachers) %></h3>
 
-<%= form_for @changeset, attendance_update_fill_path(@conn, :update_fill, @offered_course), fn f -> %>
+  <% title = Enum.join(["Fill attendances for", @offered_course.course.name, "in", @offered_course.term.name], " ") %>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Class Date</th>
-      <th>Class Time</th>
-      <%= for student <- @offered_course.students do %>
-        <th><%= get_student_display_name(student) %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <%= inputs_for f, :classes, fn ch -> %>
-      <tr>
-        <td><%= ch.data.date %></td>
-        <td><%= ch.data.starting_at %></td>
-        <%= inputs_for ch, :attendances, fn fh -> %>
-          <td><%= select(fh, :attendance_type, ["Present", "Absent", "Not filled"], selected: fh.data.attendance_type) %></td>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <%= form_for @changeset, attendance_update_fill_path(@conn, :update_fill, @offered_course), fn f -> %>
+        <%= CoursePlanner.SharedView.card title do %>
+          <%= CoursePlanner.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <div class="row">
+              <div class="col-xs-5 col-sm-3 col-md-3">
+                <table class="attendance-date-table">
+                  <thead>
+                    <tr class="attendance-date-table__thead-tr">
+                      <th class="attendance-date-table__th">Class Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%= for class <- @offered_course.classes do %>
+                      <tr class="attendance-date-table__row">
+                        <td class="attendance-date-table__col">
+                          <%= class.date %>
+                          <%= Timex.format!(class.starting_at, "{h24}:{m}") %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+              <div class="col-xs-7 col-sm-9 col-md-9 attendance-table-wrapper">
+                <table class="attendance-table">
+                  <thead>
+                    <tr class="attendance-table__thead-tr">
+                      <%= for student <- @offered_course.students do %>
+                        <th class="attendance-table__th">
+                          <div class="attendance-table__th-wrapper">
+                            <div class="attendance-table__profile-picture">
+                              <img
+                                class="profile-bubble__image"
+                                src="<%= CoursePlanner.SharedView.get_gravatar_url(student.email) %>"
+                              />
+                            </div>
+                            <%= CoursePlanner.SharedView.display_user_name(student) %>
+                          </div>
+                        </th>
+                      <% end %>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%= inputs_for f, :classes, fn class -> %>
+                      <tr class="attendance-table__row">
+                        <%= inputs_for class, :attendances, fn fh -> %>
+                          <td class="attendance-table__col">
+                            <%= radio_button(fh, :attendance_type, "Present", class: "attendance-form__radio") %>
+                            <%= radio_button(fh, :attendance_type, "Absent", class: "attendance-form__radio") %>
+                            <%= radio_button(fh, :attendance_type, "Not filled", class: "attendance-form__radio") %>
+                            <button
+                              type="button"
+                              class="mdl-button mdl-js-button mdl-button--icon attendance-form__button"
+                            >
+                              <i class="material-icons attendance-form__attendance attendance--present">check_circle</i>
+                              <i class="material-icons attendance-form__attendance attendance--absent">add_circle</i>
+                              <i class="material-icons attendance-form__attendance attendance--not-filled">radio_button_unchecked</i>
+                            </button>
+                          </td>
+                        <% end %>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
+          <%= CoursePlanner.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-lg-2">
+                <%= CoursePlanner.SharedView.form_button "Back", attendance_path(@conn, :index) %>
+              </div>
+              <div class="col-xs-12 col-md-3 col-md-offset-6 col-md-2 col-lg-2 col-lg-offset-8">
+                <%= CoursePlanner.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
         <% end %>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<div class="form-group">
-  <%= submit "Submit", class: "btn btn-primary" %>
-</div>
-<% end %>
-
-<%= link "Back", to: attendance_path(@conn, :index) %>
+      <% end %>
+    </div>
+  </div>

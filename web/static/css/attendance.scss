@@ -1,0 +1,114 @@
+
+  .attendance-date-table {
+    width: 100%;
+
+    &__th {
+      height: 110px;
+      max-height: 110px;
+    }
+
+    &__row {
+      height: 40px;
+    }
+
+    &__col {
+      white-space: nowrap;
+      text-align: center;
+    }
+  }
+
+  .attendance-table-wrapper {
+    overflow-x: auto;
+    padding-bottom: 0 0 20px 0;
+    position: relative;
+
+    background:
+      linear-gradient(to right, white 30%, hsla(0,0%,100%, 0)) left,
+      linear-gradient(to right, hsla(0,0%,100%,0) 5px, white 70%) right,
+      radial-gradient(at left, rgba(0,0,0,0.2), transparent 70%) left,
+      radial-gradient(at right, rgba(0,0,0,0.2), transparent 70%) right;
+    background-repeat:
+      no-repeat;
+    background-size:
+      25px 100%,
+      25px 100%,
+      10px 100%,
+      10px 100%;
+    background-attachment:
+      local,
+      local,
+      scroll,
+      scroll;
+  }
+
+  .attendance-table {
+    &__th {
+      vertical-align: top;
+    }
+
+    &__th-wrapper {
+      height: 110px;
+      max-height: 110px;
+      overflow: hidden;
+    }
+
+    &__profile-picture {
+      margin-bottom: 8px;
+    }
+
+    &__row {
+      height: 40px;
+    }
+
+    &__col {
+      min-width: 100px;
+      max-width: 100px;
+      text-align: center;
+    }
+  }
+
+  .attendance {
+    &--present {
+      color: $primary;
+    }
+
+    &--absent {
+      color: $red-500;
+
+      transform: rotate(45deg);
+    }
+
+    &--not-filled {
+      color: $grey-300;
+    }
+  }
+
+  .attendance-form {
+    &__attendance {
+      display: none;
+      pointer-events: none;
+    }
+
+    &__radio {
+      display: none;
+    }
+
+    &__button {
+      .attendance--absent {
+        transform: translate(-12px, -12px) rotate(45deg);
+      }
+    }
+
+    &__radio[value="Present"]:checked ~ .attendance-form__button > .attendance--present {
+      display: block;
+    }
+
+    &__radio[value="Absent"]:checked ~ .attendance-form__button > .attendance--absent {
+      display: block;
+    }
+
+    &__radio[value="Not filled"]:checked ~ .attendance-form__button > .attendance--not-filled {
+      display: block;
+    }
+
+  }

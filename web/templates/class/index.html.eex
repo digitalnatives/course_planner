@@ -36,10 +36,10 @@
             <%= class.date %>
           </td>
           <td>
-            <%= String.slice Ecto.Time.to_iso8601(class.starting_at), 0, 5 %>
+            <%= Timex.format!(class.starting_at, "{h24}:{m}") %>
           </td>
           <td>
-            <%= String.slice Ecto.Time.to_iso8601(class.finishes_at), 0, 5 %>
+            <%= Timex.format!(class.finishes_at, "{h24}:{m}") %>
           </td>
           <td>
             <button id="tr_menu_<%= class.id %>"

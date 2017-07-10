@@ -28,10 +28,7 @@ defmodule CoursePlanner.OfferedCourseView do
     Students.all()
     |> Enum.map(
         fn student ->
-          full_name =
-            [student.name, student.family_name, student.nickname && "(#{student.nickname})"]
-            |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
-            |> Enum.join(" ")
+          full_name = SharedView.display_user_name(student)
 
           %{
             value: student.id,
@@ -52,10 +49,7 @@ defmodule CoursePlanner.OfferedCourseView do
     Teachers.all()
     |> Enum.map(
         fn teacher ->
-          full_name =
-            [teacher.name, teacher.family_name, teacher.nickname && "(#{teacher.nickname})"]
-            |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
-            |> Enum.join(" ")
+          full_name = SharedView.display_user_name(teacher)
 
           %{
             value: teacher.id,

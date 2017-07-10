@@ -1,5 +1,5 @@
 
-  <%= render "form.html", title: Enum.join([ @changeset.data.name, @changeset.data.family_name ], " "),
+  <%= render "form.html", title: CoursePlanner.SharedView.display_user_name(@changeset.data),
                           changeset: @changeset,
                           action: teacher_path(@conn, :update, @teacher),
                           conn: @conn

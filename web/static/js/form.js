@@ -37,6 +37,22 @@
           { once: true }
         )
     );
+
+    document.addEventListener( "click",
+      ( e ) => {
+        if ( e.target.classList.contains( "attendance-form__button" ) ) {
+          const radios = Array.from(
+            e.target.parentNode.querySelectorAll( "input[type='radio']" )
+          );
+
+          const checkedIndex = radios.findIndex(
+            ( radio ) => radio.checked
+          );
+
+          radios[ (checkedIndex + 1 ) % radios.length ].checked = true;
+        }
+      }
+    );
   }
 
   module.exports = { initForm };
