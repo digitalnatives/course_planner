@@ -76,21 +76,16 @@ defmodule CoursePlanner.SystemVariable do
   def parse_value(value, type) do
     case type do
       "string"  -> {:ok, value}
-      "csv"     -> parse_csv(value)
+      "list"    -> parse_list(value)
       "integer" -> parse_integer(value)
       "boolean" -> parse_boolean(value)
       _         -> {:error, "unknown type"}
     end
   end
 
-  def parse_csv(value) do
-    parse_csv =
-    value
-    |> String.split(",")
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
-
-    {:ok, parse_csv}
+  def parse_list(value) do
+    parse_list = String.split(value, [" ", ","] , trim: true)
+    {:ok, parse_list}
   end
 
   def parse_integer(value) do
