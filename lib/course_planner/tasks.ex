@@ -55,15 +55,20 @@ defmodule CoursePlanner.Tasks do
     Repo.all(from t in Task, where: is_nil(t.user_id) and t.finish_time > ^now)
   end
 
+  def get_past_tasks(id, now) do
+    Repo.all(from t in Task, where: t.user_id == ^id and t.finish_time < ^now, preload: [:user])
+  end
+
   def grab(task_id, user_id, now) do
-    case get(task_id) do
-      {:ok, task} ->
-        task
-        |> Task.changeset()
-        |> validate_finish_time(now)
-        |> validate_already_assigned(task)
-        |> Changeset.put_change(:user_id, user_id)
-        |> Repo.update()
+    with {:ok, task}              <- get(task_id),
+      %{valid?: true} = changeset <- Task.changeset(task),
+      {:ok, changeset}            <- validate_finish_time(changeset, now),
+      {:ok, changeset}            <- validate_already_assigned(changeset, task)
+    do
+      changeset
+      |> Changeset.put_change(:user_id, user_id)
+      |> Repo.update()
+    else
       error -> error
     end
   end
@@ -71,14 +76,12 @@ defmodule CoursePlanner.Tasks do
   defp validate_finish_time(changeset, now) do
     fin = Changeset.get_field(changeset, :finish_time)
     case Timex.compare(fin, now) do
-      1  -> changeset
-      -1 -> Changeset.add_error(changeset, :finish_time, "is already finished, can't grab.")
-      _  -> Changeset.add_error(changeset, :finish_time, "something went wrong.")
+      1  -> {:ok, changeset}
+      -1 -> {:error, :already_finished}
+      _  -> {:error, :unkown}
     end
   end
 
-  defp validate_already_assigned(changeset, %{user_id: nil}), do: changeset
-  defp validate_already_assigned(changeset, _) do
-    Changeset.add_error(changeset, :user_id, "is already assigned, can't grab.")
-  end
+  defp validate_already_assigned(changeset, %{user_id: nil}), do: {:ok, changeset}
+  defp validate_already_assigned(_changeset, _), do: {:error, :already_assigned}
 end

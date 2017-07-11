@@ -14,6 +14,7 @@ defmodule CoursePlanner.TaskController do
     now = Timex.now()
     render(conn, "index_volunteer.html",
       available_tasks: Tasks.get_unassigned(now),
+      your_past_tasks: Tasks.get_past_tasks(id, now),
       your_tasks: Tasks.get_for_user(id, now))
   end
 
@@ -108,6 +109,14 @@ defmodule CoursePlanner.TaskController do
       {:error, :not_found} ->
         conn
         |> put_flash(:error, "Task was not found.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, :already_finished} ->
+        conn
+        |> put_flash(:error, "Cannott grab as task is already finished.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, :already_assigned} ->
+        conn
+        |> put_flash(:error, "Cannot grab as task is already assigned.")
         |> redirect(to: task_path(conn, :index))
       {:error, _changeset} ->
         conn

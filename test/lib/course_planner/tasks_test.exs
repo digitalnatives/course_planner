@@ -25,8 +25,7 @@ defmodule CoursePlanner.TasksTest do
   test "do not grab task when it has expired" do
     task = insert(:task, %{finish_time: Timex.now() |> Timex.shift(days: -1)})
     volunteer = insert(:volunteer)
-    {:error, changeset} = Tasks.grab(task.id, volunteer.id, Timex.now())
-    assert changeset.errors == [finish_time: {"is already finished, can't grab.", []}]
+    assert Tasks.grab(task.id, volunteer.id, Timex.now()) == {:error, :already_finished}
   end
 
   test "do not list finished tasks" do
@@ -53,8 +52,7 @@ defmodule CoursePlanner.TasksTest do
     volunteer1 = insert(:volunteer)
     volunteer2 = insert(:volunteer)
     task = insert(:task, %{user_id: volunteer1.id})
-    {:error, changeset} = Tasks.grab(task.id, volunteer2.id, ~N[2017-01-01 02:00:00])
-    assert changeset.errors == [user_id: {"is already assigned, can't grab.", []}]
+    assert Tasks.grab(task.id, volunteer2.id, ~N[2017-01-01 02:00:00]) == {:error, :already_assigned}
   end
 
 end
