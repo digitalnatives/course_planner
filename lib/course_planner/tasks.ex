@@ -48,20 +48,20 @@ defmodule CoursePlanner.Tasks do
   end
 
   def get_user_tasks(id, sort_opt) do
-    Task
+    sort_opt
+    |> task_query()
     |> where([t], t.user_id == ^id)
-    |> sort(sort_opt)
-    |> preload(:user)
     |> Repo.all()
   end
 
   def get_unassigned_tasks(sort_opt) do
-    Task
+    sort_opt
+    |> task_query()
     |> where([t], is_nil(t.user_id))
-    |> sort(sort_opt)
-    |> preload(:user)
     |> Repo.all()
   end
+
+  defp task_query(sort_opt), do: Task |> sort(sort_opt) |> preload(:user)
 
   defp sort(query, nil), do: query
   defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)
