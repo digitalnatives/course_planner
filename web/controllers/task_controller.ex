@@ -100,27 +100,21 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
+  @error_messages %{
+    not_found: "Task was not found.",
+    already_finished: "Cannott grab as task is already finished.",
+    already_assigned: "Cannot grab as task is already assigned."
+  }
+
   def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
     case Tasks.grab(task_id, user_id, Timex.now()) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task grabbed.")
         |> redirect(to: task_path(conn, :index))
-      {:error, :not_found} ->
+      {:error, type} ->
         conn
-        |> put_flash(:error, "Task was not found.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, :already_finished} ->
-        conn
-        |> put_flash(:error, "Cannott grab as task is already finished.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, :already_assigned} ->
-        conn
-        |> put_flash(:error, "Cannot grab as task is already assigned.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, _changeset} ->
-        conn
-        |> put_flash(:error, "Something went wrong.")
+        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
         |> redirect(to: task_path(conn, :index))
     end
   end
