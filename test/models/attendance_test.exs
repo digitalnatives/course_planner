@@ -9,7 +9,7 @@ defmodule CoursePlanner.AttendanceTest do
   @invalid_attrs %{}
 
   setup do
-    insert(:system_variable, key: "ATTENDANCE_DESCRIPTORS", value: "sick leave, informed beforehand", type: "csv")
+    insert(:system_variable, key: "ATTENDANCE_DESCRIPTORS", value: "sick_leave, informed_beforehand", type: "list")
 
     student = insert(:user, %{role: "Student"})
     offered_course = insert(:offered_course, %{students: [student]})
@@ -40,7 +40,7 @@ defmodule CoursePlanner.AttendanceTest do
     end
 
     test "passes when comment is among valid options", context do
-      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: context.student.id, class_id: context.class.id, comment: "sick leave"})
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: context.student.id, class_id: context.class.id, comment: "sick_leave"})
       assert changeset.valid?
     end
 
