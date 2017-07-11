@@ -10,39 +10,33 @@ defmodule CoursePlanner.Coherence.UserEmail do
   defp site_name, do: Config.site_name(inspect Config.module)
 
   def password(user, url) do
-    %Email{}
-    |> from(from_email())
-    |> to(user_email(user))
-    |> add_reply_to()
-    |> subject("#{site_name()} - Reset password instructions")
-    |> render_body("password.html", %{url: url, name: first_name(user.name)})
+    create_modular_email(user, "#{site_name()} - Reset password instructions", "password.html",
+                          %{url: url, name: first_name(user.name)})
   end
 
   def confirmation(user, url) do
-    %Email{}
-    |> from(from_email())
-    |> to(user_email(user))
-    |> add_reply_to()
-    |> subject("#{site_name()} - Confirm your new account")
-    |> render_body("confirmation.html", %{url: url, name: first_name(user.name)})
+    create_modular_email(user, "#{site_name()} - Confirm your new account", "confirmation.html",
+                          %{url: url, name: first_name(user.name)})
   end
 
   def invitation(invitation, url) do
-    %Email{}
-    |> from(from_email())
-    |> to(user_email(invitation))
-    |> add_reply_to()
-    |> subject("#{site_name()} - Invitation to create a new account")
-    |> render_body("invitation.html", %{url: url, name: first_name(invitation.name)})
+    create_modular_email(invitation, "#{site_name()} - Invitation to create a new account", "invitation.html",
+                          %{url: url, name: first_name(invitation.name)})
   end
 
   def unlock(user, url) do
+    create_modular_email(user, "#{site_name()} - Unlock Instructions", "unlock.html",
+                          %{url: url, name: first_name(user.name)})
+  end
+
+  defp create_modular_email(user, subject, render_body, render_body_params) do
     %Email{}
     |> from(from_email())
     |> to(user_email(user))
     |> add_reply_to()
-    |> subject("#{site_name()} - Unlock Instructions")
-    |> render_body("unlock.html", %{url: url, name: first_name(user.name)})
+    |> subject(subject)
+    |> render_body(render_body, render_body_params)
+
   end
 
   defp add_reply_to(mail) do
