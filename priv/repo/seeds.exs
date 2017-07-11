@@ -63,7 +63,7 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
     %{
       key: "ATTENDANCE_DESCRIPTORS",
       value: "sick leave, informed beforehand",
-      type: "csv",
+      type: "list",
       editable: true,
       visible: true
     })
