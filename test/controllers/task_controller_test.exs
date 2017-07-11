@@ -238,5 +238,17 @@ defmodule CoursePlanner.TaskControllerTest do
     assert  html_response(conn, 200) =~ "Task was not found"
   end
 
+  test "index sorted by freshness" do
+    volunteer_conn = login_as(:volunteer)
 
+    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "fresh")
+    assert html_response(conn, 200) =~ "Your tasks"
+  end
+
+  test "index sorted by closeness" do
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "closest")
+    assert html_response(conn, 200) =~ "Your tasks"
+  end
 end
