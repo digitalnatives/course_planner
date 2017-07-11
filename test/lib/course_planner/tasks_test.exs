@@ -49,4 +49,12 @@ defmodule CoursePlanner.TasksTest do
     assert applicable_task.id == task.id
   end
 
+  test "do not grab task that is already assigned" do
+    volunteer1 = insert(:volunteer)
+    volunteer2 = insert(:volunteer)
+    task = insert(:task, %{user_id: volunteer1.id})
+    {:error, changeset} = Tasks.grab(task.id, volunteer2.id, ~N[2017-01-01 02:00:00])
+    assert changeset.errors == [user_id: {"is already assigned, can't grab.", []}]
+  end
+
 end

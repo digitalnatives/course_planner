@@ -61,6 +61,7 @@ defmodule CoursePlanner.Tasks do
         task
         |> Task.changeset()
         |> validate_finish_time(now)
+        |> validate_already_assigned(task)
         |> Changeset.put_change(:user_id, user_id)
         |> Repo.update()
       error -> error
@@ -74,5 +75,10 @@ defmodule CoursePlanner.Tasks do
       -1 -> Changeset.add_error(changeset, :finish_time, "is already finished, can't grab.")
       _  -> Changeset.add_error(changeset, :finish_time, "something went wrong.")
     end
+  end
+
+  defp validate_already_assigned(changeset, %{user_id: nil}), do: changeset
+  defp validate_already_assigned(changeset, _) do
+    Changeset.add_error(changeset, :user_id, "is already assigned, can't grab.")
   end
 end
