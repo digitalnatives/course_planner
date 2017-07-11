@@ -25,12 +25,12 @@ defmodule CoursePlanner.Settings do
     Repo.all(@all_query)
   end
 
-  def get_value(name) do
+  def get_value(name, default \\ nil) do
     system_variable = Repo.get_by(SystemVariable, key: name)
 
     {:ok, parsed_value} =
       case system_variable do
-        nil -> {:ok, nil}
+        nil -> {:ok, default}
         _   -> SystemVariable.parse_value(system_variable.value, system_variable.type)
       end
 

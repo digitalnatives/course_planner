@@ -6,7 +6,7 @@ defmodule CoursePlanner.SystemVariableTest do
   @string_valid_attrs %{key: "sample key", value: "sample value", type: "string", visible: true, editable: true}
   @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true}
   @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true}
-  @csv_valid_attrs %{key: "sample key", value: "value1,value2", type: "csv", visible: true, editable: true}
+  @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true}
   @invalid_attrs %{}
 
   test "changeset with invalid attributes" do
@@ -164,24 +164,24 @@ defmodule CoursePlanner.SystemVariableTest do
     end
   end
 
-  describe "changeset for csv type" do
-    test "with normal csv value" do
-      changeset = SystemVariable.changeset(%SystemVariable{}, %{@csv_valid_attrs | value: "value1, value2"})
+  describe "changeset for list type" do
+    test "with normal list value" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@list_valid_attrs | value: "value1, value2"})
       assert changeset.valid?
     end
 
     test "valid changeset when input is not empty" do
-      changeset = SystemVariable.changeset(%SystemVariable{}, %{@csv_valid_attrs | value: "random"})
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@list_valid_attrs | value: "random"})
       assert changeset.valid?
     end
 
     test "valid changeset when input can be interpreted as integer" do
-      changeset = SystemVariable.changeset(%SystemVariable{}, %{@csv_valid_attrs | value: "112, value2"})
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@list_valid_attrs | value: "112, value2"})
       assert changeset.valid?
     end
 
     test "valid changeset when input can be interpreted as boolean" do
-      changeset = SystemVariable.changeset(%SystemVariable{}, %{@csv_valid_attrs | value: "value1, true"})
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@list_valid_attrs | value: "value1, true"})
       assert changeset.valid?
     end
 
