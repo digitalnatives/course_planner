@@ -27,15 +27,7 @@ defmodule CoursePlanner.Attendance do
   def validate_comment(%{valid?: true} = changeset) do
     comment = Changeset.get_field(changeset, :comment)
 
-    comment_valid? =
-      case comment do
-        nil -> true
-        _   -> "ATTENDANCE_DESCRIPTORS"
-               |> Settings.get_value()
-               |> Enum.member?(comment)
-      end
-
-    if comment_valid? do
+    if comment_valid?(comment) do
       changeset
     else
       Changeset.add_error(changeset, :comment,
@@ -43,4 +35,13 @@ defmodule CoursePlanner.Attendance do
     end
   end
   def validate_comment(changeset), do: changeset
+
+  defp comment_valid?(comment) do
+      case comment do
+        nil -> true
+        _   -> "ATTENDANCE_DESCRIPTORS"
+               |> Settings.get_value()
+               |> Enum.member?(comment)
+      end
+  end
 end
