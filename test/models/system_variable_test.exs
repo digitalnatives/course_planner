@@ -194,6 +194,10 @@ defmodule CoursePlanner.SystemVariableTest do
   end
 
   describe "test the get_value" do
+    test "when key does not exist" do
+      assert Settings.get_value("TEST_KEY") == nil
+    end
+
     test "when variable type is string" do
       value = "random value"
       insert(:system_variable, %{key: "TEST_KEY", value: value, type: "string"})
