@@ -30,4 +30,22 @@ defmodule CoursePlanner.TasksTest do
     refute updated_task.user_id
   end
 
+  test "get unassigned tasks" do
+    t1 = insert(:task)
+    t2 = insert(:task)
+    [new_t2, new_t1] = Tasks.get_unassigned_tasks()
+    assert t1.id == new_t1.id
+    assert t2.id == new_t2.id
+  end
+
+  test "get task for user" do
+    volunteer = insert(:volunteer)
+    t1 = insert(:task, %{user_id: volunteer.id})
+    insert(:task)
+    t2 = insert(:task, %{user_id: volunteer.id})
+    [new_t2, new_t1] = Tasks.get_user_tasks(volunteer.id)
+    assert t1.id == new_t1.id
+    assert t2.id == new_t2.id
+  end
+
 end
