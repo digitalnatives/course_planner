@@ -11,9 +11,10 @@ defmodule CoursePlanner.TaskController do
   plug :authorize_resource, model: Task, except: :grab
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
+    now = Timex.now()
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned(Timex.now()),
-      your_tasks: Tasks.get_for_user(id, Timex.now()))
+      available_tasks: Tasks.get_unassigned(now),
+      your_tasks: Tasks.get_for_user(id, now))
   end
 
   def index(conn, _params) do
