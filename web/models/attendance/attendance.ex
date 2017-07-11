@@ -3,9 +3,12 @@ defmodule CoursePlanner.Attendance do
   This module holds the model for the attendance table
   """
   use CoursePlanner.Web, :model
+  alias CoursePlanner.Settings
+  alias Ecto.Changeset
 
   schema "attendances" do
     field :attendance_type, :string
+    field :comment, :string
     belongs_to :student, CoursePlanner.User
     belongs_to :class, CoursePlanner.Class
 
@@ -14,9 +17,30 @@ defmodule CoursePlanner.Attendance do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:attendance_type, :class_id, :student_id])
+    |> cast(params, [:attendance_type, :class_id, :student_id, :comment])
     |> validate_required([:attendance_type, :class_id, :student_id])
     |> cast_assoc(:class)
     |> cast_assoc(:student)
+    |> validate_comment()
   end
+
+  def validate_comment(%{valid?: true} = changeset) do
+    comment = Changeset.get_field(changeset, :comment)
+
+    comment_valid? =
+      case comment do
+        nil -> true
+        _   -> "ATTENDANCE_DESCRIPTORS"
+               |> Settings.get_value()
+               |> Enum.member?(comment)
+      end
+
+    if comment_valid? do
+      changeset
+    else
+      Changeset.add_error(changeset, :comment,
+                  "The Provided comment is not among the valid options")
+    end
+  end
+  def validate_comment(changeset), do: changeset
 end
