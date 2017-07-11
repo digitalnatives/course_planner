@@ -20,8 +20,8 @@ defmodule CoursePlanner.Coherence.UserEmail do
   end
 
   def invitation(invitation, url) do
-    create_modular_email(invitation, "#{site_name()} - Invitation to create a new account", "invitation.html",
-                          %{url: url, name: first_name(invitation.name)})
+    create_modular_email(invitation, "#{site_name()} - Invitation to create a new account",
+                         "invitation.html", %{url: url, name: first_name(invitation.name)})
   end
 
   def unlock(user, url) do
