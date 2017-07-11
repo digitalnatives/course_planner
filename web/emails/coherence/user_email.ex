@@ -36,7 +36,6 @@ defmodule CoursePlanner.Coherence.UserEmail do
     |> add_reply_to()
     |> subject(subject)
     |> render_body(render_body, render_body_params)
-
   end
 
   defp add_reply_to(mail) do
