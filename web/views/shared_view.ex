@@ -22,6 +22,12 @@ defmodule CoursePlanner.SharedView do
     "https://www.gravatar.com/avatar/#{hash}?d=mm&s=#{size}"
   end
 
+  def display_user_name(user) do
+    [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
+    |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
+    |> Enum.join(" ")
+  end
+
   # form components
 
   def form_text(form, field, opts \\ []) do
@@ -266,9 +272,7 @@ defmodule CoursePlanner.SharedView do
   def user_bubble(user) do
     profile_picture = get_gravatar_url(user.email, 200)
 
-    name = [user.name, user.family_name, user.nickname && "(#{user.nickname})"]
-      |> Enum.filter(fn v -> String.length(to_string v) > 0 end)
-      |> Enum.join(" ")
+    name = display_user_name(user)
 
     url = user_show_path(user)
 
