@@ -59,4 +59,5 @@ defmodule CoursePlanner.TaskTest do
     user = Repo.one from u in User, preload: [:tasks]
     assert length(user.tasks) == 3
   end
+
 end
