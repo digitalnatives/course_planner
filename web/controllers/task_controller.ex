@@ -11,9 +11,11 @@ defmodule CoursePlanner.TaskController do
   plug :authorize_resource, model: Task, except: :grab
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
+    now = Timex.now()
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned_tasks(),
-      your_tasks: Tasks.get_user_tasks(id))
+      available_tasks: Tasks.get_unassigned(now),
+      your_past_tasks: Tasks.get_past_tasks(id, now),
+      your_tasks: Tasks.get_for_user(id, now))
   end
 
   def index(conn, _params) do
@@ -98,19 +100,21 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
+  @error_messages %{
+    not_found: "Task was not found.",
+    already_finished: "Cannott grab as task is already finished.",
+    already_assigned: "Cannot grab as task is already assigned."
+  }
+
   def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, user_id) do
+    case Tasks.grab(task_id, user_id, Timex.now()) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task grabbed.")
         |> redirect(to: task_path(conn, :index))
-      {:error, :not_found} ->
+      {:error, type} ->
         conn
-        |> put_flash(:error, "Task was not found.")
-        |> redirect(to: task_path(conn, :index))
-      {:error, _changeset} ->
-        conn
-        |> put_flash(:error, "Something went wrong.")
+        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
         |> redirect(to: task_path(conn, :index))
     end
   end
