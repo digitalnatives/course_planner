@@ -40,11 +40,9 @@ defmodule CoursePlanner.Attendance do
       case comment do
         nil -> true
         _   ->
-              trimmed_commend = String.trim(comment)
-
               "ATTENDANCE_DESCRIPTORS"
                |> Settings.get_value()
-               |> Enum.member?(trimmed_commend)
+               |> Enum.member?(comment)
       end
   end
 end

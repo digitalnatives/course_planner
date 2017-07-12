@@ -49,18 +49,23 @@ defmodule CoursePlanner.AttendanceTest do
       refute changeset.valid?
     end
 
-    test "passes when comment has leading space", %{student: student, class: class} do
-      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      sick_leave"})
-      assert changeset.valid?
+    test "fails when comment has trailing space", %{student: student, class: class} do
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "sick_leave     "})
+      refute changeset.valid?
     end
 
-    test "passes when comment has leading space and trailing space", %{student: student, class: class} do
+    test "fails when comment has leading space", %{student: student, class: class} do
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      sick_leave"})
+      refute changeset.valid?
+    end
+
+    test "fails when comment has leading space and trailing space", %{student: student, class: class} do
       changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      sick_leave       "})
-      assert changeset.valid?
+      refute changeset.valid?
     end
 
     test "passes when setting and comment both have value with space in between", %{student: student, class: class} do
-      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      informed beforehand       "})
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "informed beforehand"})
       assert changeset.valid?
     end
   end
