@@ -61,11 +61,11 @@ defmodule CoursePlanner.Tasks do
     |> Repo.all()
   end
 
-  defp task_query(sort_opt), do: Task |> sort(sort_opt) |> preload(:user)
+  def task_query(sort_opt), do: Task |> sort(sort_opt) |> preload(:user)
 
   defp sort(query, nil), do: query
   defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)
-  defp sort(query, "closest"), do: order_by(query, [t], desc: t.finish_time)
+  defp sort(query, "closest"), do: order_by(query, [t], asc: t.finish_time)
 
   def grab(task_id, user_id) do
     case get(task_id) do
