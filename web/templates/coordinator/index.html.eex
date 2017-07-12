@@ -18,7 +18,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= for coordinator <- @coordinators do %>
+      <%= Enum.with_index(@coordinators) |> Enum.map(fn {coordinator,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
             <%= CoursePlanner.SharedView.display_user_name(coordinator) %>
@@ -35,8 +35,18 @@
             >
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                for="tr_menu_<%= coordinator.id %>"
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@coordinators)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= coordinator.id %>"
             >
               <li class="mdl-menu__item">
                 <%= link "Show", to: coordinator_path(@conn, :show, coordinator) %>
@@ -50,6 +60,6 @@
             </ul>
           </td>
         </tr>
-      <% end %>
+      <% end) %>
     </tbody>
   </table>
