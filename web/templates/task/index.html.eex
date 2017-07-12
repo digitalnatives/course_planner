@@ -19,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <%= for task <- @tasks do %>
+      <%= Enum.with_index(@tasks) |> Enum.map(fn {task,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
             <%= task.name %>
@@ -45,8 +45,18 @@
             >
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                for="tr_menu_<%= task.id %>"
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@tasks)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= task.id %>"
             >
               <li class="mdl-menu__item">
                 <%= link "Show", to: task_path(@conn, :show, task) %>
@@ -60,7 +70,7 @@
             </ul>
           </td>
         </tr>
-      <% end %>
+      <% end) %>
     </tbody>
   </table>
 
