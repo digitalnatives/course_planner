@@ -53,3 +53,29 @@
 <% end %>
   </tbody>
 </table>
+
+<h2>Your past tasks</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deadline</th>
+      <th>Status</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for task <- @your_past_tasks do %>
+    <tr>
+      <td><%= task.name %></td>
+      <td><%= task.start_time %></td>
+      <td><%= task.finish_time %></td>
+      <td><%= task_user(@conn, task) %></td>
+      <td class="text-right">
+        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
