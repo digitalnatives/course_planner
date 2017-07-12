@@ -18,13 +18,10 @@
       </tr>
     </thead>
     <tbody>
-      <%= for student <- @students do %>
+      <%= Enum.with_index(@students) |> Enum.map(fn {student,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= student.name %> <%= student.family_name %>
-            <%= if String.length(to_string student.nickname) > 0 do %>
-              (<%= student.nickname %>)
-            <% end %>
+            <%= CoursePlanner.SharedView.display_user_name(student) %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= student.email %>
@@ -38,8 +35,18 @@
             >
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                for="tr_menu_<%= student.id %>"
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@students)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= student.id %>"
             >
               <li class="mdl-menu__item">
                 <%= link "Show", to: student_path(@conn, :show, student) %>
@@ -53,7 +60,7 @@
             </ul>
           </td>
         </tr>
-      <% end %>
+      <% end) %>
     </tbody>
   </table>
 

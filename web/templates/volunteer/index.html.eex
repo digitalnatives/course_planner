@@ -18,13 +18,10 @@
       </tr>
     </thead>
     <tbody>
-      <%= for volunteer <- @volunteers do %>
+      <%= Enum.with_index(@volunteers) |> Enum.map(fn {volunteer,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= volunteer.name %> <%= volunteer.family_name %>
-            <%= if String.length(to_string volunteer.nickname) > 0 do %>
-              (<%= volunteer.nickname %>)
-            <% end %>
+            <%= CoursePlanner.SharedView.display_user_name(volunteer) %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
             <%= volunteer.email %>
@@ -38,8 +35,18 @@
             >
               <i class="material-icons">more_vert</i>
             </button>
-            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
-                for="tr_menu_<%= volunteer.id %>"
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@volunteers)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= volunteer.id %>"
             >
               <li class="mdl-menu__item">
                 <%= link "Show", to: volunteer_path(@conn, :show, volunteer) %>
@@ -53,6 +60,6 @@
             </ul>
           </td>
         </tr>
-      <% end %>
+      <% end) %>
     </tbody>
   </table>
