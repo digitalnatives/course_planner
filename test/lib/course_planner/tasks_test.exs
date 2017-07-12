@@ -55,4 +55,14 @@ defmodule CoursePlanner.TasksTest do
     assert Tasks.grab(task.id, volunteer2.id, ~N[2017-01-01 02:00:00]) == {:error, :already_assigned}
   end
 
+  test "query past tasks" do
+    volunteer = insert(:volunteer)
+    task1 = insert(:task, %{finish_time: ~N[2017-01-01 02:00:00], user_id: volunteer.id})
+    task2 = insert(:task, %{finish_time: ~N[2017-01-02 02:00:00], user_id: volunteer.id})
+    insert(:task, %{finish_time: ~N[2017-01-02 08:00:00], user_id: volunteer.id})
+    insert(:task, %{finish_time: ~N[2017-01-03 02:00:00], user_id: volunteer.id})
+    result = Tasks.get_past_tasks(volunteer.id, ~N[2017-01-02 05:00:00]) |> Enum.map(&(&1.id))
+    assert result == [task1.id, task2.id]
+  end
+
 end
