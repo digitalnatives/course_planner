@@ -9,7 +9,7 @@ defmodule CoursePlanner.AttendanceTest do
   @invalid_attrs %{}
 
   setup do
-    insert(:system_variable, key: "ATTENDANCE_DESCRIPTORS", value: "sick_leave, informed_beforehand", type: "list")
+    insert(:system_variable, key: "ATTENDANCE_DESCRIPTORS", value: "sick_leave, informed beforehand", type: "list")
 
     student = insert(:user, %{role: "Student"})
     offered_course = insert(:offered_course, %{students: [student]})
@@ -47,6 +47,21 @@ defmodule CoursePlanner.AttendanceTest do
     test "fails when comment is not among valid options", %{student: student, class: class} do
       changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "random"})
       refute changeset.valid?
+    end
+
+    test "passes when comment has leading space", %{student: student, class: class} do
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      sick_leave"})
+      assert changeset.valid?
+    end
+
+    test "passes when comment has leading space and trailing space", %{student: student, class: class} do
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      sick_leave       "})
+      assert changeset.valid?
+    end
+
+    test "passes when setting and comment both have value with space in between", %{student: student, class: class} do
+      changeset = Attendance.changeset(%Attendance{}, %{@valid_attrs | student_id: student.id, class_id: class.id, comment: "      informed beforehand       "})
+      assert changeset.valid?
     end
   end
 end
