@@ -10,12 +10,13 @@ defmodule CoursePlanner.TaskController do
   plug :authorize_resource, model: Task, id_name: "task_id", only: :grab
   plug :authorize_resource, model: Task, except: :grab
 
-  def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, _params) do
+  def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, params) do
+    sort_opt = Map.get(params, "sort", nil)
     now = Timex.now()
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned(now),
-      your_past_tasks: Tasks.get_past_tasks(id, now),
-      your_tasks: Tasks.get_for_user(id, now))
+      available_tasks: Tasks.get_unassigned(sort_opt, now),
+      your_past_tasks: Tasks.get_past(sort_opt, id, now),
+      your_tasks: Tasks.get_for_user(sort_opt, id, now))
   end
 
   def index(conn, _params) do

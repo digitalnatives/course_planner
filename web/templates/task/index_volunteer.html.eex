@@ -1,5 +1,8 @@
 <h2>Your tasks</h2>
 
+<%= link "Sort by Fresh", to: task_path(@conn, :index, sort: "fresh"), class: "btn btn-default btn-xs" %>
+<%= link "Sort by Closest", to: task_path(@conn, :index, sort: "closest"), class: "btn btn-default btn-xs" %>
+
 <table class="table">
   <thead>
     <tr>
