@@ -51,6 +51,7 @@ defmodule CoursePlanner.Router do
     get "/", PageController, :index
 
     resources "/dashboard", DashboardController, only: [:show], singleton: true
+    resources "/schedule", ScheduleController, only: [:show], singleton: true
 
     resources "/users", UserController, except: [:create, :new]
     resources "/coordinators", CoordinatorController
