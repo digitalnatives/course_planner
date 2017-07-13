@@ -11,6 +11,16 @@ defmodule CoursePlanner.UserController do
     render(conn, "index.html", users: Users.all())
   end
 
+  def show(conn, %{"id" => id}) do
+    case Users.get(id) do
+      {:ok, user} -> render(conn, "show.html", user: user)
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+    end
+  end
+
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
     changeset = User.changeset(user)
@@ -28,9 +38,15 @@ defmodule CoursePlanner.UserController do
       {:ok, user} ->
         Users.notify_user(user, current_user, :user_modified, user_show_url(user))
 
-        conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: dashboard_path(conn, :show))
+        if conn.assigns.current_user.role === "Coordinator" do
+          conn
+          |> put_flash(:info, "User updated successfully.")
+          |> redirect(to: user_path(conn, :show, user))
+        else
+          conn
+          |> put_flash(:info, "Your profile has been updated successfully.")
+          |> redirect(to: dashboard_path(conn, :show))
+        end
       {:error, changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)
     end
