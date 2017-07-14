@@ -1,13 +1,5 @@
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
+  const days = [ "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" ];
 
   function isoDate ( date ) {
     return date.toISOString( ).slice( 0, 10 );
@@ -41,7 +33,7 @@
   }
 
   function renderDay ( date ) {
-    return days[ date.getDay()-1 ] || "";
+    return days[ date.getDay() ] || "";
   }
 
   function renderHour ( hour ) {
@@ -51,7 +43,7 @@
   function renderCalendar ( startDate, classes, calendar ) {
     const monday = new Date( startDate );
 
-    let days = new Array( 5 ).fill( monday ).map(
+    let days = new Array( 7 ).fill( monday ).map(
       ( monday, index ) => {
         const day = new Date( monday );
         day.setDate( day.getDate() + index );
@@ -215,20 +207,31 @@
           <div class="calendar__classes">
             ${
               new Array( 13 ).fill( 1 ).map(
-                ( time ) => `<div class="calendar__classes-hour"></div>`
+                ( time ) => `
+                  <div
+                    class="
+                      calendar__classes-hour
+                      ${ [0,6].includes( day.date.getDay() ) ? "calendar__classes-hour--weekend" : "" }
+                    "
+                  ></div>
+                `
               ).join( "" )
             }
             ${
               day.classes.map(
                 ( cl, i ) => `
-                  <div class="calendar__class" style="
-                    top: ${ cl.top }px;
-                    height: ${ cl.height }px;
-                    left: ${ cl.left }%;
-                    width: ${ cl.width }%;
-                  ">
+                  <div
+                    class="calendar__class"
+                    style="
+                      top: ${ cl.top }px;
+                      height: ${ cl.height }px;
+                      left: ${ cl.left }%;
+                      width: ${ cl.width }%;
+                    "
+                    id="${ isoDate( day.date ) }__${ cl.index }"
+                  >
                     <div class="calendar__class-course">
-                      ${ cl.course_name } ${ i }
+                      ${ cl.course_name }
                     </div>
                     <div class="calendar__class-teachers">
                       ${ cl.teachers.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }
@@ -237,6 +240,18 @@
                       ${ cl.classroom ? cl.classroom + "," : "" }
                       ${ renderHour( cl.starting_at.slice(0,2) ) }-${ renderHour( cl.finishes_at.slice(0,2) ) }
                     </div>
+                  </div>
+                  <div
+                    class="
+                      mdl-tooltip
+                      ${ cl.color < cl.maxColor / 2 ? "mdl-tooltip--left" : "mdl-tooltip--right" }
+                    "
+                    for="${ isoDate( day.date ) }__${ cl.index }"
+                  >
+                    ${ cl.course_name }<br />
+                    ${ cl.teachers.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }<br />
+                    ${ cl.classroom ? cl.classroom + "," : "" }
+                    ${ renderHour( cl.starting_at.slice(0,2) ) }-${ renderHour( cl.finishes_at.slice(0,2) ) }
                   </div>
                 `
               ).join( "" )
@@ -287,6 +302,8 @@
         </div>
       </div>
     `;
+
+    componentHandler.upgradeDom();
   }
 
   function initCalendar ( ) {

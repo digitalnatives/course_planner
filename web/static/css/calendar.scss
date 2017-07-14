@@ -78,6 +78,10 @@
     &__classes-hour {
       height: 50px;
       box-sizing: border-box;
+
+      &--weekend {
+        background-color: rgba(0,0,0,0.04);
+      }
     }
 
     &__classes-hour + &__classes-hour {
