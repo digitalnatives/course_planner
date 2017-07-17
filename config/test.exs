@@ -14,5 +14,8 @@ config :course_planner, CoursePlanner.Repo,
   hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-  config :course_planner, CoursePlanner.Mailer,
-    adapter: Swoosh.Adapters.Test
+config :course_planner, CoursePlanner.Mailer,
+  adapter: Swoosh.Adapters.Test
+
+config :comeonin,
+  bcrypt_log_rounds: 4

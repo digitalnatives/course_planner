@@ -4,7 +4,7 @@ defmodule CoursePlanner.StudentsTest do
   alias CoursePlanner.{Course, OfferedCourse, Repo, Students}
   alias CoursePlanner.Terms.Term
 
-  @valid_attrs %{name: "some content", email: "valid@email"}
+  @valid_attrs %{"name" => "some content", "email" => "valid@email"}
 
   defp create_term(name, start_date, end_date, course) do
      Repo.insert!(
