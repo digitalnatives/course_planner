@@ -2,8 +2,6 @@ defmodule CoursePlanner.ScheduleController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.Schedule
-
   import Canary.Plugs
   plug :authorize_controller
 
