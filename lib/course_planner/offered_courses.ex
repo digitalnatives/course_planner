@@ -40,4 +40,12 @@ defmodule CoursePlanner.OfferedCourses do
   def count_intersection(students1, students2) do
     Enum.count(students1, &(&1 in students2))
   end
+
+  def get_subscribed_users(offered_courses) do
+    offered_courses
+    |> Enum.flat_map(fn(offered_course) ->
+      Map.get(offered_course, :teachers) ++ Map.get(offered_course, :students)
+    end)
+    |> Enum.uniq_by(fn %{id: id} -> id end)
+  end
 end
