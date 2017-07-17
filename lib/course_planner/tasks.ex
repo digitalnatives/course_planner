@@ -47,22 +47,59 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def get_user_tasks(id) do
-    Repo.all(from t in Task, where: t.user_id == ^id, preload: [:user])
+  def get_unassigned(sort_opt, now) do
+    sort_opt
+    |> task_query()
+    |> where([t], is_nil(t.user_id))
+    |> where([t], t.finish_time > ^now)
+    |> Repo.all()
   end
 
-  def get_unassigned_tasks do
-    Repo.all(from t in Task, where: is_nil(t.user_id))
+  def get_past(sort_opt, id, now) do
+    sort_opt
+    |> task_query()
+    |> where([t], t.user_id == ^id)
+    |> where([t], t.finish_time < ^now)
+    |> Repo.all()
   end
 
-  def grab(task_id, user_id) do
-    case get(task_id) do
-      {:ok, task} ->
-        task
-        |> Task.changeset()
-        |> Changeset.put_change(:user_id, user_id)
-        |> Repo.update()
+  def get_for_user(sort_opt, id, now) do
+    sort_opt
+    |> task_query()
+    |> where([t], t.user_id == ^id)
+    |> where([t], t.finish_time > ^now)
+    |> Repo.all()
+  end
+
+  def task_query(sort_opt), do: Task |> sort(sort_opt) |> preload(:user)
+
+  defp sort(query, nil), do: query
+  defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)
+  defp sort(query, "closest"), do: order_by(query, [t], asc: t.finish_time)
+
+  def grab(task_id, user_id, now) do
+    with {:ok, task}              <- get(task_id),
+      %{valid?: true} = changeset <- Task.changeset(task),
+      {:ok, changeset}            <- validate_finish_time(changeset, now),
+      {:ok, changeset}            <- validate_already_assigned(changeset, task)
+    do
+      changeset
+      |> Changeset.put_change(:user_id, user_id)
+      |> Repo.update()
+    else
       error -> error
     end
   end
+
+  defp validate_finish_time(changeset, now) do
+    fin = Changeset.get_field(changeset, :finish_time)
+    case Timex.compare(fin, now) do
+      1  -> {:ok, changeset}
+      -1 -> {:error, :already_finished}
+      _  -> {:error, :unkown}
+    end
+  end
+
+  defp validate_already_assigned(changeset, %{user_id: nil}), do: {:ok, changeset}
+  defp validate_already_assigned(_changeset, _), do: {:error, :already_assigned}
 end

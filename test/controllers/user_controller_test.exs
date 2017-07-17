@@ -24,9 +24,15 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 200) =~ "All users"
   end
 
-  test "renders page not found instead of showing the chosen resource", %{conn: conn} do
-    user = Repo.insert! %User{}
-    conn = get conn, "/users/#{user.id}"
+  test "shows chosen resource", %{conn: conn} do
+    user = insert(:student)
+    conn = get conn, user_path(conn, :show, user)
+    assert html_response(conn, 200) =~
+      Enum.join([user.name, user.family_name], " ")
+  end
+
+  test "renders page not found when id is nonexistent", %{conn: conn} do
+    conn = get conn, user_path(conn, :show, -1)
     assert html_response(conn, 404)
   end
 
@@ -40,6 +46,23 @@ defmodule CoursePlanner.UserControllerTest do
     user = Repo.insert! %User{name: "Foo", family_name: "Bar"}
     conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
     assert html_response(conn, 200) =~ "Foo Bar"
+  end
+
+  test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    user = insert(:student)
+
+    conn = get student_conn, user_path(student_conn, :show, user)
+    assert html_response(conn, 403)
+
+    conn = get teacher_conn, user_path(teacher_conn, :show, user)
+    assert html_response(conn, 403)
+
+    conn = get volunteer_conn, user_path(volunteer_conn, :show, user)
+    assert html_response(conn, 403)
   end
 
   test "does not list entries on index for non coordinator user", %{conn: _conn} do
@@ -108,6 +131,14 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "shows the user himself" do
+    user_conn = login_as(:user)
+    user = user_conn.assigns.current_user
+
+    conn = get user_conn, user_path(user_conn, :show, user)
+    assert html_response(conn, 200)
+  end
+
   test "edit the user himself" do
     user = insert(:user, name: "Foo", family_name: "Bar")
     user_conn = Phoenix.ConnTest.build_conn()
@@ -117,9 +148,18 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
+  test "coordinator updates his profile" do
+    user_conn = login_as(:coordinator)
+    user = user_conn.assigns.current_user
+
+    conn = put user_conn, user_path(user_conn, :update, user), user: @valid_attrs
+    assert redirected_to(conn) == user_path(conn, :show, user)
+    assert Repo.get_by(User, @valid_attrs)
+  end
+
   test "update the user himself" do
-    user = insert(:user)
-    user_conn = Phoenix.ConnTest.build_conn()
+    user = insert(:student)
+    user_conn = login_as(:student)
     |> assign(:current_user, user)
 
     conn = put user_conn, user_path(user_conn, :update, user), user: @valid_attrs
