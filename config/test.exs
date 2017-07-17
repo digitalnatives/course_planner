@@ -16,3 +16,7 @@ config :course_planner, CoursePlanner.Repo,
 
   config :course_planner, CoursePlanner.Mailer,
     adapter: Swoosh.Adapters.Test
+
+  config :coherence,
+    email_from_name: "Test Name",
+    email_from_email: "test@email"
