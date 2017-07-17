@@ -19,7 +19,7 @@
         <div class="mdl-layout__header-row">
           <%= if length(@conn.path_info) > 1 do %>
             <a
-              href="#" onclick="location.href = document.referrer; return false;"
+              href="/<%= Enum.at(@conn.path_info, 0) %>"
               class="mdl-button mdl-js-button mdl-button--icon layout-backlink"
             >
               <i class="material-icons">&#xE5C4;</i>
