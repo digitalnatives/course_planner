@@ -61,7 +61,7 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
 %CoursePlanner.SystemVariable{}
 |> CoursePlanner.SystemVariable.changeset(
     %{
-      key: "ATTENDANCE_DESCRIPTORS",
+      key: "ATTENDANCE_DESCRIPTIONS",
       value: "sick leave, informed beforehand",
       type: "list",
       editable: true,

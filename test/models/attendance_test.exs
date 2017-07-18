@@ -9,7 +9,7 @@ defmodule CoursePlanner.AttendanceTest do
   @invalid_attrs %{}
 
   setup do
-    insert(:system_variable, key: "ATTENDANCE_DESCRIPTORS", value: "sick_leave, informed beforehand", type: "list")
+    insert(:system_variable, key: "ATTENDANCE_DESCRIPTIONS", value: "sick_leave, informed beforehand, withdraw, canceled", type: "list")
 
     student = insert(:user, %{role: "Student"})
     offered_course = insert(:offered_course, %{students: [student]})
