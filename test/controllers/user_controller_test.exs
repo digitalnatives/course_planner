@@ -5,9 +5,6 @@ defmodule CoursePlanner.UserControllerTest do
 
   import CoursePlanner.Factory
 
-  @valid_attrs %{name: "some content", email: "valid@email"}
-  @invalid_attrs %{}
-
   setup do
     {:ok, conn: login_as(:coordinator)}
   end
@@ -37,14 +34,14 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    user = Repo.insert! %User{name: "Foo", family_name: "Bar"}
+    user = insert(:student, %{name: "Foo", family_name: "Bar"})
     conn = get conn, user_path(conn, :edit, user)
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    user = Repo.insert! %User{name: "Foo", family_name: "Bar"}
-    conn = put conn, user_path(conn, :update, user), user: @invalid_attrs
+    user = insert(:student, %{name: "Foo", family_name: "Bar"})
+    conn = put conn, user_path(conn, :update, user), %{"user" => %{"email" => "not email"}}
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
@@ -119,15 +116,15 @@ defmodule CoursePlanner.UserControllerTest do
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    user = Repo.insert! %User{}
+    user = insert(:student, %{})
 
-    conn = put student_conn, user_path(student_conn, :update, user), user: @valid_attrs
+    conn = put student_conn, user_path(student_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put teacher_conn, user_path(teacher_conn, :update, user), user: @valid_attrs
+    conn = put teacher_conn, user_path(teacher_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put volunteer_conn, user_path(volunteer_conn, :update, user), user: @valid_attrs
+    conn = put volunteer_conn, user_path(volunteer_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 
@@ -152,9 +149,9 @@ defmodule CoursePlanner.UserControllerTest do
     user_conn = login_as(:coordinator)
     user = user_conn.assigns.current_user
 
-    conn = put user_conn, user_path(user_conn, :update, user), user: @valid_attrs
+    conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == user_path(conn, :show, user)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: "foo@bar.com")
   end
 
   test "update the user himself" do
@@ -162,9 +159,8 @@ defmodule CoursePlanner.UserControllerTest do
     user_conn = login_as(:student)
     |> assign(:current_user, user)
 
-    conn = put user_conn, user_path(user_conn, :update, user), user: @valid_attrs
+    conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == dashboard_path(conn, :show)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: "foo@bar.com")
   end
-
 end

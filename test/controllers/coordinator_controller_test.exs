@@ -2,12 +2,8 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   use CoursePlanner.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
-  alias CoursePlanner.Coordinators
 
   import CoursePlanner.Factory
-
-  @valid_attrs %{name: "some content", email: "valid@email"}
-  @invalid_attrs %{}
 
   setup do
     {:ok, conn: login_as(:coordinator)}
@@ -38,26 +34,26 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    coordinator = Repo.insert! %User{name: "Foo", family_name: "Bar"}
+    coordinator = insert(:coordinator, %{name: "Foo", family_name: "Bar"})
     conn = get conn, coordinator_path(conn, :edit, coordinator)
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    coordinator = Repo.insert! %User{}
-    conn = put conn, coordinator_path(conn, :update, coordinator), user: @valid_attrs
+    coordinator = insert(:coordinator, %{})
+    conn = put conn, coordinator_path(conn, :update, coordinator), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == coordinator_path(conn, :show, coordinator)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: "foo@bar.com")
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    coordinator = Repo.insert! %User{name: "Foo", family_name: "Bar"}
-    conn = put conn, coordinator_path(conn, :update, coordinator), user: @invalid_attrs
+    coordinator = insert(:coordinator, %{name: "Foo", family_name: "Bar"})
+    conn = put conn, coordinator_path(conn, :update, coordinator), %{"user" => %{"email" => "not email"}}
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    {:ok, coordinator} = Coordinators.new(@valid_attrs, "whatever")
+    coordinator = insert(:coordinator)
     conn = delete conn, coordinator_path(conn, :delete, coordinator)
     assert redirected_to(conn) == coordinator_path(conn, :index)
     refute Repo.get(User, coordinator.id)
@@ -134,7 +130,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 403)
   end
 
-  test "does not render form for new class for non coordinator user", %{conn: _conn} do
+  test "does not render form for new coordinator for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
@@ -149,37 +145,37 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 403)
   end
 
-  test "does not create class for non coordinator use", %{conn: _conn} do
+  test "does not create coordinator for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
     coordinator = insert(:coordinator)
 
-    conn = post student_conn, coordinator_path(student_conn, :create), class: coordinator
+    conn = post student_conn, coordinator_path(student_conn, :create), %{"user" => coordinator}
     assert html_response(conn, 403)
 
-    conn = post teacher_conn, coordinator_path(teacher_conn, :create), class: coordinator
+    conn = post teacher_conn, coordinator_path(teacher_conn, :create), %{"user" => coordinator}
     assert html_response(conn, 403)
 
-    conn = post volunteer_conn, coordinator_path(volunteer_conn, :create), class: coordinator
+    conn = post volunteer_conn, coordinator_path(volunteer_conn, :create), %{"user" => coordinator}
     assert html_response(conn, 403)
   end
 
-  test "does not update chosen coordinator for non coordinator use", %{conn: _conn} do
+  test "does not update chosen coordinator for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    coordinator = Repo.insert! %User{}
+    coordinator = insert(:coordinator, %{})
 
-    conn = put student_conn, coordinator_path(student_conn, :update, coordinator), coordinator: @valid_attrs
+    conn = put student_conn, coordinator_path(student_conn, :update, coordinator), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put teacher_conn, coordinator_path(teacher_conn, :update, coordinator), coordinator: @valid_attrs
+    conn = put teacher_conn, coordinator_path(teacher_conn, :update, coordinator), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put volunteer_conn, coordinator_path(volunteer_conn, :update, coordinator), coordinator: @valid_attrs
+    conn = put volunteer_conn, coordinator_path(volunteer_conn, :update, coordinator), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 end

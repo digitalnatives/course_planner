@@ -33,6 +33,7 @@ defmodule CoursePlanner.User do
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
+    |> validate_coherence(params)
   end
 
   def changeset(model, params, :password) do
@@ -43,16 +44,10 @@ defmodule CoursePlanner.User do
   end
 
   def changeset(model, params, :seed) do
-    model
-    |> cast(params, @target_params ++ coherence_fields())
-    |> validate_coherence(params)
+    changeset(model, params)
   end
 
   def changeset(model, params, :update) do
-    model
-    |> cast(params, @target_params ++ coherence_fields())
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/@/)
-    |> unique_constraint(:email)
+    changeset(model, params)
   end
 end

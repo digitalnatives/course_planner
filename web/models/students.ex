@@ -28,7 +28,7 @@ defmodule CoursePlanner.Students do
       nil -> {:error, :not_found}
       student ->
         student
-        |> User.changeset(params)
+        |> User.changeset(params, :update)
         |> Repo.update
         |> format_error(student)
     end

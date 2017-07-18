@@ -3,18 +3,21 @@ defmodule CoursePlanner.Users do
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
   alias CoursePlanner.{Repo, User, Notifier, Notifier.Notification}
-  alias Ecto.{Changeset, DateTime}
+  alias Ecto.DateTime
 
   def all do
     Repo.all(User)
   end
 
   def new_user(user, token) do
-    %User{}
-    |> User.changeset(user)
-    |> Changeset.put_change(:reset_password_token, token)
-    |> Changeset.put_change(:reset_password_sent_at, DateTime.utc())
-    |> Changeset.put_change(:password, "fakepassword")
+    user =
+      user
+      |> Map.put_new("reset_password_token", token)
+      |> Map.put_new("reset_password_sent_at", DateTime.utc())
+      |> Map.put_new("password", "fakepassword")
+      |> Map.put_new("password_confirmation", "fakepassword")
+
+    User.changeset(%User{}, user)
   end
 
   def get(id) do
