@@ -1,18 +1,12 @@
 defmodule CoursePlanner.TaskControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.{Tasks, Volunteers, Repo}
+  alias CoursePlanner.{Tasks, Repo}
   alias CoursePlanner.Tasks.Task
 
   import CoursePlanner.Factory
 
   @valid_attrs %{name: "some content", start_time: Timex.now(), finish_time: Timex.now(), description: "sample rtask description"}
   @invalid_attrs %{}
-  @volunteer %{
-    name: "Test Volunteer",
-    email: "volunteer@courseplanner.com",
-    password: "secret",
-    password_confirmation: "secret",
-    role: "Volunteer"}
 
   setup do
     conn =
@@ -195,7 +189,7 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "create task with assigned volunteer", %{conn: conn} do
-    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    volunteer = insert(:volunteer)
     task = Map.put(@valid_attrs, :user_id, volunteer.id)
     conn = post conn, task_path(conn, :create), task: task
     assert redirected_to(conn) == task_path(conn, :index)
@@ -223,12 +217,14 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "grab task", %{conn: conn} do
-    {:ok, task} = Tasks.new(@valid_attrs)
-    {:ok, volunteer} = Volunteers.new(@volunteer, "whatever")
+    task = insert(:task, %{
+      start_time: Timex.now() |> Timex.shift(days: 1),
+      finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1)})
+    volunteer = insert(:volunteer)
     conn = assign(conn, :current_user, volunteer)
     conn = post conn, task_grab_path(conn, :grab, task)
     assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
+    assert Repo.get(Task, task.id).user_id == volunteer.id
   end
 
   test "does not grab a non-existing resource", %{conn: conn} do
@@ -238,5 +234,17 @@ defmodule CoursePlanner.TaskControllerTest do
     assert  html_response(conn, 200) =~ "Task was not found"
   end
 
+  test "index sorted by freshness" do
+    volunteer_conn = login_as(:volunteer)
 
+    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "fresh")
+    assert html_response(conn, 200) =~ "Your tasks"
+  end
+
+  test "index sorted by closeness" do
+    volunteer_conn = login_as(:volunteer)
+
+    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "closest")
+    assert html_response(conn, 200) =~ "Your tasks"
+  end
 end

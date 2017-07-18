@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, Notifier, Coordinators, Notifier.Notification}
+  alias CoursePlanner.{Repo, OfferedCourses, Notifier, Coordinators, Notifier.Notification}
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset
 
@@ -51,15 +51,18 @@ defmodule CoursePlanner.Terms do
     changeset = Term.changeset(term, params)
     start_date = Changeset.get_field(changeset, :start_date)
     end_date = Changeset.get_field(changeset, :end_date)
-    holidays =
-      params
-      |> Map.get("holidays", %{})
-      |> Map.values()
-      |> Enum.map(&Holiday.changeset(%Holiday{}, start_date, end_date, &1))
+    holidays = get_holiday_changesets(params, start_date, end_date)
 
     changeset
     |> Changeset.put_embed(:holidays, holidays)
     |> Term.validate_minimum_teaching_days(holidays)
+  end
+
+  defp get_holiday_changesets(params, start_date, end_date) do
+    params
+    |> Map.get("holidays", %{})
+    |> Map.values()
+    |> Enum.map(&Holiday.changeset(%Holiday{}, start_date, end_date, &1))
   end
 
   def delete(id) do
@@ -84,19 +87,12 @@ defmodule CoursePlanner.Terms do
     |> Notifier.notify_user()
   end
 
-  defp get_subscribed_users(term) do
+  def get_subscribed_users(term) do
     offered_courses = term
     |> Repo.preload([:offered_courses, offered_courses: :students, offered_courses: :teachers])
     |> Map.get(:offered_courses)
 
-    students = offered_courses
-    |> Enum.flat_map(&(Map.get(&1, :students)))
-    |> Enum.uniq_by(fn %{id: id} -> id end)
-
-    teachers = offered_courses
-    |> Enum.flat_map(&(Map.get(&1, :teachers)))
-    |> Enum.uniq_by(fn %{id: id} -> id end)
-
-    students ++ teachers ++ Coordinators.all()
+    students_and_teachers = OfferedCourses.get_subscribed_users(offered_courses)
+    students_and_teachers ++ Coordinators.all()
   end
 end

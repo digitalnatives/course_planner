@@ -1,5 +1,8 @@
 <h2>Your tasks</h2>
 
+<%= link "Sort by Fresh", to: task_path(@conn, :index, sort: "fresh"), class: "btn btn-default btn-xs" %>
+<%= link "Sort by Closest", to: task_path(@conn, :index, sort: "closest"), class: "btn btn-default btn-xs" %>
+
 <table class="table">
   <thead>
     <tr>
@@ -45,6 +48,32 @@
       <td class="text-right">
         <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
         <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post, class: "btn btn-default btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<h2>Your past tasks</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Deadline</th>
+      <th>Status</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for task <- @your_past_tasks do %>
+    <tr>
+      <td><%= task.name %></td>
+      <td><%= task.start_time %></td>
+      <td><%= task.finish_time %></td>
+      <td><%= task_user(@conn, task) %></td>
+      <td class="text-right">
+        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
       </td>
     </tr>
 <% end %>
