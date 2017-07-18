@@ -15,8 +15,8 @@
                                                                                              required: true
             %>
             <%= CoursePlanner.SharedView.form_date f, :date, required: true %>
-            <%= CoursePlanner.SharedView.form_time f, :starting_at, required: true %>
-            <%= CoursePlanner.SharedView.form_time f, :finishes_at, required: true %>
+            <%= CoursePlanner.SharedView.form_time f, :starting_at, required: true, value: %{hour: 8, minute: 0} %>
+            <%= CoursePlanner.SharedView.form_time f, :finishes_at, required: true, value: %{hour: 8, minute: 0} %>
             <%= CoursePlanner.SharedView.form_text f, :classroom %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>

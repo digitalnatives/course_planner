@@ -3,7 +3,7 @@
     <div class="col-xs-2">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--colon-after <%= @wrapper_class %>">
         <%= time_select @form, @field, builder: fn b -> %>
-          <%= b.(:hour, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+          <%= b.(:hour, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.hour) %>
         <% end %>
         <span class="mdl-textfield__label"><%= @label %></span>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
@@ -17,7 +17,7 @@
     <div class="col-xs-2">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
         <%= time_select @form, @field, builder: fn b -> %>
-          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
+          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.minute) %>
         <% end %>
         <label class="mdl-textfield__label"></label>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
