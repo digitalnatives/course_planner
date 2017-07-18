@@ -1,0 +1,125 @@
+
+  $calendar-border: 1px solid rgba(0,0,0,0.1);
+
+  .calendar {
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+
+    box-sizing: border-box;
+    border: $calendar-border;
+
+    &__week {
+      padding-top: 10px;
+      text-align: center;
+    }
+
+    &__time {
+      display: flex;
+      flex-direction: column;
+
+      width: 50px;
+
+      box-sizing: border-box;
+
+      &-header {
+        height: 50px;
+
+        box-sizing: border-box;
+        border-bottom: $calendar-border;
+      }
+
+      &-hour {
+        padding-top: 15px;
+        box-sizing: border-box;
+        height: 50px;
+        text-align: center;
+      }
+
+      &-hour + &-hour {
+        border-top: $calendar-border;
+      }
+    }
+
+    &__days {
+      display: flex;
+      flex-direction: row;
+
+      width: 100%;
+    }
+
+    &__day {
+      display: flex;
+      flex-direction: column;
+
+      width: 20%;
+
+      box-sizing: border-box;
+      border-left: $calendar-border;
+
+      &-header {
+        padding-top: 15px;
+        box-sizing: border-box;
+        height: 50px;
+        text-align: center;
+
+        background-color: $secondary;
+        color: white;
+
+      }
+
+    }
+
+    &__classes {
+      position: relative;
+      overflow: hidden;
+    }
+
+    &__classes-hour {
+      height: 50px;
+      box-sizing: border-box;
+
+      &--weekend {
+        background-color: rgba(0,0,0,0.04);
+      }
+    }
+
+    &__classes-hour + &__classes-hour {
+      border-top: $calendar-border;
+    }
+
+    &__class {
+      width: 100%;
+      font-size: 12px;
+      line-height: 14px;
+      position: absolute;
+      padding: 4px;
+
+      background-color: rgba($primary, 0.5);
+      border: $calendar-border;
+      box-sizing: border-box;
+
+      &-course {
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &-teachers {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+      }
+
+      &-place {
+      }
+
+      > * {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
