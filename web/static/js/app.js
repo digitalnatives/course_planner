@@ -20,3 +20,5 @@
   const { initForm } = require( "./form.js" );
   initForm();
 
+  const { initCalendar } = require( "./calendar.js" );
+  initCalendar();

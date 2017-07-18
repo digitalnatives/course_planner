@@ -56,6 +56,7 @@
 
       <%= CoursePlanner.SharedView.navbar "Course Planner" do %>
         <%= CoursePlanner.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
+        <%= CoursePlanner.SharedView.navbar_item "Calendar", @conn, schedule_path(@conn, :show) %>
         <%= CoursePlanner.SharedView.navbar_separator %>
         <%= CoursePlanner.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
