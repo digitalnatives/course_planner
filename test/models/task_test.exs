@@ -3,11 +3,11 @@ defmodule CoursePlanner.TaskTest do
 
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Repo
-  alias CoursePlanner.Volunteers
   alias CoursePlanner.User
   alias Ecto.Changeset
 
-  @user %{name: "user name", email: "valid@email"}
+  import CoursePlanner.Factory
+
   @valid_attrs %{name: "mahname", start_time: Timex.now(), finish_time: Timex.now()}
   @invalid_attrs %{}
 
@@ -17,10 +17,8 @@ defmodule CoursePlanner.TaskTest do
     |> Repo.insert!()
   end
 
-  defp create_volunteer, do: Volunteers.new(@user, "whatever")
-
   test "changeset with valid attributes" do
-    {:ok, volunteer} = create_volunteer()
+    volunteer = insert(:volunteer)
     changeset =
       create_task()
       |> Task.changeset(%{user: volunteer.id})
@@ -52,12 +50,11 @@ defmodule CoursePlanner.TaskTest do
   end
 
   test "query tasks per volunteer" do
-    {:ok, volunteer} = create_volunteer()
+    volunteer = insert(:volunteer)
     create_task(volunteer)
     create_task(volunteer)
     create_task(volunteer)
     user = Repo.one from u in User, preload: [:tasks]
     assert length(user.tasks) == 3
   end
-
 end

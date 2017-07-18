@@ -1,11 +1,8 @@
 defmodule CoursePlanner.TeacherControllerTest do
   use CoursePlanner.ConnCase
 
-  alias CoursePlanner.{Repo, User, Teachers}
+  alias CoursePlanner.{Repo, User}
   import CoursePlanner.Factory
-
-  @valid_attrs %{name: "some content", email: "valid@email"}
-  @invalid_attrs %{}
 
   setup do
     {:ok, conn: login_as(:coordinator)}
@@ -36,26 +33,26 @@ defmodule CoursePlanner.TeacherControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    teacher = Repo.insert! %User{name: "Foo", family_name: "Bar"}
+    teacher = insert(:teacher, %{name: "Foo", family_name: "Bar"})
     conn = get conn, teacher_path(conn, :edit, teacher)
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    teacher = Repo.insert! %User{}
-    conn = put conn, teacher_path(conn, :update, teacher), user: @valid_attrs
+    teacher = insert(:teacher, %{})
+    conn = put conn, teacher_path(conn, :update, teacher), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == teacher_path(conn, :show, teacher)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: "foo@bar.com")
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    teacher = Repo.insert! %User{name: "Foo", family_name: "Bar"}
-    conn = put conn, teacher_path(conn, :update, teacher), user: @invalid_attrs
+    teacher = insert(:teacher, %{name: "Foo", family_name: "Bar"})
+    conn = put conn, teacher_path(conn, :update, teacher), %{"user" => %{"email" => "not email"}}
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    {:ok, teacher} = Teachers.new(@valid_attrs, "whatever")
+    teacher = insert(:teacher)
     conn = delete conn, teacher_path(conn, :delete, teacher)
     assert redirected_to(conn) == teacher_path(conn, :index)
     refute Repo.get(User, teacher.id)
@@ -132,7 +129,7 @@ defmodule CoursePlanner.TeacherControllerTest do
     assert html_response(conn, 403)
   end
 
-  test "does not render form for new class for non coordinator user", %{conn: _conn} do
+  test "does not render form for new teacher for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
@@ -147,37 +144,35 @@ defmodule CoursePlanner.TeacherControllerTest do
     assert html_response(conn, 403)
   end
 
-  test "does not create class for non coordinator use", %{conn: _conn} do
+  test "does not create teacher for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    teacher = insert(:teacher)
-
-    conn = post student_conn, teacher_path(student_conn, :create), class: teacher
+    conn = post student_conn, teacher_path(student_conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = post teacher_conn, teacher_path(teacher_conn, :create), class: teacher
+    conn = post teacher_conn, teacher_path(teacher_conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = post volunteer_conn, teacher_path(volunteer_conn, :create), class: teacher
+    conn = post volunteer_conn, teacher_path(volunteer_conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 
-  test "does not update chosen teacher for non coordinator use", %{conn: _conn} do
+  test "does not update chosen teacher for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
 
-    teacher = Repo.insert! %User{}
+    teacher = insert(:teacher, %{})
 
-    conn = put student_conn, teacher_path(student_conn, :update, teacher), teacher: @valid_attrs
+    conn = put student_conn, teacher_path(student_conn, :update, teacher), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put teacher_conn, teacher_path(teacher_conn, :update, teacher), teacher: @valid_attrs
+    conn = put teacher_conn, teacher_path(teacher_conn, :update, teacher), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
 
-    conn = put volunteer_conn, teacher_path(volunteer_conn, :update, teacher), teacher: @valid_attrs
+    conn = put volunteer_conn, teacher_path(volunteer_conn, :update, teacher), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 
@@ -204,9 +199,8 @@ defmodule CoursePlanner.TeacherControllerTest do
     teacher_conn = Phoenix.ConnTest.build_conn()
     |> assign(:current_user, teacher)
 
-    conn = put teacher_conn, teacher_path(teacher_conn, :update, teacher), user: @valid_attrs
+    conn = put teacher_conn, teacher_path(teacher_conn, :update, teacher), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == teacher_path(conn, :show, teacher)
-    assert Repo.get_by(User, @valid_attrs)
+    assert Repo.get_by(User, email: "foo@bar.com")
   end
-
 end

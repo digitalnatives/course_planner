@@ -7,10 +7,13 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
+  @password_hash CoursePlanner.User.encrypt_password("secret")
+
  def user_factory do
    %User{
      name: sequence(:name, &"user-#{&1}"),
-     email: sequence(:email, &"user-#{&1}@courseplanner.com")
+     email: sequence(:email, &"user-#{&1}@courseplanner.com"),
+     password_hash: @password_hash
    }
  end
 
@@ -18,7 +21,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
    %User{
      name: sequence(:name, &"student-#{&1}"),
      email: sequence(:email, &"student-#{&1}@courseplanner.com"),
-     role: "Student"
+     role: "Student",
+     password_hash: @password_hash
    }
  end
 
@@ -26,7 +30,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
    %User{
      name: sequence(:name, &"teacher-#{&1}"),
      email: sequence(:email, &"teacher-#{&1}@courseplanner.com"),
-     role: "Teacher"
+     role: "Teacher",
+     password_hash: @password_hash
    }
  end
 
@@ -34,7 +39,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
    %User{
      name: sequence(:name, &"coordinator-#{&1}"),
      email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
-     role: "Coordinator"
+     role: "Coordinator",
+     password_hash: @password_hash
    }
  end
 
@@ -42,7 +48,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
    %User{
      name: sequence(:name, &"volunteer-#{&1}"),
      email: sequence(:email, &"volunteer-#{&1}@courseplanner.com"),
-     role: "Volunteer"
+     role: "Volunteer",
+     password_hash: @password_hash
    }
  end
 
