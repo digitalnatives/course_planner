@@ -110,6 +110,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
+    value = opts[:value] || Date.utc_today()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -121,10 +122,12 @@ defmodule CoursePlanner.SharedView do
                              label: label,
                              error: error,
                              wrapper_class: wrapper_class,
-                             class: class
+                             class: class,
+                             value: value
   end
 
   def form_time(form, field, opts \\ []) do
+    value = opts[:value] || %{hour: 0, minute: 0}
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -136,10 +139,17 @@ defmodule CoursePlanner.SharedView do
                              label: label,
                              error: error,
                              wrapper_class: wrapper_class,
-                             class: class
+                             class: class,
+                             value: value
   end
 
   def form_datetime(form, field, opts \\ []) do
+    value =
+      case opts[:value] do
+        nil     -> DateTime.utc_now()
+        default -> Map.merge(DateTime.utc_now(), default)
+      end
+
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -151,7 +161,8 @@ defmodule CoursePlanner.SharedView do
                                  label: label,
                                  error: error,
                                  wrapper_class: wrapper_class,
-                                 class: class
+                                 class: class,
+                                 value: value
   end
 
   def form_select(form, field, options, opts \\ []) do
@@ -310,5 +321,4 @@ defmodule CoursePlanner.SharedView do
     render "holiday_list.html", holidays: holidays,
                                 empty_text: empty_text
   end
-
 end
