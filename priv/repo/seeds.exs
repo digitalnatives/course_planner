@@ -57,3 +57,14 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
       visible: true
     })
 |> CoursePlanner.Repo.insert!
+
+%CoursePlanner.SystemVariable{}
+|> CoursePlanner.SystemVariable.changeset(
+    %{
+      key: "ATTENDANCE_DESCRIPTIONS",
+      value: "sick leave, informed beforehand",
+      type: "list",
+      editable: true,
+      visible: true
+    })
+|> CoursePlanner.Repo.insert!
