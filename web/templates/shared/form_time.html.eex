@@ -17,7 +17,7 @@
     <div class="col-xs-2">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
         <%= time_select @form, @field, builder: fn b -> %>
-          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.minute) %>
+          <%= b.(:minute, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.min) %>
         <% end %>
         <label class="mdl-textfield__label"></label>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
