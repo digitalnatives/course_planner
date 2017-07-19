@@ -110,7 +110,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
-    value = opts[:value] || Date.utc_today()
+    value = Map.get(form.source.changes, field) || opts[:value] || Date.utc_today()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -127,7 +127,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_time(form, field, opts \\ []) do
-    value = opts[:value] || %{hour: 0, minute: 0}
+    value = Map.get(form.source.changes, field) || opts[:value] || %{hour: 0, minute: 0}
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -145,6 +145,7 @@ defmodule CoursePlanner.SharedView do
 
   def form_datetime(form, field, opts \\ []) do
     value =
+      Map.get(form.source.changes, field) ||
       case opts[:value] do
         nil     -> DateTime.utc_now()
         default -> Map.merge(DateTime.utc_now(), default)

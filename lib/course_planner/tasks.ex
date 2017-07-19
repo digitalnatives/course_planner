@@ -19,6 +19,8 @@ defmodule CoursePlanner.Tasks do
 
   def new(%{"user_id" => "0"} = params), do: new(Map.delete(params, "user_id"))
   def new(params) do
+    require IEx
+    IEx.pry
     %Task{}
     |> Task.changeset(params)
     |> Repo.insert()
