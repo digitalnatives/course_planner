@@ -84,7 +84,12 @@ defmodule CoursePlanner.SystemVariable do
   end
 
   def parse_list(value) do
-    parse_list = String.split(value, [" ", ","] , trim: true)
+    parse_list =
+      value
+      |> String.split(",")
+      |> Enum.map(&String.trim/1)
+      |> Enum.reject(&(&1 == ""))
+
     {:ok, parse_list}
   end
 
