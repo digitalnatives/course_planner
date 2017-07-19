@@ -51,7 +51,13 @@
                 <%= link "Edit", to: course_path(@conn, :edit, course) %>
               </li>
               <li class="mdl-menu__item">
-                <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete, data: [confirm: "Are you sure?"] %>
+                <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete,
+                data: [confirm: """
+                                              Are you sure?
+                By removing a course all the offered courses in all terms will be removed,
+                consequently removal of an offered course will follow by removal of all of
+                its classes and releavant attendances.
+                """] %>
               </li>
             </ul>
           </td>
