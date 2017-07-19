@@ -58,7 +58,7 @@
                 <%= link "Delete", to: student_path(@conn, :delete, student), method: :delete,
                 data: [confirm: """
                                               Are you sure?
-                By removing an student all of its data including her attendance history will be removed.
+                By removing a student all of its data including her attendance history will be removed.
                 """] %>
               </li>
             </ul>

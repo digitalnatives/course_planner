@@ -56,7 +56,7 @@
                                               Are you sure?
                 By removing a course all the offered courses in all terms will be removed,
                 consequently removal of an offered course will follow by removal of all of
-                its classes and releavant attendances.
+                its classes and relevant attendances.
                 """] %>
               </li>
             </ul>

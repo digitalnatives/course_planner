@@ -58,7 +58,7 @@
                 <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
                 data: [confirm: """
                                               Are you sure?
-                By removing an teacher the offered course tought by her will be unassigned from her.
+                By removing a teacher the offered course taught by her will be unassigned from her.
                 """] %>
               </li>
             </ul>

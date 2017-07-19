@@ -58,7 +58,7 @@
                 <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete,
                 data: [confirm: """
                                               Are you sure?
-                By removing a term all of its offered courses and their classes and releavant attendances
+                By removing a term all of its offered courses and their classes and relevant attendances
                 will be removed.
                 """] %>
               </li>
