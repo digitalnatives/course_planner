@@ -1,0 +1,9 @@
+<div>
+  <p>Hello <%= @name %>!<p>
+  <p>
+    Someone has added you to <%= @site_name %> as a <%= @role %>.
+  </p>
+  <p>
+    <a href="<%= @url %>">Set my password</a>
+  </p>
+</div>
