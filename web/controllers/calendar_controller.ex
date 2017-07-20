@@ -5,6 +5,9 @@ defmodule CoursePlanner.CalendarController do
   alias CoursePlanner.CalendarHelper
   alias Ecto.Changeset
 
+  import Canary.Plugs
+  plug :authorize_controller
+
   def show(%{assigns: %{current_user: current_user}} = conn, params) do
     case CalendarHelper.validate(params) do
      %{valid?: true} = changeset ->
