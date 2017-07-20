@@ -2,6 +2,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
   alias CoursePlanner.{
     AttendanceController,
     CalendarController,
+    DashboardController,
     OfferedCourseController,
     ScheduleController,
     TaskController,
@@ -23,6 +24,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
     when action in [:index, :show, :grab], do: true
 
   def can?(_user, _action, CalendarController), do: true
+  def can?(_user, _action, DashboardController), do: true
   def can?(_user, _action, ScheduleController), do: true
 
   def can?(%User{id: id}, action, %User{id: id})
