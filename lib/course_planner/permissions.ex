@@ -4,6 +4,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
     CalendarController,
     DashboardController,
     OfferedCourseController,
+    PageController,
     ScheduleController,
     TaskController,
     User,
@@ -25,6 +26,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
 
   def can?(_user, _action, CalendarController), do: true
   def can?(_user, _action, DashboardController), do: true
+  def can?(_user, _action, PageController), do: true
   def can?(_user, _action, ScheduleController), do: true
 
   def can?(%User{id: id}, action, %User{id: id})
