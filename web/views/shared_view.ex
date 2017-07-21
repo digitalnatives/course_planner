@@ -110,7 +110,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
-    value = opts[:value] || Date.utc_today()
+    default = opts[:value] || Ecto.Date.utc()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -123,11 +123,11 @@ defmodule CoursePlanner.SharedView do
                              error: error,
                              wrapper_class: wrapper_class,
                              class: class,
-                             value: value
+                             default: default
   end
 
   def form_time(form, field, opts \\ []) do
-    value = opts[:value] || %{hour: 0, minute: 0}
+    default = opts[:value] || %{hour: 0, min: 0}
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -140,15 +140,11 @@ defmodule CoursePlanner.SharedView do
                              error: error,
                              wrapper_class: wrapper_class,
                              class: class,
-                             value: value
+                             default: default
   end
 
   def form_datetime(form, field, opts \\ []) do
-    value =
-      case opts[:value] do
-        nil     -> DateTime.utc_now()
-        default -> Map.merge(DateTime.utc_now(), default)
-      end
+    default = Map.merge(Ecto.DateTime.utc(), opts[:value] || %{})
 
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
@@ -162,7 +158,7 @@ defmodule CoursePlanner.SharedView do
                                  error: error,
                                  wrapper_class: wrapper_class,
                                  class: class,
-                                 value: value
+                                 default: default
   end
 
   def form_select(form, field, options, opts \\ []) do
