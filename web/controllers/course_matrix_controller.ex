@@ -4,6 +4,9 @@ defmodule CoursePlanner.CourseMatrixController do
 
   alias CoursePlanner.OfferedCourses
 
+  import Canary.Plugs
+  plug :authorize_controller
+
   def index(conn, %{"term_id" => term_id}) do
     render(conn, "index.html",
       courses: OfferedCourses.find_by_term_id(term_id) ,

@@ -21,7 +21,7 @@ defmodule CoursePlanner.CoordinatorController do
     url = Helpers.password_url(conn, :edit, token)
     case Coordinators.new(user, token) do
       {:ok, coordinator} ->
-        ControllerHelpers.send_user_email :password, coordinator, url
+        ControllerHelpers.send_user_email(:welcome, coordinator, url)
         conn
         |> put_flash(:info, "Coordinator created and notified by.")
         |> redirect(to: coordinator_path(conn, :index))

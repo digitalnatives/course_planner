@@ -223,9 +223,9 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   @tag user_role: :teacher
-  test "teacher can't list all offered courses", %{conn: conn} do
+  test "teacher can list their offered courses", %{conn: conn} do
     conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 403)
+    assert html_response(conn, 200)
   end
 
   @tag user_role: :teacher
@@ -271,9 +271,9 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   @tag user_role: :student
-  test "student can't list all offered courses", %{conn: conn} do
+  test "student can list their offered courses", %{conn: conn} do
     conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 403)
+    assert html_response(conn, 200)
   end
 
   @tag user_role: :student
