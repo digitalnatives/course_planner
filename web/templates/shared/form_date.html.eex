@@ -2,8 +2,8 @@
   <div class="row row--hspace">
     <div class="col-xs-3">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after <%= @wrapper_class %>">
-        <%= date_select @form, @field, builder: fn b -> %>
-          <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.year) %>
+        <%= date_select @form, @field, default: @default, builder: fn b -> %>
+          <%= b.(:year, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <span class="mdl-textfield__label"><%= @label %></span>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
@@ -16,8 +16,8 @@
     </div>
     <div class="col-xs-3">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select form-select--hyphen-after <%= @wrapper_class %>">
-        <%= date_select @form, @field, builder: fn b -> %>
-          <%= b.(:month, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.month) %>
+        <%= date_select @form, @field, default: @default, builder: fn b -> %>
+          <%= b.(:month, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
@@ -25,8 +25,8 @@
     </div>
     <div class="col-xs-2">
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
-        <%= date_select @form, @field, builder: fn b -> %>
-          <%= b.(:day, class: "form-select__select form-select__select--text-center mdl-textfield__input", value: @value.day) %>
+        <%= date_select @form, @field, default: @default, builder: fn b -> %>
+          <%= b.(:day, class: "form-select__select form-select__select--text-center mdl-textfield__input") %>
         <% end %>
         <label class="mdl-textfield__label"></label>
         <i class="material-icons form-select__icon ">&#xE5C5;</i>
