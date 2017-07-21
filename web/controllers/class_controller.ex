@@ -5,7 +5,7 @@ defmodule CoursePlanner.ClassController do
   alias CoursePlanner.{Class, ClassHelper, AttendanceHelper}
 
   import Canary.Plugs
-  plug :authorize_resource, model: Class
+  plug :authorize_controller
 
   def index(conn, _params) do
     classes =
