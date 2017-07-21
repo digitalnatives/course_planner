@@ -110,7 +110,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
-    value = Map.get(form.source.changes, field) || opts[:value] || Ecto.Date.utc()
+    value = input_value(form, field) || opts[:value] || Ecto.Date.utc()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -127,7 +127,7 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_time(form, field, opts \\ []) do
-    value = Map.get(form.source.changes, field) || opts[:value] || %{hour: 0, min: 0}
+    value = input_value(form, field) || opts[:value] || %{hour: 0, min: 0}
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     {error, _} = Keyword.get form.errors, field, {nil, nil}
@@ -144,11 +144,8 @@ defmodule CoursePlanner.SharedView do
   end
 
   def form_datetime(form, field, opts \\ []) do
-    value = Map.get(form.source.changes, field) ||
-      case opts[:value] do
-        nil     -> Ecto.DateTime.utc()
-        default -> Map.merge(Ecto.DateTime.utc(), default)
-      end
+    value = input_value(form, field) ||
+      Map.merge(Ecto.DateTime.utc(), opts[:value] || %{})
 
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
