@@ -29,6 +29,14 @@ defmodule CoursePlanner.Coherence.UserEmail do
                           %{url: url, name: first_name(user.name)})
   end
 
+  def welcome(user, url) do
+    create_modular_email(
+      user,
+      "Welcome to #{site_name()}!",
+      "welcome.html",
+      %{url: url, name: first_name(user.name), role: user.role, site_name: site_name()})
+  end
+
   defp create_modular_email(user, subject, render_body, render_body_params) do
     %Email{}
     |> from(from_email())

@@ -5,7 +5,18 @@ defmodule CoursePlanner.CoherenceUserEmailTest do
   alias Coherence.Config
 
   @sample_url "http://www.sample-url.com"
-  @valid_user %User{name: "mahname", email: "valid@email"}
+  @valid_user %User{name: "mahname", email: "valid@email", role: "Student"}
+
+  test "Welcome email" do
+    email = UserEmail.welcome(@valid_user, @sample_url)
+
+    assert email.assigns.name == "mahname"
+    assert email.assigns.role == "Student"
+    assert email.assigns.url == "http://www.sample-url.com"
+    assert email.assigns.site_name  == "CoursePlanner"
+    assert email.from == {"Test Name", "test@email"}
+    assert email.html_body =~ "Welcome to CoursePlanner!"
+  end
 
   test "Reset password email" do
     email = UserEmail.password(@valid_user, @sample_url)

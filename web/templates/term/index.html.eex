@@ -55,7 +55,12 @@
                 <%= link "Edit", to: term_path(@conn, :edit, term) %>
               </li>
               <li class="mdl-menu__item">
-                <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete, data: [confirm: "Are you sure?"] %>
+                <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete,
+                data: [confirm: """
+                                              Are you sure?
+                By removing a term all of its offered courses and their classes and relevant attendances
+                will be removed.
+                """] %>
               </li>
               <li class="mdl-menu__item">
                 <%= link "Course conflicts", to: term_course_matrix_path(@conn, :index, term) %>

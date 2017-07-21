@@ -21,7 +21,7 @@ defmodule CoursePlanner.VolunteerController do
     url = Helpers.password_url(conn, :edit, token)
     case Volunteers.new(user, token) do
       {:ok, volunteer} ->
-        ControllerHelpers.send_user_email :password, volunteer, url
+        ControllerHelpers.send_user_email(:welcome, volunteer, url)
         conn
         |> put_flash(:info, "Volunteer created and notified by.")
         |> redirect(to: volunteer_path(conn, :index))

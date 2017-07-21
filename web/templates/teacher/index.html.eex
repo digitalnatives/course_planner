@@ -55,7 +55,11 @@
                 <%= link "Edit", to: teacher_path(@conn, :edit, teacher) %>
               </li>
               <li class="mdl-menu__item">
-                <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete, data: [confirm: "Are you sure?"] %>
+                <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
+                data: [confirm: """
+                                              Are you sure?
+                By removing a teacher the offered course taught by her will be unassigned from her.
+                """] %>
               </li>
             </ul>
           </td>
