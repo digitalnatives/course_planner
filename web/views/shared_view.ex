@@ -218,8 +218,11 @@ defmodule CoursePlanner.SharedView do
   end
 
   def error_message(form, field) do
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
-    error
+    import CoursePlanner.ErrorHelpers, only: [translate_error: 1]
+    case form.errors[field] do
+      nil -> nil
+      error -> translate_error(error)
+    end
   end
 
   # card
