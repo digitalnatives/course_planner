@@ -34,7 +34,7 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     required = opts[:required] || nil
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     value = Map.get form.data, field
     wrapper_class =
@@ -61,7 +61,7 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     required = opts[:required] || nil
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     value = Map.get form.data, field
     wrapper_class =
@@ -91,7 +91,7 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     required = opts[:required] || nil
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     wrapper_class =
       if error do
@@ -113,7 +113,7 @@ defmodule CoursePlanner.SharedView do
     default = opts[:value] || Ecto.Date.utc()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     wrapper_class = if error do "is-invalid" else "" end
 
@@ -130,7 +130,7 @@ defmodule CoursePlanner.SharedView do
     default = opts[:value] || %{hour: 0, min: 0}
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     wrapper_class = if error do "is-invalid" else "" end
 
@@ -148,7 +148,7 @@ defmodule CoursePlanner.SharedView do
 
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     wrapper_class = if error do "is-invalid" else "" end
 
@@ -165,7 +165,7 @@ defmodule CoursePlanner.SharedView do
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     selected = opts[:selected] || nil
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     wrapper_class = if error do "is-invalid" else "" end
 
@@ -184,7 +184,7 @@ defmodule CoursePlanner.SharedView do
     label = opts[:label] || humanize(field)
     selected = opts[:selected] || nil
     tooltip_text = opts[:tooltip_text] || "Add new item"
-    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error = error_message(form, field)
 
     multiselect_id = (Atom.to_string field) <> "__multiselect"
     button_id = (Atom.to_string field) <> "__add-button"
@@ -215,6 +215,11 @@ defmodule CoursePlanner.SharedView do
   def form_submit(form, label, opts \\ []) do
     class = opts[:class] || ""
     render "form_submit.html", form: form, label: label, class: class
+  end
+
+  def error_message(form, field) do
+    {error, _} = Keyword.get form.errors, field, {nil, nil}
+    error
   end
 
   # card
