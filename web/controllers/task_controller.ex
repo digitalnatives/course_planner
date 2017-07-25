@@ -8,8 +8,7 @@ defmodule CoursePlanner.TaskController do
   alias Ecto.Changeset
 
   import Canary.Plugs
-  plug :authorize_resource, model: Task, id_name: "task_id", only: :grab
-  plug :authorize_resource, model: Task, except: :grab
+  plug :authorize_controller
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, params) do
     sort_opt = Map.get(params, "sort", nil)

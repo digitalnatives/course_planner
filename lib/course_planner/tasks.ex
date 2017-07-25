@@ -2,7 +2,6 @@ defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.Tasks.Task
-  alias CoursePlanner.User
   alias Ecto.Changeset
   import Ecto.Query, except: [update: 2]
 

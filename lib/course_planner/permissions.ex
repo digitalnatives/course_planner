@@ -1,6 +1,6 @@
 defimpl Canada.Can, for: CoursePlanner.User do
   alias CoursePlanner.{
-    Tasks.Task, Terms.Term, User, Course, Class,
+    Terms.Term, User, Course, Class,
     AttendanceController, OfferedCourseController,
     SettingController, TaskController
   }

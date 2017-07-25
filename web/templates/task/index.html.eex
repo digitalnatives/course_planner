@@ -39,7 +39,7 @@
           <td class="mdl-data-table__cell--non-numeric">
             <%= if task.volunteers do %>
               <%= task.volunteers
-                  |> task_users()
+                  |> display_volunteer_name_list()
                   |> text_to_html() %>
             <% else %>
               No one
