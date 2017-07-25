@@ -1,7 +1,7 @@
 defmodule CoursePlanner.SharedView do
   @moduledoc false
   use CoursePlanner.Web, :view
-  use Ecto.Changeset
+  alias Ecto.Changeset
   # helpers
 
   def path_exact_match(conn, path) do
