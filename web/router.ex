@@ -67,6 +67,7 @@ defmodule CoursePlanner.Router do
     resources "/classes", ClassController, except: [:show]
     resources "/tasks", TaskController do
       post "/grab", TaskController, :grab, as: :grab
+      post "/drop", TaskController, :drop, as: :drop
     end
 
     resources "/attendances", AttendanceController, only: [:index, :show] do

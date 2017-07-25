@@ -131,4 +131,16 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
+  def drop(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
+    case Tasks.drop(task_id, volunteer_id, Timex.now()) do
+      {:ok, _task} ->
+        conn
+        |> put_flash(:info, "Task grabbed.")
+        |> redirect(to: task_path(conn, :index))
+      {:error, type} ->
+        conn
+        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
+        |> redirect(to: task_path(conn, :index))
+    end
+  end
 end

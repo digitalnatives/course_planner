@@ -48,7 +48,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
   def can?(%User{role: role}, _action, TaskController)
     when role in ["Teacher", "Student"], do: false
   def can?(%User{role: "Volunteer"}, action, TaskController)
-    when action in [:show, :index, :grab], do: true
+    when action in [:show, :index, :grab, :drop], do: true
   def can?(%User{role: "Coordinator"}, :grab, TaskController), do: false
 
   def can?(_, _, _), do: true

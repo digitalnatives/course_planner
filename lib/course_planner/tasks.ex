@@ -41,24 +41,27 @@ defmodule CoursePlanner.Tasks do
   def get_past(sort_opt, id, now) do
     sort_opt
     |> task_query()
-    |> where([t, v], v.id == ^id)
     |> where([t], t.finish_time < ^now)
     |> Repo.all()
+    |> Enum.reject(fn(task) ->
+         not Enum.any?(task.volunteers, &(&1.id == id))
+       end)
   end
 
   def get_for_user(sort_opt, id, now) do
     sort_opt
     |> task_query()
-    |> where([t, v], v.id == ^id)
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
+    |> Enum.reject(fn(task) ->
+         not Enum.any?(task.volunteers, &(&1.id == id))
+       end)
   end
 
   def task_query(sort_opt) do
      Task
      |> sort(sort_opt)
-     |> join(:inner, [t], v in assoc(t, :volunteers))
-     |> preload([t, v], [volunteers: v])
+     |> preload(:volunteers)
   end
 
   defp sort(query, nil), do: query
@@ -69,12 +72,29 @@ defmodule CoursePlanner.Tasks do
     with {:ok, task}              <- get(task_id),
       %{valid?: true} = changeset <- Task.changeset(task),
       {:ok, changeset}            <- validate_finish_time(changeset, now)
-      #    {:ok, changeset}            <- validate_already_assigned(changeset, task)
     do
       new_volunteer = Volunteers.get!(volunteer_id)
+      updated_volunteer_list = [new_volunteer | task.volunteers]
 
       changeset
-      |> Changeset.put_assoc(:volunteers, [new_volunteer | task.volunteers])
+      |> Changeset.put_assoc(:volunteers, updated_volunteer_list)
+      |> Repo.update()
+    else
+      error -> error
+    end
+  end
+
+  def drop(task_id, volunteer_id, now) do
+    with {:ok, task}              <- get(task_id),
+      %{valid?: true} = changeset <- Task.changeset(task)
+    do
+      drop_volunteer = Volunteers.get!(volunteer_id)
+      updated_volunteer_list =
+        task.volunteers
+        |> List.delete(drop_volunteer)
+
+      changeset
+      |> Changeset.put_assoc(:volunteers,  updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
