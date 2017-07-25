@@ -1,7 +1,8 @@
 defimpl Canada.Can, for: CoursePlanner.User do
   alias CoursePlanner.{
     Tasks.Task, Terms.Term, User, Course, Class,
-    AttendanceController, OfferedCourseController, SettingController
+    AttendanceController, OfferedCourseController,
+    SettingController, TaskController
   }
 
   def can?(%User{role: "Coordinator"}, _, _), do: true
@@ -44,14 +45,11 @@ defimpl Canada.Can, for: CoursePlanner.User do
 
   def can?(_role, _action, SettingController), do: false
 
-  #def can?(%User{role: "Volunteer", id: id}, :show, %Task{user_id: id}), do: true
-  #def can?(%User{role: "Volunteer"}, :index, Task), do: true
-  #def can?(%User{role: "Volunteer"}, :grab, %Task{}), do: true
-  #def can?(%User{role: "Volunteer"}, :show, %Task{user_id: nil}), do: true
-  #def can?(%User{role: role}, _, Task)
-  #  when role in ["Teacher", "Student", "Volunteer"], do: false
-  #def can?(%User{role: role}, _, %Task{})
-  #  when role in ["Teacher", "Student", "Volunteer"], do: false
+  def can?(%User{role: role}, _action, TaskController)
+    when role in ["Teacher", "Student"], do: false
+  def can?(%User{role: "Volunteer"}, action, TaskController)
+    when action in [:show, :index, :grab], do: true
+  def can?(%User{role: "Coordinator"}, :grab, TaskController), do: false
 
   def can?(_, _, _), do: true
 end
