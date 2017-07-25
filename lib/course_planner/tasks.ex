@@ -1,7 +1,6 @@
 defmodule CoursePlanner.Tasks do
   @moduledoc false
-  alias CoursePlanner.Repo
-  alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.{Repo, Volunteers, Tasks.Task}
   alias Ecto.Changeset
   import Ecto.Query, except: [update: 2]
 
@@ -14,24 +13,6 @@ defmodule CoursePlanner.Tasks do
     case Repo.get(Task, id) do
       nil  -> {:error, :not_found}
       task -> {:ok, Repo.preload(task, :volunteers)}
-    end
-  end
-
-  def new(%{"user_id" => "0"} = params), do: new(Map.delete(params, "user_id"))
-  def new(params) do
-    %Task{}
-    |> Task.changeset(params)
-    |> Repo.insert()
-  end
-
-  def update(id, params) do
-    case get(id) do
-      {:ok, task} ->
-        task
-        |> Task.changeset(params)
-        |> Repo.update()
-        |> format_error(task)
-      error  -> error
     end
   end
 
@@ -84,14 +65,16 @@ defmodule CoursePlanner.Tasks do
   defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)
   defp sort(query, "closest"), do: order_by(query, [t], asc: t.finish_time)
 
-  def grab(task_id, user_id, now) do
+  def grab(task_id, volunteer_id, now) do
     with {:ok, task}              <- get(task_id),
       %{valid?: true} = changeset <- Task.changeset(task),
-      {:ok, changeset}            <- validate_finish_time(changeset, now),
-      {:ok, changeset}            <- validate_already_assigned(changeset, task)
+      {:ok, changeset}            <- validate_finish_time(changeset, now)
+      #    {:ok, changeset}            <- validate_already_assigned(changeset, task)
     do
+      new_volunteer = Volunteers.get!(volunteer_id)
+
       changeset
-      |> Changeset.put_change(:user_id, user_id)
+      |> Changeset.put_assoc(:volunteers, [new_volunteer | task.volunteers])
       |> Repo.update()
     else
       error -> error

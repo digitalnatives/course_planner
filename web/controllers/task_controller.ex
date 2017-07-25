@@ -118,8 +118,8 @@ defmodule CoursePlanner.TaskController do
     already_assigned: "Cannot grab as task is already assigned."
   }
 
-  def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, user_id, Timex.now()) do
+  def grab(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
+    case Tasks.grab(task_id, volunteer_id, Timex.now()) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task grabbed.")
