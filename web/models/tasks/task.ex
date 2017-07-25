@@ -28,6 +28,11 @@ defmodule CoursePlanner.Tasks.Task do
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
     |> validate_number(:max_volunteer, greater_than: 0, less_than: 1_000)
+  end
+
+  def put_assoc(changeset, field, field_data) do
+    changeset
+    |> Changeset.put_assoc(field, field_data)
     |> validate_volunteers_limit()
   end
 

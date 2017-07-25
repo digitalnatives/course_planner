@@ -33,7 +33,7 @@ defmodule CoursePlanner.Tasks do
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
     |> Enum.reject(fn(task) ->
-         length(task.volunteers) > task.max_volunteer or
+           length(task.volunteers) >= task.max_volunteer or
            Enum.any?(task.volunteers, &(&1.id == id))
        end)
   end
@@ -61,7 +61,8 @@ defmodule CoursePlanner.Tasks do
   def task_query(sort_opt) do
      Task
      |> sort(sort_opt)
-     |> preload(:volunteers)
+     |> join(:inner, [t], v in assoc(t, :volunteers))
+     |> preload([t, v], [volunteers: v])
   end
 
   defp sort(query, nil), do: query
@@ -77,7 +78,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = [new_volunteer | task.volunteers]
 
       changeset
-      |> Changeset.put_assoc(:volunteers, updated_volunteer_list)
+      |> Task.put_assoc(:volunteers, updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
@@ -94,7 +95,7 @@ defmodule CoursePlanner.Tasks do
         |> List.delete(drop_volunteer)
 
       changeset
-      |> Changeset.put_assoc(:volunteers,  updated_volunteer_list)
+      |> Changeset.put_assoc(:volunteers, updated_volunteer_list)
       |> Repo.update()
     else
       error -> error

@@ -32,7 +32,7 @@ defmodule CoursePlanner.TaskController do
 
     volunteer_ids = Map.get(task_params, "volunteer_ids", [])
     volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    changeset = Changeset.put_assoc(changeset, :volunteers, volunteers)
+    changeset = Task.put_assoc(changeset, :volunteers, volunteers)
 
     case Repo.insert(changeset) do
       {:ok, _task} ->
@@ -79,7 +79,7 @@ defmodule CoursePlanner.TaskController do
 
     volunteer_ids = Map.get(task_params, "volunteer_ids", [])
     volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    changeset = Changeset.put_assoc(changeset, :volunteers, volunteers)
+    changeset = Task.put_assoc(changeset, :volunteers, volunteers)
 
     case Repo.update(changeset) do
       {:ok, task} ->
