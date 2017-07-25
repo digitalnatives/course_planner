@@ -2,6 +2,5 @@
   <%= render "form.html", title: @changeset.data.name,
                           changeset: @changeset,
                           action: task_path(@conn, :update, @task),
-                          conn: @conn,
-                          users: @users
+                          conn: @conn
   %>

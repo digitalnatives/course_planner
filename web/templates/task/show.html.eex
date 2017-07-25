@@ -45,6 +45,12 @@
                   </div>
                 </div>
                 <div class="detail">
+                  <div class="detail__name">Volunteers needed</div>
+                  <div class="detail__value">
+                    <%= @task.max_volunteer %>
+                  </div>
+                </div>
+                <div class="detail">
                   <div class="detail__name">Description</div>
                   <div class="detail__value">
                     <%= @task.description %>
@@ -60,8 +66,7 @@
             Assignee
           </div>
         </div>
-        <% task_users = if @task.user_id do [@task.user] else [] end %>
-        <%= CoursePlanner.SharedView.user_list task_users %>
+        <%= CoursePlanner.SharedView.user_list @task.volunteers %>
 
       </div>
     </div>

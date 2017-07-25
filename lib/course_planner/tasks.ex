@@ -2,31 +2,29 @@ defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.Repo
   alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.User
   alias Ecto.Changeset
   import Ecto.Query, except: [update: 2]
 
   def all do
     Repo.all(Task)
   end
-  def all_with_users, do: all() |> Repo.preload(:user)
+  def all_with_users, do: all() |> Repo.preload(:volunteers)
 
   def get(id) do
     case Repo.get(Task, id) do
       nil  -> {:error, :not_found}
-      task -> {:ok, Repo.preload(task, :user)}
+      task -> {:ok, Repo.preload(task, :volunteers)}
     end
   end
 
   def new(%{"user_id" => "0"} = params), do: new(Map.delete(params, "user_id"))
   def new(params) do
-    require IEx
-    IEx.pry
     %Task{}
     |> Task.changeset(params)
     |> Repo.insert()
   end
 
-  def update(id, %{"user_id" => "0"} = params), do: update(id, Map.delete(params, "user_id"))
   def update(id, params) do
     case get(id) do
       {:ok, task} ->
@@ -49,18 +47,21 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def get_unassigned(sort_opt, now) do
+  def get_availables(sort_opt, id, now) do
     sort_opt
     |> task_query()
-    |> where([t], is_nil(t.user_id))
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
+    |> Enum.reject(fn(task) ->
+         length(task.volunteers) > task.max_volunteer or
+           Enum.any?(task.volunteers, &(&1.id == id))
+       end)
   end
 
   def get_past(sort_opt, id, now) do
     sort_opt
     |> task_query()
-    |> where([t], t.user_id == ^id)
+    |> where([t, v], v.id == ^id)
     |> where([t], t.finish_time < ^now)
     |> Repo.all()
   end
@@ -68,12 +69,17 @@ defmodule CoursePlanner.Tasks do
   def get_for_user(sort_opt, id, now) do
     sort_opt
     |> task_query()
-    |> where([t], t.user_id == ^id)
+    |> where([t, v], v.id == ^id)
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
   end
 
-  def task_query(sort_opt), do: Task |> sort(sort_opt) |> preload(:user)
+  def task_query(sort_opt) do
+     Task
+     |> sort(sort_opt)
+     |> join(:inner, [t], v in assoc(t, :volunteers))
+     |> preload([t, v], [volunteers: v])
+  end
 
   defp sort(query, nil), do: query
   defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)

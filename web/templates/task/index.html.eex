@@ -14,6 +14,7 @@
         <th class="mdl-data-table__cell--non-numeric">Name</th>
         <th>Start time</th>
         <th>Finish time</th>
+        <th>Volunteers needed</th>
         <th class="mdl-data-table__cell--non-numeric">Assignee</th>
         <th></th>
       </tr>
@@ -33,8 +34,13 @@
             <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 11, 5 %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= if task.user_id do %>
-              <%= CoursePlanner.SharedView.display_user_name(task.user) %>
+            <%= task.max_volunteer %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= if task.volunteers do %>
+              <%= task.volunteers
+                  |> task_users()
+                  |> text_to_html() %>
             <% else %>
               No one
             <% end %>
@@ -73,4 +79,3 @@
       <% end) %>
     </tbody>
   </table>
-

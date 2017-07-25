@@ -5,6 +5,7 @@ defmodule CoursePlanner.TaskController do
   alias CoursePlanner.Tasks
   alias CoursePlanner.Tasks.Task
   alias CoursePlanner.Volunteers
+  alias Ecto.Changeset
 
   import Canary.Plugs
   plug :authorize_resource, model: Task, id_name: "task_id", only: :grab
@@ -14,7 +15,7 @@ defmodule CoursePlanner.TaskController do
     sort_opt = Map.get(params, "sort", nil)
     now = Timex.now()
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned(sort_opt, now),
+      available_tasks: Tasks.get_availables(sort_opt, id, now),
       your_past_tasks: Tasks.get_past(sort_opt, id, now),
       your_tasks: Tasks.get_for_user(sort_opt, id, now))
   end
@@ -24,19 +25,23 @@ defmodule CoursePlanner.TaskController do
   end
 
   def new(conn, _params) do
-    render(conn, "new.html",
-      changeset: %Task{} |> Task.changeset(),
-      users: Volunteers.all())
+    render(conn, "new.html", changeset: %Task{} |> Task.changeset())
   end
 
-  def create(conn, %{"task" => task}) do
-    case Tasks.new(task) do
+  def create(conn, %{"task" => task_params}) do
+    changeset = Task.changeset(%Task{}, task_params)
+
+    volunteer_ids = Map.get(task_params, "volunteer_ids", [])
+    volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
+    changeset = Changeset.put_assoc(changeset, :volunteers, volunteers)
+
+    case Repo.insert(changeset) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task created successfully.")
         |> redirect(to: task_path(conn, :index))
       {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset, users: Volunteers.all())
+        render(conn, "new.html", changeset: changeset)
       _ ->
         conn
         |> put_flash(:error, "Something went wrong.")
@@ -58,10 +63,7 @@ defmodule CoursePlanner.TaskController do
   def edit(conn, %{"id" => id}) do
     case Tasks.get(id) do
       {:ok, task} ->
-        render(conn, "edit.html",
-          task: task,
-          changeset: Task.changeset(task),
-          users: Volunteers.all())
+        render(conn, "edit.html", task: task, changeset: Task.changeset(task))
       {:error, :not_found} ->
         conn
         |> put_status(404)
@@ -69,8 +71,18 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def update(conn, %{"id" => id, "task" => params}) do
-    case Tasks.update(id, params) do
+  def update(conn, %{"id" => id, "task" => task_params}) do
+    task =
+      Task
+      |> Repo.get!(id)
+      |> Repo.preload([:volunteers])
+    changeset = Task.changeset(task, task_params)
+
+    volunteer_ids = Map.get(task_params, "volunteer_ids", [])
+    volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
+    changeset = Changeset.put_assoc(changeset, :volunteers, volunteers)
+
+    case Repo.update(changeset) do
       {:ok, task} ->
         conn
         |> put_flash(:info, "Task updated successfully.")
@@ -79,8 +91,8 @@ defmodule CoursePlanner.TaskController do
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
-      {:error, task, changeset} ->
-        render(conn, "edit.html", task: task, changeset: changeset, users: Volunteers.all())
+      {:error, changeset} ->
+        render(conn, "edit.html", task: task, changeset: changeset)
     end
   end
 
