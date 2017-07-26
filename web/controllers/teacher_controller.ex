@@ -21,7 +21,7 @@ defmodule CoursePlanner.TeacherController do
     url = Helpers.password_url(conn, :edit, token)
     case Teachers.new(user, token) do
       {:ok, teacher} ->
-        ControllerHelpers.send_user_email :password, teacher, url
+        ControllerHelpers.send_user_email(:welcome, teacher, url)
         conn
         |> put_flash(:info, "Teacher created and notified by.")
         |> redirect(to: teacher_path(conn, :index))

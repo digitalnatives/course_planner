@@ -2,8 +2,14 @@ defmodule CoursePlanner.OfferedCourseController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{ClassHelper, OfferedCourse, Students, Teachers, AttendanceHelper}
-
+  alias CoursePlanner.{
+    AttendanceHelper,
+    ClassHelper,
+    OfferedCourse,
+    OfferedCourses,
+    Students,
+    Teachers,
+  }
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
 
@@ -12,8 +18,8 @@ defmodule CoursePlanner.OfferedCourseController do
 
   def index(conn, _params) do
     offered_courses =
-      OfferedCourse
-      |> Repo.all()
+      conn.assigns.current_user
+      |> OfferedCourses.find_all_by_user()
       |> Repo.preload([:term, :course])
     render(conn, "index.html", offered_courses: offered_courses)
   end
