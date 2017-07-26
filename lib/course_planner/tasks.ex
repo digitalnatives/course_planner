@@ -58,7 +58,7 @@ defmodule CoursePlanner.Tasks do
   def task_query(sort_opt) do
      Task
      |> sort(sort_opt)
-     |> join(:inner, [t], v in assoc(t, :volunteers))
+     |> join(:left, [t], v in assoc(t, :volunteers))
      |> preload([t, v], [volunteers: v])
   end
 
