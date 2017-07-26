@@ -1,11 +1,10 @@
 defmodule CoursePlanner.TaskControllerTest do
   use CoursePlanner.ConnCase
-  alias CoursePlanner.{Tasks, Repo}
-  alias CoursePlanner.Tasks.Task
+  alias CoursePlanner.{Tasks.Task, Repo}
 
   import CoursePlanner.Factory
 
-  @valid_attrs %{name: "some content", start_time: Timex.now(), finish_time: Timex.now(), description: "sample rtask description"}
+  @valid_attrs %{name: "some content", max_volunteer: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2), description: "sample rtask description"}
   @invalid_attrs %{}
 
   setup do
@@ -109,11 +108,6 @@ defmodule CoursePlanner.TaskControllerTest do
     assert html_response(conn, 200) =~ "Clean the whole thing"
   end
 
-  test "does not update a non-existing resource", %{conn: conn} do
-    conn = put conn, task_path(conn, :update, -1), task: @invalid_attrs
-    assert html_response(conn, 404)
-  end
-
   test "does not update a chosen resource for non-coordinator users", %{conn: _conn} do
     student_conn = login_as(:student)
     teacher_conn = login_as(:teacher)
@@ -132,7 +126,7 @@ defmodule CoursePlanner.TaskControllerTest do
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    {:ok, task} = Tasks.new(@valid_attrs)
+    task = insert(:task)
     conn = delete conn, task_path(conn, :delete, task)
     assert redirected_to(conn) == task_path(conn, :index)
     refute Repo.get(Task, task.id)
@@ -190,10 +184,11 @@ defmodule CoursePlanner.TaskControllerTest do
 
   test "create task with assigned volunteer", %{conn: conn} do
     volunteer = insert(:volunteer)
-    task = Map.put(@valid_attrs, :user_id, volunteer.id)
+    task = Map.put(@valid_attrs, :volunteer_ids, [volunteer.id])
     conn = post conn, task_path(conn, :create), task: task
     assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get_by!(Task, name: "some content").user_id == volunteer.id
+    reloaded_task = Repo.get_by!(Task, name: "some content") |> Repo.preload(:volunteers)
+    assert reloaded_task.volunteers == [volunteer]
   end
 
   test "does not create task with invalid data", %{conn: conn} do
@@ -224,11 +219,15 @@ defmodule CoursePlanner.TaskControllerTest do
     conn = assign(conn, :current_user, volunteer)
     conn = post conn, task_grab_path(conn, :grab, task)
     assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get(Task, task.id).user_id == volunteer.id
+
+    reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+    assert  reloaded_task.volunteers == [volunteer]
   end
 
-  test "does not grab a non-existing resource", %{conn: conn} do
-    conn = post conn, task_grab_path(conn, :grab, -1)
+  test "does not grab a non-existing resource", %{conn: _conn} do
+    volunteer_conn = login_as(:volunteer)
+
+    conn = post volunteer_conn, task_grab_path(volunteer_conn, :grab, -1)
     assert redirected_to(conn) == task_path(conn, :index)
     conn = get conn, task_path(conn, :index)
     assert  html_response(conn, 200) =~ "Task was not found"
