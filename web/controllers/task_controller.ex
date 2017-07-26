@@ -2,10 +2,7 @@ defmodule CoursePlanner.TaskController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.Tasks
-  alias CoursePlanner.Tasks.Task
-  alias CoursePlanner.Volunteers
-  alias Ecto.Changeset
+  alias CoursePlanner.{Tasks, Tasks.Task, Volunteers}
 
   import Canary.Plugs
   plug :authorize_controller
@@ -112,34 +109,40 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  @error_messages %{
-    not_found: "Task was not found.",
-    already_finished: "Cannott grab as task is already finished.",
-    already_assigned: "Cannot grab as task is already assigned."
-  }
-
   def grab(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, volunteer_id, Timex.now()) do
+    case Tasks.grab(task_id, volunteer_id) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task grabbed.")
         |> redirect(to: task_path(conn, :index))
-      {:error, type} ->
+      {:error, %{errors: errors}} ->
+        [{_field, {error_message, []}}] =  errors
+
         conn
-        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
+        |> put_flash(:error, error_message)
+        |> redirect(to: task_path(conn, :index))
+      {:error, _error} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
         |> redirect(to: task_path(conn, :index))
     end
   end
 
   def drop(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.drop(task_id, volunteer_id, Timex.now()) do
+    case Tasks.drop(task_id, volunteer_id) do
       {:ok, _task} ->
         conn
-        |> put_flash(:info, "Task grabbed.")
+        |> put_flash(:info, "Task dropped.")
         |> redirect(to: task_path(conn, :index))
-      {:error, type} ->
+      {:error, %{errors: errors}} ->
+        [{_field, {error_message, []}}] =  errors
+
         conn
-        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
+        |> put_flash(:error, error_message)
+        |> redirect(to: task_path(conn, :index))
+      {:error, _error} ->
+        conn
+        |> put_flash(:error, "Something went wrong.")
         |> redirect(to: task_path(conn, :index))
     end
   end

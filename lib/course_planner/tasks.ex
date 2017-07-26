@@ -16,9 +16,6 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  defp format_error({:ok, task}, _), do: {:ok, task}
-  defp format_error({:error, changeset}, task), do: {:error, task, changeset}
-
   def delete(id) do
     case get(id) do
       {:ok, task} ->
@@ -69,11 +66,10 @@ defmodule CoursePlanner.Tasks do
   defp sort(query, "fresh"), do: order_by(query, [t], desc: t.updated_at)
   defp sort(query, "closest"), do: order_by(query, [t], asc: t.finish_time)
 
-  def grab(task_id, volunteer_id, now) do
-    with {:ok, task}              <- get(task_id),
-      %{valid?: true} = changeset <- Task.changeset(task),
-      {:ok, changeset}            <- validate_finish_time(changeset, now)
-    do
+  def grab(task_id, volunteer_id) do
+    with {:ok, task} <- get(task_id),
+        %{valid?: true} = changeset <- Task.changeset(task)
+     do
       new_volunteer = Volunteers.get!(volunteer_id)
       updated_volunteer_list = [new_volunteer | task.volunteers]
 
@@ -85,14 +81,12 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def drop(task_id, volunteer_id, now) do
-    with {:ok, task}              <- get(task_id),
-      %{valid?: true} = changeset <- Task.changeset(task)
-    do
+  def drop(task_id, volunteer_id) do
+    with {:ok, task} <- get(task_id),
+        %{valid?: true} = changeset <- Task.changeset(task)
+     do
       drop_volunteer = Volunteers.get!(volunteer_id)
-      updated_volunteer_list =
-        task.volunteers
-        |> List.delete(drop_volunteer)
+      updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
 
       changeset
       |> Changeset.put_assoc(:volunteers, updated_volunteer_list)
@@ -101,16 +95,4 @@ defmodule CoursePlanner.Tasks do
       error -> error
     end
   end
-
-  defp validate_finish_time(changeset, now) do
-    fin = Changeset.get_field(changeset, :finish_time)
-    case Timex.compare(fin, now) do
-      1  -> {:ok, changeset}
-      -1 -> {:error, :already_finished}
-      _  -> {:error, :unkown}
-    end
-  end
-
-  defp validate_already_assigned(changeset, %{user_id: nil}), do: {:ok, changeset}
-  defp validate_already_assigned(_changeset, _), do: {:error, :already_assigned}
 end

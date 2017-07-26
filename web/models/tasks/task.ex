@@ -27,6 +27,7 @@ defmodule CoursePlanner.Tasks.Task do
     struct
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
+    |> validate_datetime()
     |> validate_number(:max_volunteer, greater_than: 0, less_than: 1_000)
   end
 
@@ -52,4 +53,20 @@ defmodule CoursePlanner.Tasks.Task do
   end
   defp validate_volunteers_limit(changeset), do: changeset
 
+  defp validate_datetime(%{valid?: true} = changeset) do
+    finish_time = Changeset.get_field(changeset, :finish_time)
+    start_time = Changeset.get_field(changeset, :start_time)
+    now = Timex.now()
+
+    cond do
+      Timex.compare(finish_time, start_time) != 1 -> add_error(changeset, :finish_time,
+              "Finish time should be after the start time")
+
+      Timex.compare(finish_time, now) != 1 -> add_error(changeset, :finish_time,
+              "Finish time is already past")
+
+      true -> changeset
+    end
+  end
+  defp validate_datetime(changeset), do: changeset
 end
