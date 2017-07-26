@@ -5,7 +5,7 @@ defmodule CoursePlanner.CourseController do
   alias CoursePlanner.{Repo, Course, CourseHelper}
 
   import Canary.Plugs
-  plug :authorize_resource, model: Course
+  plug :authorize_controller
 
   def index(conn, _params) do
     courses = Repo.all(Course)

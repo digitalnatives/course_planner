@@ -64,7 +64,11 @@
                 <%= link "Edit", to: class_path(@conn, :edit, class) %>
               </li>
               <li class="mdl-menu__item">
-                <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete, data: [confirm: "Are you sure?"] %>
+                <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete,
+                  data: [confirm: """
+                                           Are you sure?
+                  By removing a class all the attendances of that class will be removed.
+                  """] %>
               </li>
             </ul>
           </td>
@@ -72,4 +76,3 @@
       <% end) %>
     </tbody>
   </table>
-
