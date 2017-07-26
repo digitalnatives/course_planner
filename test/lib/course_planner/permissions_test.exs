@@ -1,7 +1,7 @@
 defmodule CoursePlanner.PermissionsTest do
   use ExUnit.Case
 
-  alias CoursePlanner.{Tasks.Task, Terms.Term, User}
+  alias CoursePlanner.{TaskController, Terms.Term, User}
 
   @coordinator %User{
     email: "valid@email",
@@ -24,30 +24,30 @@ defmodule CoursePlanner.PermissionsTest do
   Enum.map([:index, :show, :create, :update, :delete, :edit], fn action ->
     @action action
     test "coordinator can perform #{@action} in Task" do
-        assert Canada.Can.can?(@coordinator, @action, %Task{})
+        assert Canada.Can.can?(@coordinator, @action, TaskController)
     end
   end)
 
-  Enum.map([:show, :grab], fn action ->
+  Enum.map([:show, :grab, :drop], fn action ->
     @action action
     test "volunteer can perform #{@action} in unassigned tasks" do
-      assert Canada.Can.can?(@volunteer, @action, %Task{user_id: nil})
+      assert Canada.Can.can?(@volunteer, @action, TaskController)
     end
   end)
 
   Enum.map([:create, :update, :delete, :edit], fn action ->
     @action action
     test "volunteer cannot perform #{@action} in unassigned tasks" do
-      refute Canada.Can.can?(@volunteer, @action, %Task{user_id: nil})
+      refute Canada.Can.can?(@volunteer, @action, TaskController)
     end
   end)
 
   test "volunteer can show its own tasks" do
-    assert Canada.Can.can?(@volunteer, :show, %Task{user_id: @volunteer.id})
+    assert Canada.Can.can?(@volunteer, :show, TaskController)
   end
 
   test "volunteer can index tasks" do
-    assert Canada.Can.can?(@volunteer, :index, Task)
+    assert Canada.Can.can?(@volunteer, :index, TaskController)
   end
 
   for action <- [:index, :new, :create] do
