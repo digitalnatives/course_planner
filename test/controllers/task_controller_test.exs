@@ -246,4 +246,47 @@ defmodule CoursePlanner.TaskControllerTest do
     conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "closest")
     assert html_response(conn, 200) =~ "Your tasks"
   end
+
+  describe "tests drop functionlity" do
+    test "does not drop a non-existing resource", %{conn: _conn} do
+      volunteer_conn = login_as(:volunteer)
+
+      conn = post volunteer_conn, task_drop_path(volunteer_conn, :drop, -1)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert  html_response(conn, 200) =~ "Task was not found"
+    end
+
+    test "drop a task with only one volunteer", %{conn: conn} do
+      volunteer = insert(:volunteer)
+
+      task = insert(:task, %{
+        start_time: Timex.now() |> Timex.shift(days: 1),
+        finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1),
+        volunteers: [volunteer]})
+
+      conn = assign(conn, :current_user, volunteer)
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert  reloaded_task.volunteers == []
+    end
+
+    test "drop a task with multiple volunteer", %{conn: conn} do
+      [login_volunteer | rest_of_volunteers] = insert_list(3, :volunteer)
+
+      task = insert(:task, %{
+        start_time: Timex.now() |> Timex.shift(days: 1),
+        finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1),
+        volunteers: [login_volunteer | rest_of_volunteers]})
+
+      conn = assign(conn, :current_user, login_volunteer)
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert reloaded_task.volunteers == rest_of_volunteers
+    end
+  end
 end
