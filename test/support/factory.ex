@@ -93,7 +93,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
  def task_factory do
    %Task{
      name: "some content",
-     max_volunteer: 2,
+     max_volunteers: 2,
      start_time: Timex.shift(Timex.now(), days: -5),
      finish_time: Timex.shift(Timex.now(), days: 2),
    }

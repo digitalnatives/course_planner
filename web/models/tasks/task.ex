@@ -7,12 +7,12 @@ defmodule CoursePlanner.Tasks.Task do
   alias CoursePlanner.User
   alias Ecto.Changeset
 
-  @cast_params [:name, :start_time, :finish_time, :description, :max_volunteer]
+  @cast_params [:name, :start_time, :finish_time, :description, :max_volunteers]
   @required_params [:name, :start_time, :finish_time]
 
   schema "tasks" do
     field :name, :string
-    field :max_volunteer, :integer
+    field :max_volunteers, :integer
     field :start_time, :naive_datetime
     field :finish_time, :naive_datetime
     field :description, :string
@@ -29,7 +29,7 @@ defmodule CoursePlanner.Tasks.Task do
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
     |> validate_datetime()
-    |> validate_number(:max_volunteer, greater_than: 0, less_than: 1_000)
+    |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
   end
 
   def put_assoc(changeset, field, field_data), do: Changeset.put_assoc(changeset, field, field_data)
@@ -40,14 +40,14 @@ defmodule CoursePlanner.Tasks.Task do
   end
 
   defp validate_volunteers_limit(%{valid?: true} = changeset) do
-    max_number_of_volunteers = changeset |> Changeset.get_field(:max_volunteer)
+    max_number_of_volunteers = changeset |> Changeset.get_field(:max_volunteers)
     number_of_volunteers =
       changeset
       |> Changeset.get_field(:volunteers)
       |> length
 
     if number_of_volunteers > max_number_of_volunteers do
-      add_error(changeset, :max_volunteer,
+      add_error(changeset, :max_volunteers,
         "The maximum number of volunteers needed for this task is reached")
     else
       changeset

@@ -29,7 +29,7 @@ defmodule CoursePlanner.Tasks do
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
     |> Enum.reject(fn(task) ->
-           length(task.volunteers) >= task.max_volunteer or
+           length(task.volunteers) >= task.max_volunteers or
            Enum.any?(task.volunteers, &(&1.id == id))
        end)
   end

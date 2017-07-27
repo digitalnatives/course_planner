@@ -4,7 +4,7 @@ defmodule CoursePlanner.TaskControllerTest do
 
   import CoursePlanner.Factory
 
-  @valid_attrs %{name: "some content", max_volunteer: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2), description: "sample rtask description"}
+  @valid_attrs %{name: "some content", max_volunteers: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2), description: "sample rtask description"}
   @invalid_attrs %{}
 
   setup do

@@ -47,7 +47,7 @@
                 <div class="detail">
                   <div class="detail__name">Volunteers needed</div>
                   <div class="detail__value">
-                    <%= @task.max_volunteer %>
+                    <%= @task.max_volunteers %>
                   </div>
                 </div>
                 <div class="detail">

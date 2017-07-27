@@ -4,7 +4,7 @@ defmodule CoursePlanner.Repo.Migrations.AddMaxVolunteerPerTask do
   def change do
     alter table(:tasks) do
       remove :user_id
-      add :max_volunteer, :integer
+      add :max_volunteers, :integer
     end
   end
 end

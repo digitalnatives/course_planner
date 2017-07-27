@@ -15,7 +15,7 @@
             <%= CoursePlanner.SharedView.form_datetime f, :start_time, required: true, value: %{hour: 8, min: 0} %>
             <%= CoursePlanner.SharedView.form_datetime f, :finish_time, required: true, value: %{hour: 8, min: 0} %>
             <%= CoursePlanner.SharedView.form_textarea f, :description %>
-            <%= CoursePlanner.SharedView.form_text f, :max_volunteer, required: true %>
+            <%= CoursePlanner.SharedView.form_text f, :max_volunteers, required: true %>
             <%= CoursePlanner.SharedView.form_multiselect f, :volunteer_ids, volunteers, selected: selected_volunteers(@changeset),
                                                                                          label: "Volunteers",
                                                                                          display_images: true,
