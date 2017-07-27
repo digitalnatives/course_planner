@@ -1,7 +1,6 @@
 defmodule CoursePlanner.Tasks do
   @moduledoc false
   alias CoursePlanner.{Repo, Volunteers, Tasks.Task}
-  alias Ecto.Changeset
   import Ecto.Query, except: [update: 2]
 
   def all do
@@ -74,7 +73,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = [new_volunteer | task.volunteers]
 
       changeset
-      |> Task.put_assoc(:volunteers, updated_volunteer_list)
+      |> Task.put_assoc(:volunteers, updated_volunteer_list, :limit_max_volunteers)
       |> Repo.update()
     else
       error -> error
@@ -89,7 +88,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
 
       changeset
-      |> Changeset.put_assoc(:volunteers, updated_volunteer_list)
+      |> Task.put_assoc(:volunteers, updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
