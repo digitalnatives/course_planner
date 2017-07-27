@@ -8,9 +8,7 @@ defmodule CoursePlanner.TaskController do
   plug :authorize_controller
 
   @error_messages %{
-    not_found: "Task was not found.",
-    already_finished: "Cannott grab as task is already finished.",
-    already_assigned: "Cannot grab as task is already assigned."
+    not_found: "Task was not found."
   }
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, params) do
@@ -96,12 +94,12 @@ defmodule CoursePlanner.TaskController do
            |> render(CoursePlanner.ErrorView, "404.html")
          {:error, changeset} ->
            render(conn, "edit.html", task: task, changeset: changeset)
-        end
-    else
-      _ -> conn
-           |> put_status(404)
-           |> render(CoursePlanner.ErrorView, "404.html")
-    end
+       end
+     else
+       _ -> conn
+            |> put_status(404)
+            |> render(CoursePlanner.ErrorView, "404.html")
+     end
   end
 
   def delete(conn, %{"id" => id}) do
@@ -152,9 +150,9 @@ defmodule CoursePlanner.TaskController do
         |> put_flash(:error, error_message)
         |> redirect(to: task_path(conn, :index))
       {:error, type} ->
-       conn
-       |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
-       |> redirect(to: task_path(conn, :index))
+        conn
+        |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
+        |> redirect(to: task_path(conn, :index))
     end
   end
 end
