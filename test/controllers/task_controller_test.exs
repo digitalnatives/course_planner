@@ -318,5 +318,95 @@ defmodule CoursePlanner.TaskControllerTest do
       conn = post conn, task_path(conn, :create), task: @valid_attrs
       assert html_response(conn, 403)
     end
+
+    test "index sorted by freshness", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index, sort: "fresh")
+      assert html_response(conn, 200) =~ "Your tasks"
+    end
+
+    test "index sorted by closeness", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index, sort: "closest")
+      assert html_response(conn, 200) =~ "Your tasks"
+    end
+
+    test "grab a task", %{conn: conn, user: user} do
+      task = insert(:task)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert  reloaded_task.volunteers == [user]
+    end
+
+    test "grab the last empty place in a task", %{conn: conn, user: user} do
+      volunteers = insert_list(2, :volunteer)
+      task = insert(:task, max_volunteers: 3, volunteers: volunteers)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert length(reloaded_task.volunteers) == 3
+      assert Enum.any?(reloaded_task.volunteers, &(&1 == user))
+    end
+
+    test "does not grab a non-existing resource", %{conn: conn, user: _user} do
+      conn = post conn, task_grab_path(conn, :grab, -1)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert  html_response(conn, 200) =~ "Task was not found"
+    end
+
+    test "does not grab when max_volunteer is reached", %{conn: conn, user: _user} do
+      volunteers = insert_list(2, :volunteer)
+      task = insert(:task, max_volunteers: 2, volunteers: volunteers)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert  html_response(conn, 200) =~ "The maximum number of volunteers needed for this task is reached"
+    end
+
+    test "does not drop a non-existing resource", %{conn: conn, user: _user} do
+      conn = post conn, task_drop_path(conn, :drop, -1)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert  html_response(conn, 200) =~ "Task was not found"
+    end
+
+    test "drop a task with only one volunteer", %{conn: conn, user: user} do
+      task = insert(:task, volunteers: [user])
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert  reloaded_task.volunteers == []
+    end
+
+    test "drop a task with multiple volunteer", %{conn: conn, user: user} do
+      volunteers = insert_list(2, :volunteer)
+
+      task = insert(:task, max_volunteers: 3, volunteers: [user | volunteers])
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert reloaded_task.volunteers == volunteers
+    end
+
+    test "drop a task even if number of volunteers are more than max_volunteers", %{conn: conn, user: user} do
+      volunteers = insert_list(10, :volunteer)
+
+      task = insert(:task, max_volunteers: 3, volunteers: [user | volunteers])
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert reloaded_task.volunteers == volunteers
+    end
   end
 end
