@@ -7,286 +7,316 @@ defmodule CoursePlanner.TaskControllerTest do
   @valid_attrs %{name: "some content", max_volunteers: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2), description: "sample rtask description"}
   @invalid_attrs %{}
 
-  setup do
+  setup(%{user_role: role}) do
+    user = insert(role)
+
     conn =
       Phoenix.ConnTest.build_conn()
-        |> assign(:current_user, insert(:coordinator))
-    {:ok, conn: conn}
+      |> assign(:current_user, user)
+
+    {:ok, conn: conn, user: user}
   end
 
-  defp login_as(user_type) do
-    user = insert(user_type)
+  @moduletag user_role: :student
+  describe "student access" do
+    test "does not list entries", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 403)
+    end
 
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    test "does not show chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = get conn, task_path(conn, :show, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not renders form for editing", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = get conn, task_path(conn, :edit, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not update a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = put conn, task_path(conn, :update, task), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not delete a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = delete conn, task_path(conn, :delete, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not render for for new resources for non-coordinator users", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    test "does not create task", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not grab a task", %{conn: conn, user: user} do
+      task = insert(:task)
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not drop a task", %{conn: conn, user: user} do
+      task = insert(:task, volunteers: [user])
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert html_response(conn, 403)
+    end
   end
 
-  test "lists all entries on index for volunteer and coordinator", %{conn: _conn} do
-    volunteer_conn = login_as(:volunteer)
-    coordinator_conn = login_as(:coordinator)
+  @moduletag user_role: :teacher
+  describe "teacher access" do
+    test "does not list entries", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 403)
+    end
 
-    conn = get volunteer_conn, task_path(volunteer_conn, :index)
-    assert html_response(conn, 200) =~ "Your tasks"
+    test "does not show chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
 
-    conn = get coordinator_conn, task_path(coordinator_conn, :index)
-    assert html_response(conn, 200) =~ "Tasks"
+      conn = get conn, task_path(conn, :show, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not renders form for editing", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = get conn, task_path(conn, :edit, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not update a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = put conn, task_path(conn, :update, task), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not delete a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = delete conn, task_path(conn, :delete, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not render for for new resources for non-coordinator users", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    test "does not create task", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not grab a task", %{conn: conn, user: user} do
+      task = insert(:task)
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not drop a task", %{conn: conn, user: user} do
+      task = insert(:task, volunteers: [user])
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert html_response(conn, 403)
+    end
   end
 
-  test "does not list entries for restricted users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
+  @moduletag user_role: :coordinator
+  describe "coordinator access" do
+    test "lists all entries on index", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 200) =~ "Tasks"
+    end
 
-    conn = get student_conn, task_path(student_conn, :index)
-    assert html_response(conn, 403)
+    test "renders form for new resources", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :new)
+      assert html_response(conn, 200) =~ "New task"
+    end
 
-    conn = get teacher_conn, task_path(teacher_conn, :index)
-    assert html_response(conn, 403)
-  end
+    test "create task without assigned volunteer", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @valid_attrs
+      assert redirected_to(conn) == task_path(conn, :index)
+      reloaded_task = Repo.get_by(Task, @valid_attrs) |> Repo.preload(:volunteers)
+      assert reloaded_task.volunteers == []
+    end
 
-  test "shows chosen resource", %{conn: conn} do
-    task = insert(:task)
-    conn = get conn, task_path(conn, :show, task)
-    assert html_response(conn, 200) =~ task.name
-  end
+    test "create task with assigned volunteer", %{conn: conn, user: _user} do
+      volunteer = insert(:volunteer)
+      task = Map.put(@valid_attrs, :volunteer_ids, [volunteer.id])
+      conn = post conn, task_path(conn, :create), task: task
+      assert redirected_to(conn) == task_path(conn, :index)
+      reloaded_task = Repo.get_by!(Task, name: "some content") |> Repo.preload(:volunteers)
+      assert reloaded_task.volunteers == [volunteer]
+    end
 
-  test "does not show chosen resource for student and teacher", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
+    test "does not create task volunteers are more than max", %{conn: conn, user: _user} do
+      volunteers = insert_list(3, :volunteer)
+      task = Map.put(@valid_attrs, :volunteer_ids, Enum.map(volunteers, &(&1.id)))
+      conn = post conn, task_path(conn, :create), task: task
+      assert html_response(conn, 200) =~ "New task"
+    end
 
-    task = insert(:task)
+    test "does not create task with invalid data", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @invalid_attrs
+      assert html_response(conn, 200) =~ "New task"
+    end
 
-    conn = get student_conn, task_path(student_conn, :show, task)
-    assert html_response(conn, 403)
+    test "shows chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+      conn = get conn, task_path(conn, :show, task)
+      assert html_response(conn, 200) =~ task.name
+    end
 
-    conn = get teacher_conn, task_path(teacher_conn, :show, task)
-    assert html_response(conn, 403)
-  end
+    test "renders page not found when id is nonexistent", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :show, -1)
+      assert html_response(conn, 404)
+    end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    conn = get conn, task_path(conn, :show, -1)
-    assert html_response(conn, 404)
-  end
+    test "renders form for editing chosen resource", %{conn: conn, user: _user} do
+      task = Repo.insert! %Task{name: "Clean the whole thing"}
+      conn = get conn, task_path(conn, :edit, task)
+      assert html_response(conn, 200) =~ "Clean the whole thing"
+    end
 
-  test "renders form for editing chosen resource", %{conn: conn} do
-    task = Repo.insert! %Task{name: "Clean the whole thing"}
-    conn = get conn, task_path(conn, :edit, task)
-    assert html_response(conn, 200) =~ "Clean the whole thing"
-  end
+    test "does not renders form for editing for non-existing task", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :edit, -1)
+      assert html_response(conn, 404)
+    end
 
-  test "does not renders form for editing for non-existing task", %{conn: conn} do
-    conn = get conn, task_path(conn, :edit, -1)
-    assert html_response(conn, 404)
-  end
+    test "updates chosen resource and redirects when data is valid", %{conn: conn, user: _user} do
+      task = insert(:task)
+      conn = put conn, task_path(conn, :update, task), task: @valid_attrs
+      assert redirected_to(conn) == task_path(conn, :show, task)
+      assert Repo.get_by(Task, @valid_attrs)
+    end
 
-  test "does not renders form for editing for non-coordinator users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
+    test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, user: _user} do
+      task = Repo.insert! %Task{name: "Clean the whole thing"}
+      conn = put conn, task_path(conn, :update, task), task: @invalid_attrs
+      assert html_response(conn, 200) =~ "Clean the whole thing"
+    end
 
-    task = insert(:task)
+    test "does not update chosen resource when added volunteers pass the max", %{conn: conn, user: _user} do
+      [volunteer1, volunteer2] = insert_list(2, :volunteer)
+      task = insert(:task, max_volunteers: 1, volunteers: [volunteer1])
+      task_params = Map.put(@valid_attrs, :volunteer_ids, [volunteer1.id, volunteer2.id])
 
-    conn = get student_conn, task_path(student_conn, :edit, task)
-    assert html_response(conn, 403)
+      conn = put conn, task_path(conn, :update, task), task: %{task_params | max_volunteers: 1}
+      assert html_response(conn, 200) =~ @valid_attrs.name
+    end
 
-    conn = get teacher_conn, task_path(teacher_conn, :edit, task)
-    assert html_response(conn, 403)
+    test "does not update chosen resource when decreasing max_volunteers becomes less than current volunteers", %{conn: conn, user: _user} do
+      volunteers = insert_list(2, :volunteer)
+      task = insert(:task, volunteers: volunteers)
+      task_params = Map.put(@valid_attrs, :volunteer_ids, Enum.map(volunteers, &(&1.id)))
 
-    conn = get volunteer_conn, task_path(volunteer_conn, :edit, task)
-    assert html_response(conn, 403)
-  end
+      conn = put conn, task_path(conn, :update, task), task: %{task_params | max_volunteers: 1}
+      assert html_response(conn, 200) =~ @valid_attrs.name
+    end
 
-  test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    task = insert(:task)
-    conn = put conn, task_path(conn, :update, task), task: @valid_attrs
-    assert redirected_to(conn) == task_path(conn, :show, task)
-    assert Repo.get_by(Task, @valid_attrs)
-  end
+    test "does not update a non-existing resource", %{conn: conn, user: _user} do
+      conn = put conn, task_path(conn, :update, -1), task: @invalid_attrs
+      assert html_response(conn, 404)
+    end
 
-  test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    task = Repo.insert! %Task{name: "Clean the whole thing"}
-    conn = put conn, task_path(conn, :update, task), task: @invalid_attrs
-    assert html_response(conn, 200) =~ "Clean the whole thing"
-  end
+    test "deletes chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+      conn = delete conn, task_path(conn, :delete, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+      refute Repo.get(Task, task.id)
+    end
 
-  test "does not update a chosen resource for non-coordinator users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    task = insert(:task)
-
-    conn = put student_conn, task_path(student_conn, :update, task), task: @valid_attrs
-    assert html_response(conn, 403)
-
-    conn = put teacher_conn, task_path(teacher_conn, :update, task), task: @valid_attrs
-    assert html_response(conn, 403)
-
-    conn = put volunteer_conn, task_path(volunteer_conn, :update, task), task: @valid_attrs
-    assert html_response(conn, 403)
-  end
-
-  test "deletes chosen resource", %{conn: conn} do
-    task = insert(:task)
-    conn = delete conn, task_path(conn, :delete, task)
-    assert redirected_to(conn) == task_path(conn, :index)
-    refute Repo.get(Task, task.id)
-  end
-
-  test "does not delete a non-existing resource", %{conn: conn} do
-    conn = delete conn, task_path(conn, :delete, -1)
-    assert redirected_to(conn) == task_path(conn, :index)
-    conn = get conn, task_path(conn, :index)
-    assert  html_response(conn, 200) =~ "Task was not found"
-  end
-
-  test "does not delete a chosen resource for non-coordinator users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    task = insert(:task)
-
-    conn = delete student_conn, task_path(student_conn, :delete, task)
-    assert html_response(conn, 403)
-
-    conn = delete teacher_conn, task_path(teacher_conn, :delete, task)
-    assert html_response(conn, 403)
-
-    conn = delete volunteer_conn, task_path(volunteer_conn, :delete, task)
-    assert html_response(conn, 403)
-  end
-
-  test "renders form for new resources", %{conn: conn} do
-    conn = get conn, task_path(conn, :new)
-    assert html_response(conn, 200) =~ "New task"
-  end
-
-  test "does not render for for new resources for non-coordinator users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    conn = get student_conn, task_path(student_conn, :new)
-    assert html_response(conn, 403)
-
-    conn = get teacher_conn, task_path(teacher_conn, :new)
-    assert html_response(conn, 403)
-
-    conn = get volunteer_conn, task_path(volunteer_conn, :new)
-    assert html_response(conn, 403)
-  end
-
-  test "create task without assigned volunteer", %{conn: conn} do
-    conn = post conn, task_path(conn, :create), task: @valid_attrs
-    assert redirected_to(conn) == task_path(conn, :index)
-    assert Repo.get_by(Task, name: "some content")
-  end
-
-  test "create task with assigned volunteer", %{conn: conn} do
-    volunteer = insert(:volunteer)
-    task = Map.put(@valid_attrs, :volunteer_ids, [volunteer.id])
-    conn = post conn, task_path(conn, :create), task: task
-    assert redirected_to(conn) == task_path(conn, :index)
-    reloaded_task = Repo.get_by!(Task, name: "some content") |> Repo.preload(:volunteers)
-    assert reloaded_task.volunteers == [volunteer]
-  end
-
-  test "does not create task with invalid data", %{conn: conn} do
-    conn = post conn, task_path(conn, :create), task: @invalid_attrs
-    assert html_response(conn, 200) =~ "New task"
-  end
-
-  test "does not create task for non-coordinator users", %{conn: _conn} do
-    student_conn = login_as(:student)
-    teacher_conn = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    conn = post student_conn, task_path(student_conn, :create), task: @valid_attrs
-    assert html_response(conn, 403)
-
-    conn = post teacher_conn, task_path(teacher_conn, :create), task: @valid_attrs
-    assert html_response(conn, 403)
-
-    conn = post volunteer_conn, task_path(volunteer_conn, :create), task: @valid_attrs
-    assert html_response(conn, 403)
-  end
-
-  test "grab task", %{conn: conn} do
-    task = insert(:task, %{
-      start_time: Timex.now() |> Timex.shift(days: 1),
-      finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1)})
-    volunteer = insert(:volunteer)
-    conn = assign(conn, :current_user, volunteer)
-    conn = post conn, task_grab_path(conn, :grab, task)
-    assert redirected_to(conn) == task_path(conn, :index)
-
-    reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
-    assert  reloaded_task.volunteers == [volunteer]
-  end
-
-  test "does not grab a non-existing resource", %{conn: _conn} do
-    volunteer_conn = login_as(:volunteer)
-
-    conn = post volunteer_conn, task_grab_path(volunteer_conn, :grab, -1)
-    assert redirected_to(conn) == task_path(conn, :index)
-    conn = get conn, task_path(conn, :index)
-    assert  html_response(conn, 200) =~ "Task was not found"
-  end
-
-  test "index sorted by freshness" do
-    volunteer_conn = login_as(:volunteer)
-
-    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "fresh")
-    assert html_response(conn, 200) =~ "Your tasks"
-  end
-
-  test "index sorted by closeness" do
-    volunteer_conn = login_as(:volunteer)
-
-    conn = get volunteer_conn, task_path(volunteer_conn, :index, sort: "closest")
-    assert html_response(conn, 200) =~ "Your tasks"
-  end
-
-  describe "tests drop functionlity" do
-    test "does not drop a non-existing resource", %{conn: _conn} do
-      volunteer_conn = login_as(:volunteer)
-
-      conn = post volunteer_conn, task_drop_path(volunteer_conn, :drop, -1)
+    test "does not delete a non-existing resource", %{conn: conn, user: _user} do
+      conn = delete conn, task_path(conn, :delete, -1)
       assert redirected_to(conn) == task_path(conn, :index)
       conn = get conn, task_path(conn, :index)
       assert  html_response(conn, 200) =~ "Task was not found"
     end
 
-    test "drop a task with only one volunteer", %{conn: conn} do
-      volunteer = insert(:volunteer)
+    test "does not grab a task", %{conn: conn, user: user} do
+      task = insert(:task)
+      conn = assign(conn, :current_user, user)
 
-      task = insert(:task, %{
-        start_time: Timex.now() |> Timex.shift(days: 1),
-        finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1),
-        volunteers: [volunteer]})
-
-      conn = assign(conn, :current_user, volunteer)
-      conn = post conn, task_drop_path(conn, :drop, task)
-      assert redirected_to(conn) == task_path(conn, :index)
-
-      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
-      assert  reloaded_task.volunteers == []
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert html_response(conn, 403)
     end
 
-    test "drop a task with multiple volunteer", %{conn: conn} do
-      [login_volunteer | rest_of_volunteers] = insert_list(3, :volunteer)
+    test "does not drop a task", %{conn: conn, user: user} do
+      task = insert(:task, volunteers: [user])
+      conn = assign(conn, :current_user, user)
 
-      task = insert(:task, %{
-        start_time: Timex.now() |> Timex.shift(days: 1),
-        finish_time: Timex.now() |> Timex.shift(days: 1) |> Timex.shift(hours: 1),
-        volunteers: [login_volunteer | rest_of_volunteers]})
-
-      conn = assign(conn, :current_user, login_volunteer)
       conn = post conn, task_drop_path(conn, :drop, task)
-      assert redirected_to(conn) == task_path(conn, :index)
+      assert html_response(conn, 403)
+    end
+  end
 
-      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
-      assert reloaded_task.volunteers == rest_of_volunteers
+  @moduletag user_role: :volunteer
+  describe "volunteer access" do
+    test "lists all entries on index", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 200) =~ "Your tasks"
+    end
+
+    test "shows chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+      conn = get conn, task_path(conn, :show, task)
+      assert html_response(conn, 200) =~ task.name
+    end
+
+    test "renders page not found when id is nonexistent", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :show, -1)
+      assert html_response(conn, 404)
+    end
+
+    test "does not renders form for editing", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = get conn, task_path(conn, :edit, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not update a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = put conn, task_path(conn, :update, task), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not delete a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = delete conn, task_path(conn, :delete, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not render for for new resources for non-coordinator users", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    test "does not create task", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @valid_attrs
+      assert html_response(conn, 403)
     end
   end
 end

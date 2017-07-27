@@ -35,7 +35,7 @@ defmodule CoursePlanner.TaskController do
 
     volunteer_ids = Map.get(task_params, "volunteer_ids", [])
     volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    changeset = Task.put_assoc(changeset, :volunteers, volunteers, :limit_max_volunteers)
+    changeset = Task.update_volunteer(changeset, :volunteers, volunteers)
 
     case Repo.insert(changeset) do
       {:ok, _task} ->
@@ -73,28 +73,34 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def update(conn, %{"id" => id, "task" => task_params}) do
-    task =
-      Task
-      |> Repo.get!(id)
-      |> Repo.preload([:volunteers])
-    changeset = Task.changeset(task, task_params)
+  def update(conn, %{"id" => id, "task" => task_params})do
+    with {:ok, task} <- Tasks.get(id)
+     do
+       changeset =
+         task
+         |> Repo.preload([:volunteers])
+         |> Task.changeset(task_params)
 
-    volunteer_ids = Map.get(task_params, "volunteer_ids", [])
-    volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    changeset = Task.put_assoc(changeset, :volunteers, volunteers, :limit_max_volunteers)
+       volunteer_ids = Map.get(task_params, "volunteer_ids", [])
+       volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
+       changeset = Task.update_volunteer(changeset, :volunteers, volunteers)
 
-    case Repo.update(changeset) do
-      {:ok, task} ->
-        conn
-        |> put_flash(:info, "Task updated successfully.")
-        |> redirect(to: task_path(conn, :show, task))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-      {:error, changeset} ->
-        render(conn, "edit.html", task: task, changeset: changeset)
+       case Repo.update(changeset) do
+         {:ok, task} ->
+           conn
+           |> put_flash(:info, "Task updated successfully.")
+           |> redirect(to: task_path(conn, :show, task))
+         {:error, :not_found} ->
+           conn
+           |> put_status(404)
+           |> render(CoursePlanner.ErrorView, "404.html")
+         {:error, changeset} ->
+           render(conn, "edit.html", task: task, changeset: changeset)
+        end
+    else
+      _ -> conn
+           |> put_status(404)
+           |> render(CoursePlanner.ErrorView, "404.html")
     end
   end
 

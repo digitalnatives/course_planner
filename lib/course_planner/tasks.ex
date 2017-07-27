@@ -73,7 +73,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = [new_volunteer | task.volunteers]
 
       changeset
-      |> Task.put_assoc(:volunteers, updated_volunteer_list, :limit_max_volunteers)
+      |> Task.update_volunteer(:volunteers, updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
@@ -88,7 +88,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
 
       changeset
-      |> Task.put_assoc(:volunteers, updated_volunteer_list)
+      |> Task.drop_volunteer(:volunteers, updated_volunteer_list)
       |> Repo.update()
     else
       error -> error

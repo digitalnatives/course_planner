@@ -4,17 +4,7 @@ defmodule CoursePlanner.TasksTest do
   alias CoursePlanner.{Tasks, Tasks.Task}
   import CoursePlanner.Factory
 
-  defp adds_extra_volunteer_without_check(%{task: task, volunteers: volunteers}) do
-    changeset =
-      task
-      |> Repo.preload([:volunteers])
-      |> Task.changeset()
-
-    changeset = Task.put_assoc(changeset, :volunteers, volunteers)
-    Repo.update(changeset)
-  end
-
-  describe "tests tasks sorting functionality when" do
+  describe "task sorting functionality when" do
     test "query without sort option" do
       task1 = insert(:task)
       task2 = insert(:task)
@@ -74,10 +64,10 @@ defmodule CoursePlanner.TasksTest do
       assert applicable_task == [task1]
     end
 
-    test "does not return even if max_volunteers is surpassed" do
+    test "does not return if max_volunteers is surpassed" do
       [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
-      [task1, task2] = insert_list(2, :task, max_volunteers: 1)
-      adds_extra_volunteer_without_check(%{task: task1, volunteers: [volunteer1, volunteer2]})
+      insert(:task, max_volunteers: 1, volunteers: [volunteer1, volunteer2])
+      task2 = insert(:task, max_volunteers: 3, volunteers: [volunteer1, volunteer2])
 
       [applicable_task] = Tasks.get_availables(nil, volunteer3.id, Timex.now())
       assert applicable_task.id == task2.id
@@ -103,8 +93,7 @@ defmodule CoursePlanner.TasksTest do
 
     test "return even if max_volunteers is surpassed" do
       [volunteer1, volunteer2] = insert_list(2, :volunteer)
-      {:ok, task} =  adds_extra_volunteer_without_check(%{task: insert(:task, max_volunteers: 1),
-                                                        volunteers: [volunteer1, volunteer2]})
+      task = insert(:task, max_volunteers: 1, volunteers: [volunteer1, volunteer2])
 
       [applicable_task] = Tasks.get_past(nil, volunteer1.id, Timex.shift(Timex.now(), days: 20))
       assert length(applicable_task.volunteers) > applicable_task.max_volunteers
@@ -132,8 +121,8 @@ defmodule CoursePlanner.TasksTest do
 
     test "return even if max_volunteers is surpassed" do
       [volunteer1, volunteer2] = insert_list(2, :volunteer)
-      {:ok, task} =  adds_extra_volunteer_without_check(%{task: insert(:task, max_volunteers: 1),
-                                                        volunteers: [volunteer1, volunteer2]})
+      task =  insert(:task, max_volunteers: 1, volunteers: [volunteer1, volunteer2])
+
 
       [applicable_task] = Tasks.get_for_user(nil, volunteer1.id, Timex.now())
       assert length(applicable_task.volunteers) > applicable_task.max_volunteers

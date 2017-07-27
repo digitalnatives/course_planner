@@ -3,7 +3,6 @@ defmodule CoursePlanner.Tasks.Task do
     Defines a task to be accomplished by volunteers or coordinators
   """
   use CoursePlanner.Web, :model
-  import Ecto.Changeset, except: [put_assoc: 3]
   alias CoursePlanner.User
   alias Ecto.Changeset
 
@@ -32,8 +31,8 @@ defmodule CoursePlanner.Tasks.Task do
     |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
   end
 
-  def put_assoc(changeset, field, field_data), do: Changeset.put_assoc(changeset, field, field_data)
-  def put_assoc(changeset, field, field_data, :limit_max_volunteers) do
+  def drop_volunteer(changeset, field, field_data), do: put_assoc(changeset, field, field_data)
+  def update_volunteer(changeset, field, field_data) do
     changeset
     |> put_assoc(field, field_data)
     |> validate_volunteers_limit()
