@@ -33,34 +33,72 @@ defmodule CoursePlanner.TasksTest do
     end
   end
 
-  test "do not list finished tasks" do
-    volunteer = insert(:volunteer)
-    insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: -1)})
-    task = insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: 1)})
-    insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: -1)})
-    insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: 1)})
-    [applicable_task] = Tasks.get_for_user(nil, volunteer.id, Timex.now())
-    assert applicable_task.id == task.id
+  describe "listing of available tasks" do
+    test "does not return past tasks" do
+      volunteer = insert(:volunteer)
+      insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: -1)})
+      insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: 1)})
+      insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: -1)})
+      task = insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: 1)})
+      [applicable_task] = Tasks.get_availables(nil, volunteer.id, Timex.now())
+      assert applicable_task.id == task.id
+    end
+
+    test "does not return tasks with max_volunteers reached" do
+      [volunteer1 | rest_volunteers] = insert_list(3, :volunteer)
+      task1 = insert(:task, %{max_volunteers: 3, volunteers: rest_volunteers})
+      task2 = insert(:task, %{max_volunteers: 3, volunteers: rest_volunteers})
+      insert(:task, %{max_volunteers: 2, volunteers: rest_volunteers})
+
+      applicable_task = Tasks.get_availables(nil, volunteer1.id, Timex.now())
+      assert applicable_task == [task1, task2]
+    end
+
+    test "does not return tasks which are already grabbed by the volunteer" do
+      [volunteer1 | rest_volunteers] = insert_list(3, :volunteer)
+      task1 = insert(:task, %{max_volunteers: 3, volunteers: rest_volunteers})
+      insert(:task, %{max_volunteers: 3, volunteers: [volunteer1]})
+      insert(:task, %{max_volunteers: 2, volunteers: rest_volunteers})
+
+      applicable_task = Tasks.get_availables(nil, volunteer1.id, Timex.now())
+      assert applicable_task == [task1]
+    end
   end
 
-  test "do not list expired tasks" do
-    volunteer = insert(:volunteer)
-    insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: -1)})
-    insert(:task, %{volunteers: [volunteer], finish_time: Timex.now() |> Timex.shift(hours: 1)})
-    insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: -1)})
-    task = insert(:task, %{finish_time: Timex.now() |> Timex.shift(hours: 1)})
-    [applicable_task] = Tasks.get_availables(nil, volunteer.id, Timex.now())
-    assert applicable_task.id == task.id
+  describe "listing of volunteer's past tasks" do
+    test "list past task based on their finished_time" do
+      volunteer = insert(:volunteer)
+      task1 = insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 1, hours: 1), volunteers: [volunteer]})
+      task2 = insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 2, hours: 2), volunteers: [volunteer]})
+      insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 2, hours: 8), volunteers: [volunteer]})
+      insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 3, hours: 2), volunteers: [volunteer]})
+      result = Tasks.get_past(nil, volunteer.id, Timex.shift(Timex.now(), days: 2, hours: 2)) |> Enum.map(&(&1.id))
+      assert result == [task1.id, task2.id]
+    end
+
+    test "does not return past tasks which are not assigned to the volunteer" do
+      volunteer = insert(:volunteer)
+      insert_list(5, :task)
+      assert [] == Tasks.get_past(nil, volunteer.id, Timex.shift(Timex.now(), days: 10))
+    end
   end
 
-  test "query past tasks" do
-    volunteer = insert(:volunteer)
-    task1 = insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 1, hours: 1), volunteers: [volunteer]})
-    task2 = insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 2, hours: 2), volunteers: [volunteer]})
-    insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 2, hours: 8), volunteers: [volunteer]})
-    insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 3, hours: 2), volunteers: [volunteer]})
-    result = Tasks.get_past(nil, volunteer.id, Timex.shift(Timex.now(), days: 2, hours: 2)) |> Enum.map(&(&1.id))
-    assert result == [task1.id, task2.id]
-  end
+  describe "listing of current volunteer's tasks" do
+    test "does not return past tasks" do
+      volunteer = insert(:volunteer)
+      insert(:task, %{volunteers: [volunteer], finish_time: Timex.shift(Timex.now(), days: 1, hours: 1)})
+      task = insert(:task, %{volunteers: [volunteer], finish_time: Timex.shift(Timex.now(), days: 1, hours: 2)})
+      [applicable_task] = Tasks.get_for_user(nil, volunteer.id, Timex.shift(Timex.now(), days: 1, hours: 1))
+      assert applicable_task.id == task.id
+    end
 
+    test "does not return not assigned tasks" do
+      volunteer = insert(:volunteer)
+      task = insert(:task, %{volunteers: [volunteer], finish_time: Timex.shift(Timex.now(), days: 1, hours: 2)})
+      insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 1, hours: 2)})
+      insert(:task, %{finish_time: Timex.shift(Timex.now(), days: 1, hours: 2)})
+      [applicable_task] = Tasks.get_for_user(nil, volunteer.id, Timex.now())
+      assert applicable_task.id == task.id
+    end
+  end
 end
