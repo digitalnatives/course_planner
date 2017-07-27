@@ -6,15 +6,17 @@ defmodule CoursePlanner.TaskTest do
   @valid_attrs %{name: "mahname", max_volunteers: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2)}
   @invalid_attrs %{}
 
-  test "changeset with valid attributes" do
-    changeset = Task.changeset(%Task{}, @valid_attrs)
+  describe "test basic model tests :" do
+    test "changeset with valid attributes" do
+      changeset = Task.changeset(%Task{}, @valid_attrs)
 
-    assert changeset.valid?
-  end
+      assert changeset.valid?
+    end
 
-  test "changeset with no attributes" do
-    changeset = Task.changeset(%Task{}, @invalid_attrs)
-    refute changeset.valid?
+    test "changeset with no attributes" do
+      changeset = Task.changeset(%Task{}, @invalid_attrs)
+      refute changeset.valid?
+    end
   end
 
   describe "tests the validation of task time when" do
