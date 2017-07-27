@@ -8,7 +8,7 @@ defmodule CoursePlanner.Tasks.Task do
   alias Ecto.Changeset
 
   @cast_params [:name, :start_time, :finish_time, :description, :max_volunteers]
-  @required_params [:name, :start_time, :finish_time]
+  @required_params [:name, :start_time, :finish_time, :max_volunteers]
 
   schema "tasks" do
     field :name, :string
