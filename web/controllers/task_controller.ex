@@ -29,11 +29,9 @@ defmodule CoursePlanner.TaskController do
   end
 
   def create(conn, %{"task" => task_params}) do
-    changeset = Task.changeset(%Task{}, task_params)
-
-    volunteer_ids = Map.get(task_params, "volunteer_ids", [])
-    volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    changeset = Task.update_volunteer(changeset, :volunteers, volunteers)
+    changeset =  %Task{}
+      |> Task.changeset(task_params)
+      |> Tasks.update_changeset_volunteers(task_params, "volunteer_ids")
 
     case Repo.insert(changeset) do
       {:ok, _task} ->
@@ -74,14 +72,10 @@ defmodule CoursePlanner.TaskController do
   def update(conn, %{"id" => id, "task" => task_params})do
     with {:ok, task} <- Tasks.get(id)
      do
-       changeset =
-         task
+       changeset = task
          |> Repo.preload([:volunteers])
          |> Task.changeset(task_params)
-
-       volunteer_ids = Map.get(task_params, "volunteer_ids", [])
-       volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-       changeset = Task.update_volunteer(changeset, :volunteers, volunteers)
+         |> Tasks.update_changeset_volunteers(task_params, "volunteer_ids")
 
        case Repo.update(changeset) do
          {:ok, task} ->

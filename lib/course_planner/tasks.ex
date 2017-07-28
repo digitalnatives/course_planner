@@ -94,4 +94,10 @@ defmodule CoursePlanner.Tasks do
       error -> error
     end
   end
+
+  def update_changeset_volunteers(changeset, task_params, volunteer_param_name) do
+    volunteer_ids = Map.get(task_params, volunteer_param_name, [])
+    volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
+    Task.update_volunteer(changeset, :volunteers, volunteers)
+  end
 end
