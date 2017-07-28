@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Notification do
+  defmodule CoursePlanner.Notification do
   @moduledoc """
     Schema for persisting email notification to send later
   """
@@ -21,9 +21,10 @@ defmodule CoursePlanner.Notification do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :resource_path, :user_id])
-    |> validate_required([:type, :user_id])
+    |> cast(params, [:type, :resource_path])
+    |> validate_required([:type])
     |> validate_inclusion(:type, @types)
+    |> cast_assoc(:user)
     |> assoc_constraint(:user)
   end
 end

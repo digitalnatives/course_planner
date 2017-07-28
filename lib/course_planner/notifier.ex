@@ -38,7 +38,8 @@ defmodule CoursePlanner.Notifier do
     end
   end
   def handle_cast({:save_email, notification}, state) do
-    case Repo.insert(notification) do
+    changeset = Notification.changeset(notification)
+    case Repo.insert(changeset) do
       {:ok, _} ->
         {:noreply, state}
       {:error, %{errors: errors, data: email}} ->
@@ -47,7 +48,7 @@ defmodule CoursePlanner.Notifier do
     end
   end
   def handle_cast(:notify_all, state) do
-    Enum.each(Repo.all(Notification), &notify_user/1)
+    Enum.each(Repo.all(Notification |> Repo.preload(:user)), &notify_user/1)
     {:noreply, state}
   end
   def handle_cast(_, state), do: {:noreply, state}

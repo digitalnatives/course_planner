@@ -2,8 +2,9 @@ defmodule CoursePlanner.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, User, Notifier, Notifications}
+  alias CoursePlanner.{Repo, User, Notifications}
   alias Ecto.DateTime
+  @notifier Application.get_env(:course_planner, :notifier) || CoursePlanner.Notifier
 
   def all do
     Repo.all(User)
@@ -40,6 +41,6 @@ defmodule CoursePlanner.Users do
     |> Notifications.type(notification_type)
     |> Notifications.resource_path(path)
     |> Notifications.to(modified_user)
-    |> Notifier.notify_user()
+    |> @notifier.notify_later()
   end
 end

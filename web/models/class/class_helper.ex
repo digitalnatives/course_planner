@@ -8,6 +8,8 @@ defmodule CoursePlanner.ClassHelper do
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 
+  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
     offered_course_id = changeset |> Changeset.get_field(:offered_course_id)
@@ -53,7 +55,7 @@ defmodule CoursePlanner.ClassHelper do
     |> Notifications.type(type)
     |> Notifications.resource_path(path)
     |> Notifications.to(user)
-    |> Notifier.notify_user()
+    |> @notifier.notify_later()
   end
 
   defp get_subscribed_students(class) do

@@ -6,6 +6,8 @@ defmodule CoursePlanner.Terms do
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset
 
+  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+
   def all do
     Repo.all(Term)
   end
@@ -84,7 +86,7 @@ defmodule CoursePlanner.Terms do
     |> Notifications.type(type)
     |> Notifications.resource_path(path)
     |> Notifications.to(user)
-    |> Notifier.notify_user()
+    |> @notifier.notify_later()
   end
 
   def get_subscribed_users(term) do

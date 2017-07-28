@@ -6,6 +6,8 @@ defmodule CoursePlanner.CourseHelper do
 
   alias CoursePlanner.{Repo, Course, Terms, Notifier, Notifications}
 
+  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+
   def delete(id) do
     course = Repo.get(Course, id)
     if is_nil(course) do
@@ -27,6 +29,6 @@ defmodule CoursePlanner.CourseHelper do
     |> Notifications.type(type)
     |> Notifications.resource_path(path)
     |> Notifications.to(user)
-    |> Notifier.notify_user()
+    |> @notifier.notify_later()
   end
 end
