@@ -2,7 +2,7 @@ defmodule CoursePlanner.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, User, Notifier, Notifier.Notification}
+  alias CoursePlanner.{Repo, User, Notifier, Notifications}
   alias Ecto.DateTime
 
   def all do
@@ -36,10 +36,10 @@ defmodule CoursePlanner.Users do
 
   def notify_user(%{id: id}, %{id: id}, _, _), do: nil
   def notify_user(modified_user, _current_user, notification_type, path) do
-    Notification.new()
-    |> Notification.type(notification_type)
-    |> Notification.resource_path(path)
-    |> Notification.to(modified_user)
+    Notifications.new()
+    |> Notifications.type(notification_type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(modified_user)
     |> Notifier.notify_user()
   end
 end

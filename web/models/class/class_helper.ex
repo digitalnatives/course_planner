@@ -4,7 +4,7 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Notifier.Notification}
+  alias CoursePlanner.{Repo, Class, Notifier, Notifications}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 
@@ -49,10 +49,10 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   def notify_user(user, type, path) do
-    Notification.new()
-    |> Notification.type(type)
-    |> Notification.resource_path(path)
-    |> Notification.to(user)
+    Notifications.new()
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
     |> Notifier.notify_user()
   end
 

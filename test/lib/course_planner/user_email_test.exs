@@ -2,7 +2,7 @@ defmodule CoursePlanner.UserEmailTest do
   use ExUnit.Case
   doctest CoursePlanner.Mailer.UserEmail
 
-  alias CoursePlanner.{User, Mailer, Mailer.UserEmail, Notifier.Notification}
+  alias CoursePlanner.{User, Mailer, Mailer.UserEmail, Notification, Notifications}
   import Swoosh.TestAssertions
 
   @valid_user %User{name: "mahname", email: "valid@email"}
@@ -10,15 +10,15 @@ defmodule CoursePlanner.UserEmailTest do
   @invalid_user2 %User{name: "mahname", email: nil}
 
   test "inexistent notification type" do
-    assert UserEmail.build_email(%Notification{to: @valid_user, type: :sometype}) == {:error, :wrong_notification_type}
+    assert UserEmail.build_email(%Notification{user: @valid_user, type: :sometype}) == {:error, :wrong_notification_type}
   end
 
   test "empty e-mail" do
-    assert UserEmail.build_email(%Notification{to: @invalid_user, type: :user_modified}) == {:error, :invalid_recipient}
+    assert UserEmail.build_email(%Notification{user: @invalid_user, type: :user_modified}) == {:error, :invalid_recipient}
   end
 
   test "nil e-mail" do
-    assert UserEmail.build_email(%Notification{to: @invalid_user2, type: :user_modified}) == {:error, :invalid_recipient}
+    assert UserEmail.build_email(%Notification{user: @invalid_user2, type: :user_modified}) == {:error, :invalid_recipient}
   end
 
   for email <- [
@@ -34,9 +34,9 @@ defmodule CoursePlanner.UserEmailTest do
     @email email
     test "notify #{inspect @email}" do
       {type, subject} = @email
-      Notification.new()
-      |> Notification.to(@valid_user)
-      |> Notification.type(type)
+      Notifications.new()
+      |> Notifications.to(@valid_user)
+      |> Notifications.type(type)
       |> UserEmail.build_email()
       |> Mailer.deliver()
       assert_email_sent subject: subject

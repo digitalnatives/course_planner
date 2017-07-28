@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourses, Notifier, Coordinators, Notifier.Notification}
+  alias CoursePlanner.{Repo, OfferedCourses, Notifier, Coordinators, Notifications}
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset
 
@@ -80,10 +80,10 @@ defmodule CoursePlanner.Terms do
   end
 
   def notify_user(user, type, path) do
-    Notification.new()
-    |> Notification.type(type)
-    |> Notification.resource_path(path)
-    |> Notification.to(user)
+    Notifications.new()
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
     |> Notifier.notify_user()
   end
 
