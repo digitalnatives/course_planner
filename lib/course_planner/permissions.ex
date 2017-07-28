@@ -7,7 +7,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
     PageController,
     ScheduleController,
     TaskController,
-    User
+    User,
   }
 
   def can?(%User{role: "Coordinator"}, action, TaskController)
