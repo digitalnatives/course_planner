@@ -2,7 +2,7 @@ defmodule CoursePlanner.TaskController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.{Tasks, Tasks.Task, Volunteers}
+  alias CoursePlanner.{Tasks, Tasks.Task}
 
   import Canary.Plugs
   plug :authorize_controller
