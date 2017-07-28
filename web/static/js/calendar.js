@@ -277,7 +277,15 @@
             previous week
           </a>
         </div>
-        <div class="col-xs-4 col-xs-offset-4 col-md-3 col-md-offset-6 col-lg-2 col-lg-offset-8">
+        <div class="col-xs-4 col-md-3 col-lg-2">
+          <a
+            class="mdl-button mdl-js-button"
+            href="/schedule?date=${ getMonday( ) }"
+          >
+            current week
+          </a>
+        </div>
+        <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
           <a
             class="mdl-button mdl-js-button"
             href="/schedule?date=${ isoDate(nextMonday) }"
