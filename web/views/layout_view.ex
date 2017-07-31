@@ -7,4 +7,8 @@ defmodule CoursePlanner.LayoutView do
   def show_program_about? do
     Settings.get_value("SHOW_PROGRAM_ABOUT_PAGE")
   end
+
+  def get_program_name do
+    Settings.get_value("PROGRAM_NAME")
+  end
 end

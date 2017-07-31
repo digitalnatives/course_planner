@@ -1,53 +1,86 @@
-<h2>About <%= @program_data.name %></h2>
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
 
-<ul>
-  <%= if not is_nil(@program_data.address) do %>
-    <li>
-      <strong>Address:</strong>
-      <%= @program_data.address %>
-    </li>
-  <% end %>
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          About <%= @program_data.name %>
+        </div>
+      </div>
 
+      <div class="page">
+          <%= CoursePlanner.SharedView.card do %>
+            <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+              <div class="row row--hspace row--vspace middle-xs">
+                <%= if not is_nil(@program_data.logo) do %>
+                  <div class="col-xs-3">
+                    <img src="<%= @program_data.logo %>", class="profile-picture">
+                  </div>
+                <% end %>
 
-  <%= if !is_nil(@program_data.email) do %>
-  <li>
-    <strong>Email:</strong>
-    <%= @program_data.email %>
-  </li>
-  <% end %>
+                <div class="col-xs-9">
+                <%= if not is_nil(@program_data.address) do %>
+                  <div class="detail">
+                    <div class="detail__name">Address</div>
+                    <div class="detail__value">
+                      <%= @program_data.address %>
+                    </div>
+                  </div>
+                <% end%>
 
-  <%= if not is_nil(@program_data.phone) do %>
-  <li>
-    <strong>Phone:</strong>
-    <%= @program_data.phone %>
-  </li>
-  <% end %>
+                <%= if not is_nil(@program_data.email) do %>
+                  <div class="detail">
+                    <div class="detail__name">Email</div>
+                    <div class="detail__value">
+                      <%= @program_data.email %>
+                    </div>
+                  </div>
+                <% end %>
 
-  <%= if not is_nil(@program_data.logo) do %>
-  <li>
-    <strong>Logo:</strong>
-    <%= @program_data.logo %>
-  </li>
-  <% end %>
+                <%= if not is_nil(@program_data.phone) do %>
+                  <div class="detail">
+                    <div class="detail__name">Phone number</div>
+                    <div class="detail__value">
+                      <%= @program_data.phone %>
+                    </div>
+                  </div>
+                <% end %>
 
-  <%= if not is_nil(@program_data.website) do %>
-  <li>
-    <strong>Website:</strong>
-    <%= @program_data.website %>
-  </li>
-  <% end %>
+                <%= if not is_nil(@program_data.website) do %>
+                  <div class="detail">
+                    <div class="detail__name">Website</div>
+                    <div class="detail__value">
+                      <%= @program_data.website %>
+                    </div>
+                  </div>
+                <% end %>
 
-  <%= if not is_nil(@program_data.description) do %>
-  <li>
-    <strong>Information:</strong>
-    <%= @program_data.information %>
-  </li>
-  <% end %>
+                <%= if not is_nil(@program_data.description) do %>
+                  <div class="detail">
+                    <div class="detail__name">Description</div>
+                    <div class="detail__value">
+                      <%= @program_data.description %>
+                    </div>
+                  </div>
+                <% end %>
 
-  <%= if not is_nil(@program_data.description) do %>
-  <li>
-    <strong>Description:</strong>
-    <%= @program_data.description %>
-  </li>
-  <% end %>
-</ul>
+                <%= if not is_nil(@program_data.information) do %>
+                  <div class="detail">
+                    <div class="detail__name">Information</div>
+                    <div class="detail__value">
+                      <%= @program_data.description %>
+                    </div>
+                  </div>
+                <% end %>
+
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
