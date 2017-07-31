@@ -37,6 +37,19 @@ defmodule CoursePlanner.Settings do
     parsed_value
   end
 
+  def to_map(settings) do
+    settings
+    |> Enum.reduce(%{}, fn(systemvariable, out) ->
+      Map.put(out, systemvariable.key, systemvariable.value)
+    end)
+  end
+
+  def get_program_descriptor_systemvariables do
+    @visible_settings_query
+    |> Repo.all()
+    |> Enum.reject(&(not String.starts_with?(&1.key, "PROGRAM") )) 
+  end
+
   def get_visible_systemvariables do
     Repo.all(@visible_settings_query)
   end

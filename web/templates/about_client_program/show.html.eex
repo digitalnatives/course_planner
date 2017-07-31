@@ -1,0 +1,53 @@
+<h2>About <%= @program_data.name %></h2>
+
+<ul>
+  <%= if not is_nil(@program_data.address) do %>
+    <li>
+      <strong>Address:</strong>
+      <%= @program_data.address %>
+    </li>
+  <% end %>
+
+
+  <%= if !is_nil(@program_data.email) do %>
+  <li>
+    <strong>Email:</strong>
+    <%= @program_data.email %>
+  </li>
+  <% end %>
+
+  <%= if not is_nil(@program_data.phone) do %>
+  <li>
+    <strong>Phone:</strong>
+    <%= @program_data.phone %>
+  </li>
+  <% end %>
+
+  <%= if not is_nil(@program_data.logo) do %>
+  <li>
+    <strong>Logo:</strong>
+    <%= @program_data.logo %>
+  </li>
+  <% end %>
+
+  <%= if not is_nil(@program_data.website) do %>
+  <li>
+    <strong>Website:</strong>
+    <%= @program_data.website %>
+  </li>
+  <% end %>
+
+  <%= if not is_nil(@program_data.description) do %>
+  <li>
+    <strong>Information:</strong>
+    <%= @program_data.information %>
+  </li>
+  <% end %>
+
+  <%= if not is_nil(@program_data.description) do %>
+  <li>
+    <strong>Description:</strong>
+    <%= @program_data.description %>
+  </li>
+  <% end %>
+</ul>

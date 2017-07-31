@@ -72,6 +72,7 @@
         <%= CoursePlanner.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Settings", @conn, setting_path(@conn, :show) %>
+        <%= if show_program_about?, do: CoursePlanner.SharedView.navbar_item "About the Program", @conn, about_client_program_path(@conn, :show) %>
       <% end %>
 
       <main class="mdl-layout__content">

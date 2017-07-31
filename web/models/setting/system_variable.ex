@@ -12,7 +12,7 @@ defmodule CoursePlanner.SystemVariable do
     field :type,     :string
     field :visible,  :boolean
     field :editable, :boolean
-
+    field :required, :boolean
     timestamps()
   end
 
@@ -26,12 +26,13 @@ defmodule CoursePlanner.SystemVariable do
        :value,
        :type,
        :visible,
-       :editable
+       :editable,
+       :required
       ]
 
     struct
     |> cast(params, target_params)
-    |> validate_required(target_params)
+    |> validate_by_record_required(target_params)
     |> validate_value_type()
   end
 
@@ -44,10 +45,21 @@ defmodule CoursePlanner.SystemVariable do
 
     struct
     |> cast(params, target_params)
-    |> validate_required(target_params)
+    |> validate_by_record_required(target_params)
     |> validate_value_type()
     |> validate_editable()
   end
+
+  def validate_by_record_required(%{valid?: true} = changeset, target_params) do
+    required = changeset |> Changeset.get_field(:required) |> IO.inspect
+
+    if required do
+      validate_required(changeset, target_params)
+    else
+      changeset
+    end
+  end
+  def validate_by_record_required(changeset), do: changeset
 
   defp validate_editable(%{valid?: true} = changeset) do
     editable = changeset |> Changeset.get_field(:editable)
@@ -75,11 +87,31 @@ defmodule CoursePlanner.SystemVariable do
 
   def parse_value(value, type) do
     case type do
-      "string"  -> {:ok, value}
+      "text"    -> {:ok, value}
+      "url"     -> parse_url(value)
       "list"    -> parse_list(value)
+      "string"  -> parse_string(value)
       "integer" -> parse_integer(value)
       "boolean" -> parse_boolean(value)
       _         -> {:error, "unknown type"}
+    end
+  end
+
+  def parse_string(value) do
+    if String.length(value || "") > 255 do
+      {:error, "The given value is too long. Maximum 255 characters are allowed"}
+    else
+      {:ok, value}
+    end
+  end
+
+  def parse_url(value) do
+    uri = URI.parse(value || "")
+    case uri do
+      %URI{host: nil, scheme: nil, path: nil} -> {:ok, ""}
+      %URI{scheme: nil} -> {:error, "Url should start with Http:// or Https://"}
+      %URI{host: nil} -> {:error, "The given URL is not valid"}
+      uri -> {:ok, uri}
     end
   end
 
