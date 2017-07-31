@@ -1,3 +1,5 @@
-<h2>Edit settings</h2>
-
-<%= render "form.html", conn: @conn, changeset: @changeset, action: setting_path(@conn, :update) %>
+<%= render "form.html", conn: @conn,
+                        changeset: @changeset,
+                        action: setting_path(@conn, :update),
+                        title: title
+%>
