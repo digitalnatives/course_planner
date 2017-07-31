@@ -51,7 +51,7 @@ defmodule CoursePlanner.SystemVariable do
   end
 
   def validate_by_record_required(%{valid?: true} = changeset, target_params) do
-    required = changeset |> Changeset.get_field(:required) |> IO.inspect
+    required = changeset |> Changeset.get_field(:required)
 
     if required do
       validate_required(changeset, target_params)
