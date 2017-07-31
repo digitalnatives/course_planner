@@ -50,7 +50,7 @@ defmodule CoursePlanner.SystemVariable do
     |> validate_editable()
   end
 
-  def validate_by_record_required(%{valid?: true} = changeset, target_params) do
+  def validate_by_record_required(changeset, target_params) do
     required = changeset |> Changeset.get_field(:required)
 
     if required do
@@ -59,7 +59,6 @@ defmodule CoursePlanner.SystemVariable do
       changeset
     end
   end
-  def validate_by_record_required(changeset), do: changeset
 
   defp validate_editable(%{valid?: true} = changeset) do
     editable = changeset |> Changeset.get_field(:editable)
