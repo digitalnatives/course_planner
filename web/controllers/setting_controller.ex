@@ -49,7 +49,7 @@ defmodule CoursePlanner.SettingController do
 
   def update(
     %{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
-    %{"settings" => %{"system_variables" => variables, "title"=> title}}) do
+    %{"settings" => %{"system_variables" => variables, "title" => title}}) do
     changesets = Settings.get_changesets_for_update(variables)
 
     case Settings.update(changesets) do
