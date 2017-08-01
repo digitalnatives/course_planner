@@ -4,9 +4,9 @@ defmodule CoursePlanner.SystemVariableTest do
   alias CoursePlanner.SystemVariable
 
   @string_valid_attrs %{key: "sample key", value: "sample value", type: "string", visible: true, editable: true, required: true}
-  @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true}		 +  @text_valid_attrs %{key: "sample key", value: "sample value", type: "text", visible: true, editable: true, required: true}
-  @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true}		 +  @url_valid_attrs %{key: "sample key", value: "http://www.sample.com", type: "url", visible: true, editable: true, required: true}
-  @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true}		 +  @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true, required: true}
+  @text_valid_attrs %{key: "sample key", value: "sample value", type: "text", visible: true, editable: true, required: true}
+  @url_valid_attrs %{key: "sample key", value: "http://www.sample.com", type: "url", visible: true, editable: true, required: true}
+  @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true, required: true}
   @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true, required: true}
   @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true, required: true}
   @invalid_attrs %{}
