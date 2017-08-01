@@ -23,10 +23,6 @@ defmodule CoursePlanner.SettingController do
     editable_system_variables = Settings.get_editable_systemvariables()
 
     case Settings.filter_system_variables(editable_system_variables, setting_type) do
-      {:error, _} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
       {:ok, filtered_system_variables} ->
         changeset =
           filtered_system_variables
@@ -34,6 +30,10 @@ defmodule CoursePlanner.SettingController do
           |> Settings.wrap()
 
         render(conn, "edit.html", changeset: changeset)
+      {:error, _} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
     end
   end
 
