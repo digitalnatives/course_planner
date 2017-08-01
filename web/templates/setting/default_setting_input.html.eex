@@ -1,0 +1,3 @@
+<td> <%= input_value(@form, :key) %> </td>
+<td> <%= text_input @form, :value %> </td>
+<td> <%= error_tag @form, :value %> <td>

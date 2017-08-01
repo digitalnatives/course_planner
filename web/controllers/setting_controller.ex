@@ -21,31 +21,35 @@ defmodule CoursePlanner.SettingController do
   def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, param) do
     editable_system_variables = Settings.get_editable_systemvariables()
 
-    filtered_system_variables =
+    filtered_edit_data =
       case Map.get(param, "setting_type") do
-        "system_settings"  -> Settings.filter_non_program_systemvariables(editable_system_variables)
-        "program_settings" -> Settings.filter_program_systemvariables(editable_system_variables)
+        "system_settings"  ->
+          %{title: "Edit System Setting",
+                variables: Settings.filter_non_program_systemvariables(editable_system_variables)}
+        "program_settings" ->
+        %{title: "Edit Program Setting",
+              variables: Settings.filter_program_systemvariables(editable_system_variables)}
         _                  -> nil
       end
 
-    case filtered_system_variables do
+    case filtered_edit_data do
       nil ->
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
       _   ->
         changeset =
-          filtered_system_variables
+          filtered_edit_data.variables
           |> Enum.map(&SystemVariable.changeset/1)
           |> Settings.wrap()
 
-        render(conn, "edit.html", changeset: changeset)
+        render(conn, "edit.html", changeset: changeset, title: filtered_edit_data.title)
     end
   end
 
   def update(
     %{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
-    %{"settings" => %{"system_variables" => variables}}) do
+    %{"settings" => %{"system_variables" => variables, "title"=> title}}) do
     changesets = Settings.get_changesets_for_update(variables)
 
     case Settings.update(changesets) do
@@ -66,7 +70,7 @@ defmodule CoursePlanner.SettingController do
           changesets
           |> Settings.wrap()
           |> Map.put(:action, :update)
-        render(conn, "edit.html", changeset: changeset)
+        render(conn, "edit.html", changeset: changeset, title: title)
     end
   end
 end
