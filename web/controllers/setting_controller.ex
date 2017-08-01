@@ -18,22 +18,16 @@ defmodule CoursePlanner.SettingController do
                               non_program_system_variables: non_program_system_variables)
   end
 
-  def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, param) do
+  def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
+           %{"setting_type" =>  setting_type}) do
     editable_system_variables = Settings.get_editable_systemvariables()
 
-    filtered_system_variables =
-      case Map.get(param, "setting_type") do
-        "system_settings"  -> Settings.filter_non_program_systemvariables(editable_system_variables)
-        "program_settings" -> Settings.filter_program_systemvariables(editable_system_variables)
-        _                  -> nil
-      end
-
-    case filtered_system_variables do
-      nil ->
+    case Settings.filter_system_variables(editable_system_variables, setting_type) do
+      {:error, _} ->
         conn
         |> put_status(404)
         |> render(CoursePlanner.ErrorView, "404.html")
-      _   ->
+      {:ok, filtered_system_variables} ->
         changeset =
           filtered_system_variables
           |> Enum.map(&SystemVariable.changeset/1)
