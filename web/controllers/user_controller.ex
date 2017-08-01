@@ -1,11 +1,11 @@
 defmodule CoursePlanner.UserController do
   @moduledoc false
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.{User, Users}
+  alias CoursePlanner.{User, Users, Notifier}
   require Logger
 
   import Canary.Plugs
-  plug :authorize_resource, model: User
+  plug :authorize_resource, model: User, non_id_actions: [:notify]
 
   def index(conn, _params) do
     render(conn, "index.html", users: Users.all())
@@ -67,5 +67,16 @@ defmodule CoursePlanner.UserController do
         |> put_flash(:error, "Something went wrong.")
         |> redirect(to: user_path(conn, :index))
     end
+  end
+
+  def notify(conn, _params) do
+    User
+    |> Repo.all()
+    |> Repo.preload(:notifications)
+    |> Enum.each(&Notifier.notify_all/1)
+
+    conn
+    |> put_flash(:info, "Users notified successfully.")
+    |> redirect(to: user_path(conn, :index))
   end
 end

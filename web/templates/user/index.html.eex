@@ -3,6 +3,9 @@
     <div class="col-xs-12 page-title">
       All users
     </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+    </div>
   </div>
 
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">

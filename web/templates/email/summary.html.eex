@@ -1,0 +1,6 @@
+<div>Here's your activity summary:</div>
+<ul>
+  <%= for notification <- @notifications do %>
+    <li><%= "type: #{notification.type}"%></li>
+  <% end %>
+</ul>

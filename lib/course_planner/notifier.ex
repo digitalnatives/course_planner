@@ -3,8 +3,9 @@ defmodule CoursePlanner.Notifier do
   Module responsible for notifying users through e-mail with changes
   """
   use GenServer
-  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo}
+  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, User}
   require Logger
+  import Ecto.Query
 
   @spec start_link :: GenServer.start_link
   def start_link do
@@ -21,9 +22,10 @@ defmodule CoursePlanner.Notifier do
     GenServer.cast(__MODULE__, {:save_email, notification})
   end
 
-  @spec notify_all :: GenServer.cast
-  def notify_all do
-    GenServer.cast(__MODULE__, :notify_all)
+  @spec notify_all(User.t) :: GenServer.cast
+  def notify_all(%User{notifications: []} = _user), do: :nothing
+  def notify_all(%User{} = user) do
+    GenServer.cast(__MODULE__, {:notify_all, user})
   end
 
   @spec handle_cast({atom(), Notification.t} | atom(), any()) :: {:noreply, any()}
@@ -47,11 +49,24 @@ defmodule CoursePlanner.Notifier do
         {:noreply, [{:error, errors, email} | state]}
     end
   end
-  def handle_cast(:notify_all, state) do
-    Enum.each(Repo.all(Notification |> Repo.preload(:user)), &notify_user/1)
-    {:noreply, state}
+  def handle_cast({:notify_all, user}, state) do
+    email = UserEmail.build_summary(user)
+    case Mailer.deliver(email) do
+      {:ok, _} ->
+        delete_notifications(user)
+        {:noreply, state}
+      {:error, reason} ->
+        Logger.error("Email delivery failed: #{Kernel.inspect reason}")
+        {:noreply, [{:error, reason, email} | state]}
+    end
   end
   def handle_cast(_, state), do: {:noreply, state}
+
+  defp delete_notifications(user) do
+    Notification
+    |> where([n], n.user_id == ^user.id)
+    |> Repo.delete_all()
+  end
 
   @doc """
   This function is used to suppress unhandled message warnings from `Swoosh.Adapters.Test` during
