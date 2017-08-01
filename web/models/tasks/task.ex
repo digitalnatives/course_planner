@@ -31,10 +31,10 @@ defmodule CoursePlanner.Tasks.Task do
     |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
   end
 
-  def drop_volunteer(changeset, field, field_data), do: put_assoc(changeset, field, field_data)
-  def update_volunteer(changeset, field, field_data) do
+  def drop_volunteer(changeset, field_data), do: put_assoc(changeset, :volunteers, field_data)
+  def update_volunteer(changeset, field_data) do
     changeset
-    |> put_assoc(field, field_data)
+    |> put_assoc(:volunteers, field_data)
     |> validate_volunteers_limit()
   end
 

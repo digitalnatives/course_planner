@@ -73,7 +73,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = [new_volunteer | task.volunteers]
 
       changeset
-      |> Task.update_volunteer(:volunteers, updated_volunteer_list)
+      |> Task.update_volunteer(updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
@@ -88,7 +88,7 @@ defmodule CoursePlanner.Tasks do
       updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
 
       changeset
-      |> Task.drop_volunteer(:volunteers, updated_volunteer_list)
+      |> Task.drop_volunteer(updated_volunteer_list)
       |> Repo.update()
     else
       error -> error
@@ -98,6 +98,6 @@ defmodule CoursePlanner.Tasks do
   def update_changeset_volunteers(changeset, task_params, volunteer_param_name) do
     volunteer_ids = Map.get(task_params, volunteer_param_name, [])
     volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
-    Task.update_volunteer(changeset, :volunteers, volunteers)
+    Task.update_volunteer(changeset, volunteers)
   end
 end
