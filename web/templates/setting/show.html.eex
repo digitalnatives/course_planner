@@ -1,41 +1,60 @@
-<h2>Show settings</h2>
+<div class="row">
+  <div class="
+    col-xs-12
+    col-sm-offset-1 col-sm-10
+    col-md-offset-2 col-md-8
+    col-lg-offset-2 col-lg-8
+  ">
+    <div class="page">
+      <%= CoursePlanner.SharedView.card "System settings" do %>
+        <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+          <div class="row row--hspace row--vspace middle-xs">
+            <div class="col-xs-9">
+              <%= for system_variable <- @non_program_system_variables do %>
+                <div class="detail">
+                  <div class="detail__name"> <%= system_variable.key %></div>
+                  <div class="detail__value">
+                    <%= system_variable.value %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
 
-<h3>System settings</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for system_variable <- @non_program_system_variables do %>
-      <tr>
-        <td><%= system_variable.key %></td>
-        <td><%= system_variable.value %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+          <div class="row middle-xs page-header">
+            <div class="col-xs-6 col-sm-3 col-md-2">
+              <%= link "Edit", to: setting_edit_path(@conn, :edit, "system_settings"),
+                               class: "mdl-button mdl-js-button mdl-button--raised"
+              %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
 
-<%= link "Edit system setting", to: setting_edit_path(@conn, :edit, "system_settings") %>
+      <%= CoursePlanner.SharedView.card "Program settings" do %>
+        <%= CoursePlanner.SharedView.card_content vpadding: true do %>
+          <div class="row row--hspace row--vspace middle-xs">
+            <div class="col-xs-9">
+              <%= for system_variable <- @program_system_variables do %>
+                <div class="detail">
+                  <div class="detail__name"> <%= system_variable.key %></div>
+                  <div class="detail__value">
+                    <%= system_variable.value %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
 
-<h3>Program settings</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for system_variable <- @program_system_variables do %>
-      <tr>
-        <td><%= system_variable.key %></td>
-        <td><%= system_variable.value %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= link "Edit program setting", to: setting_edit_path(@conn, :edit, "program_settings") %>
+          <div class="row middle-xs page-header">
+            <div class="col-xs-6 col-sm-3 col-md-2">
+              <%= link "Edit", to: setting_edit_path(@conn, :edit, "program_settings"),
+                               class: "mdl-button mdl-js-button mdl-button--raised"
+              %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
