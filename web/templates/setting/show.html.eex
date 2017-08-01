@@ -1,5 +1,6 @@
 <h2>Show settings</h2>
 
+<h3>System settings</h3>
 <table class="table">
   <thead>
     <tr>
@@ -8,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= for system_variable <- @system_variables do %>
+    <%= for system_variable <- @non_program_system_variables do %>
       <tr>
         <td><%= system_variable.key %></td>
         <td><%= system_variable.value %></td>
@@ -17,4 +18,24 @@
   </tbody>
 </table>
 
-<%= link "Edit", to: setting_path(@conn, :edit) %>
+<%= link "Edit system setting", to: setting_edit_path(@conn, :edit, "system_settings") %>
+
+<h3>Program settings</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for system_variable <- @program_system_variables do %>
+      <tr>
+        <td><%= system_variable.key %></td>
+        <td><%= system_variable.value %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link "Edit program setting", to: setting_edit_path(@conn, :edit, "program_settings") %>

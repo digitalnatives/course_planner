@@ -8,16 +8,39 @@ defmodule CoursePlanner.SettingController do
   plug :authorize_controller
 
   def show(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
-    system_variables = Settings.get_visible_systemvariables()
-    render(conn, "show.html", system_variables: system_variables)
+    visible_system_variables = Settings.get_visible_systemvariables()
+    program_system_variables =
+      Settings.filter_program_systemvariables(visible_system_variables)
+    non_program_system_variables =
+      Settings.filter_non_program_systemvariables(visible_system_variables)
+
+    render(conn, "show.html", program_system_variables: program_system_variables,
+                              non_program_system_variables: non_program_system_variables)
   end
 
-  def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
-    changeset =
-      Settings.get_editable_systemvariables()
-      |> Enum.map(&SystemVariable.changeset/1)
-      |> Settings.wrap()
-    render(conn, "edit.html", changeset: changeset)
+  def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, param) do
+    editable_system_variables = Settings.get_editable_systemvariables()
+
+    filtered_system_variables =
+      case Map.get(param, "setting_type") do
+        "system_settings"  -> Settings.filter_non_program_systemvariables(editable_system_variables)
+        "program_settings" -> Settings.filter_program_systemvariables(editable_system_variables)
+        _                  -> nil
+      end
+
+    case filtered_system_variables do
+      nil ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlanner.ErrorView, "404.html")
+      _   ->
+        changeset =
+          filtered_system_variables
+          |> Enum.map(&SystemVariable.changeset/1)
+          |> Settings.wrap()
+
+        render(conn, "edit.html", changeset: changeset)
+    end
   end
 
   def update(
