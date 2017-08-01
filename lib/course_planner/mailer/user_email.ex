@@ -61,12 +61,6 @@ defmodule CoursePlanner.Mailer.UserEmail do
   end
 
   def build_summary(%{name: name, email: email, notifications: notifications}) do
-    IO.puts "name"
-    IO.inspect name
-    IO.puts "email"
-    IO.inspect email
-    IO.puts "noti"
-    IO.inspect notifications
     new()
     |> from("admin@courseplanner.com")
     |> to(email)
