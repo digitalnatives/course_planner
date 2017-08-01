@@ -16,14 +16,14 @@
           <%= CoursePlanner.SharedView.card do %>
             <%= CoursePlanner.SharedView.card_content vpadding: true do %>
               <div class="row row--hspace row--vspace middle-xs">
-                <%= if not is_nil(@program_data.logo) do %>
+                <%= if @program_data.logo do %>
                   <div class="col-xs-3">
                     <img src="<%= @program_data.logo %>", class="profile-picture">
                   </div>
                 <% end %>
 
                 <div class="col-xs-9">
-                <%= if not is_nil(@program_data.address) do %>
+                <%= if @program_data.address do %>
                   <div class="detail">
                     <div class="detail__name">Address</div>
                     <div class="detail__value">
@@ -32,7 +32,7 @@
                   </div>
                 <% end%>
 
-                <%= if not is_nil(@program_data.email) do %>
+                <%= if @program_data.email do %>
                   <div class="detail">
                     <div class="detail__name">Email</div>
                     <div class="detail__value">
@@ -41,7 +41,7 @@
                   </div>
                 <% end %>
 
-                <%= if not is_nil(@program_data.phone) do %>
+                <%= if @program_data.phone do %>
                   <div class="detail">
                     <div class="detail__name">Phone number</div>
                     <div class="detail__value">
@@ -50,7 +50,7 @@
                   </div>
                 <% end %>
 
-                <%= if not is_nil(@program_data.website) do %>
+                <%= if @program_data.website do %>
                   <div class="detail">
                     <div class="detail__name">Website</div>
                     <div class="detail__value">
@@ -59,7 +59,7 @@
                   </div>
                 <% end %>
 
-                <%= if not is_nil(@program_data.description) do %>
+                <%= if @program_data.description do %>
                   <div class="detail">
                     <div class="detail__name">Description</div>
                     <div class="detail__value">
@@ -68,11 +68,11 @@
                   </div>
                 <% end %>
 
-                <%= if not is_nil(@program_data.information) do %>
+                <%= if @program_data.information do %>
                   <div class="detail">
                     <div class="detail__name">Information</div>
                     <div class="detail__value">
-                      <%= @program_data.description %>
+                      <%= @program_data.information %>
                     </div>
                   </div>
                 <% end %>
