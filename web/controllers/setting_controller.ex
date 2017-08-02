@@ -3,6 +3,7 @@ defmodule CoursePlanner.SettingController do
   use CoursePlanner.Web, :controller
 
   alias CoursePlanner.{Settings, SystemVariable}
+  alias Ecto.Changeset
 
   import Canary.Plugs
   plug :authorize_controller
@@ -41,6 +42,7 @@ defmodule CoursePlanner.SettingController do
       {:error, _failed_operation, _failed_value, _changes_so_far} ->
         changeset =
           changesets
+          |> Enum.sort_by(&(Changeset.get_field(&1, :key)), &<=/2)
           |> Settings.wrap()
           |> Map.put(:action, :update)
         render(conn, "edit.html", changeset: changeset)
