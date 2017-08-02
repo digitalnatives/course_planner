@@ -42,7 +42,7 @@ defmodule CoursePlanner.SystemVariableTest do
       refute changeset.valid?
     end
 
-    test "changeset fails when input is empty but field is not required" do
+    test "changeset passes when input is empty but field is not required" do
       changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | value: "", required: false})
       assert changeset.valid?
     end
