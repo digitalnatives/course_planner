@@ -103,7 +103,7 @@
                                     </h2>
                                   </div>
                                   <div class="mdl-card__content card__content">
-                                    <%= CoursePlanner.SharedView.form_select fh, :comment, attendance_comment_options %>
+                                    <%= CoursePlanner.SharedView.form_select fh, :comment, attendance_comment_options() %>
                                   </div>
                                   <div class="mdl-card__actions">
                                     <div class="row">

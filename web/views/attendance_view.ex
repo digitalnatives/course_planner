@@ -16,8 +16,9 @@ defmodule CoursePlanner.AttendanceView do
   end
 
   def attendance_comment_options do
-    Settings.get_value("ATTENDANCE_DESCRIPTIONS")
-    |> Map.new(fn (option) -> {option, option} end )
+    "ATTENDANCE_DESCRIPTIONS"
+    |> Settings.get_value()
+    |> Map.new(fn (option) -> {option, option} end)
     |> Map.merge(%{"Not set": ""})
   end
 end
