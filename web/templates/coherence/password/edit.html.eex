@@ -1,25 +1,33 @@
-<br \>
-
-<h3>Create a New Password</h3>
-
 <%= form_for @changeset, password_path(@conn, :update, @changeset.data), [as: :password], fn f  -> %>
 
   <%= hidden_input f, :reset_password_token %>
 
-  <div class="form-group">
-    <%= required_label f, :password, class: "control-label" %>
-    <%= password_input f, :password, class: "form-control", required: "" %>
-    <%= error_tag f, :password %>
+  <% error = get_flash(@conn, :error) %>
+
+  <div class="login__wrapper">
+
+    <div class="row row--vspace row--hspace login__form">
+      <div class="col-xs-12 mdl-layout-title login__title">
+        Create new password
+      </div>
+      <div class="col-xs-12 login__error-wrapper">
+        <%= CoursePlanner.SharedView.form_password f, :password, required: true %>
+        <%= if error do %>
+          <div class="login__error">
+            <%= error %>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-xs-12">
+        <%= CoursePlanner.SharedView.form_password f, :password_confirmation, required: true %>
+      </div>
+      <div class="col-xs-6">
+        <%= link "Cancel", to: Coherence.Config.logged_out_url("/"), class: "mdl-button mdl-js-button" %>
+      </div>
+      <div class="col-xs-6">
+        <%= CoursePlanner.SharedView.form_submit f, "Send" %>
+      </div>
+
   </div>
 
-  <div class="form-group">
-    <%= required_label f, :password_confirmation, class: "control-label" %>
-    <%= password_input f, :password_confirmation, class: "form-control", required: "" %>
-    <%= error_tag f, :password_confirmation %>
-  </div>
-
-  <div class="form-group">
-    <%= submit "Update Password", class: "btn btn-primary" %>
-    <%= link "Cancel", to: Coherence.Config.logged_out_url("/"), class: "btn" %>
-  </div>
 <% end %>
