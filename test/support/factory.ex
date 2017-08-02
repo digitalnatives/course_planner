@@ -56,8 +56,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
  def term_factory do
    %Term{
      name: sequence(:name, &"term-#{&1}"),
-     start_date: %Ecto.Date{day: 1, month: 1, year: 2017},
-     end_date: %Ecto.Date{day: 1, month: 6, year: 2017},
+     start_date: Timex.shift(Timex.now(), days: -10),
+     end_date:   Timex.shift(Timex.now(), months: 1),
      minimum_teaching_days: 5
    }
  end
