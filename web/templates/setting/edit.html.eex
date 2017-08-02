@@ -1,5 +1,5 @@
 <%= render "form.html", conn: @conn,
                         changeset: @changeset,
                         action: setting_path(@conn, :update),
-                        title: title
+                        title: title()
 %>
