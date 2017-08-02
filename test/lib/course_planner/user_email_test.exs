@@ -1,9 +1,11 @@
 defmodule CoursePlanner.UserEmailTest do
-  use ExUnit.Case
+  use CoursePlanner.ModelCase
   doctest CoursePlanner.Mailer.UserEmail
 
   alias CoursePlanner.{User, Mailer, Mailer.UserEmail, Notification, Notifications}
   import Swoosh.TestAssertions
+
+  import CoursePlanner.Factory
 
   @valid_user %User{name: "mahname", email: "valid@email"}
   @invalid_user %User{name: "mahname"}
@@ -41,5 +43,20 @@ defmodule CoursePlanner.UserEmailTest do
       |> Mailer.deliver()
       assert_email_sent subject: subject
     end
+  end
+
+  test "build summary email" do
+    vol = insert(:volunteer)
+    insert(:notification, user_id: vol.id)
+    insert(:notification, user_id: vol.id)
+    insert(:notification, user_id: vol.id)
+
+    User
+    |> Repo.get(vol.id)
+    |> Repo.preload(:notifications)
+    |> UserEmail.build_summary()
+    |> Mailer.deliver()
+
+    assert_email_sent subject: "Activity Summary"
   end
 end
