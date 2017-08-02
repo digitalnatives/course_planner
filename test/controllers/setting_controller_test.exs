@@ -17,13 +17,13 @@ defmodule CoursePlanner.SettingControllerTest do
     @tag user_role: :coordinator
     test "shows chosen resource only for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :show)
-      assert html_response(conn, 200) =~ "Show settings"
+      assert html_response(conn, 200) =~ "Settings"
     end
 
     @tag user_role: :coordinator
     test "renders form for editing for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :edit)
-      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "Settings"
     end
 
     @tag user_role: :coordinator
@@ -32,7 +32,7 @@ defmodule CoursePlanner.SettingControllerTest do
       updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: ""}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
-      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "Settings"
       assert html_response(conn, 200) =~ "can&#39;t be blank"
     end
 

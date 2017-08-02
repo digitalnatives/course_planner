@@ -1,22 +1,26 @@
-<%= form_for @changeset, @action, [method: :put], fn f -> %>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <%= inputs_for f, :system_variables, fn ff -> %>
-        <tr>
-          <%= hidden_input(ff, :id) %>
-          <td> <%= input_value(ff, :key) %> </td>
-          <td> <%= text_input ff, :value %> </td>
-          <td> <%= error_tag ff, :value %> <td>
-        </tr>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @changeset, @action, [method: :put], fn f -> %>
+        <%= CoursePlanner.SharedView.card @title do %>
+          <%= CoursePlanner.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= inputs_for f, :system_variables, fn ff -> %>
+              <%= CoursePlanner.SharedView.form_text ff, :value, label: input_value(ff, :key)  %>
+            <% end %>
+          <% end %>
+          <%= CoursePlanner.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlanner.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
       <% end %>
-    </tbody>
-  </table>
-  <%= submit "Submit" %>
-<%end%>
+    </div>
+  </div>
