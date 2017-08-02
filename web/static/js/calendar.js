@@ -56,7 +56,7 @@
     }
   }
 
-  function renderCalendar ( startDate, classes, calendar ) {
+  function renderCalendar ( startDate, classes, calendar, displayEvery ) {
     const monday = new Date( startDate );
 
     let days = new Array( 7 ).fill( monday ).map(
@@ -326,6 +326,21 @@
           ${ days }
         </div>
       </div>
+      ${
+        ( USER_ROLE === "Teacher" || USER_ROLE === "Student" ) ?
+          `<div class="calendar__switch">
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="calendar-switch">
+              <span class="mdl-switch__label calendar__switch-label">Display every class</span>
+              <input
+                type="checkbox"
+                id="calendar-switch"
+                class="mdl-switch__input"
+                ${ displayEvery ? "checked" : "" }
+              >
+            </label>
+          </div>`
+        : ""
+      }
     `;
 
     componentHandler.upgradeDom();
@@ -334,29 +349,49 @@
     setInterval( updatePointer, 10000 );
   }
 
+  var calendarPointerInterval = null;
+
+  function loadCalendar ( displayEvery = false ) {
+    const calendar = document.querySelector( ".calendar__wrapper" );
+
+    const startDateParameter = window.location.search.slice( 1 ).split( "&" ).map(
+      ( pairString ) => pairString.split( "=" ).map( decodeURIComponent )
+    ).filter(
+      ( pair ) => pair[0] === "date"
+    );
+
+    let startDate = startDateParameter.length && startDateParameter[0][1];
+    startDate = getMonday( startDate );
+
+    const req = new XMLHttpRequest( );
+
+    req.addEventListener( "load",
+      function ( ) {
+        renderCalendar( startDate, JSON.parse( this.responseText ).classes, calendar, displayEvery );
+
+        clearInterval( calendarPointerInterval );
+        updatePointer();
+        calendarPointerInterval = setInterval( updatePointer, 10000 );
+      }
+    );
+
+    req.open( "GET", `/calendar?date=${ startDate }&my_classes=${ !displayEvery }` );
+    req.send( );
+  }
+
   function initCalendar ( ) {
     const calendar = document.querySelector( ".calendar__wrapper" );
 
     if ( calendar ) {
-      const startDateParameter = window.location.search.slice( 1 ).split( "&" ).map(
-        ( pairString ) => pairString.split( "=" ).map( decodeURIComponent )
-      ).filter(
-        ( pair ) => pair[0] === "date"
-      );
+      loadCalendar();
 
-      let startDate = startDateParameter.length && startDateParameter[0][1];
-      startDate = getMonday( startDate );
-
-      const req = new XMLHttpRequest( );
-
-      req.addEventListener( "load",
-        function ( ) {
-          renderCalendar( startDate, JSON.parse( this.responseText ).classes, calendar );
+      document.addEventListener( "change",
+        function ( e ) {
+          if ( e.target.id === "calendar-switch" ) {
+            loadCalendar( e.target.checked )
+          }
         }
-      );
-
-      req.open( "GET", `/calendar?date=${ startDate }` );
-      req.send( );
+      )
     }
   }
 

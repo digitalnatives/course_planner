@@ -128,4 +128,12 @@
         text-overflow: ellipsis;
       }
     }
+
+    &__switch {
+      margin-top: 8px;
+    }
+
+    &__switch-label {
+      font-size: 14px;
+    }
   }
