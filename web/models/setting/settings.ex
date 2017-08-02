@@ -37,6 +37,22 @@ defmodule CoursePlanner.Settings do
     parsed_value
   end
 
+  def filter_system_variables(system_variables, setting_type) do
+      case setting_type do
+        "system"  -> {:ok, filter_non_program_systemvariables(system_variables)}
+        "program" -> {:ok, filter_program_systemvariables(system_variables)}
+        _                  -> {:error, nil}
+      end
+  end
+
+  def filter_non_program_systemvariables(settings) do
+    Enum.reject(settings, &(String.starts_with?(&1.key, "PROGRAM")))
+  end
+
+  def filter_program_systemvariables(settings) do
+    Enum.filter(settings, &(String.starts_with?(&1.key, "PROGRAM")))
+  end
+
   def get_visible_systemvariables do
     Repo.all(@visible_settings_query)
   end

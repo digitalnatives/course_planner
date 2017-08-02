@@ -1,30 +1,59 @@
-
-  <div class="row middle-xs page-header">
-    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
-      Settings
-    </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
-      <%= link "Edit", to: setting_path(@conn, :edit), class: "mdl-button mdl-js-button mdl-button--raised"  %>
-    </div>
+<div class="row middle-xs page-header">
+  <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+    System Settings
   </div>
+  <div class="col-xs-6 col-sm-3 col-md-2">
+    <%= link "Edit", to: setting_path(@conn, :edit, setting_type: "system"), class: "mdl-button mdl-js-button mdl-button--raised"  %>
+  </div>
+</div>
 
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
-    <thead>
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Name</th>
+      <th class="mdl-data-table__cell--non-numeric">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for system_variable <- @non_program_system_variables do %>
       <tr>
-        <th class="mdl-data-table__cell--non-numeric">Name</th>
-        <th class="mdl-data-table__cell--non-numeric">Value</th>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= system_variable.key %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= system_variable.value %>
+        </td>
       </tr>
-    </thead>
-    <tbody>
-      <%= for system_variable <- @system_variables do %>
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= system_variable.key %>
-          </td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= system_variable.value %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="row middle-xs page-header">
+  <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+    Program Settings
+  </div>
+  <div class="col-xs-6 col-sm-3 col-md-2">
+    <%= link "Edit", to: setting_path(@conn, :edit, setting_type: "program"), class: "mdl-button mdl-js-button mdl-button--raised"  %>
+  </div>
+</div>
+
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Name</th>
+      <th class="mdl-data-table__cell--non-numeric">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for system_variable <- @program_system_variables do %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= system_variable.key %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= system_variable.value %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
