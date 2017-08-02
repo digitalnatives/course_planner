@@ -82,10 +82,16 @@
       &--weekend {
         background-color: rgba(0,0,0,0.04);
       }
+
+      & + & {
+        border-top: $calendar-border;
+      }
     }
 
-    &__classes-hour + &__classes-hour {
-      border-top: $calendar-border;
+    &__classes-pointer {
+      position: absolute;
+      border-top: 1px solid $primary;
+      width: 100%;
     }
 
     &__class {
