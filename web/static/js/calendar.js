@@ -5,6 +5,10 @@
     return date.toISOString( ).slice( 0, 10 );
   }
 
+  function getToday ( ) {
+    return isoDate( new Date( ) );
+  }
+
   function getMonday ( currentDate ) {
     const now = currentDate ? new Date( currentDate ) : new Date();
     const day = now.getDay( );
@@ -38,6 +42,18 @@
 
   function renderHour ( hour ) {
     return `0${hour}:00`.slice( -5 );
+  }
+
+  function updatePointer ( ) {
+    const now = new Date();
+    const hours = now.getHours() + now.getMinutes() / 60;
+    const top = ( hours - 8 ) * 50;
+
+    const pointer = document.querySelector( ".calendar__classes-pointer" );
+
+    if ( pointer ) {
+      pointer.style.top = `${top}px`;
+    }
   }
 
   function renderCalendar ( startDate, classes, calendar ) {
@@ -256,6 +272,7 @@
                 `
               ).join( "" )
             }
+            ${ isoDate(day.date) === getToday() ? "<div class=\"calendar__classes-pointer\"></div>" : "" }
           </div>
         </div>
       `
@@ -277,7 +294,15 @@
             previous week
           </a>
         </div>
-        <div class="col-xs-4 col-xs-offset-4 col-md-3 col-md-offset-6 col-lg-2 col-lg-offset-8">
+        <div class="col-xs-4 col-md-3 col-lg-2">
+          <a
+            class="mdl-button mdl-js-button"
+            href="/schedule?date=${ getMonday( ) }"
+          >
+            current week
+          </a>
+        </div>
+        <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
           <a
             class="mdl-button mdl-js-button"
             href="/schedule?date=${ isoDate(nextMonday) }"
@@ -304,6 +329,9 @@
     `;
 
     componentHandler.upgradeDom();
+
+    updatePointer();
+    setInterval( updatePointer, 10000 );
   }
 
   function initCalendar ( ) {

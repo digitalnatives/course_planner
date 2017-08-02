@@ -17,17 +17,17 @@ defmodule CoursePlanner.SettingControllerTest do
   describe "settings functionality for coordinator user" do
     test "shows chosen resource only for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :show)
-      assert html_response(conn, 200) =~ "Show settings"
+      assert html_response(conn, 200) =~ "Settings"
     end
 
     test "renders form for editing system setting for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :edit, setting_type: "system")
-      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "Settings"
     end
 
     test "renders form for editing program setting for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :edit, setting_type: "program")
-      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "Settings"
     end
 
     test "renders 404 if request is notsystem_settings nor program_settings", %{conn: conn} do
@@ -40,7 +40,7 @@ defmodule CoursePlanner.SettingControllerTest do
       updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: ""}}}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
-      assert html_response(conn, 200) =~ "Edit settings"
+      assert html_response(conn, 200) =~ "Settings"
       assert html_response(conn, 200) =~ "can&#39;t be blank"
     end
 
