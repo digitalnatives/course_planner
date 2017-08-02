@@ -334,6 +334,53 @@ defmodule CoursePlanner.SummaryHelperTest do
     end
   end
 
+  describe "get_next_class function" do
+    test "when offered_course is an empty list" do
+      next_class = SummaryHelper.get_next_class([])
+
+      assert next_class == nil
+    end
+
+    test "when offered_course is not a list" do
+      next_class = SummaryHelper.get_next_class(nil)
+
+      assert next_class == nil
+    end
+
+    test "when offered_course have no class" do
+      offered_courses = insert_list(4, :offered_course) |> Repo.preload(:classes)
+      next_class = SummaryHelper.get_next_class(offered_courses)
+
+      assert next_class == nil
+    end
+
+    test "when offered_courses have classes on the same date with different hours" do
+      [offered_course1, offered_course2] = insert_list(2, :offered_course)
+      insert(:class, offered_course: offered_course1, date: Timex.now(), starting_at: Timex.shift(Timex.now(), hours: 2))
+      class = insert(:class, offered_course: offered_course1, date: Timex.now(), starting_at: Timex.shift(Timex.now(), hours: 1))
+      insert(:class, offered_course: offered_course2, date: Timex.now(), starting_at: Timex.shift(Timex.now(), hours: 3))
+      insert(:class, offered_course: offered_course2, date: Timex.now(), starting_at: Timex.shift(Timex.now(), hours: 4))
+
+      preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
+      next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
+
+      assert next_class == class
+    end
+
+    test "when offered_courses have classes on the same time with different date" do
+      [offered_course1, offered_course2] = insert_list(2, :offered_course)
+      insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 2))
+      insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 3))
+      class = insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 1))
+      insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 4))
+
+      preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
+      next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
+
+      assert next_class == class
+    end
+  end
+
   defp preload_associations_for_offered_courses(offered_courses) do
     offered_courses
     |> Enum.map(fn(offered_course) ->

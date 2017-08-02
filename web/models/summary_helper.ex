@@ -69,4 +69,12 @@ defmodule CoursePlanner.SummaryHelper do
   end
   defp extract_data_from_offered_courses(_offered_courses), do: %{terms: [], offered_courses: []}
 
+  def get_next_class(offered_courses)
+    when is_list(offered_courses) and length(offered_courses) > 0 do
+     offered_courses
+       |> Enum.flat_map(&(&1.classes))
+       |> Enum.sort(&(&1.date <= &2.date and &1.starting_at <= &2.starting_at))
+       |> List.first
+  end
+  def get_next_class(_offered_courses), do: nil
 end
