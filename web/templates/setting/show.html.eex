@@ -18,7 +18,7 @@
   </tbody>
 </table>
 
-<%= link "Edit system setting", to: setting_edit_path(@conn, :edit, "system_settings") %>
+<%= link "Edit system setting", to: setting_path(@conn, :edit, setting_type: "system") %>
 
 <h3>Program settings</h3>
 <table class="table">
@@ -38,4 +38,4 @@
   </tbody>
 </table>
 
-<%= link "Edit program setting", to: setting_edit_path(@conn, :edit, "program_settings") %>
+<%= link "Edit program setting", to: setting_path(@conn, :edit, setting_type: "program") %>
