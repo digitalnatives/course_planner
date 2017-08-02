@@ -65,6 +65,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
     |> from("admin@courseplanner.com")
     |> to(email)
     |> subject("Activity Summary")
-    |> render_body("summary.html", %{name: name, notifications: notifications})
+    |> render_body("summary.html",
+      %{name: name, notifications: notifications, params: @notifications})
   end
 end
