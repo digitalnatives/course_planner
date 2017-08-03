@@ -4,7 +4,7 @@ defmodule CoursePlanner.Users do
   """
   alias CoursePlanner.{Repo, User, Notifications}
   alias Ecto.DateTime
-  @notifier Application.get_env(:course_planner, :notifier) || CoursePlanner.Notifier
+  @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifier)
 
   def all do
     Repo.all(User)

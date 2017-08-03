@@ -6,7 +6,7 @@ defmodule CoursePlanner.CourseHelper do
 
   alias CoursePlanner.{Repo, Course, Terms, Notifier, Notifications}
 
-  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def delete(id) do
     course = Repo.get(Course, id)

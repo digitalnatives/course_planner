@@ -8,7 +8,7 @@ defmodule CoursePlanner.ClassHelper do
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 
-  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!

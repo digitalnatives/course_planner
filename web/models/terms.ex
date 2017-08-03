@@ -6,7 +6,7 @@ defmodule CoursePlanner.Terms do
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset
 
-  @notifier Application.get_env(:course_planner, :notifier) || Notifier
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def all do
     Repo.all(Term)
