@@ -71,6 +71,7 @@
         <%= CoursePlanner.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
         <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
+        <%= CoursePlanner.SharedView.navbar_separator %>
         <%= CoursePlanner.SharedView.navbar_item "Settings", @conn, setting_path(@conn, :show) %>
       <% end %>
 
