@@ -98,9 +98,9 @@ defmodule CoursePlanner.SystemVariable do
 
   def parse_string(value) do
     if String.length(value || "") > 255 do
-      {:error, "The given value is too long. Maximum 255 characters are allowed"}
+     {:error, "The given value is too long. Maximum 255 characters are allowed"}
     else
-      {:ok, value}
+     {:ok, value}
     end
   end
 
@@ -108,7 +108,7 @@ defmodule CoursePlanner.SystemVariable do
     uri = URI.parse(value || "")
     case uri do
       %URI{host: nil, scheme: nil, path: nil} -> {:ok, ""}
-      %URI{scheme: nil} -> {:error, "Url should start with Http:// or Https://"}
+      %URI{scheme: nil} -> {:error, "Url should start with http:// or https://"}
       %URI{host: nil} -> {:error, "The given URL is not valid"}
       uri -> {:ok, uri}
     end
