@@ -3,10 +3,12 @@ defmodule CoursePlanner.SystemVariableTest do
 
   alias CoursePlanner.SystemVariable
 
-  @string_valid_attrs %{key: "sample key", value: "sample value", type: "string", visible: true, editable: true}
-  @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true}
-  @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true}
-  @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true}
+  @string_valid_attrs %{key: "sample key", value: "sample value", type: "string", visible: true, editable: true, required: true}
+  @text_valid_attrs %{key: "sample key", value: "sample value", type: "text", visible: true, editable: true, required: true}
+  @url_valid_attrs %{key: "sample key", value: "http://www.sample.com", type: "url", visible: true, editable: true, required: true}
+  @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true, required: true}
+  @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true, required: true}
+  @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true, required: true}
   @invalid_attrs %{}
 
   test "changeset with invalid attributes" do
@@ -37,6 +39,70 @@ defmodule CoursePlanner.SystemVariableTest do
 
     test "changeset fails when input is empty" do
       changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | value: ""})
+      refute changeset.valid?
+    end
+
+    test "changeset passes when input is empty but field is not required" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | value: "", required: false})
+      assert changeset.valid?
+    end
+
+    test "changeset fails when input is more than 255 charactes" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | value: String.duplicate("a", 500)})
+      refute changeset.valid?
+    end
+  end
+
+  describe "changeset for text input type validation" do
+    test "valid changeset when input is not empty" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@text_valid_attrs | value: "random"})
+      assert changeset.valid?
+    end
+
+    test "valid changeset when input can be interpreted as integer" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@text_valid_attrs | value: "112"})
+      assert changeset.valid?
+    end
+
+    test "valid changeset when input can be interpreted as boolean" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@text_valid_attrs | value: "true"})
+      assert changeset.valid?
+    end
+
+    test "changeset fails when input is empty" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@text_valid_attrs | value: ""})
+      refute changeset.valid?
+    end
+
+    test "valid changeset when input is more than 255 charactes" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@text_valid_attrs | value: String.duplicate("a", 500)})
+      assert changeset.valid?
+    end
+  end
+
+  describe "changeset for url input type validation" do
+    test "url is valid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, @url_valid_attrs)
+      assert changeset.valid?
+    end
+
+    test "changeset fails when url has no scheme" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@url_valid_attrs | value: "www.sample.com"})
+      refute changeset.valid?
+    end
+
+    test "changeset fails when url has no host" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@url_valid_attrs | value: "http://"})
+      refute changeset.valid?
+    end
+
+    test "changeset fails when url is empty" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@url_valid_attrs | value: ""})
+      refute changeset.valid?
+    end
+
+    test "changeset fails when url is nil" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@url_valid_attrs | value: nil})
       refute changeset.valid?
     end
   end
