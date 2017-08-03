@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification}
+  alias CoursePlanner.{User, Notification, Notifier, Repo}
 
   def new, do: %Notification{}
 
@@ -15,5 +15,12 @@ defmodule CoursePlanner.Notifications do
 
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
+
+  def send_all_notifications do
+    User
+    |> Repo.all()
+    |> Repo.preload(:notifications)
+    |> Enum.each(&Notifier.notify_all/1)
+  end
 
 end
