@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifier do
   Module responsible for notifying users through e-mail with changes
   """
   use GenServer
-  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, User}
+  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, User, Users}
   require Logger
 
   @spec start_link :: GenServer.start_link
@@ -52,7 +52,7 @@ defmodule CoursePlanner.Notifier do
     email = UserEmail.build_summary(user)
     case Mailer.deliver(email) do
       {:ok, _} ->
-        delete_notifications(user)
+        Users.update_notifications(user)
         {:noreply, state}
       {:error, reason} ->
         Logger.error("Email delivery failed: #{Kernel.inspect reason}")
@@ -60,11 +60,6 @@ defmodule CoursePlanner.Notifier do
     end
   end
   def handle_cast(_, state), do: {:noreply, state}
-
-  defp delete_notifications(user) do
-    user.notifications
-    |> Enum.each(&Repo.delete/1)
-  end
 
   @doc """
   This function is used to suppress unhandled message warnings from `Swoosh.Adapters.Test` during

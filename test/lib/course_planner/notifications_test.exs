@@ -2,7 +2,6 @@ defmodule CoursePlanner.NotificationsTest do
   use CoursePlanner.ModelCase
   doctest CoursePlanner.Notifications
 
-  import Swoosh.TestAssertions
   import CoursePlanner.Factory
 
   alias CoursePlanner.Notifications
