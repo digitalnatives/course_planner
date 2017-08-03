@@ -5,7 +5,6 @@ defmodule CoursePlanner.Notifier do
   use GenServer
   alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, User}
   require Logger
-  import Ecto.Query
 
   @spec start_link :: GenServer.start_link
   def start_link do
@@ -63,9 +62,8 @@ defmodule CoursePlanner.Notifier do
   def handle_cast(_, state), do: {:noreply, state}
 
   defp delete_notifications(user) do
-    Notification
-    |> where([n], n.user_id == ^user.id)
-    |> Repo.delete_all()
+    user.notifications
+    |> Enum.each(&Repo.delete/1)
   end
 
   @doc """
