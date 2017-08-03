@@ -111,7 +111,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
       value: "some value",
       type: "string",
       visible: true,
-      editable: true
+      editable: true,
+      required: true
     }
  end
 end
