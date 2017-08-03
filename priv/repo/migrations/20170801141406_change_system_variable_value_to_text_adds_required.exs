@@ -4,7 +4,7 @@ defmodule CoursePlanner.Repo.Migrations.ChangeSystemVariableValueToTextAddsRequi
   def change do
     alter table(:system_variables) do
       modify :value, :text
-      add :required, :boolean
+      add :required, :boolean, null: false, default: true
     end
   end
 end
