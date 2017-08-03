@@ -45,7 +45,7 @@ defmodule CoursePlanner.SystemVariable do
 
     struct
     |> cast(params, target_params)
-    |> validate_required(target_params)
+    |> validate_by_record_required(target_params)
     |> validate_value_type()
     |> validate_editable()
   end
@@ -108,7 +108,7 @@ defmodule CoursePlanner.SystemVariable do
     uri = URI.parse(value || "")
     case uri do
       %URI{host: nil, scheme: nil, path: nil} -> {:ok, ""}
-      %URI{scheme: nil} -> {:error, "Url should start with Http:// or Https://"}
+      %URI{scheme: nil} -> {:error, "Url should start with http:// or https://"}
       %URI{host: nil} -> {:error, "The given URL is not valid"}
       uri -> {:ok, uri}
     end
