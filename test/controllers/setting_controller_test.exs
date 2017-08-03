@@ -18,18 +18,18 @@ defmodule CoursePlanner.SettingControllerTest do
     test "shows chosen resource only for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :show)
       html_response = html_response(conn, 200)
-      assert html_response =~ "System settings"
-      assert html_response =~ "Program settings"
+      assert html_response =~ "System Settings"
+      assert html_response =~ "Program Settings"
     end
 
     test "renders form for editing system setting for coordinator", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "system_settings")
-      assert html_response(conn, 200) =~ "Edit System Setting"
+      conn = get conn, setting_path(conn, :edit, setting_type: "system")
+      assert html_response(conn, 200) =~ "Edit system setting"
     end
 
     test "renders form for editing program setting for coordinator", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "program_settings")
-      assert html_response(conn, 200) =~ "Edit Program Setting"
+      conn = get conn, setting_path(conn, :edit, setting_type: "program")
+      assert html_response(conn, 200) =~ "Edit program setting"
     end
 
     test "renders 404 if request is notsystem_settings nor program_settings", %{conn: conn} do

@@ -18,8 +18,4 @@ defmodule CoursePlanner.SettingView do
   defp render_default_setting_input(form) do
     render "default_setting_input.html", form: form
   end
-
-  def title do
-    "Settings"
-  end
 end
