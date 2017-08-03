@@ -39,9 +39,9 @@ defmodule CoursePlanner.Tasks do
     |> task_query()
     |> where([t], t.finish_time < ^now)
     |> Repo.all()
-    |> Enum.reject(fn(task) ->
-         not Enum.any?(task.volunteers, &(&1.id == id))
-       end)
+    |> Enum.filter(fn(task) ->
+            Enum.any?(task.volunteers, &(&1.id == id))
+        end)
   end
 
   def get_for_user(sort_opt, id, now) do
@@ -82,11 +82,10 @@ defmodule CoursePlanner.Tasks do
 
   def drop(task_id, volunteer_id) do
     with {:ok, task} <- get(task_id),
-        %{valid?: true} = changeset <- Task.changeset(task)
+         %{valid?: true} = changeset <- Task.changeset(task),
+         drop_volunteer = Volunteers.get!(volunteer_id),
+         updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
      do
-      drop_volunteer = Volunteers.get!(volunteer_id)
-      updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
-
       changeset
       |> Task.drop_volunteer(updated_volunteer_list)
       |> Repo.update()
