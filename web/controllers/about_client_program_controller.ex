@@ -6,7 +6,8 @@ defmodule CoursePlanner.AboutClientProgramController do
 
   def show(conn, _param) do
     mapped_visible_settings =
-      Settings.get_program_descriptor_systemvariables()
+      Settings.get_visible_systemvariables()
+      |> Settings.filter_program_systemvariables()
       |> Settings.to_map
 
     program_data =
