@@ -54,6 +54,12 @@
                     <%= @user.role %>
                   </div>
                 </div>
+                <div class="detail">
+                  <div class="detail__name">Notification Frequency (days)</div>
+                  <div class="detail__value">
+                    <%= @user.notification_frequency_days %>
+                  </div>
+                </div>
               </div>
             </div>
           <% end %>
