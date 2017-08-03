@@ -33,7 +33,7 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "renders 404 if request is notsystem_settings nor program_settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "random")
+      conn = get conn, setting_path(conn, :edit, setting_type: "random")
       assert html_response(conn, 404)
     end
 
@@ -86,12 +86,12 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "student cannot edit system settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "system_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "system")
       assert html_response(conn, 403)
     end
 
     test "student cannot edit program settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "program_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "program")
       assert html_response(conn, 403)
     end
 
@@ -112,12 +112,12 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "teacher cannot edit system settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "system_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "system")
       assert html_response(conn, 403)
     end
 
     test "teacher cannot edit program settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "program_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "program")
       assert html_response(conn, 403)
     end
 
@@ -130,7 +130,7 @@ defmodule CoursePlanner.SettingControllerTest do
     end
   end
 
-  @tag user_role: :volunteer
+  @moduletag user_role: :volunteer
   describe "settings functionality for volunteer user" do
     test "volunteer can't see settings", %{conn: conn} do
       conn = get conn, setting_path(conn, :show)
@@ -138,12 +138,12 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "volunteer cannot edit system settings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "system_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "system")
       assert html_response(conn, 403)
     end
 
     test "volunteer cannot edit programsettings", %{conn: conn} do
-      conn = get conn, setting_edit_path(conn, :edit, "program_settings")
+      conn = get conn, setting_path(conn, :edit, setting_type: "program")
       assert html_response(conn, 403)
     end
 
