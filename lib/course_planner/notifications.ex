@@ -4,6 +4,7 @@ defmodule CoursePlanner.Notifications do
   """
 
   alias CoursePlanner.{User, Notification, Notifier, Repo}
+  import Ecto.Query
 
   def new, do: %Notification{}
 
@@ -17,10 +18,17 @@ defmodule CoursePlanner.Notifications do
     do: %{notification | user: user}
 
   def send_all_notifications do
+    Timex.today()
+    |> get_notifiable_users()
+    |> Enum.each(&Notifier.notify_all/1)
+  end
+
+  def get_notifiable_users(date) do
     User
+    |> where([u],
+      fragment("? + ?", u.notified, u.notification_frequency_days) <= type(^date, Ecto.Date))
     |> Repo.all()
     |> Repo.preload(:notifications)
-    |> Enum.each(&Notifier.notify_all/1)
   end
 
 end

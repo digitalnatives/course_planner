@@ -8,7 +8,8 @@ defmodule CoursePlanner.User do
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
       :role, :participation_type,
-      :phone_number
+      :phone_number, :notified,
+      :notification_frequency_days
     ]
 
   schema "users" do
@@ -21,6 +22,8 @@ defmodule CoursePlanner.User do
     field :comments, :string
     field :role, UserRole
     field :participation_type, ParticipationType
+    field :notified, Ecto.Date
+    field :notification_frequency_days, :integer
     has_many :tasks, Task, on_delete: :nilify_all
     has_many :notifications, CoursePlanner.Notification, on_delete: :delete_all
 
