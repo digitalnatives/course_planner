@@ -1,20 +1,30 @@
-<h2>Show settings</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for system_variable <- @system_variables do %>
+  <div class="row middle-xs page-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+      Settings
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      <%= link "Edit", to: setting_path(@conn, :edit), class: "mdl-button mdl-js-button mdl-button--raised"  %>
+    </div>
+  </div>
+
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+    <thead>
       <tr>
-        <td><%= system_variable.key %></td>
-        <td><%= system_variable.value %></td>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Value</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<%= link "Edit", to: setting_path(@conn, :edit) %>
+    </thead>
+    <tbody>
+      <%= for system_variable <- @system_variables do %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= system_variable.key %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= system_variable.value %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
