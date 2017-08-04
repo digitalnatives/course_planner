@@ -59,4 +59,12 @@ defmodule CoursePlanner.Users do
     q = from n in Notification, where: n.id in ^notification_ids
     Multi.delete_all(multi, Notification, q)
   end
+
+  def notify_all do
+    User
+    |> Repo.all()
+    |> Repo.preload(:notifications)
+    # credo:disable-for-next-line
+    |> Enum.each(&@notifier.notify_all/1)
+  end
 end

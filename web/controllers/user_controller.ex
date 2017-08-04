@@ -1,7 +1,7 @@
 defmodule CoursePlanner.UserController do
   @moduledoc false
   use CoursePlanner.Web, :controller
-  alias CoursePlanner.{User, Users, Notifier}
+  alias CoursePlanner.{User, Users}
   require Logger
 
   import Canary.Plugs
@@ -70,11 +70,7 @@ defmodule CoursePlanner.UserController do
   end
 
   def notify(conn, _params) do
-    User
-    |> Repo.all()
-    |> Repo.preload(:notifications)
-    |> Enum.each(&Notifier.notify_all/1)
-
+    Users.notify_all()
     conn
     |> put_flash(:info, "Users notified successfully.")
     |> redirect(to: user_path(conn, :index))
