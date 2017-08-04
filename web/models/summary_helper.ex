@@ -6,8 +6,8 @@ defmodule CoursePlanner.SummaryHelper do
 
   alias CoursePlanner.{Repo, Terms.Term, OfferedCourse}
 
-  def get_term_offered_course_for_user(user_id, user_role) do
-    case user_role do
+  def get_term_offered_course_for_user(%{id: user_id, role: role}) do
+    case role do
       "Student" -> get_student_registered_data(user_id)
       "Teacher" -> get_teacher_registered_data(user_id)
       "Coordinator" -> get_all_terms_and_offered_courses()
