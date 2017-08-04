@@ -48,6 +48,7 @@ defmodule CoursePlanner.Users do
     User
     |> Repo.all()
     |> Repo.preload(:notifications)
+    # credo:disable-for-next-line
     |> Enum.each(&@notifier.notify_all/1)
   end
 end
