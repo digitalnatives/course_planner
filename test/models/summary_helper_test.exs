@@ -18,7 +18,7 @@ defmodule CoursePlanner.SummaryHelperTest do
 
   describe "Student summary data" do
     test "when she does not exist" do
-      student = build(:student, id: -1, role: "Students")
+      student = build(:student, id: -1)
       student_data = SummaryHelper.get_term_offered_course_for_user(student)
       assert student_data == @empty_summary_helper_user_data_response
     end
