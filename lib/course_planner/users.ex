@@ -4,6 +4,9 @@ defmodule CoursePlanner.Users do
   """
   alias CoursePlanner.{Repo, User, Notification, Notifications}
   alias Ecto.{DateTime, Changeset, Multi}
+
+  import Ecto.Query
+
   @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifier)
 
   def all do
@@ -45,15 +48,15 @@ defmodule CoursePlanner.Users do
   end
 
   def update_notifications(user) do
-    multi = Multi.new()
-
-    user.notifications
-    |> Enum.reduce(multi, &delete_notifications/2)
+    Multi.new()
+    |> delete_notifications(user.notifications)
     |> Multi.update(User, Changeset.change(user, notified: Ecto.Date.utc()))
     |> Repo.transaction()
   end
 
-  defp delete_notifications(notification, multi) do
-    Multi.delete(multi, Notification, notification)
+  defp delete_notifications(multi, notifications) do
+    notification_ids = Enum.map(notifications, &(&1.id))
+    q = from n in Notification, where: n.id in ^notification_ids
+    Multi.delete_all(multi, Notification, q)
   end
 end
