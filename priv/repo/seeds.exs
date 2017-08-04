@@ -81,7 +81,8 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
       value: "some email",
       type: "string",
       editable: true,
-      visible: false
+      visible: false,
+      required: false
     })
 |> CoursePlanner.Repo.insert!
 
