@@ -1,4 +1,4 @@
-defmodule CoursePlanner.AboutClientProgramControllerTest do
+defmodule CoursePlanner.AboutControllerTest do
   use CoursePlanner.ConnCase
 
   import CoursePlanner.Factory
@@ -53,7 +53,7 @@ defmodule CoursePlanner.AboutClientProgramControllerTest do
 
     populated_settings = populate_settings(program_data)
 
-    conn = get conn, about_client_program_path(conn, :show)
+    conn = get conn, about_path(conn, :show)
     assert html_response(conn, 200) =~ "About #{populated_settings["PROGRAM_NAME"].value}"
   end
 end

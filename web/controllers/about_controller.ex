@@ -1,4 +1,4 @@
-defmodule CoursePlanner.AboutClientProgramController do
+defmodule CoursePlanner.AboutController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
