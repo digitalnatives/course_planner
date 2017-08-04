@@ -30,6 +30,8 @@ defmodule CoursePlanner.NotifierTest do
 
     Notifier.handle_cast({:notify_all, saved_user}, [])
     assert_email_sent subject: "Activity Summary"
+    sent_user = Repo.get(User, user.id) |> Repo.preload(:notifications)
+    assert sent_user.notifications == []
   end
 
 end
