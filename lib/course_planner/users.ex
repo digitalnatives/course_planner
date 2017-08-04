@@ -43,4 +43,11 @@ defmodule CoursePlanner.Users do
     |> Notifications.to(modified_user)
     |> @notifier.notify_later()
   end
+
+  def notify_all do
+    User
+    |> Repo.all()
+    |> Repo.preload(:notifications)
+    |> Enum.each(&@notifier.notify_all/1)
+  end
 end
