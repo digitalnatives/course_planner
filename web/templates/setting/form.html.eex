@@ -8,7 +8,7 @@
           <%= inputs_for f, :system_variables, fn ff -> %>
             <tr>
               <%= hidden_input(ff, :id) %>
-              <%= get_form_component_from_type(ff, :value, ff.data.type, ff.data.key) %>
+              <%= setting_input(ff, :value, ff.data.type, ff.data.key) %>
             </tr>
           <% end %>
         <% end %>
