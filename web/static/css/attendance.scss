@@ -64,6 +64,13 @@
       min-width: 100px;
       max-width: 100px;
       text-align: center;
+      vertical-align: middle;
+    }
+
+    &__show-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
@@ -110,5 +117,24 @@
     &__radio[value="Not filled"]:checked ~ .attendance-form__button > .attendance--not-filled {
       display: block;
     }
+  }
 
+  .attendance-comment {
+    &__icon {
+      font-size: 16px;
+      opacity: 0.2;
+
+      &--set {
+        opacity: 0.6;
+      }
+
+      &--fill {
+        pointer-events: none;
+      }
+
+      &--show {
+        margin-left: 12px;
+        margin-top: 4px;
+      }
+    }
   }

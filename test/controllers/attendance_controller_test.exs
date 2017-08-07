@@ -37,6 +37,11 @@ defmodule CoursePlanner.AttendanceControllerTest do
     |> assign(:current_user, user)
   end
 
+  setup do
+    insert(:system_variable, %{key: "ATTENDANCE_DESCRIPTIONS", value:  "sick leave, informed beforehand", type: "list"})
+    :ok
+  end
+
   test "lists all entries on index for coordinator", %{conn: _conn} do
     user_conn = login_as(:coordinator)
     conn = get user_conn, attendance_path(user_conn, :index)

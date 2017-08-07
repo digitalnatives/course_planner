@@ -3,6 +3,7 @@ defmodule CoursePlanner.AttendanceView do
   use CoursePlanner.Web, :view
 
   alias CoursePlanner.SharedView
+  alias CoursePlanner.Settings
 
   def get_teacher_display_name(offered_course_teachers) do
     offered_course_teachers
@@ -12,5 +13,12 @@ defmodule CoursePlanner.AttendanceView do
 
   def page_title do
     "Attendances"
+  end
+
+  def attendance_comment_options do
+    "ATTENDANCE_DESCRIPTIONS"
+    |> Settings.get_value()
+    |> Map.new(fn (option) -> {option, option} end)
+    |> Map.merge(%{"Not set": ""})
   end
 end
