@@ -6,10 +6,6 @@ defmodule CoursePlanner.SettingView do
   def setting_input(form, field, type, label) do
     case type do
       "text"    -> SharedView.form_textarea(form, field, label: label)
-      "string"  -> SharedView.form_text(form, field, label: label)
-      "url"     -> SharedView.form_text(form, field, label: label)
-      "list"    -> SharedView.form_text(form, field, label: label)
-      "integer" -> SharedView.form_text(form, field, label: label)
       "boolean" -> SharedView.form_select(form, field, ["True", "False"], label: label)
       _         -> SharedView.form_text(form, field, label: label)
     end
