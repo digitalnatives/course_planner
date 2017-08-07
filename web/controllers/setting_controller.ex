@@ -24,23 +24,25 @@ defmodule CoursePlanner.SettingController do
     editable_system_variables = Settings.get_editable_systemvariables()
 
     case Settings.filter_system_variables(editable_system_variables, setting_type) do
-      {:ok, filtered_system_variables} ->
-        changeset =
-          filtered_system_variables
-          |> Enum.map(&SystemVariable.changeset/1)
-          |> Settings.wrap()
+     {:ok, filtered_system_variables} ->
+       title = "Edit #{setting_type} setting"
 
-        render(conn, "edit.html", changeset: changeset)
-      {:error, _} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
+       changeset =
+         filtered_system_variables
+         |> Enum.map(&SystemVariable.changeset/1)
+         |> Settings.wrap()
+
+       render(conn, "edit.html", changeset: changeset, title: title)
+     {:error, _} ->
+       conn
+       |> put_status(404)
+       |> render(CoursePlanner.ErrorView, "404.html")
     end
   end
 
   def update(
     %{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
-    %{"settings" => %{"system_variables" => variables}}) do
+    %{"settings" => %{"system_variables" => variables, "title" => title}}) do
     changesets = Settings.get_changesets_for_update(variables)
 
     case Settings.update(changesets) do
@@ -62,7 +64,7 @@ defmodule CoursePlanner.SettingController do
           |> Enum.sort_by(&(Changeset.get_field(&1, :key)), &<=/2)
           |> Settings.wrap()
           |> Map.put(:action, :update)
-        render(conn, "edit.html", changeset: changeset)
+        render(conn, "edit.html", changeset: changeset, title: title)
     end
   end
 end
