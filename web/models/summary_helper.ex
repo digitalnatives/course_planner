@@ -6,54 +6,48 @@ defmodule CoursePlanner.SummaryHelper do
 
   alias CoursePlanner.{Repo, Terms.Term, OfferedCourse}
 
-  def get_term_offered_course_for_user(%{id: user_id, role: role}) do
+  def get_term_offered_course_for_user(%{id: user_id, role: role}, time \\ Timex.now()) do
     case role do
-      "Student" -> get_student_registered_data(user_id)
-      "Teacher" -> get_teacher_registered_data(user_id)
-      "Coordinator" -> get_all_terms_and_offered_courses()
-      "Volunteer" -> get_all_terms_and_offered_courses()
+      "Student" -> get_student_registered_data(user_id, time)
+      "Teacher" -> get_teacher_registered_data(user_id, time)
+      "Coordinator" -> get_all_terms_and_offered_courses(time)
+      "Volunteer" -> get_all_terms_and_offered_courses(time)
       _           -> extract_data_from_offered_courses([])
     end
   end
 
-  def get_all_terms_and_offered_courses do
-    current_time = Timex.now()
-
+  def get_all_terms_and_offered_courses(time) do
     offered_courses =
       Repo.all(from oc in OfferedCourse,
       join: t in assoc(oc, :term),
       preload: [:course, :classes, term: t],
-      where: t.end_date >= ^current_time)
+      where: t.end_date >= ^time)
 
     terms =
       Repo.all(from t in Term,
-      where: t.end_date >= ^current_time)
+      where: t.end_date >= ^time)
 
     %{terms: terms, offered_courses: offered_courses}
   end
 
-  def get_student_registered_data(student_id) do
-    current_time = Timex.now()
-
+  def get_student_registered_data(student_id, time) do
     offered_courses =
       Repo.all(from oc in OfferedCourse,
         join: s in assoc(oc, :students),
         join: t in assoc(oc, :term),
         preload: [:course, :classes, term: t, students: s],
-        where: s.id == ^student_id and t.end_date >= ^current_time)
+        where: s.id == ^student_id and t.end_date >= ^time)
 
     extract_data_from_offered_courses(offered_courses)
   end
 
-  def get_teacher_registered_data(teacher_id) do
-    current_time = Timex.now()
-
+  def get_teacher_registered_data(teacher_id, time) do
     offered_courses =
       Repo.all(from oc in OfferedCourse,
         join: t in assoc(oc, :teachers),
         join: te in assoc(oc, :term),
         preload: [:term, :course, :classes, term: te, teachers: t],
-        where: t.id == ^teacher_id and te.end_date >= ^current_time)
+        where: t.id == ^teacher_id and te.end_date >= ^time)
 
     extract_data_from_offered_courses(offered_courses)
   end
