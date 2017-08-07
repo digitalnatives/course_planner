@@ -70,6 +70,29 @@
                           <%= if attendance.attendance_type === "Not filled" do %>
                             <i class="material-icons attendance--not-filled">radio_button_unchecked</i>
                           <% end %>
+                          <i
+                            class="
+                              material-icons
+                              attendance-comment__icon
+                              attendance-comment__icon--show
+                              <%=
+                                if attendance.comment do
+                                  'attendance-comment__icon--set'
+                                end
+                              %>
+                            "
+                            id="attendance__<%= attendance.id %>"
+                          >
+                            comment
+                          </i>
+                          <%= if attendance.comment do %>
+                            <div
+                              class="mdl-tooltip mdl-tooltip--right"
+                              data-mdl-for="attendance__<%= attendance.id %>"
+                            >
+                              <%= attendance.comment %>
+                            </div>
+                          <% end %>
                         </td>
                       </tr>
                     <% end %>

@@ -22,3 +22,6 @@
 
   const { initCalendar } = require( "./calendar.js" );
   initCalendar();
+
+  const { initAttendances } = require( "./attendances.js" );
+  initAttendances();
