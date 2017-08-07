@@ -37,6 +37,13 @@ defmodule CoursePlanner.Settings do
     parsed_value
   end
 
+  def to_map(settings) do
+    settings
+    |> Enum.reduce(%{}, fn(systemvariable, out) ->
+      Map.put(out, systemvariable.key, systemvariable.value)
+    end)
+  end
+
   def filter_system_variables(system_variables, setting_type) do
       case setting_type do
         "system"  -> {:ok, filter_non_program_systemvariables(system_variables)}
