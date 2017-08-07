@@ -48,7 +48,7 @@ defmodule CoursePlanner.Settings do
       case setting_type do
         "system"  -> {:ok, filter_non_program_systemvariables(system_variables)}
         "program" -> {:ok, filter_program_systemvariables(system_variables)}
-        _                  -> {:error, nil}
+        _         -> {:error, nil}
       end
   end
 
