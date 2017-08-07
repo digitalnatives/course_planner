@@ -35,4 +35,15 @@ defmodule CoursePlanner.NotifierTest do
     assert sent_user.notified == Ecto.Date.utc()
   end
 
+  test "send email" do
+    user = insert(:user)
+    notification = Notifications.new()
+    |> Notifications.type(:user_modified)
+    |> Notifications.resource_path("/")
+    |> Notifications.to(user)
+
+    Notifier.handle_cast({:send_email, notification}, [])
+    assert_email_sent subject: "Your profile is updated"
+  end
+
 end
