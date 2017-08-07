@@ -63,15 +63,40 @@
                       <tr class="attendance-table__row">
                         <%= for attendance <- class.attendances do %>
                           <td class="attendance-table__col">
-                            <%= if attendance.attendance_type === "Present" do %>
-                              <i class="material-icons attendance--present">check_circle</i>
-                            <% end %>
-                            <%= if attendance.attendance_type === "Absent" do %>
-                              <i class="material-icons attendance--absent">add_circle</i>
-                            <% end %>
-                            <%= if attendance.attendance_type === "Not filled" do %>
-                              <i class="material-icons attendance--not-filled">radio_button_unchecked</i>
-                            <% end %>
+                            <div class="attendance-table__show-icons">
+                              <%= if attendance.attendance_type === "Present" do %>
+                                <i class="material-icons attendance--present">check_circle</i>
+                              <% end %>
+                              <%= if attendance.attendance_type === "Absent" do %>
+                                <i class="material-icons attendance--absent">add_circle</i>
+                              <% end %>
+                              <%= if attendance.attendance_type === "Not filled" do %>
+                                <i class="material-icons attendance--not-filled">radio_button_unchecked</i>
+                              <% end %>
+                              <i
+                                class="
+                                  material-icons
+                                  attendance-comment__icon
+                                  attendance-comment__icon--show
+                                  <%=
+                                    if attendance.comment do
+                                      'attendance-comment__icon--set'
+                                    end
+                                  %>
+                                "
+                                id="attendance__<%= attendance.id %>"
+                              >
+                                comment
+                              </i>
+                              <%= if attendance.comment do %>
+                                <div
+                                  class="mdl-tooltip mdl-tooltip--right"
+                                  data-mdl-for="attendance__<%= attendance.id %>"
+                                >
+                                  <%= attendance.comment %>
+                                </div>
+                              <% end %>
+                            </div>
                           </td>
                         <% end %>
                       </tr>

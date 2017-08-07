@@ -1,7 +1,8 @@
 
   <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label form-select <%= @wrapper_class %>">
     <%= select @form, @field, @options, class: "form-select__select mdl-textfield__input",
-                                        selected: @selected
+                                        selected: @selected,
+                                        placeholder: ""
     %>
     <span class="mdl-textfield__label"><%= @label %></span>
     <i class="material-icons form-select__icon ">&#xE5C5;</i>
