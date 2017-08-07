@@ -17,17 +17,19 @@ defmodule CoursePlanner.SettingControllerTest do
   describe "settings functionality for coordinator user" do
     test "shows chosen resource only for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :show)
-      assert html_response(conn, 200) =~ "Settings"
+      html_response = html_response(conn, 200)
+      assert html_response =~ "System Settings"
+      assert html_response =~ "Program Settings"
     end
 
     test "renders form for editing system setting for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :edit, setting_type: "system")
-      assert html_response(conn, 200) =~ "Settings"
+      assert html_response(conn, 200) =~ "Edit system setting"
     end
 
     test "renders form for editing program setting for coordinator", %{conn: conn} do
       conn = get conn, setting_path(conn, :edit, setting_type: "program")
-      assert html_response(conn, 200) =~ "Settings"
+      assert html_response(conn, 200) =~ "Edit program setting"
     end
 
     test "renders 404 if request is notsystem_settings nor program_settings", %{conn: conn} do
@@ -36,18 +38,19 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "does not update chosen resource and renders errors when data is invalid for coordinator user", %{conn: conn} do
+      edit_page_title = "Edit test"
       system_variable = insert(:system_variable)
-      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: ""}}}
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: ""}}, title: edit_page_title}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
-      assert html_response(conn, 200) =~ "Settings"
+      assert html_response(conn, 200) =~ edit_page_title
       assert html_response(conn, 200) =~ "can&#39;t be blank"
     end
 
     test "updates chosen resource and redirects when data is valid for coordinator user", %{conn: conn} do
       system_variable = insert(:system_variable)
       updating_value = "new program name"
-      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}}
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}, title: "Edit settings"}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
       assert redirected_to(conn) == setting_path(conn, :show)
@@ -58,7 +61,7 @@ defmodule CoursePlanner.SettingControllerTest do
       insert(:system_variable)
       system_variable = insert(:system_variable, %{editable: false})
       updating_value = "new program name"
-      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}}
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: updating_value}}, title: "random"}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
 
@@ -67,7 +70,7 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "does not update chosen inexisting resource", %{conn: conn} do
-      updated_params = %{system_variables: %{"0" => %{id: "-1", value: "random value"}}}
+      updated_params = %{system_variables: %{"0" => %{id: "-1", value: "random value"}}, title: "random"}
 
       conn = put conn, setting_path(conn, :update), settings: updated_params
 

@@ -4,10 +4,10 @@ defmodule CoursePlanner.ClassTest do
   import CoursePlanner.Factory
   alias CoursePlanner.{Class, Repo}
 
-  @valid_attrs %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2017}, finishes_at: %{hour: 15, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
+  @valid_attrs %{offered_course_id: nil, date: Timex.now(), finishes_at: %{hour: 15, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
   @invalid_attrs %{}
-  @class_before_term %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2009}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
-  @class_after_term %{offered_course_id: nil, date: %{day: 17, month: 4, year: 2011}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
+  @class_before_term %{offered_course_id: nil, date: Timex.shift(Timex.now(), years: -2), finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
+  @class_after_term %{offered_course_id: nil, date: Timex.shift(Timex.now(), months: 2), finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
 
   test "changeset with valid attributes" do
     created_course = insert(:offered_course)
@@ -40,9 +40,9 @@ defmodule CoursePlanner.ClassTest do
   test "update class with invalid date" do
     oc = insert(:offered_course)
     {:ok, class} = Class.changeset(%Class{}, %{@valid_attrs | offered_course_id: oc.id}) |> Repo.insert()
-    changeset = Class.changeset(class, %{date: %{day: 17, month: 7, year: 2017}}, :update)
+    changeset = Class.changeset(class, %{date: Timex.shift(Timex.now(), months: 3)}, :update)
     refute changeset.valid?
-    changeset = Class.changeset(class, %{date: %{day: 17, month: 4, year: 2017}}, :update)
+    changeset = Class.changeset(class, %{date: Timex.now()}, :update)
     assert changeset.valid?
   end
 
