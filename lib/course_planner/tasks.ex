@@ -97,8 +97,7 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
-  def update_changeset_volunteers(changeset, task_params, volunteer_param_name) do
-    volunteer_ids = Map.get(task_params, volunteer_param_name, [])
+  def update_changeset_volunteers(changeset, volunteer_ids) do
     volunteers = Repo.all(from v in Volunteers.query(), where: v.id in ^volunteer_ids)
     Task.update_volunteer(changeset, volunteers)
   end
