@@ -23,3 +23,5 @@ config :comeonin,
 config :coherence,
   email_from_name: "Test Name",
   email_from_email: "test@email"
+
+config :course_planner, :notifier, CoursePlanner.TestNotifier

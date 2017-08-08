@@ -163,4 +163,11 @@ defmodule CoursePlanner.UserControllerTest do
     assert redirected_to(conn) == dashboard_path(conn, :show)
     assert Repo.get_by(User, email: "foo@bar.com")
   end
+
+  test "notify all users" do
+    user_conn = login_as(:coordinator)
+
+    conn = post user_conn, user_path(user_conn, :notify)
+    assert redirected_to(conn) == user_path(conn, :index)
+  end
 end
