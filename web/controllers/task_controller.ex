@@ -118,28 +118,25 @@ defmodule CoursePlanner.TaskController do
   end
 
   def grab(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, volunteer_id) do
-      {:ok, _task} ->
-        conn
-        |> put_flash(:info, "Task grabbed.")
-        |> redirect(to: task_path(conn, :index))
-      error -> common_error_formatting(conn, error)
-    end
+    grab_and_drop_common_handling(conn, :grab, task_id, volunteer_id)
   end
 
   def drop(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.drop(task_id, volunteer_id) do
-      {:ok, _task} ->
-        conn
-        |> put_flash(:info, "Task dropped.")
-        |> redirect(to: task_path(conn, :index))
-
-      error -> common_error_formatting(conn, error)
-    end
+    grab_and_drop_common_handling(conn, :drop, task_id, volunteer_id)
   end
 
-  defp common_error_formatting(conn, error) do
-    case error do
+  defp grab_and_drop_common_handling(conn, action, task_id, volunteer_id) do
+    {transaction_result, success_message} =
+      case action do
+        :grab -> {Tasks.grab(task_id, volunteer_id), "Task grabbed."}
+        :drop -> {Tasks.drop(task_id, volunteer_id), "Task dropped."}
+      end
+
+    case transaction_result do
+      {:ok, _task} ->
+        conn
+        |> put_flash(:info, success_message)
+        |> redirect(to: task_path(conn, :index))
       {:error, %{errors: errors}} ->
         [{_field, {error_message, []}}] =  errors
 
