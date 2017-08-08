@@ -71,33 +71,19 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def update(conn, %{"id" => id, "task" => task_params})do
-    with {:ok, task} <- Tasks.get(id)
-     do
-       volunteer_ids = Map.get(task_params, "volunteer_ids", [])
-
-       changeset = task
-         |> Repo.preload([:volunteers])
-         |> Task.changeset(task_params, :update)
-         |> Tasks.update_changeset_volunteers(volunteer_ids)
-
-       case Repo.update(changeset) do
-         {:ok, task} ->
-           conn
-           |> put_flash(:info, "Task updated successfully.")
-           |> redirect(to: task_path(conn, :show, task))
-         {:error, :not_found} ->
-           conn
-           |> put_status(404)
-           |> render(CoursePlanner.ErrorView, "404.html")
-         {:error, changeset} ->
-           render(conn, "edit.html", task: task, changeset: changeset)
-       end
-     else
-       _ -> conn
-            |> put_status(404)
-            |> render(CoursePlanner.ErrorView, "404.html")
-     end
+  def update(conn, %{"id" => id, "task" => task_params}) do
+    case Tasks.update(id, task_params) do
+     {:ok, task} ->
+       conn
+       |> put_flash(:info, "Task updated successfully.")
+       |> redirect(to: task_path(conn, :show, task))
+     {:error, :not_found} ->
+       conn
+       |> put_status(404)
+       |> render(CoursePlanner.ErrorView, "404.html")
+     {:error, changeset} ->
+       render(conn, "edit.html", task: id, changeset: changeset)
+    end
   end
 
   def delete(conn, %{"id" => id}) do

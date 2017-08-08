@@ -23,6 +23,20 @@ defmodule CoursePlanner.Tasks do
     end
   end
 
+  def update(id, params) do
+    case get(id) do
+      {:ok, task} ->
+        volunteer_ids = Map.get(params, "volunteer_ids", [])
+
+        task
+        |> Repo.preload([:volunteers])
+        |> Task.changeset(params, :update)
+        |> update_changeset_volunteers(volunteer_ids)
+        |> Repo.update()
+      error -> error
+    end
+  end
+
   def get_availables(sort_opt, id, now) do
     sort_opt
     |> task_query()
