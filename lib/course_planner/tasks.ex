@@ -49,8 +49,8 @@ defmodule CoursePlanner.Tasks do
     |> task_query()
     |> where([t], t.finish_time > ^now)
     |> Repo.all()
-    |> Enum.reject(fn(task) ->
-         not Enum.any?(task.volunteers, &(&1.id == id))
+    |> Enum.filter(fn(task) ->
+         Enum.any?(task.volunteers, &(&1.id == id))
        end)
   end
 
