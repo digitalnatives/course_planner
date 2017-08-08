@@ -67,14 +67,14 @@ defmodule CoursePlanner.Tasks do
 
   def grab(task_id, volunteer_id) do
     with {:ok, task} <- get(task_id),
-        %{valid?: true} = changeset <- Task.changeset(task)
+         new_volunteer = Volunteers.get!(volunteer_id)
      do
-      new_volunteer = Volunteers.get!(volunteer_id)
-      updated_volunteer_list = [new_volunteer | task.volunteers]
+       updated_volunteer_list = [new_volunteer | task.volunteers]
 
-      changeset
-      |> Task.update_volunteer(updated_volunteer_list)
-      |> Repo.update()
+       task
+       |> Task.changeset()
+       |> Task.update_volunteer(updated_volunteer_list)
+       |> Repo.update()
     else
       error -> error
     end
@@ -82,13 +82,14 @@ defmodule CoursePlanner.Tasks do
 
   def drop(task_id, volunteer_id) do
     with {:ok, task} <- get(task_id),
-         %{valid?: true} = changeset <- Task.changeset(task),
-         drop_volunteer = Volunteers.get!(volunteer_id),
-         updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
+         drop_volunteer = Volunteers.get!(volunteer_id)
      do
-      changeset
-      |> Task.drop_volunteer(updated_volunteer_list)
-      |> Repo.update()
+       updated_volunteer_list = List.delete(task.volunteers, drop_volunteer)
+
+       task
+       |> Task.changeset()
+       |> Task.drop_volunteer(updated_volunteer_list)
+       |> Repo.update()
     else
       error -> error
     end

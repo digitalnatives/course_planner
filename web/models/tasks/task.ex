@@ -28,10 +28,23 @@ defmodule CoursePlanner.Tasks.Task do
     |> cast(params, @cast_params)
     |> validate_required(@required_params)
     |> validate_datetime()
+    |> validate_expiration()
     |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
   end
 
-  def drop_volunteer(changeset, field_data), do: put_assoc(changeset, :volunteers, field_data)
+  def changeset(struct, params, :update) do
+    struct
+    |> cast(params, @cast_params)
+    |> validate_required(@required_params)
+    |> validate_datetime()
+    |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
+  end
+
+  def drop_volunteer(changeset, field_data) do
+     changeset
+     |> put_assoc(:volunteers, field_data)
+  end
+
   def update_volunteer(changeset, field_data) do
     changeset
     |> put_assoc(:volunteers, field_data)
@@ -57,17 +70,25 @@ defmodule CoursePlanner.Tasks.Task do
   defp validate_datetime(%{valid?: true} = changeset) do
     finish_time = Changeset.get_field(changeset, :finish_time)
     start_time = Changeset.get_field(changeset, :start_time)
-    now = Timex.now()
 
-    cond do
-      Timex.compare(finish_time, start_time) != 1 -> add_error(changeset, :finish_time,
-              "Finish time should be after the start time")
-
-      Timex.compare(finish_time, now) != 1 -> add_error(changeset, :finish_time,
-              "Finish time is already past")
-
-      true -> changeset
+    if Timex.compare(finish_time, start_time) < 1 do
+      add_error(changeset, :finish_time, "Finish time should be after the start time")
+    else
+      changeset
     end
   end
   defp validate_datetime(changeset), do: changeset
+
+  defp validate_expiration(%{valid?: true} = changeset) do
+    finish_time = Changeset.get_field(changeset, :finish_time)
+    now = Timex.now()
+
+    if Timex.compare(finish_time, now) < 1 do
+      add_error(changeset, :finish_time, "Task is expired")
+    else
+      changeset
+      #add_error(changeset, :finish_time, "Task is expired")
+    end
+  end
+  defp validate_expiration(changeset), do: changeset
 end

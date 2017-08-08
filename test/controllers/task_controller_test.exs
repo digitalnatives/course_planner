@@ -176,6 +176,15 @@ defmodule CoursePlanner.TaskControllerTest do
       assert html_response(conn, 200) =~ "New task"
     end
 
+    test "does not create task that is expired", %{conn: conn, user: _user} do
+      volunteers = insert_list(3, :volunteer)
+      updated_attributes = %{@valid_attrs| start_time: Timex.shift(Timex.now(), days: -2), finish_time: Timex.shift(Timex.now(), days: -1)}
+      task = Map.put(updated_attributes, :volunteer_ids, Enum.map(volunteers, &(&1.id)))
+      conn = post conn, task_path(conn, :create), task: task
+      assert html_response(conn, 200) =~ "New task"
+      assert  html_response(conn, 200) =~ "Task is expired"
+    end
+
     test "does not create task with invalid data", %{conn: conn, user: _user} do
       conn = post conn, task_path(conn, :create), task: @invalid_attrs
       assert html_response(conn, 200) =~ "New task"
@@ -365,7 +374,18 @@ defmodule CoursePlanner.TaskControllerTest do
       conn = post conn, task_grab_path(conn, :grab, task)
       assert redirected_to(conn) == task_path(conn, :index)
       conn = get conn, task_path(conn, :index)
-      assert  html_response(conn, 200) =~ "The maximum number of volunteers needed for this task is reached"
+      assert html_response(conn, 200) =~ "The maximum number of volunteers needed for this task is reached"
+
+    end
+
+    test "does not grab an expired task", %{conn: conn, user: _user} do
+      volunteers = insert_list(2, :volunteer)
+      task = insert(:task, max_volunteers: 3, volunteers: volunteers, start_time:  Timex.shift(Timex.now(), days: -2), finish_time: Timex.shift(Timex.now(), days: -1))
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 200) =~ "Task is expired"
     end
 
     test "does not drop a non-existing resource", %{conn: conn, user: _user} do
@@ -407,6 +427,17 @@ defmodule CoursePlanner.TaskControllerTest do
 
       reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
       assert reloaded_task.volunteers == volunteers
+    end
+
+    test "does not drop an expired task", %{conn: conn, user: user} do
+      volunteers = insert_list(2, :volunteer)
+
+      task = insert(:task, max_volunteers: 3, volunteers: [user | volunteers], start_time:  Timex.shift(Timex.now(), days: -2), finish_time: Timex.shift(Timex.now(), days: -1))
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert redirected_to(conn) == task_path(conn, :index)
+      conn = get conn, task_path(conn, :index)
+      assert  html_response(conn, 200) =~ "Task is expired"
     end
   end
 end

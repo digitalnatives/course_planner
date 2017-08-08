@@ -50,6 +50,12 @@ defmodule CoursePlanner.TaskTest do
       refute changeset.valid?
     end
 
+    test "update changeset has finish_time in past" do
+      changeset = Task.changeset(%Task{}, %{@valid_attrs | start_time: Timex.shift(Timex.now(), days: -2), finish_time: Timex.shift(Timex.now(), days: -1)}, :update)
+
+      assert changeset.valid?
+    end
+
     test "changeset has finish_time before start_time" do
       changeset = Task.changeset(%Task{}, %{@valid_attrs | start_time: Timex.shift(Timex.now(), days: 2), finish_time: Timex.now()})
 

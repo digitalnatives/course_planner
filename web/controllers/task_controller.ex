@@ -74,7 +74,7 @@ defmodule CoursePlanner.TaskController do
      do
        changeset = task
          |> Repo.preload([:volunteers])
-         |> Task.changeset(task_params)
+         |> Task.changeset(task_params, :update)
          |> Tasks.update_changeset_volunteers(task_params, "volunteer_ids")
 
        case Repo.update(changeset) do
@@ -121,6 +121,7 @@ defmodule CoursePlanner.TaskController do
         |> redirect(to: task_path(conn, :index))
       {:error, %{errors: errors}} ->
         [{_field, {error_message, []}}] =  errors
+
         conn
         |> put_flash(:error, error_message)
         |> redirect(to: task_path(conn, :index))
