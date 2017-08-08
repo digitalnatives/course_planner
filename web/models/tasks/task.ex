@@ -87,7 +87,6 @@ defmodule CoursePlanner.Tasks.Task do
       add_error(changeset, :finish_time, "Task is expired")
     else
       changeset
-      #add_error(changeset, :finish_time, "Task is expired")
     end
   end
   defp validate_expiration(changeset), do: changeset
