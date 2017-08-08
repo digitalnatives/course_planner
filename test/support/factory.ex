@@ -3,7 +3,7 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task, SystemVariable}
+alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task, SystemVariable, Notification}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -115,5 +115,12 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
       editable: true,
       required: true
     }
+ end
+
+ def notification_factory do
+   %Notification{
+    type: "user_modified",
+    resource_path: "/"
+   }
  end
 end

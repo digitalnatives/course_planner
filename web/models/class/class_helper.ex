@@ -4,9 +4,11 @@ defmodule CoursePlanner.ClassHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Notifier.Notification}
+  alias CoursePlanner.{Repo, Class, Notifier, Notifications}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
+
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
@@ -49,11 +51,11 @@ defmodule CoursePlanner.ClassHelper do
   end
 
   def notify_user(user, type, path) do
-    Notification.new()
-    |> Notification.type(type)
-    |> Notification.resource_path(path)
-    |> Notification.to(user)
-    |> Notifier.notify_user()
+    Notifications.new()
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
+    |> @notifier.notify_later()
   end
 
   defp get_subscribed_students(class) do

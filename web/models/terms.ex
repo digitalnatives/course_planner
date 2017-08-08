@@ -2,9 +2,11 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourses, Notifier, Coordinators, Notifier.Notification}
+  alias CoursePlanner.{Repo, OfferedCourses, Notifier, Coordinators, Notifications}
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset
+
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def all do
     Repo.all(Term)
@@ -80,11 +82,11 @@ defmodule CoursePlanner.Terms do
   end
 
   def notify_user(user, type, path) do
-    Notification.new()
-    |> Notification.type(type)
-    |> Notification.resource_path(path)
-    |> Notification.to(user)
-    |> Notifier.notify_user()
+    Notifications.new()
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
+    |> @notifier.notify_later()
   end
 
   def get_subscribed_users(term) do

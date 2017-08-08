@@ -21,6 +21,7 @@ defmodule CoursePlanner.User do
     field :comments, :string
     field :role, UserRole
     field :participation_type, ParticipationType
+    has_many :notifications, CoursePlanner.Notification, on_delete: :delete_all
 
     coherence_schema()
     timestamps()
