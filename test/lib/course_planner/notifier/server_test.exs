@@ -2,6 +2,7 @@ defmodule CoursePlanner.Notifier.ServerTest do
   use CoursePlanner.ModelCase
   doctest CoursePlanner.Notifier.Server
 
+  import ExUnit.CaptureLog
   import CoursePlanner.Factory
   import Swoosh.TestAssertions
 
@@ -44,6 +45,18 @@ defmodule CoursePlanner.Notifier.ServerTest do
 
     Server.handle_cast({:send_email, notification}, [])
     assert_email_sent subject: "Your profile is updated"
+  end
+
+  test "do not save notification without type" do
+    user = insert(:user)
+    notification = Notifications.new()
+    |> Notifications.resource_path("/")
+    |> Notifications.to(user)
+
+    assert capture_log(fn -> Server.handle_cast({:save_email, notification}, []) end) =~ "Email saving failed"
+
+    saved_user = Repo.get(User, user.id) |> Repo.preload(:notifications)
+    assert [] == saved_user.notifications
   end
 
 end
