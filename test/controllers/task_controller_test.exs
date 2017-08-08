@@ -388,6 +388,20 @@ defmodule CoursePlanner.TaskControllerTest do
       assert html_response(conn, 200) =~ "Task is expired"
     end
 
+    test "grab an already task doesn't add the volunteer twice", %{conn: conn, user: user} do
+      task = insert(:task)
+
+      conn1 = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn1) == task_path(conn1, :index)
+      conn2 = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn2) == task_path(conn2, :index)
+      conn3 = post conn, task_grab_path(conn, :grab, task)
+      assert redirected_to(conn3) == task_path(conn3, :index)
+
+      reloaded_task = Repo.get(Task, task.id) |> Repo.preload(:volunteers)
+      assert  reloaded_task.volunteers == [user]
+    end
+
     test "does not drop a non-existing resource", %{conn: conn, user: _user} do
       conn = post conn, task_drop_path(conn, :drop, -1)
       assert redirected_to(conn) == task_path(conn, :index)

@@ -69,7 +69,9 @@ defmodule CoursePlanner.Tasks do
     with {:ok, task} <- get(task_id),
          new_volunteer = Volunteers.get!(volunteer_id)
      do
-       updated_volunteer_list = [new_volunteer | task.volunteers]
+       updated_volunteer_list =
+         [new_volunteer | task.volunteers]
+         |> Enum.uniq()
 
        task
        |> Task.changeset()
