@@ -57,7 +57,7 @@
               <li class="mdl-menu__item">
                 <%= link "Delete", to: student_path(@conn, :delete, student), method: :delete,
                 data: [confirm: """
-                                              Are you sure?
+                                                                  Are you sure?
                 By removing a student all of its data including her attendance history will be removed.
                 """] %>
               </li>

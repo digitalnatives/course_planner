@@ -65,7 +65,7 @@
               <li class="mdl-menu__item">
                 <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete,
                 data: [confirm: """
-                                              Are you sure?
+                                                                    Are you sure?
                 By removing an offered course all of its classes and relevant attendances will be removed.
                 """] %>
               </li>
