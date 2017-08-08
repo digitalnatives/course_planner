@@ -123,16 +123,7 @@ defmodule CoursePlanner.TaskController do
         conn
         |> put_flash(:info, "Task grabbed.")
         |> redirect(to: task_path(conn, :index))
-      {:error, %{errors: errors}} ->
-        [{_field, {error_message, []}}] =  errors
-
-        conn
-        |> put_flash(:error, error_message)
-        |> redirect(to: task_path(conn, :index))
-      {:error, type} ->
-       conn
-       |> put_flash(:error, Map.get(@error_messages, type, "Something went wrong."))
-       |> redirect(to: task_path(conn, :index))
+      error -> common_error_formatting(conn, error)
     end
   end
 
@@ -142,6 +133,13 @@ defmodule CoursePlanner.TaskController do
         conn
         |> put_flash(:info, "Task dropped.")
         |> redirect(to: task_path(conn, :index))
+
+      error -> common_error_formatting(conn, error)
+    end
+  end
+
+  defp common_error_formatting(conn, error) do
+    case error do
       {:error, %{errors: errors}} ->
         [{_field, {error_message, []}}] =  errors
 
