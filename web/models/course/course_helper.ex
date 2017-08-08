@@ -4,7 +4,9 @@ defmodule CoursePlanner.CourseHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Course, Terms, Notifier, Notifier.Notification}
+  alias CoursePlanner.{Repo, Course, Terms, Notifier, Notifications}
+
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def delete(id) do
     course = Repo.get(Course, id)
@@ -23,10 +25,10 @@ defmodule CoursePlanner.CourseHelper do
   end
 
   def notify_user(user, type, path) do
-    Notification.new()
-    |> Notification.type(type)
-    |> Notification.resource_path(path)
-    |> Notification.to(user)
-    |> Notifier.notify_user()
+    Notifications.new()
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
+    |> @notifier.notify_later()
   end
 end

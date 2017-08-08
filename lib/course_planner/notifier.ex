@@ -3,24 +3,8 @@ defmodule CoursePlanner.Notifier do
   Module responsible for notifying users through e-mail with changes
   """
   use GenServer
-  alias CoursePlanner.{User, Mailer, Mailer.UserEmail}
+  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, User}
   require Logger
-
-  defmodule Notification do
-    @moduledoc "Notification struct to be used by Notifier"
-    defstruct type: nil, resource_path: "/", to: nil
-
-    def new, do: %Notification{}
-
-    def type(%Notification{} = notification, type) when is_atom(type),
-      do: %{notification | type: type}
-
-    def resource_path(%Notification{} = notification, path) when is_binary(path),
-      do: %{notification | resource_path: path}
-
-    def to(%Notification{} = notification, %User{} = user),
-      do: %{notification | to: user}
-  end
 
   @spec start_link :: GenServer.start_link
   def start_link do
@@ -32,7 +16,18 @@ defmodule CoursePlanner.Notifier do
     GenServer.cast(__MODULE__, {:send_email, notification})
   end
 
-  @spec handle_cast({atom(), Notification.t}, any()) :: {:noreply, any()}
+  @spec notify_later(Notification.t) :: GenServer.cast
+  def notify_later(%Notification{} = notification) do
+    GenServer.cast(__MODULE__, {:save_email, notification})
+  end
+
+  @spec notify_all(User.t) :: GenServer.cast
+  def notify_all(%User{notifications: []} = _user), do: :nothing
+  def notify_all(%User{} = user) do
+    GenServer.cast(__MODULE__, {:notify_all, user})
+  end
+
+  @spec handle_cast({atom(), Notification.t} | atom(), any()) :: {:noreply, any()}
   def handle_cast({:send_email, notification}, state) do
     email = UserEmail.build_email(notification)
     case Mailer.deliver(email) do
@@ -43,7 +38,33 @@ defmodule CoursePlanner.Notifier do
         {:noreply, [{:error, reason, email} | state]}
     end
   end
+  def handle_cast({:save_email, notification}, state) do
+    changeset = Notification.changeset(notification)
+    case Repo.insert(changeset) do
+      {:ok, _} ->
+        {:noreply, state}
+      {:error, %{errors: errors, data: email}} ->
+        Logger.error("Email saving failed: #{Kernel.inspect errors}")
+        {:noreply, [{:error, errors, email} | state]}
+    end
+  end
+  def handle_cast({:notify_all, user}, state) do
+    email = UserEmail.build_summary(user)
+    case Mailer.deliver(email) do
+      {:ok, _} ->
+        delete_notifications(user)
+        {:noreply, state}
+      {:error, reason} ->
+        Logger.error("Email delivery failed: #{Kernel.inspect reason}")
+        {:noreply, [{:error, reason, email} | state]}
+    end
+  end
   def handle_cast(_, state), do: {:noreply, state}
+
+  defp delete_notifications(user) do
+    user.notifications
+    |> Enum.each(&Repo.delete/1)
+  end
 
   @doc """
   This function is used to suppress unhandled message warnings from `Swoosh.Adapters.Test` during
