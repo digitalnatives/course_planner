@@ -37,13 +37,7 @@
             <%= task.max_volunteers %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= if task.volunteers do %>
-              <%= task.volunteers
-                  |> display_volunteer_name_list()
-                  |> text_to_html() %>
-            <% else %>
-              No one
-            <% end %>
+            <%= get_task_volunteer_name_list(task.volunteers) %>
           </td>
           <td>
             <button id="tr_menu_<%= task.id %>"

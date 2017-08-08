@@ -4,17 +4,13 @@ defmodule CoursePlanner.TaskView do
   alias CoursePlanner.{SharedView, Volunteers}
   alias Ecto.Changeset
 
-  def task_user(conn, volunteers) when not is_nil(volunteers) do
-    volunteers
-    |> Enum.map(fn(volunteer) ->
-         link volunteer.name, to: volunteer_path(conn, :show, volunteer)
-       end)
+  def get_task_volunteer_name_list(volunteers)
+    when length(volunteers) != 0 do
+      volunteers
+      |> display_volunteer_name_list()
+      |> text_to_html()
   end
-  def task_user(_conn, _volunteers), do: "no one"
-
-  def format_users(users) do
-    [{"no one", 0} | Enum.map(users, &{&1.name, &1.id})]
-  end
+  def get_task_volunteer_name_list(_volunteers), do: "No one"
 
   def page_title do
     "Tasks"
