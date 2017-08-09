@@ -59,7 +59,6 @@
             <li class="mdl-menu__item">
               <%= case action do %>
                 <% :show -> %> <%= link "Show", to: task_path(@conn, :show, task) %>
-                <% :edit -> %> <%= link "Edit", to: task_path(@conn, :edit, task) %>
                 <% :grab -> %> <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post %>
                 <% :drop -> %> <%= link "Drop", to: task_drop_path(@conn, :drop, task), method: :post %>
               <% end %>
