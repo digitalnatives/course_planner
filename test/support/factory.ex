@@ -53,7 +53,8 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
      name: sequence(:name, &"volunteer-#{&1}"),
      email: sequence(:email, &"volunteer-#{&1}@courseplanner.com"),
      role: "Volunteer",
-     password_hash: @password_hash
+     password_hash: @password_hash,
+     notification_period_days: 1
    }
  end
 
