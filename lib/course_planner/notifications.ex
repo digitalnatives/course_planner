@@ -18,6 +18,7 @@ defmodule CoursePlanner.Notifications do
     do: %{notification | user: user}
 
   def send_all_notifications do
+    IO.puts "cron call"
     Timex.today()
     |> get_notifiable_users()
     |> Enum.each(&Notifier.notify_all/1)
@@ -26,7 +27,8 @@ defmodule CoursePlanner.Notifications do
   def get_notifiable_users(date) do
     User
     |> where([u],
-      fragment("? + ?", u.notified_at, u.notification_period_days) <= type(^date, Ecto.Date))
+      fragment("?::date + ?", u.notified_at, u.notification_period_days) <= type(^date, Ecto.Date)
+      or is_nil(u.notified_at))
     |> Repo.all()
     |> Repo.preload(:notifications)
   end

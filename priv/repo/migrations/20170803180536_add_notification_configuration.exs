@@ -3,7 +3,7 @@ defmodule CoursePlanner.Repo.Migrations.AddNotificationConfiguration do
 
   def up do
     alter table(:users) do
-      add :notified_at, :date
+      add :notified_at, :naive_datetime
       add :notification_period_days, :integer, null: false, default: 1
     end
   end
