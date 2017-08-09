@@ -80,5 +80,5 @@ defmodule CoursePlanner.SummaryHelper do
     |> Enum.sort(&(&1.date <= &2.date))
     |> List.first
   end
-  def get_next_task(%{id: _user_id, role: _role}), do: nil
+  def get_next_task(%{id: _user_id, role: _role}, _time), do: nil
 end
