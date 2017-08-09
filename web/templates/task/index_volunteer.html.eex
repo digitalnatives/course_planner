@@ -1,85 +1,20 @@
-<h2>Your tasks</h2>
+<div class="row middle-xs page-header">
+  <div class="col-xs-6 col-sm-3 col-md-2">
+    <table>
+      <tr>
+        <th>
+          <%= link "Sort by Fresh", to: task_path(@conn, :index, sort: "fresh"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+        </th>
+        <th>
+          <%= link "Sort by Closest", to: task_path(@conn, :index, sort: "closest"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+        </th>
+      </tr>
+    </table>
+  </div>
+</div>
 
-<%= link "Sort by Fresh", to: task_path(@conn, :index, sort: "fresh"), class: "btn btn-default btn-xs" %>
-<%= link "Sort by Closest", to: task_path(@conn, :index, sort: "closest"), class: "btn btn-default btn-xs" %>
+<%= render "index_volunteer_tasks_generic.html", tasks: @your_tasks, section_title: "Your tasks", available_actions: [:show, :drop], conn: @conn %>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Deadline</th>
-      <th>Volunteers needed</th>
-      <th>Assigned to</th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for task <- @your_tasks do %>
-    <tr>
-      <td><%= task.name %></td>
-      <td><%= task.start_time %></td>
-      <td><%= task.finish_time %></td>
-      <td><%= task.max_volunteers %></td>
-      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
-      <td class="text-right">
-        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
-        <%= link "Drop", to: task_drop_path(@conn, :drop, task), method: :post, class: "btn btn-default btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+<%= render "index_volunteer_tasks_generic.html", tasks: @available_tasks, section_title: "Available tasks", available_actions: [:show, :grab], conn: @conn %>
 
-<h2>Available tasks</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Deadline</th>
-      <th>Volunteers needed</th>
-      <th>Assigned to</th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for task <- @available_tasks do %>
-    <tr>
-      <td><%= task.name %></td>
-      <td><%= task.start_time %></td>
-      <td><%= task.finish_time %></td>
-      <td><%= task.max_volunteers %></td>
-      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
-      <td class="text-right">
-        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
-        <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post, class: "btn btn-default btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
-
-<h2>Your past tasks</h2>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Deadline</th>
-      <th>Volunteers needed</th>
-      <th>Assigned to</th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for task <- @your_past_tasks do %>
-    <tr>
-      <td><%= task.name %></td>
-      <td><%= task.start_time %></td>
-      <td><%= task.finish_time %></td>
-      <td><%= task.max_volunteers %></td>
-      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
-      <td class="text-right">
-        <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+<%= render "index_volunteer_tasks_generic.html", tasks: @your_past_tasks, section_title: "Your pasts tasks", available_actions: [:show], conn: @conn %>

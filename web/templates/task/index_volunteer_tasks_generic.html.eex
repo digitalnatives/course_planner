@@ -1,0 +1,73 @@
+
+<div class="row middle-xs page-header">
+  <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+    <%= @section_title %>
+  </div>
+</div>
+
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+  <thead>
+    <tr>
+      <th class="mdl-data-table__cell--non-numeric">Name</th>
+      <th>Start time</th>
+      <th>Finish time</th>
+      <th>Volunteers needed</th>
+      <th class="mdl-data-table__cell--non-numeric">Assignee</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= Enum.with_index(@tasks) |> Enum.map(fn {task,index} -> %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= task.name %>
+        </td>
+        <td>
+          <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 0, 10 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 11, 5 %>
+        </td>
+        <td>
+          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 0, 10 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 11, 5 %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= task.max_volunteers %>
+        </td>
+        <td class="mdl-data-table__cell--non-numeric">
+          <%= get_task_volunteer_name_list(task.volunteers) %>
+        </td>
+        <td>
+          <button id="tr_menu_<%= task.id %>"
+                  class="mdl-button mdl-js-button mdl-button--icon"
+          >
+            <i class="material-icons">more_vert</i>
+          </button>
+          <ul
+            class="
+              mdl-menu mdl-js-menu
+              <%=
+                if index > 10 and index > length(@tasks)-4 do
+                  'mdl-menu--top-right'
+                else
+                  'mdl-menu--bottom-right'
+                end
+              %>
+            "
+            for="tr_menu_<%= task.id %>"
+          >
+          <%= for action <- @available_actions do %>
+            <li class="mdl-menu__item">
+              <%= case action do %>
+                <% :show -> %> <%= link "Show", to: task_path(@conn, :show, task) %>
+                <% :edit -> %> <%= link "Edit", to: task_path(@conn, :edit, task) %>
+                <% :grab -> %> <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post %>
+                <% :drop -> %> <%= link "Drop", to: task_drop_path(@conn, :drop, task), method: :post %>
+              <% end %>
+            </li>
+          <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end) %>
+  </tbody>
+</table>
