@@ -4,7 +4,7 @@ defmodule CoursePlanner.SummaryHelper do
   """
   use CoursePlanner.Web, :model
 
-  alias CoursePlanner.{Repo, Terms.Term, OfferedCourse}
+  alias CoursePlanner.{Repo, Terms.Term, OfferedCourse, Tasks.Task}
 
   def get_term_offered_course_for_user(%{id: user_id, role: role}, time \\ Timex.now()) do
     case role do
@@ -71,4 +71,14 @@ defmodule CoursePlanner.SummaryHelper do
        |> List.first
   end
   def get_next_class(_offered_courses), do: nil
+
+  def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
+    Repo.all(from t in Task,
+      join: v in assoc(t, :volunteers),
+      preload: [volunteers: v],
+      where: v.id == ^user_id and t.end_date >= ^time)
+    |> Enum.sort(&(&1.date <= &2.date))
+    |> List.first
+  end
+  def get_next_task(%{id: _user_id, role: _role}), do: nil
 end
