@@ -8,7 +8,8 @@ defmodule CoursePlanner.User do
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
       :role, :participation_type,
-      :phone_number
+      :phone_number, :notified_at,
+      :notification_period_days
     ]
 
   schema "users" do
@@ -21,6 +22,8 @@ defmodule CoursePlanner.User do
     field :comments, :string
     field :role, UserRole
     field :participation_type, ParticipationType
+    field :notified_at, :naive_datetime
+    field :notification_period_days, :integer
     has_many :notifications, CoursePlanner.Notification, on_delete: :delete_all
 
     coherence_schema()
@@ -35,6 +38,8 @@ defmodule CoursePlanner.User do
     |> unique_constraint(:email)
     |> validate_length(:comments, max: 255)
     |> validate_coherence(params)
+    |> validate_number(:notification_period_days,
+      greater_than_or_equal_to: 1, less_than_or_equal_to: 7)
   end
 
   def changeset(model, params, :password) do

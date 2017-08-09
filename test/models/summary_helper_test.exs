@@ -70,7 +70,15 @@ defmodule CoursePlanner.SummaryHelperTest do
         |> Repo.preload(:classes)
 
       student_data = SummaryHelper.get_term_offered_course_for_user(student)
-      assert student_data == %{terms: [term1, term2], offered_courses: offered_courses1 ++ offered_courses2}
+
+      student_data_sorted_terms = Enum.sort(student_data.terms, &(&1.id >= &2.id))
+      student_data_sorted_offered_courses = Enum.sort(student_data.offered_courses, &(&1.id >= &2.id))
+
+      expected_data_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+      expected_data_offered_courses = Enum.sort(offered_courses1 ++ offered_courses2, &(&1.id >= &2.id))
+
+      assert student_data_sorted_terms == expected_data_terms
+      assert student_data_sorted_offered_courses == expected_data_offered_courses
     end
 
     test "when she has multiple courses the end_date of all terms are passed" do

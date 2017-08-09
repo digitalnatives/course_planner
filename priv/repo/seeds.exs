@@ -41,18 +41,6 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
 %CoursePlanner.SystemVariable{}
 |> CoursePlanner.SystemVariable.changeset(
     %{
-      key: "NOTIFICATION_FREQUENCY",
-      value: "1",
-      type: "integer",
-      editable: true,
-      visible: true,
-      required: true
-    })
-|> CoursePlanner.Repo.insert!
-
-%CoursePlanner.SystemVariable{}
-|> CoursePlanner.SystemVariable.changeset(
-    %{
       key: "PROGRAM_NAME",
       value: "some name",
       type: "string",

@@ -59,4 +59,15 @@ defmodule CoursePlanner.UserEmailTest do
 
     assert_email_sent subject: "Activity Summary"
   end
+
+  test "summary without notifications" do
+    vol = insert(:teacher)
+
+    result = User
+    |> Repo.get(vol.id)
+    |> Repo.preload(:notifications)
+    |> UserEmail.build_summary()
+
+    assert result == {:error, :empty_notifications}
+  end
 end
