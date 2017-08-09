@@ -1,6 +1,7 @@
 defmodule CoursePlanner.PermissionsTest do
   use ExUnit.Case
 
+
   alias CoursePlanner.{
     TaskController,
     Terms.Term,

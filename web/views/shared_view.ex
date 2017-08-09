@@ -1,7 +1,6 @@
 defmodule CoursePlanner.SharedView do
   @moduledoc false
   use CoursePlanner.Web, :view
-
   # helpers
 
   def path_exact_match(conn, path) do
@@ -145,7 +144,6 @@ defmodule CoursePlanner.SharedView do
 
   def form_datetime(form, field, opts \\ []) do
     default = Map.merge(Ecto.DateTime.utc(), opts[:value] || %{})
-
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     error = error_message(form, field)

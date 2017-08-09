@@ -64,7 +64,7 @@
             Assigned tasks
           </div>
         </div>
-        <%= CoursePlanner.SharedView.task_list @volunteer.tasks %>
+        <%= CoursePlanner.SharedView.task_list @tasks %>
 
       </div>
     </div>

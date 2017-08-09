@@ -2,18 +2,20 @@ defmodule CoursePlanner.TaskController do
   @moduledoc false
   use CoursePlanner.Web, :controller
 
-  alias CoursePlanner.Tasks
-  alias CoursePlanner.Tasks.Task
-  alias CoursePlanner.Volunteers
+  alias CoursePlanner.{Tasks, Tasks.Task}
 
   import Canary.Plugs
   plug :authorize_controller
+
+  @error_messages %{
+    not_found: "Task was not found."
+  }
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, params) do
     sort_opt = Map.get(params, "sort", nil)
     now = Timex.now()
     render(conn, "index_volunteer.html",
-      available_tasks: Tasks.get_unassigned(sort_opt, now),
+      available_tasks: Tasks.get_availables(sort_opt, id, now),
       your_past_tasks: Tasks.get_past(sort_opt, id, now),
       your_tasks: Tasks.get_for_user(sort_opt, id, now))
   end
@@ -23,19 +25,23 @@ defmodule CoursePlanner.TaskController do
   end
 
   def new(conn, _params) do
-    render(conn, "new.html",
-      changeset: %Task{} |> Task.changeset(),
-      users: Volunteers.all())
+    render(conn, "new.html", changeset: %Task{} |> Task.changeset())
   end
 
-  def create(conn, %{"task" => task}) do
-    case Tasks.new(task) do
+  def create(conn, %{"task" => task_params}) do
+    volunteer_ids = Map.get(task_params, "volunteer_ids", [])
+
+    changeset =  %Task{}
+      |> Task.changeset(task_params)
+      |> Tasks.update_changeset_volunteers(volunteer_ids)
+
+    case Repo.insert(changeset) do
       {:ok, _task} ->
         conn
         |> put_flash(:info, "Task created successfully.")
         |> redirect(to: task_path(conn, :index))
       {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset, users: Volunteers.all())
+        render(conn, "new.html", changeset: changeset)
       _ ->
         conn
         |> put_flash(:error, "Something went wrong.")
@@ -57,10 +63,7 @@ defmodule CoursePlanner.TaskController do
   def edit(conn, %{"id" => id}) do
     case Tasks.get(id) do
       {:ok, task} ->
-        render(conn, "edit.html",
-          task: task,
-          changeset: Task.changeset(task),
-          users: Volunteers.all())
+        render(conn, "edit.html", task: task, changeset: Task.changeset(task))
       {:error, :not_found} ->
         conn
         |> put_status(404)
@@ -68,18 +71,18 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  def update(conn, %{"id" => id, "task" => params}) do
-    case Tasks.update(id, params) do
-      {:ok, task} ->
-        conn
-        |> put_flash(:info, "Task updated successfully.")
-        |> redirect(to: task_path(conn, :show, task))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlanner.ErrorView, "404.html")
-      {:error, task, changeset} ->
-        render(conn, "edit.html", task: task, changeset: changeset, users: Volunteers.all())
+  def update(conn, %{"id" => id, "task" => task_params}) do
+    case Tasks.update(id, task_params) do
+     {:ok, task} ->
+       conn
+       |> put_flash(:info, "Task updated successfully.")
+       |> redirect(to: task_path(conn, :show, task))
+     {:error, :not_found} ->
+       conn
+       |> put_status(404)
+       |> render(CoursePlanner.ErrorView, "404.html")
+     {:error, changeset} ->
+       render(conn, "edit.html", task: id, changeset: changeset)
     end
   end
 
@@ -100,17 +103,29 @@ defmodule CoursePlanner.TaskController do
     end
   end
 
-  @error_messages %{
-    not_found: "Task was not found.",
-    already_finished: "Cannott grab as task is already finished.",
-    already_assigned: "Cannot grab as task is already assigned."
-  }
+  def grab(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
+    task_id
+    |> Tasks.grab(volunteer_id)
+    |> format_response(conn, "Task grabbed")
+  end
 
-  def grab(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"task_id" => task_id}) do
-    case Tasks.grab(task_id, user_id, Timex.now()) do
+  def drop(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
+    task_id
+    |> Tasks.drop(volunteer_id)
+    |> format_response(conn, "Task dropped")
+  end
+
+  defp format_response(response, conn, success_message) do
+    case response do
       {:ok, _task} ->
         conn
-        |> put_flash(:info, "Task grabbed.")
+        |> put_flash(:info, success_message)
+        |> redirect(to: task_path(conn, :index))
+      {:error, %{errors: errors}} ->
+        [{_field, {error_message, []}}] =  errors
+
+        conn
+        |> put_flash(:error, error_message)
         |> redirect(to: task_path(conn, :index))
       {:error, type} ->
         conn
@@ -118,5 +133,4 @@ defmodule CoursePlanner.TaskController do
         |> redirect(to: task_path(conn, :index))
     end
   end
-
 end

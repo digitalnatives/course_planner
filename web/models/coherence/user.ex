@@ -3,7 +3,7 @@ defmodule CoursePlanner.User do
   use CoursePlanner.Web, :model
   use Coherence.Schema
   alias CoursePlanner.Types.{UserRole, ParticipationType}
-  alias CoursePlanner.Tasks.Task
+
   @target_params [
       :name, :family_name, :nickname,
       :email, :student_id, :comments,
