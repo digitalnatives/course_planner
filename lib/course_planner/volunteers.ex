@@ -2,12 +2,16 @@ defmodule CoursePlanner.Volunteers do
   @moduledoc false
   import Ecto.Query
   alias Ecto.Changeset
-  alias CoursePlanner.{Repo, User, Users}
+  alias CoursePlanner.{Repo, User, Users, Tasks.Task}
 
   @volunteers from u in User, where: u.role == "Volunteer"
 
   def all do
     Repo.all(@volunteers)
+  end
+
+  def query do
+    @volunteers
   end
 
   def get!(id) do
@@ -30,6 +34,15 @@ defmodule CoursePlanner.Volunteers do
         |> Repo.update
         |> format_error(volunteer)
     end
+  end
+
+  def get_tasks(volunteer) do
+    query = from t in Task,
+      join: v in assoc(t, :volunteers),
+      preload: [volunteers: v],
+      where: v.id == ^volunteer.id
+
+    Repo.all(query)
   end
 
   defp format_error({:ok, volunteer}, _), do: {:ok, volunteer}

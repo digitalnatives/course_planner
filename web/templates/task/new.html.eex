@@ -2,7 +2,5 @@
   <%= render "form.html", title: "New task",
                           changeset: @changeset,
                           action: task_path(@conn, :create),
-                          conn: @conn,
-                          users: @users
+                          conn: @conn
   %>
-
