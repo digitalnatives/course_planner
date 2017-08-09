@@ -73,10 +73,13 @@ defmodule CoursePlanner.SummaryHelper do
   def get_next_class(_offered_courses), do: nil
 
   def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
-    Repo.all(from t in Task,
-      join: v in assoc(t, :volunteers),
-      preload: [volunteers: v],
-      where: v.id == ^user_id and t.finish_time >= ^time)
+    all_tasks =
+      Repo.all(from t in Task,
+        join: v in assoc(t, :volunteers),
+        preload: [volunteers: v],
+        where: v.id == ^user_id and t.finish_time >= ^time)
+
+    all_tasks
     |> Enum.sort(&(&1.start_time <= &2.start_time))
     |> List.first
   end
