@@ -1,5 +1,5 @@
 
-  <% users = format_users(@users) %>
+  <% volunteers = volunteers_to_select() %>
 
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
@@ -15,7 +15,11 @@
             <%= CoursePlanner.SharedView.form_datetime f, :start_time, required: true, value: %{hour: 8, min: 0} %>
             <%= CoursePlanner.SharedView.form_datetime f, :finish_time, required: true, value: %{hour: 8, min: 0} %>
             <%= CoursePlanner.SharedView.form_textarea f, :description %>
-            <%= CoursePlanner.SharedView.form_select f, :user_id, users, label: "Assignee" %>
+            <%= CoursePlanner.SharedView.form_text f, :max_volunteers, required: true %>
+            <%= CoursePlanner.SharedView.form_multiselect f, :volunteer_ids, volunteers, selected: selected_volunteers(@changeset),
+                                                                                         label: "Volunteers",
+                                                                                         display_images: true,
+                                                                                         tooltip_text: "Add new volunteer"%>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

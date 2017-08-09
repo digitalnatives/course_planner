@@ -8,7 +8,7 @@
     <tr>
       <th>Name</th>
       <th>Deadline</th>
-      <th>Status</th>
+      <th>Volunteers needed</th>
       <th>Assigned to</th>
     </tr>
   </thead>
@@ -18,9 +18,11 @@
       <td><%= task.name %></td>
       <td><%= task.start_time %></td>
       <td><%= task.finish_time %></td>
-      <td><%= task_user(@conn, task) %></td>
+      <td><%= task.max_volunteers %></td>
+      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
       <td class="text-right">
         <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
+        <%= link "Drop", to: task_drop_path(@conn, :drop, task), method: :post, class: "btn btn-default btn-xs" %>
       </td>
     </tr>
 <% end %>
@@ -34,7 +36,7 @@
     <tr>
       <th>Name</th>
       <th>Deadline</th>
-      <th>Status</th>
+      <th>Volunteers needed</th>
       <th>Assigned to</th>
     </tr>
   </thead>
@@ -44,7 +46,8 @@
       <td><%= task.name %></td>
       <td><%= task.start_time %></td>
       <td><%= task.finish_time %></td>
-      <td><%= task_user(@conn, task) %></td>
+      <td><%= task.max_volunteers %></td>
+      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
       <td class="text-right">
         <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
         <%= link "Grab", to: task_grab_path(@conn, :grab, task), method: :post, class: "btn btn-default btn-xs" %>
@@ -61,7 +64,7 @@
     <tr>
       <th>Name</th>
       <th>Deadline</th>
-      <th>Status</th>
+      <th>Volunteers needed</th>
       <th>Assigned to</th>
     </tr>
   </thead>
@@ -71,7 +74,8 @@
       <td><%= task.name %></td>
       <td><%= task.start_time %></td>
       <td><%= task.finish_time %></td>
-      <td><%= task_user(@conn, task) %></td>
+      <td><%= task.max_volunteers %></td>
+      <td><%= get_task_volunteer_name_list(task.volunteers) %></td>
       <td class="text-right">
         <%= link "Show", to: task_path(@conn, :show, task), class: "btn btn-default btn-xs" %>
       </td>
