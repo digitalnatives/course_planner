@@ -104,21 +104,19 @@ defmodule CoursePlanner.TaskController do
   end
 
   def grab(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    grab_and_drop_common_handling(conn, :grab, task_id, volunteer_id)
+    task_id
+    |> Tasks.grab(volunteer_id)
+    |> format_response(conn, "Task grabbed")
   end
 
   def drop(%{assigns: %{current_user: %{id: volunteer_id}}} = conn, %{"task_id" => task_id}) do
-    grab_and_drop_common_handling(conn, :drop, task_id, volunteer_id)
+    task_id
+    |> Tasks.drop(volunteer_id)
+    |> format_response(conn, "Task dropped")
   end
 
-  defp grab_and_drop_common_handling(conn, action, task_id, volunteer_id) do
-    {transaction_result, success_message} =
-      case action do
-        :grab -> {Tasks.grab(task_id, volunteer_id), "Task grabbed."}
-        :drop -> {Tasks.drop(task_id, volunteer_id), "Task dropped."}
-      end
-
-    case transaction_result do
+  defp format_response(response, conn, success_message) do
+    case response do
       {:ok, _task} ->
         conn
         |> put_flash(:info, success_message)
