@@ -3,8 +3,7 @@
     "minimum_coverage": 87
   },
   "skip_files": [
-    "test/support",
-    "lib/course_planner/notifier.ex"
+    "test/support"
   ]
 }
 
