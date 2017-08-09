@@ -28,7 +28,7 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh]]
+                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum]]
   end
 
   # Specifies which paths to compile per environment.
@@ -54,7 +54,8 @@ defmodule CoursePlanner.Mixfile do
      {:dogma, "~> 0.1.0", only: [:dev, :test]},
      {:credo, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0", only: :test},
-     {:excoveralls, "~> 0.6", only: :test}
+     {:excoveralls, "~> 0.6", only: :test},
+     {:quantum, ">= 2.0.0-beta.1"},
    ]
   end
 

@@ -60,6 +60,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
     end
   end
 
+  def build_summary(%{notifications: []}), do: {:error, :empty_notifications}
   def build_summary(%{name: name, email: email, notifications: notifications}) do
     new()
     |> from("admin@courseplanner.com")
