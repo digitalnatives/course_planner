@@ -39,6 +39,8 @@ defmodule CoursePlanner.User do
     |> unique_constraint(:email)
     |> validate_length(:comments, max: 255)
     |> validate_coherence(params)
+    |> validate_number(:notification_period_days,
+      greater_than_or_equal_to: 1, less_than_or_equal_to: 7)
   end
 
   def changeset(model, params, :password) do
