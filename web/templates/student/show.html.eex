@@ -67,9 +67,9 @@
                   </div>
                 </div>
                 <div class="detail">
-                  <div class="detail__name">Notification Frequency (days)</div>
+                  <div class="detail__name">Notification Period (days)</div>
                   <div class="detail__value">
-                    <%= @student.notification_frequency_days %>
+                    <%= @student.notification_period_days %>
                   </div>
                 </div>
               </div>

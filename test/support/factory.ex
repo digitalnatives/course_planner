@@ -14,7 +14,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
      name: sequence(:name, &"user-#{&1}"),
      email: sequence(:email, &"user-#{&1}@courseplanner.com"),
      password_hash: @password_hash,
-     notification_frequency_days: 1
+     notification_period_days: 1
    }
  end
 
@@ -24,7 +24,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
      email: sequence(:email, &"student-#{&1}@courseplanner.com"),
      role: "Student",
      password_hash: @password_hash,
-     notification_frequency_days: 1
+     notification_period_days: 1
    }
  end
 
@@ -34,7 +34,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
      email: sequence(:email, &"teacher-#{&1}@courseplanner.com"),
      role: "Teacher",
      password_hash: @password_hash,
-     notification_frequency_days: 1
+     notification_period_days: 1
    }
  end
 
@@ -44,7 +44,7 @@ alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task,
      email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
      role: "Coordinator",
      password_hash: @password_hash,
-     notification_frequency_days: 1
+     notification_period_days: 1
    }
  end
 

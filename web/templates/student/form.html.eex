@@ -18,7 +18,7 @@
             <%= CoursePlanner.SharedView.form_text f, :student_id, label: "Student ID" %>
             <%= CoursePlanner.SharedView.form_select f, :participation_type, participation_types %>
             <%= CoursePlanner.SharedView.form_text f, :comments %>
-            <%= CoursePlanner.SharedView.form_text f, :notification_frequency_days, label: "Notification Frequency (days)" %>
+            <%= CoursePlanner.SharedView.form_text f, :notification_period_days, label: "Notification Period (days)" %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

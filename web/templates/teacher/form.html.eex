@@ -13,7 +13,7 @@
             <%= CoursePlanner.SharedView.form_text f, :nickname %>
             <%= CoursePlanner.SharedView.form_text f, :email, required: true %>
             <%= CoursePlanner.SharedView.form_text f, :phone_number %>
-            <%= CoursePlanner.SharedView.form_text f, :notification_frequency_days, label: "Notification Frequency (days)" %>
+            <%= CoursePlanner.SharedView.form_text f, :notification_period_days, label: "Notification Period (days)" %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">

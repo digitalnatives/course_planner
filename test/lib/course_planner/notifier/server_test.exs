@@ -33,7 +33,7 @@ defmodule CoursePlanner.Notifier.ServerTest do
     assert_email_sent subject: "Activity Summary"
     sent_user = Repo.get(User, user.id) |> Repo.preload(:notifications)
     assert sent_user.notifications == []
-    assert sent_user.notified == Ecto.Date.utc()
+    assert sent_user.notified_at == Ecto.Date.utc()
   end
 
   test "send email" do

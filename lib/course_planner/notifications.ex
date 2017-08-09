@@ -26,7 +26,7 @@ defmodule CoursePlanner.Notifications do
   def get_notifiable_users(date) do
     User
     |> where([u],
-      fragment("? + ?", u.notified, u.notification_frequency_days) <= type(^date, Ecto.Date))
+      fragment("? + ?", u.notified_at, u.notification_period_days) <= type(^date, Ecto.Date))
     |> Repo.all()
     |> Repo.preload(:notifications)
   end

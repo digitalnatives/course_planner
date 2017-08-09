@@ -36,7 +36,7 @@
             <%= if own && @conn.assigns.current_user.role !== "Student" do %>
               <%= CoursePlanner.SharedView.form_text f, :phone_number %>
             <% end %>
-            <%= CoursePlanner.SharedView.form_text f, :notification_frequency_days, label: "Notification Frequency (days)" %>
+            <%= CoursePlanner.SharedView.form_text f, :notification_period_days, label: "Notification Period (days)" %>
             <%= if @conn.assigns.current_user.role === "Coordinator" do %>
               <%= CoursePlanner.SharedView.form_select f, :role, roles %>
             <% end %>

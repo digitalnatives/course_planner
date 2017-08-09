@@ -50,7 +50,7 @@ defmodule CoursePlanner.Users do
   def update_notifications(user) do
     Multi.new()
     |> delete_notifications(user.notifications)
-    |> Multi.update(User, Changeset.change(user, notified: Ecto.Date.utc()))
+    |> Multi.update(User, Changeset.change(user, notified_at: Ecto.Date.utc()))
     |> Repo.transaction()
   end
 
