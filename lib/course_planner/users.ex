@@ -49,15 +49,19 @@ defmodule CoursePlanner.Users do
 
   def update_notifications(user) do
     Multi.new()
-    |> delete_notifications(user.notifications)
-    |> Multi.update(User, Changeset.change(user, notified_at: Ecto.DateTime.utc()))
+    |> delete_notifications(user)
+    |> mark_user_as_notified(user)
     |> Repo.transaction()
   end
 
-  defp delete_notifications(multi, notifications) do
-    notification_ids = Enum.map(notifications, &(&1.id))
+  defp delete_notifications(multi, user) do
+    notification_ids = Enum.map(user.notifications, &(&1.id))
     q = from n in Notification, where: n.id in ^notification_ids
     Multi.delete_all(multi, Notification, q)
+  end
+
+  defp mark_user_as_notified(multi, user) do
+    Multi.update(multi, User, Changeset.change(user, notified_at: Ecto.DateTime.utc()))
   end
 
   def notify_all do
