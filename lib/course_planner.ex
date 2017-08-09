@@ -3,7 +3,7 @@ defmodule CoursePlanner do
   This is the main module of the app
   """
   use Application
-  alias CoursePlanner.{Endpoint, Repo, Notifier, Scheduler}
+  alias CoursePlanner.{Endpoint, Repo, Notifier, NotifierScheduler}
 
   def start(_type, _args) do
     import Supervisor.Spec
@@ -12,7 +12,7 @@ defmodule CoursePlanner do
       supervisor(Repo, []),
       supervisor(Endpoint, []),
       worker(Notifier, []),
-      worker(Scheduler, []),
+      worker(NotifierScheduler, []),
     ]
 
     opts = [strategy: :one_for_one, name: CoursePlanner.Supervisor]

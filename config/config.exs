@@ -34,7 +34,7 @@ config :canary,
   repo: CoursePlanner.Repo,
   unauthorized_handler: {CoursePlanner.Helper, :handle_unauthorized}
 
-config :course_planner, CoursePlanner.Scheduler,
+config :course_planner, CoursePlanner.NotifierScheduler,
   jobs: [
     {"0 18 * * *", {CoursePlanner.Notifications, :send_all_notifications, []}}
   ]
