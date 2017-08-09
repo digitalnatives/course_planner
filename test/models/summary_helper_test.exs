@@ -358,6 +358,32 @@ defmodule CoursePlanner.SummaryHelperTest do
     end
   end
 
+  describe "get_next_task function" do
+    test "when user is coordinator" do
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Coordinator"}, Timex.now())
+
+      assert next_task == nil
+    end
+
+    test "when user role is teacher" do
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Teacher"}, Timex.now())
+
+      assert next_task == nil
+    end
+
+    test "when user role is Student" do
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Student"}, Timex.now())
+
+      assert next_task == nil
+    end
+
+    test "when user does not exist" do
+      next_task = SummaryHelper.get_next_task(%{id: -1, role: "Volunteer"}, Timex.now())
+
+      assert next_task == nil
+    end
+  end
+
   defp preload_associations_for_offered_courses(offered_courses) do
     offered_courses
     |> Enum.map(fn(offered_course) ->
