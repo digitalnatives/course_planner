@@ -55,4 +55,26 @@ defmodule CoursePlanner.UserTest do
       assert changeset.errors[:comments] == {"should be at most %{count} character(s)", [count: 255, validation: :length, max: 255]}
     end
   end
+
+  describe "notification period days" do
+    test "period upper boundary" do
+      changeset = User.changeset(%User{}, %{notification_period_days: 7})
+      assert changeset.errors[:notification_period_days] == nil
+    end
+
+    test "period lower boundary" do
+      changeset = User.changeset(%User{}, %{notification_period_days: 1})
+      assert changeset.errors[:notification_period_days] == nil
+    end
+
+    test "period is lower than boundary" do
+      changeset = User.changeset(%User{}, %{notification_period_days: 0})
+      assert changeset.errors[:notification_period_days] == {"must be greater than or equal to %{number}", [validation: :number, number: 1]}
+    end
+
+    test "period is greater than boundary" do
+      changeset = User.changeset(%User{}, %{notification_period_days: 8})
+      assert changeset.errors[:notification_period_days] == {"must be less than or equal to %{number}", [validation: :number, number: 7]}
+    end
+  end
 end

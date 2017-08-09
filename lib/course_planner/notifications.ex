@@ -3,7 +3,8 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification}
+  alias CoursePlanner.{User, Notification, Notifier, Repo}
+  import Ecto.Query
 
   def new, do: %Notification{}
 
@@ -15,5 +16,21 @@ defmodule CoursePlanner.Notifications do
 
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
+
+  def send_all_notifications do
+    IO.puts "cron call"
+    Timex.today()
+    |> get_notifiable_users()
+    |> Enum.each(&Notifier.notify_all/1)
+  end
+
+  def get_notifiable_users(date) do
+    User
+    |> where([u],
+      fragment("?::date + ?", u.notified_at, u.notification_period_days) <= type(^date, Ecto.Date)
+      or is_nil(u.notified_at))
+    |> Repo.all()
+    |> Repo.preload(:notifications)
+  end
 
 end
