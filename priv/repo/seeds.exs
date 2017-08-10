@@ -133,3 +133,15 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
       required: false
     })
 |> CoursePlanner.Repo.insert!
+
+%CoursePlanner.SystemVariable{}
+|> CoursePlanner.SystemVariable.changeset(
+    %{
+      key: "DISABLE_NOTIFICATION",
+      value: "true",
+      type: "boolean",
+      editable: true,
+      visible: true,
+      required: false
+    })
+|> CoursePlanner.Repo.insert!
