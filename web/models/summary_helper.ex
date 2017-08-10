@@ -5,6 +5,7 @@ defmodule CoursePlanner.SummaryHelper do
   use CoursePlanner.Web, :model
 
   alias CoursePlanner.{Repo, Terms.Term, OfferedCourse, Tasks.Task}
+  alias Ecto.DateTime
 
   def get_term_offered_course_for_user(%{id: user_id, role: role}, time \\ Timex.now()) do
     case role do
@@ -63,14 +64,23 @@ defmodule CoursePlanner.SummaryHelper do
   end
   defp extract_data_from_offered_courses(_offered_courses), do: %{terms: [], offered_courses: []}
 
-  def get_next_class(offered_courses)
+  def get_next_class(offered_courses, time \\ Timex.now())
+  def get_next_class(offered_courses, time)
     when is_list(offered_courses) and length(offered_courses) > 0 do
      offered_courses
        |> Enum.flat_map(&(&1.classes))
+       |> Enum.filter(fn(class) ->
+         class_starting_at_datetime =
+           class.date
+           |> DateTime.from_date_and_time(class.starting_at)
+           |> Timex.Ecto.DateTime.cast!
+
+         Timex.compare(class_starting_at_datetime, time) >= 0
+       end)
        |> Enum.sort(&(&1.date <= &2.date and &1.starting_at <= &2.starting_at))
        |> List.first
   end
-  def get_next_class(_offered_courses), do: nil
+  def get_next_class(_offered_courses, _time), do: nil
 
   def get_next_task(user, time \\ Timex.now())
   def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
