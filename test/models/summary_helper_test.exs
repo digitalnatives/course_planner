@@ -104,6 +104,16 @@ defmodule CoursePlanner.SummaryHelperTest do
       student_data = SummaryHelper.get_term_offered_course_for_user(student)
       assert student_data == %{terms: [term2], offered_courses: offered_courses2}
     end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      student = insert(:student)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(student)
+
+      assert next_task == nil
+    end
   end
 
   describe "Teacher summary data" do
@@ -139,12 +149,16 @@ defmodule CoursePlanner.SummaryHelperTest do
       [term1, term2] = insert_list(2, :term)
 
       insert_list(2, :offered_course, term: term1)
-      offered_courses =
+      [offered_course1, offered_course2] =
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
+      expected_offered_courses = Enum.sort([offered_course1, offered_course2], &(&1.id >= &2.id))
       teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
-      assert teacher_data == %{terms: [term2], offered_courses: offered_courses}
+      teacher_data_returned_offered_courses = Enum.sort(teacher_data.offered_courses, &(&1.id >= &2.id))
+
+      assert teacher_data.terms == [term2]
+      assert teacher_data_returned_offered_courses == expected_offered_courses
     end
 
     test "when she has multiple courses in multiple terms" do
@@ -185,6 +199,16 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(2, :offered_course, term: term2, teachers: [teacher])
 
       assert SummaryHelper.get_term_offered_course_for_user(teacher) == @empty_summary_helper_user_data_response
+    end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      teacher = insert(:teacher)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(teacher)
+
+      assert next_task == nil
     end
   end
 
@@ -251,6 +275,16 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       assert SummaryHelper.get_term_offered_course_for_user(coordinator) == @empty_summary_helper_user_data_response
     end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      coordinator = insert(:coordinator)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(coordinator)
+
+      assert next_task == nil
+    end
   end
 
   describe "Volunteer summary data" do
@@ -316,6 +350,83 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(4, :offered_course, term: term2)
 
       assert SummaryHelper.get_term_offered_course_for_user(volunteer) == @empty_summary_helper_user_data_response
+    end
+
+    test "next task is nil when user does not exist" do
+      next_task = SummaryHelper.get_next_task(%{id: -1, role: "Volunteer"})
+
+      assert next_task == nil
+    end
+
+    test "when she has one upcoming task" do
+      [volunteer1, volunteer2] = insert_list(2, :volunteer)
+      task = insert(:task,
+                    start_time: Timex.shift(Timex.now(), days: 2),
+                    finish_time: Timex.shift(Timex.now(), days: 3),
+                    volunteers: [volunteer1, volunteer2])
+      next_task = SummaryHelper.get_next_task(volunteer1)
+
+      assert next_task.id == task.id
+    end
+
+    test "when she has many upcoming task the closest will return" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      task = insert(:task,
+                    start_time: Timex.shift(Timex.now(), days: 2),
+                    finish_time: Timex.shift(Timex.now(), days: 3),
+                    volunteers: [volunteer1, volunteer2])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 3),
+             finish_time: Timex.shift(Timex.now(), days: 3),
+             volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 1),
+             volunteers: [volunteer2, volunteer3])
+      next_task = SummaryHelper.get_next_task(volunteer1)
+
+      assert next_task.id == task.id
+    end
+
+    test "when all tasks assigned to her have already started or finished" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: -2),
+             finish_time: Timex.shift(Timex.now(), days: -1),
+             volunteers: [volunteer1, volunteer2])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: -1),
+             finish_time: Timex.shift(Timex.now(), days: 1),
+             volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 2),
+             volunteers: [volunteer2, volunteer3])
+      next_task = SummaryHelper.get_next_task(volunteer1)
+
+      assert next_task == nil
+    end
+
+    test "when next task is requested with a custom time" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      task1 = insert(:task,
+                     start_time: Timex.shift(Timex.now(), days: 2),
+                     finish_time: Timex.shift(Timex.now(), days: 4),
+                     volunteers: [volunteer1, volunteer2])
+      task2 = insert(:task,
+                     start_time: Timex.shift(Timex.now(), days: 4),
+                     finish_time: Timex.shift(Timex.now(), days: 5),
+                     volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 2),
+             volunteers: [volunteer2, volunteer3])
+
+      next_task_current_time = SummaryHelper.get_next_task(volunteer1)
+      next_task_custom_time = SummaryHelper.get_next_task(volunteer1, Timex.shift(Timex.now(), days: 3))
+
+      assert next_task_current_time.id == task1.id
+      assert next_task_custom_time.id == task2.id
     end
   end
 
