@@ -461,10 +461,10 @@ defmodule CoursePlanner.SummaryHelperTest do
 
     test "when offered_courses have classes on the same time with different date" do
       [offered_course1, offered_course2] = insert_list(2, :offered_course)
-      class = insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 1))
-      insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 4))
       insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 2))
       insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 3))
+      class = insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 1))
+      insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 4))
 
       preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
       next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
