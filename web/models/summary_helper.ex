@@ -72,6 +72,7 @@ defmodule CoursePlanner.SummaryHelper do
   end
   def get_next_class(_offered_courses), do: nil
 
+  def get_next_task(user, time \\ Timex.now())
   def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
     all_tasks =
       Repo.all(from t in Task,
@@ -83,5 +84,5 @@ defmodule CoursePlanner.SummaryHelper do
     |> Enum.sort(&(&1.start_time <= &2.start_time))
     |> List.first
   end
-  def get_next_task(%{id: _user_id, role: _role}, _time), do: nil
+  def get_next_task(_user, _time), do: nil
 end
