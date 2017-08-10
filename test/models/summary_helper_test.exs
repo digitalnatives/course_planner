@@ -149,12 +149,16 @@ defmodule CoursePlanner.SummaryHelperTest do
       [term1, term2] = insert_list(2, :term)
 
       insert_list(2, :offered_course, term: term1)
-      offered_courses =
+      [offered_course1, offered_course2] =
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
+      expected_offered_courses = Enum.sort([offered_course1, offered_course2], &(&1.id >= &2.id))
       teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
-      assert teacher_data == %{terms: [term2], offered_courses: offered_courses}
+      teacher_data_returned_offered_courses = Enum.sort(teacher_data.offered_courses, &(&1.id >= &2.id))
+
+      assert teacher_data.terms == [term2]
+      assert teacher_data_returned_offered_courses == expected_offered_courses
     end
 
     test "when she has multiple courses in multiple terms" do
