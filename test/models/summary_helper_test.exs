@@ -104,6 +104,15 @@ defmodule CoursePlanner.SummaryHelperTest do
       student_data = SummaryHelper.get_term_offered_course_for_user(student)
       assert student_data == %{terms: [term2], offered_courses: offered_courses2}
     end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Student"}, Timex.now())
+
+      assert next_task == nil
+    end
   end
 
   describe "Teacher summary data" do
@@ -186,6 +195,15 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       assert SummaryHelper.get_term_offered_course_for_user(teacher) == @empty_summary_helper_user_data_response
     end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Teacher"}, Timex.now())
+
+      assert next_task == nil
+    end
   end
 
   describe "Coordinator summary data" do
@@ -250,6 +268,15 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(4, :offered_course, term: term2)
 
       assert SummaryHelper.get_term_offered_course_for_user(coordinator) == @empty_summary_helper_user_data_response
+    end
+
+    test "has no task" do
+      volunteers = insert_list(2, :volunteer)
+      insert(:task, volunteers: volunteers)
+
+      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Coordinator"}, Timex.now())
+
+      assert next_task == nil
     end
   end
 
@@ -317,6 +344,61 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       assert SummaryHelper.get_term_offered_course_for_user(volunteer) == @empty_summary_helper_user_data_response
     end
+
+    test "next task is nil when user does not exist" do
+      next_task = SummaryHelper.get_next_task(%{id: -1, role: "Volunteer"}, Timex.now())
+
+      assert next_task == nil
+    end
+
+    test "when she has one upcoming task" do
+      [volunteer1, volunteer2] = insert_list(2, :volunteer)
+      task = insert(:task,
+                    start_time: Timex.shift(Timex.now(), days: 2),
+                    finish_time: Timex.shift(Timex.now(), days: 3),
+                    volunteers: [volunteer1, volunteer2])
+      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+
+      assert next_task.id == task.id
+    end
+
+    test "when she has many upcoming task the closest will return" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      task = insert(:task,
+                    start_time: Timex.shift(Timex.now(), days: 2),
+                    finish_time: Timex.shift(Timex.now(), days: 3),
+                    volunteers: [volunteer1, volunteer2])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 3),
+             finish_time: Timex.shift(Timex.now(), days: 3),
+             volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 1),
+             volunteers: [volunteer2, volunteer3])
+      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+
+      assert next_task.id == task.id
+    end
+
+    test "when all tasks assigned to her have already started or finished" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: -2),
+             finish_time: Timex.shift(Timex.now(), days: -1),
+             volunteers: [volunteer1, volunteer2])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: -1),
+             finish_time: Timex.shift(Timex.now(), days: 1),
+             volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 2),
+             volunteers: [volunteer2, volunteer3])
+      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+
+      assert next_task == nil
+    end
   end
 
   describe "get_next_class function" do
@@ -363,32 +445,6 @@ defmodule CoursePlanner.SummaryHelperTest do
       next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
 
       assert next_class == class
-    end
-  end
-
-  describe "get_next_task function" do
-    test "when user is coordinator" do
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Coordinator"}, Timex.now())
-
-      assert next_task == nil
-    end
-
-    test "when user role is teacher" do
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Teacher"}, Timex.now())
-
-      assert next_task == nil
-    end
-
-    test "when user role is Student" do
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Student"}, Timex.now())
-
-      assert next_task == nil
-    end
-
-    test "when user does not exist" do
-      next_task = SummaryHelper.get_next_task(%{id: -1, role: "Volunteer"}, Timex.now())
-
-      assert next_task == nil
     end
   end
 

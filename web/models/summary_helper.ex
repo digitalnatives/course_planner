@@ -77,7 +77,7 @@ defmodule CoursePlanner.SummaryHelper do
       Repo.all(from t in Task,
         join: v in assoc(t, :volunteers),
         preload: [volunteers: v],
-        where: v.id == ^user_id and t.finish_time >= ^time)
+        where: v.id == ^user_id and t.start_time >= ^time)
 
     all_tasks
     |> Enum.sort(&(&1.start_time <= &2.start_time))
