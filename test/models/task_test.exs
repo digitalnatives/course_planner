@@ -63,7 +63,8 @@ defmodule CoursePlanner.TaskTest do
     end
 
     test "changeset has finish_time equal to start_time" do
-      changeset = Task.changeset(%Task{}, %{@valid_attrs | start_time: Timex.shift(Timex.now(), days: 2), start_time: Timex.shift(Timex.now(), days: 2)})
+      time = Timex.shift(Timex.now(), days: 2)
+      changeset = Task.changeset(%Task{}, %{@valid_attrs | start_time: time, finish_time: time})
 
       refute changeset.valid?
     end
