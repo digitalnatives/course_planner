@@ -107,9 +107,10 @@ defmodule CoursePlanner.SummaryHelperTest do
 
     test "has no task" do
       volunteers = insert_list(2, :volunteer)
+      student = insert(:student)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Student"}, Timex.now())
+      next_task = SummaryHelper.get_next_task(student, Timex.now())
 
       assert next_task == nil
     end
@@ -198,9 +199,10 @@ defmodule CoursePlanner.SummaryHelperTest do
 
     test "has no task" do
       volunteers = insert_list(2, :volunteer)
+      teacher = insert(:teacher)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Teacher"}, Timex.now())
+      next_task = SummaryHelper.get_next_task(teacher, Timex.now())
 
       assert next_task == nil
     end
@@ -272,9 +274,10 @@ defmodule CoursePlanner.SummaryHelperTest do
 
     test "has no task" do
       volunteers = insert_list(2, :volunteer)
+      coordinator = insert(:coordinator)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(%{id: 1, role: "Coordinator"}, Timex.now())
+      next_task = SummaryHelper.get_next_task(coordinator, Timex.now())
 
       assert next_task == nil
     end
@@ -357,7 +360,7 @@ defmodule CoursePlanner.SummaryHelperTest do
                     start_time: Timex.shift(Timex.now(), days: 2),
                     finish_time: Timex.shift(Timex.now(), days: 3),
                     volunteers: [volunteer1, volunteer2])
-      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+      next_task = SummaryHelper.get_next_task(volunteer1, Timex.now())
 
       assert next_task.id == task.id
     end
@@ -376,7 +379,7 @@ defmodule CoursePlanner.SummaryHelperTest do
              start_time: Timex.shift(Timex.now(), days: 1),
              finish_time: Timex.shift(Timex.now(), days: 1),
              volunteers: [volunteer2, volunteer3])
-      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+      next_task = SummaryHelper.get_next_task(volunteer1, Timex.now())
 
       assert next_task.id == task.id
     end
@@ -395,7 +398,7 @@ defmodule CoursePlanner.SummaryHelperTest do
              start_time: Timex.shift(Timex.now(), days: 1),
              finish_time: Timex.shift(Timex.now(), days: 2),
              volunteers: [volunteer2, volunteer3])
-      next_task = SummaryHelper.get_next_task(%{id: volunteer1.id, role: volunteer1.role}, Timex.now())
+      next_task = SummaryHelper.get_next_task(volunteer1, Timex.now())
 
       assert next_task == nil
     end
