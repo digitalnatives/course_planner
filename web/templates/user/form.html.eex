@@ -40,6 +40,11 @@
             <%= if @conn.assigns.current_user.role === "Coordinator" do %>
               <%= CoursePlanner.SharedView.form_select f, :role, roles %>
             <% end %>
+            <%= if own do %>
+              <%= CoursePlanner.SharedView.form_password f, :current_password %>
+              <%= CoursePlanner.SharedView.form_password f, :password %>
+              <%= CoursePlanner.SharedView.form_password f, :password_confirmation %>
+            <% end %>
           <% end %>
           <%= CoursePlanner.SharedView.card_actions do %>
             <div class="row row--vspace">
