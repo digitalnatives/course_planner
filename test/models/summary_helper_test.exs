@@ -402,6 +402,28 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       assert next_task == nil
     end
+
+    test "when next task is requested with a custom time" do
+      [volunteer1, volunteer2, volunteer3] = insert_list(3, :volunteer)
+      task1 = insert(:task,
+                     start_time: Timex.shift(Timex.now(), days: 2),
+                     finish_time: Timex.shift(Timex.now(), days: 4),
+                     volunteers: [volunteer1, volunteer2])
+      task2 = insert(:task,
+                     start_time: Timex.shift(Timex.now(), days: 4),
+                     finish_time: Timex.shift(Timex.now(), days: 5),
+                     volunteers: [volunteer1, volunteer3])
+      insert(:task,
+             start_time: Timex.shift(Timex.now(), days: 1),
+             finish_time: Timex.shift(Timex.now(), days: 2),
+             volunteers: [volunteer2, volunteer3])
+
+      next_task_current_time = SummaryHelper.get_next_task(volunteer1)
+      next_task_custom_time = SummaryHelper.get_next_task(volunteer1, Timex.shift(Timex.now(), days: 3))
+
+      assert next_task_current_time.id == task1.id
+      assert next_task_custom_time.id == task2.id
+    end
   end
 
   describe "get_next_class function" do
