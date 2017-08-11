@@ -4,7 +4,7 @@ defmodule CoursePlanner.NotificationsTest do
 
   import CoursePlanner.Factory
 
-  alias CoursePlanner.Notifications
+  alias CoursePlanner.{User, Notification, Notifications}
 
   test "send notification when it's day after" do
     now = Timex.now()
@@ -23,5 +23,19 @@ defmodule CoursePlanner.NotificationsTest do
     assert user_to_notiy2.id == user3.id
   end
 
+  test "do not send notification when disabled" do
+    insert(:system_variable, %{key: "ENABLE_NOTIFICATION", value: "false", type: "boolean"})
+    user = insert(:user)
+    notification = insert(:notification, %{user_id: user.id})
+
+    Notifications.send_all_notifications()
+
+    notifications = Repo.all(Notification)
+    assert length(notifications) == 1
+
+    saved_user = Repo.get(User, user.id) |> Repo.preload(:notifications)
+    assert saved_user.notified_at == nil
+    assert saved_user.notifications == [notification]
+  end
 
 end

@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification, Notifier, Repo}
+  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings}
   import Ecto.Query
 
   def new, do: %Notification{}
@@ -18,10 +18,11 @@ defmodule CoursePlanner.Notifications do
     do: %{notification | user: user}
 
   def send_all_notifications do
-    IO.puts "cron call"
-    Timex.today()
-    |> get_notifiable_users()
-    |> Enum.each(&Notifier.notify_all/1)
+    if Settings.get_value("ENABLE_NOTIFICATION", true) do
+      Timex.today()
+      |> get_notifiable_users()
+      |> Enum.each(&Notifier.notify_all/1)
+    end
   end
 
   def get_notifiable_users(date) do
