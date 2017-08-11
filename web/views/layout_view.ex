@@ -18,6 +18,7 @@ defmodule CoursePlanner.LayoutView do
       "Student" -> render("student_app_navbar.html", conn: conn)
       "Teacher" -> render("teacher_app_navbar.html", conn: conn)
       "Volunteer" -> render("volunteer_app_navbar.html", conn: conn)
+      _           -> nil
     end
   end
 end
