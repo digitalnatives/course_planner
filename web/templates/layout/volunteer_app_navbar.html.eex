@@ -4,5 +4,8 @@
   <%= CoursePlanner.SharedView.navbar_separator %>
   <%= CoursePlanner.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
   <%= CoursePlanner.SharedView.navbar_separator %>
-  <%= if show_program_about?(), do: CoursePlanner.SharedView.navbar_item "About #{get_program_name()}", @conn, about_path(@conn, :show) %>
+  <%= if show_program_about?() do %>
+    <%= CoursePlanner.SharedView.navbar_separator %>
+    <%= CoursePlanner.SharedView.navbar_item "About #{get_program_name()}", @conn, about_path(@conn, :show) %>
+  <% end %>
 <% end %>
