@@ -4,6 +4,11 @@ defmodule CoursePlanner.LayoutView do
 
   alias CoursePlanner.Settings
 
+  @navbars %{"Coordinator" => "coordinator_app_navbar.html",
+             "Student" => "student_app_navbar.html",
+             "Teacher" => "teacher_app_navbar.html",
+             "Volunteer" => "volunteer_app_navbar.html"}
+
   def show_program_about? do
     Settings.get_value("SHOW_PROGRAM_ABOUT_PAGE")
   end
@@ -12,13 +17,9 @@ defmodule CoursePlanner.LayoutView do
     Settings.get_value("PROGRAM_NAME")
   end
 
-  def render_user_role_based_navbar(%{assigns: %{current_user: current_user}} = conn) do
-    case current_user.role do
-      "Coordinator" -> render("coordinator_app_navbar.html", conn: conn)
-      "Student" -> render("student_app_navbar.html", conn: conn)
-      "Teacher" -> render("teacher_app_navbar.html", conn: conn)
-      "Volunteer" -> render("volunteer_app_navbar.html", conn: conn)
-      _           -> nil
-    end
+  def render_user_role_based_navbar(%{assigns: %{current_user: %{role: role}}} = conn)
+    when role in ["Coordinator", "Student", "Teacher", "Volunteer"] do
+    render(@navbars[role], conn: conn)
   end
+  def render_user_role_based_navbar(_conn), do: nil
 end
