@@ -475,6 +475,18 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       assert next_class == class
     end
+
+    test "when all classes have happened in past nil will return" do
+      [offered_course1, offered_course2] = insert_list(2, :offered_course)
+      insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: -1))
+      insert(:class, offered_course: offered_course1, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: -1))
+      insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: -1))
+      insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: -1))
+
+      preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
+
+      assert SummaryHelper.get_next_class(preload_offered_courses) == nil
+    end
   end
 
   defp preload_associations_for_offered_courses(offered_courses) do
