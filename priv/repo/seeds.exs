@@ -137,7 +137,7 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
 %CoursePlanner.SystemVariable{}
 |> CoursePlanner.SystemVariable.changeset(
     %{
-      key: "DISABLE_NOTIFICATION",
+      key: "ENABLE_NOTIFICATION",
       value: "true",
       type: "boolean",
       editable: true,

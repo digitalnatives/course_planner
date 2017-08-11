@@ -18,7 +18,7 @@ defmodule CoursePlanner.Notifications do
     do: %{notification | user: user}
 
   def send_all_notifications do
-    unless Settings.get_value("DISABLE_NOTIFICATION", false) do
+    if Settings.get_value("ENABLE_NOTIFICATION", true) do
       Timex.today()
       |> get_notifiable_users()
       |> Enum.each(&Notifier.notify_all/1)

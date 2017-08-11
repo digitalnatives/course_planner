@@ -24,7 +24,7 @@ defmodule CoursePlanner.NotificationsTest do
   end
 
   test "do not send notification when disabled" do
-    insert(:system_variable, %{key: "DISABLE_NOTIFICATION", value: "true", type: "boolean"})
+    insert(:system_variable, %{key: "ENABLE_NOTIFICATION", value: "false", type: "boolean"})
     user = insert(:user)
     notification = insert(:notification, %{user_id: user.id})
 
