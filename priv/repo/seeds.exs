@@ -142,6 +142,6 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
       type: "boolean",
       editable: true,
       visible: true,
-      required: false
+      required: true
     })
 |> CoursePlanner.Repo.insert!
