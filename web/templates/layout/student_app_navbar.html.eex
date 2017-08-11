@@ -1,0 +1,11 @@
+<%= CoursePlanner.SharedView.navbar "Course Planner" do %>
+  <%= CoursePlanner.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
+  <%= CoursePlanner.SharedView.navbar_item "Calendar", @conn, schedule_path(@conn, :show) %>
+  <%= CoursePlanner.SharedView.navbar_separator %>
+  <%= CoursePlanner.SharedView.navbar_item "Offered Courses", @conn, offered_course_path(@conn, :index) %>
+  <%= CoursePlanner.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
+  <%= if show_program_about?() do %>
+    <%= CoursePlanner.SharedView.navbar_separator %>
+    <%= CoursePlanner.SharedView.navbar_item "About #{get_program_name()}", @conn, about_path(@conn, :show) %>
+  <% end %>
+<% end %>
