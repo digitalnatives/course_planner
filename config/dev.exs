@@ -6,7 +6,7 @@ config :course_planner, CoursePlanner.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [node: ["node_modules/gulp/bin/gulp.js", "default", "watch",
-                    cd: Path.expand("../", __DIR__)]]
+                    cd: Path.expand("../assets", __DIR__)]]
 
 
 config :course_planner, CoursePlanner.Endpoint,
