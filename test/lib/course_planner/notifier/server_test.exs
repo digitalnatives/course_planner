@@ -1,5 +1,5 @@
 defmodule CoursePlanner.Notifier.ServerTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
   doctest CoursePlanner.Notifier.Server
 
   import ExUnit.CaptureLog

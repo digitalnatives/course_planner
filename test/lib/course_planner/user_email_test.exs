@@ -1,8 +1,9 @@
 defmodule CoursePlanner.UserEmailTest do
-  use CoursePlanner.ModelCase
-  doctest CoursePlanner.Mailer.UserEmail
+  use CoursePlannerWeb.ModelCase
+  doctest CoursePlannerWeb.Mailer.UserEmail
 
-  alias CoursePlanner.{User, Mailer, Mailer.UserEmail, Notification, Notifications}
+  alias CoursePlanner.{User, Notification, Notifications}
+  alias CoursePlannerWeb.{Mailer, Mailer.UserEmail}
   import Swoosh.TestAssertions
 
   import CoursePlanner.Factory

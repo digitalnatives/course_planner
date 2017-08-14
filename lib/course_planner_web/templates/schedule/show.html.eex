@@ -1,0 +1,19 @@
+
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="page">
+        <%= CoursePlannerWeb.SharedView.card do %>
+          <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+            <div class="calendar__wrapper">
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    var USER_ROLE = "<%= @conn.assigns.current_user.role %>";
+
+  </script>

@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :course_planner, CoursePlanner.Endpoint,
+config :course_planner, CoursePlannerWeb.Endpoint,
   http: [port: 4001],
   server: false
 
@@ -14,7 +14,7 @@ config :course_planner, CoursePlanner.Repo,
   hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-config :course_planner, CoursePlanner.Mailer,
+config :course_planner, CoursePlannerWeb.Mailer,
   adapter: Swoosh.Adapters.Test
 
 config :comeonin,

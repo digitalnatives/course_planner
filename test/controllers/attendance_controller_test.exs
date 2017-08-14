@@ -1,5 +1,5 @@
 defmodule CoursePlanner.AttendanceControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
 
   import CoursePlanner.Factory
   alias CoursePlanner.{Attendance, User}

@@ -1,7 +1,8 @@
 defmodule CoursePlanner.Notifier.Server do
   @moduledoc false
   use GenServer
-  alias CoursePlanner.{Mailer, Mailer.UserEmail, Notification, Repo, Users}
+  alias CoursePlanner.{Notification, Repo, Users}
+  alias CoursePlannerWeb.{Mailer, Mailer.UserEmail}
   require Logger
 
   @spec handle_cast({atom(), Notification.t} | atom(), any()) :: {:noreply, any()}

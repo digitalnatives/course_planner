@@ -1,5 +1,5 @@
 defmodule CoursePlanner.SystemVariableTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
 
   alias CoursePlanner.SystemVariable
 

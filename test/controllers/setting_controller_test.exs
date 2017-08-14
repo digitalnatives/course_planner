@@ -1,5 +1,5 @@
 defmodule CoursePlanner.SettingControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
 
   alias CoursePlanner.SystemVariable
   import CoursePlanner.Factory

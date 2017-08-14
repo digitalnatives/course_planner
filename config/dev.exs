@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :course_planner, CoursePlanner.Endpoint,
+config :course_planner, CoursePlannerWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -9,13 +9,13 @@ config :course_planner, CoursePlanner.Endpoint,
                     cd: Path.expand("../assets", __DIR__)]]
 
 
-config :course_planner, CoursePlanner.Endpoint,
+config :course_planner, CoursePlannerWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{lib/course_planner_web/views/.*(ex)$},
+      ~r{lib/course_planner_web/templates/.*(eex)$}
     ]
   ]
 

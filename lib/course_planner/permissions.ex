@@ -1,5 +1,7 @@
 defimpl Canada.Can, for: CoursePlanner.User do
-  alias CoursePlanner.{
+
+  alias CoursePlanner.User
+  alias CoursePlannerWeb.{
     AttendanceController,
     CalendarController,
     DashboardController,
@@ -7,7 +9,6 @@ defimpl Canada.Can, for: CoursePlanner.User do
     PageController,
     ScheduleController,
     TaskController,
-    User,
   }
 
   def can?(%User{role: "Coordinator"}, action, TaskController)

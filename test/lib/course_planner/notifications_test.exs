@@ -1,5 +1,5 @@
 defmodule CoursePlanner.NotificationsTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
   doctest CoursePlanner.Notifications
 
   import CoursePlanner.Factory

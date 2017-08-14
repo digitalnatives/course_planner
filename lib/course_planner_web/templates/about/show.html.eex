@@ -1,0 +1,86 @@
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          About <%= @program_data.name %>
+        </div>
+      </div>
+
+      <div class="page">
+          <%= CoursePlannerWeb.SharedView.card do %>
+            <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+              <div class="row row--hspace row--vspace middle-xs">
+                <%= if @program_data.logo do %>
+                  <div class="col-xs-3">
+                    <img src="<%= @program_data.logo %>", class="profile-picture">
+                  </div>
+                <% end %>
+
+                <div class="col-xs-9">
+                <%= if @program_data.address do %>
+                  <div class="detail">
+                    <div class="detail__name">Address</div>
+                    <div class="detail__value">
+                      <%= @program_data.address %>
+                    </div>
+                  </div>
+                <% end%>
+
+                <%= if @program_data.email do %>
+                  <div class="detail">
+                    <div class="detail__name">Email</div>
+                    <div class="detail__value">
+                      <%= @program_data.email %>
+                    </div>
+                  </div>
+                <% end %>
+
+                <%= if @program_data.phone do %>
+                  <div class="detail">
+                    <div class="detail__name">Phone number</div>
+                    <div class="detail__value">
+                      <%= @program_data.phone %>
+                    </div>
+                  </div>
+                <% end %>
+
+                <%= if @program_data.website do %>
+                  <div class="detail">
+                    <div class="detail__name">Website</div>
+                    <div class="detail__value">
+                      <%= @program_data.website %>
+                    </div>
+                  </div>
+                <% end %>
+
+                <%= if @program_data.description do %>
+                  <div class="detail">
+                    <div class="detail__name">Description</div>
+                    <div class="detail__value">
+                      <%= @program_data.description %>
+                    </div>
+                  </div>
+                <% end %>
+
+                <%= if @program_data.information do %>
+                  <div class="detail">
+                    <div class="detail__name">Information</div>
+                    <div class="detail__value">
+                      <%= @program_data.information %>
+                    </div>
+                  </div>
+                <% end %>
+
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>

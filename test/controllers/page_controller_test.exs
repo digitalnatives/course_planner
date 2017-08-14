@@ -1,5 +1,5 @@
 defmodule CoursePlanner.PageControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
 
   import CoursePlanner.Factory
 

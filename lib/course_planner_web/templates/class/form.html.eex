@@ -1,0 +1,32 @@
+
+  <% offered_courses = offered_courses_to_select() %>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= CoursePlannerWeb.SharedView.card @title do %>
+          <%= CoursePlannerWeb.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= CoursePlannerWeb.SharedView.form_select f, :offered_course_id, offered_courses, selected: selected_offered_course(@changeset),
+                                                                                             required: true
+            %>
+            <%= CoursePlannerWeb.SharedView.form_date f, :date, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_time f, :starting_at, required: true, value: %{hour: 8, min: 0} %>
+            <%= CoursePlannerWeb.SharedView.form_time f, :finishes_at, required: true, value: %{hour: 8, min: 0} %>
+            <%= CoursePlannerWeb.SharedView.form_text f, :classroom %>
+          <% end %>
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>

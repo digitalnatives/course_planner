@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Hello CoursePlanner!</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <%= if length(@conn.path_info) > 1 do %>
+            <a
+              href="/<%= Enum.at(@conn.path_info, 0) %>"
+              class="mdl-button mdl-js-button mdl-button--icon layout-backlink"
+            >
+              <i class="material-icons">&#xE5C4;</i>
+            </a>
+          <% end %>
+          <span class="mdl-layout-title">
+            <%= @view_module.page_title %>
+          </span>
+          <div class="mdl-layout-spacer"></div>
+          <nav class="mdl-navigation profile-bubble__wrapper">
+            <%= @conn.assigns.current_user.name %>
+            <%= @conn.assigns.current_user.family_name %>
+            <button id="profile_dropdown"
+                    class="profile-bubble__button"
+            >
+              <img
+                class="profile-bubble__image"
+                src="<%= CoursePlannerWeb.SharedView.get_gravatar_url( @conn.assigns.current_user.email ) %>"
+              />
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu"
+                for="profile_dropdown"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Edit profile", to: user_path(@conn, :edit, @conn.assigns.current_user) %>
+              </li>
+              <li class="mdl-menu__item">
+                <%= CoursePlannerWeb.Coherence.ViewHelpers.signout_link(@conn, "Sign out") %>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <%= render_user_role_based_navbar(@conn) %>
+
+      <main class="mdl-layout__content">
+        <div class="page-content">
+          <div class="container">
+            <%= render @view_module, @view_template, assigns %>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+
+    <div class="info-snackbar mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <script>
+
+      (function (){
+
+        <%= if get_flash(@conn, :info) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :info) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+
+        <%= if get_flash(@conn, :error) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :error) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+
+      })();
+
+    </script>
+  </body>
+</html>

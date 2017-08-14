@@ -1,5 +1,5 @@
 defmodule CoursePlanner.AttendanceTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
 
   alias CoursePlanner.{Attendance}
   import CoursePlanner.Factory

@@ -1,3 +1,3 @@
 defmodule CoursePlanner.PageViewTest do
-  use CoursePlanner.ConnCase, async: true
+  use CoursePlannerWeb.ConnCase, async: true
 end

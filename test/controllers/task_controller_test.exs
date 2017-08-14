@@ -1,5 +1,5 @@
 defmodule CoursePlanner.TaskControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
   alias CoursePlanner.{Tasks.Task, Repo}
 
   import CoursePlanner.Factory

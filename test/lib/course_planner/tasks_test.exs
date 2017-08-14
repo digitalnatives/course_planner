@@ -1,5 +1,5 @@
 defmodule CoursePlanner.TasksTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
 
   alias CoursePlanner.{Tasks, Tasks.Task}
   import CoursePlanner.Factory

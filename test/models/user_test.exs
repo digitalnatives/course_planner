@@ -1,5 +1,5 @@
 defmodule CoursePlanner.UserTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
 
   alias CoursePlanner.User
 
