@@ -145,3 +145,15 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
       required: true
     })
 |> CoursePlanner.Repo.insert!
+
+%CoursePlanner.SystemVariable{}
+|> CoursePlanner.SystemVariable.changeset(
+    %{
+      key: "NOTIFICATION_JOB_EXECUTED_AT",
+      value: DateTime.utc_now() |> DateTime.to_iso8601(),
+      type: "utc_datetime",
+      editable: false,
+      visible: false,
+      required: true
+    })
+|> CoursePlanner.Repo.insert!
