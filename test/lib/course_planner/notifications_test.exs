@@ -4,7 +4,7 @@ defmodule CoursePlanner.NotificationsTest do
 
   import CoursePlanner.Factory
 
-  alias CoursePlanner.{User, Notification, Notifications}
+  alias CoursePlanner.{User, Notification, Notifications, Settings}
 
   test "send notification when it has past at least one day" do
     now = ~N[2017-08-15 10:00:00]
@@ -44,4 +44,21 @@ defmodule CoursePlanner.NotificationsTest do
     assert saved_user.notifications == [notification]
   end
 
+  test "sets executed_at timestamp when sending notification" do
+    refute Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT")
+
+    Notifications.send_all_notifications()
+
+    assert Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT")
+  end
+
+  test "updates executed_at timestamp when sending notification" do
+    next_execution = DateTime.utc_now
+    last_execution = Timex.shift(next_execution, hours: -2)
+    insert(:system_variable, %{key: "NOTIFICATION_JOB_EXECUTED_AT", value: DateTime.to_iso8601(last_execution), type: "utc_datetime"})
+
+    Notifications.send_all_notifications(next_execution)
+
+    assert Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT") == next_execution
+  end
 end

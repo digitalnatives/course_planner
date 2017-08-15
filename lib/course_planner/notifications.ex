@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings}
+  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings, SystemVariable}
   import Ecto.Query
 
   def new, do: %Notification{}
@@ -22,6 +22,8 @@ defmodule CoursePlanner.Notifications do
       now
       |> get_notifiable_users()
       |> Enum.each(action)
+
+      update_executed_at(now)
     end
   end
 
@@ -34,4 +36,35 @@ defmodule CoursePlanner.Notifications do
     |> Repo.preload(:notifications)
   end
 
+  def update_executed_at(timestamp) do
+    changeset =
+      case Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
+        nil -> new_executed_at(timestamp)
+        executed_at -> updated_excuted_at(executed_at, timestamp)
+      end
+    Repo.insert_or_update!(changeset)
+  end
+
+  defp new_executed_at(timestamp) do
+    SystemVariable.changeset(
+      %SystemVariable{},
+      %{
+        key: "NOTIFICATION_JOB_EXECUTED_AT",
+        value: DateTime.to_iso8601(timestamp),
+        type: "utc_datetime",
+        required: true,
+        visible: false,
+        editable: false
+      })
+  end
+
+  defp updated_excuted_at(executed_at, timestamp) do
+    SystemVariable.changeset(
+      executed_at,
+      %{
+        value: DateTime.to_iso8601(timestamp),
+        type: "utc_datetime"
+      },
+      :update)
+  end
 end
