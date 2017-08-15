@@ -17,11 +17,11 @@ defmodule CoursePlanner.Notifications do
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
 
-  def send_all_notifications(now \\ DateTime.utc_now) do
+  def send_all_notifications(now \\ DateTime.utc_now, action \\ &Notifier.notify_all/1) do
     if Settings.get_value("ENABLE_NOTIFICATION", true) do
       now
       |> get_notifiable_users()
-      |> Enum.each(&Notifier.notify_all/1)
+      |> Enum.each(action)
     end
   end
 
