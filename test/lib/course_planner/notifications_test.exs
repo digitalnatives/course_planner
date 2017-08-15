@@ -61,4 +61,26 @@ defmodule CoursePlanner.NotificationsTest do
 
     assert Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT") == next_execution
   end
+
+  describe "wake_up" do
+    test "does nothing when the job was run less than one day ago" do
+      next_execution = DateTime.utc_now
+      last_execution = Timex.shift(next_execution, hours: -2)
+      insert(:system_variable, %{key: "NOTIFICATION_JOB_EXECUTED_AT", value: DateTime.to_iso8601(last_execution), type: "utc_datetime"})
+
+      Notifications.wake_up(next_execution)
+
+      assert Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT") == last_execution
+    end
+
+    test "run job when it was run more than one day ago" do
+      next_execution = DateTime.utc_now
+      last_execution = Timex.shift(next_execution, days: -2)
+      insert(:system_variable, %{key: "NOTIFICATION_JOB_EXECUTED_AT", value: DateTime.to_iso8601(last_execution), type: "utc_datetime"})
+
+      Notifications.wake_up(next_execution)
+
+      assert Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT") == next_execution
+    end
+  end
 end

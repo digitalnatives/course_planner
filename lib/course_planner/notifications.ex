@@ -17,6 +17,13 @@ defmodule CoursePlanner.Notifications do
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
 
+  def wake_up(now \\ DateTime.utc_now) do
+    executed_at = Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT", now)
+    if Timex.diff(now, executed_at, :days) > 1 do
+      send_all_notifications(now)
+    end
+  end
+
   def send_all_notifications(now \\ DateTime.utc_now, action \\ &Notifier.notify_all/1) do
     if Settings.get_value("ENABLE_NOTIFICATION", true) do
       now
