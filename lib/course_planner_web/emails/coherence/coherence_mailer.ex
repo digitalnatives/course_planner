@@ -1,6 +1,8 @@
 defmodule CoursePlannerWeb.Coherence.Mailer do
   @moduledoc false
-  if Coherence.Config.mailer?() do
+  alias Coherence.Config
+
+  if Config.mailer?() do
     use Swoosh.Mailer, otp_app: :coherence
   end
 end

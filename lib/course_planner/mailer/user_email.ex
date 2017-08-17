@@ -2,7 +2,8 @@ defmodule CoursePlannerWeb.Mailer.UserEmail do
   @moduledoc """
   Module responsible for building and sending email
   """
-  use Phoenix.Swoosh, view: CoursePlannerWeb.EmailView, layout: {CoursePlannerWeb.LayoutView, :email}
+  use Phoenix.Swoosh, view: CoursePlannerWeb.EmailView,
+                      layout: {CoursePlannerWeb.LayoutView, :email}
 
   @notifications %{
     "user_modified" =>

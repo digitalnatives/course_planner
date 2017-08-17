@@ -29,7 +29,6 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
   * create links for the new session page `:new_session`
   * create links for your layout template `:layout`
 
-
   Defaults are provided based on the options configured for Coherence.
   However, the defaults can be overridden by passing the following options.
 
@@ -79,7 +78,7 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
     register_link = Keyword.get opts, :register, @register_link
     confirm_link  = Keyword.get opts, :confirm, @confirm_link
 
-    user_schema = Coherence.Config.user_schema
+    user_schema = Config.user_schema
     [
       recover_link(conn, user_schema, recover_link),
       unlock_link(conn, user_schema, unlock_link),
@@ -104,9 +103,11 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
         content_tag(list_tag, signout_link(conn, signout, signout_class))
       ]
     else
-      signin_link = content_tag(list_tag, link(signin, to: coherence_path(@helpers, :session_path, conn, :new)))
+      signin_link = content_tag(list_tag, link(signin,
+        to: coherence_path(@helpers, :session_path, conn, :new)))
       if Config.has_option(:registerable) && register do
-        [content_tag(list_tag, link(register, to: coherence_path(@helpers, :registration_path, conn, :new))), signin_link]
+        [content_tag(list_tag, link(register,
+          to: coherence_path(@helpers, :registration_path, conn, :new))), signin_link]
       else
         signin_link
       end
@@ -125,8 +126,8 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
   end
 
   defp concat([], acc), do: Enum.reverse(acc)
-  defp concat([h|t], []), do: concat(t, [h])
-  defp concat([h|t], acc), do: concat(t, [h, @seperator | acc])
+  defp concat([h | t], []), do: concat(t, [h])
+  defp concat([h | t], acc), do: concat(t, [h, @seperator | acc])
 
   @spec recover_link(conn, module, false | String.t) :: [any] | []
   def recover_link(_conn, _user_schema, false), do: []
@@ -165,7 +166,8 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
 
   @spec signout_link(conn, String.t, String.t) :: tuple
   def signout_link(conn, text \\ @signout_link, signout_class \\ "") do
-    link(text, to: coherence_path(@helpers, :session_path, conn, :delete), method: :delete, class: signout_class)
+    link(text, to: coherence_path(@helpers, :session_path, conn, :delete),
+      method: :delete, class: signout_class)
   end
 
   @spec confirmation_link(conn, module, false | String.t) :: [any] | []
@@ -198,7 +200,6 @@ defmodule CoursePlannerWeb.Coherence.ViewHelpers do
   def logged_in?(conn) do
     Coherence.logged_in?(conn)
   end
-
 
   defp profile_link(current_user, conn) do
     if Config.user_schema.registerable? do
