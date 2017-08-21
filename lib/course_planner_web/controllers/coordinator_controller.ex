@@ -3,7 +3,7 @@ defmodule CoursePlannerWeb.CoordinatorController do
   use CoursePlannerWeb, :controller
   alias CoursePlanner.{User, Coordinators, Users}
   alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.Controller
+  alias Coherence.ControllerHelpers
 
   import Canary.Plugs
   plug :authorize_resource, model: User
@@ -18,11 +18,11 @@ defmodule CoursePlannerWeb.CoordinatorController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = Controller.random_string 48
+    token = ControllerHelpers.random_string 48
     url = Helpers.password_url(conn, :edit, token)
     case Coordinators.new(user, token) do
       {:ok, coordinator} ->
-        Controller.send_user_email(:welcome, coordinator, url)
+        ControllerHelpers.send_user_email(:welcome, coordinator, url)
         conn
         |> put_flash(:info, "Coordinator created and notified by.")
         |> redirect(to: coordinator_path(conn, :index))
