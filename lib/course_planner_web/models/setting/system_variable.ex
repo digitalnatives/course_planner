@@ -4,7 +4,7 @@ defmodule CoursePlanner.SystemVariable do
   """
   use CoursePlannerWeb, :model
 
-  alias Ecto.Changeset
+  alias Ecto.{Changeset, Type}
 
   schema "system_variables" do
     field :key,      :string
@@ -92,6 +92,7 @@ defmodule CoursePlanner.SystemVariable do
       "string"  -> parse_string(value)
       "integer" -> parse_integer(value)
       "boolean" -> parse_boolean(value)
+      "utc_datetime" -> parse_utc_datetime(value)
       _         -> {:error, "unknown type"}
     end
   end
@@ -144,6 +145,13 @@ defmodule CoursePlanner.SystemVariable do
       "true"  -> {:ok, true}
       "false" -> {:ok, false}
       _       -> {:error, "the given value should be true or false"}
+    end
+  end
+
+  def parse_utc_datetime(value) do
+    case Type.cast(:utc_datetime, value) do
+      :error -> {:error, "is not an ISO8601 datetime"}
+      {:ok, _} = result -> result
     end
   end
 end

@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings}
+  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings, SystemVariable}
   import Ecto.Query
 
   def new, do: %Notification{}
@@ -17,21 +17,61 @@ defmodule CoursePlanner.Notifications do
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
 
-  def send_all_notifications do
+  def wake_up(now \\ DateTime.utc_now) do
+    executed_at = Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT", now)
+    if Timex.diff(now, executed_at, :days) > 1 do
+      send_all_notifications(now)
+    end
+  end
+
+  def send_all_notifications(now \\ DateTime.utc_now, action \\ &Notifier.notify_all/1) do
     if Settings.get_value("ENABLE_NOTIFICATION", true) do
-      Timex.today()
+      now
       |> get_notifiable_users()
-      |> Enum.each(&Notifier.notify_all/1)
+      |> Enum.each(action)
+
+      update_executed_at(now)
     end
   end
 
   def get_notifiable_users(date) do
     User
     |> where([u],
-      fragment("?::date + ?", u.notified_at, u.notification_period_days) <= type(^date, Ecto.Date)
+      fragment("? + make_interval(days => ?)", u.notified_at, u.notification_period_days) <= ^date
       or is_nil(u.notified_at))
     |> Repo.all()
     |> Repo.preload(:notifications)
   end
 
+  def update_executed_at(timestamp) do
+    changeset =
+      case Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
+        nil -> new_executed_at(timestamp)
+        executed_at -> updated_excuted_at(executed_at, timestamp)
+      end
+    Repo.insert_or_update!(changeset)
+  end
+
+  defp new_executed_at(timestamp) do
+    SystemVariable.changeset(
+      %SystemVariable{},
+      %{
+        key: "NOTIFICATION_JOB_EXECUTED_AT",
+        value: DateTime.to_iso8601(timestamp),
+        type: "utc_datetime",
+        required: true,
+        visible: false,
+        editable: false
+      })
+  end
+
+  defp updated_excuted_at(executed_at, timestamp) do
+    SystemVariable.changeset(
+      executed_at,
+      %{
+        value: DateTime.to_iso8601(timestamp),
+        type: "utc_datetime"
+      },
+      :update)
+  end
 end

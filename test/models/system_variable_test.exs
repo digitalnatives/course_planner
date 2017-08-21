@@ -9,6 +9,7 @@ defmodule CoursePlanner.SystemVariableTest do
   @integer_valid_attrs %{key: "sample key", value: "1", type: "integer", visible: true, editable: true, required: true}
   @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true, required: true}
   @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true, required: true}
+  @utc_datetime_valid_attrs %{key: "sample key", value: "2017-08-15T09:07:59.935703Z", type: "utc_datetime", visible: true, editable: true, required: true}
   @invalid_attrs %{}
 
   test "changeset with invalid attributes" do
@@ -253,6 +254,33 @@ defmodule CoursePlanner.SystemVariableTest do
 
     test "changeset fails when input is empty" do
       changeset = SystemVariable.changeset(%SystemVariable{}, %{@string_valid_attrs | value: ""})
+      refute changeset.valid?
+    end
+  end
+
+  describe "changeset for utc_datetime type" do
+    test "compete timestamp is valid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: "2017-08-15T09:07:59.935703Z"})
+      assert changeset.valid?
+    end
+
+    test "timestamp without timezone is valid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: "2017-08-15T09:07:59.935703"})
+      assert changeset.valid?
+    end
+
+    test "only date is invalid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: "2017-08-15"})
+      refute changeset.valid?
+    end
+
+    test "only time is invalid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: "09:07:59.935703"})
+      refute changeset.valid?
+    end
+
+    test "empty is invalid" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: ""})
       refute changeset.valid?
     end
   end
