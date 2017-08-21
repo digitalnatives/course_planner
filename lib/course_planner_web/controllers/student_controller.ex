@@ -3,7 +3,7 @@ defmodule CoursePlannerWeb.StudentController do
   use CoursePlannerWeb, :controller
   alias CoursePlanner.{User, Students, Users}
   alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.Controller
+  alias Coherence.ControllerHelpers
 
   import Canary.Plugs
   plug :authorize_resource, model: User
@@ -18,11 +18,11 @@ defmodule CoursePlannerWeb.StudentController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = Controller.random_string 48
+    token = ControllerHelpers.random_string 48
     url = Helpers.password_url(conn, :edit, token)
     case Students.new(user, token) do
       {:ok, student} ->
-        Controller.send_user_email(:welcome, student, url)
+        ControllerHelpers.send_user_email(:welcome, student, url)
         conn
         |> put_flash(:info, "Student created and notified by.")
         |> redirect(to: student_path(conn, :index))

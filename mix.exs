@@ -48,7 +48,7 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, github: "smpallen99/coherence", ref: "90a892d"},
+     {:coherence, "0.4.0"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
      {:dogma, "~> 0.1.0", only: [:dev, :test]},
