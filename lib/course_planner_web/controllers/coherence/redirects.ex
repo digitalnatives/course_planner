@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.Coherence.Redirects do
+defmodule Coherence.Redirects do
   @moduledoc """
   Define controller action redirection functions.
 
