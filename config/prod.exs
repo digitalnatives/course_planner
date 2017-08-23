@@ -23,6 +23,6 @@ config :coherence,
   email_from_name: System.get_env("EMAIL_FROM_NAME"),
   email_from_email: System.get_env("EMAIL_FROM_EMAIL")
 
-config :course_planner, CoursePlannerWeb.Mailer,
+config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY")

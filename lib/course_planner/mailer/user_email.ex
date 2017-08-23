@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.Mailer.UserEmail do
+defmodule CoursePlanner.Mailer.UserEmail do
   @moduledoc """
   Module responsible for building and sending email
   """

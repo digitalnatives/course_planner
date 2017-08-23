@@ -14,7 +14,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :course_planner, CoursePlannerWeb.Mailer,
+config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Local
 
 # %% Coherence Configuration %%   Don't remove this line
