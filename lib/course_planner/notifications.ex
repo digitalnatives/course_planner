@@ -61,7 +61,7 @@ defmodule CoursePlanner.Notifications do
         type: "utc_datetime",
         required: true,
         visible: false,
-        editable: false
+        editable: true
       })
   end
 
