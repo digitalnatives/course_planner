@@ -31,8 +31,8 @@ var cssWatchPaths = [
 var jsEntryPath = 'js/app.js';
 
 var jsWatchPaths = [
-  'deps/phoenix/priv/static/phoenix.js',
-  'deps/phoenix_html/priv/static/phoenix_html.js',
+  '../deps/phoenix/priv/static/phoenix.js',
+  '../deps/phoenix_html/priv/static/phoenix_html.js',
   'js/**/*.js*',
   'vendor/**/*.js*',
 ];
