@@ -56,7 +56,7 @@ gulp.task('css-app', function() {
     .pipe( sass( { importer: moduleImporter() } ).on('error', sass.logError ) )
     .pipe( gutil.env.env === 'production' ? cleanCSS() : gutil.noop() )
     .on( "error", printError )
-    .pipe( gulp.dest('priv/static/css') )
+    .pipe( gulp.dest('../priv/static/css') )
 });
 
 gulp.task('js-app', function() {
@@ -69,14 +69,14 @@ gulp.task('js-app', function() {
     .pipe( concat('app.js') )
     .pipe( gutil.env.env === 'production' ? uglify() : gutil.noop() )
     .on( "error", printError )
-    .pipe( gulp.dest('priv/static/js') )
+    .pipe( gulp.dest('../priv/static/js') )
 });
 
 gulp.task('assets', function() {
   return gulp
     .src( assetPaths )
     .on( "error", printError )
-    .pipe( gulp.dest('priv/static') );
+    .pipe( gulp.dest('../priv/static') );
 });
 
 // ================== ROOT TASKS =====================
