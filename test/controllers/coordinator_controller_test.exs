@@ -145,6 +145,13 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "create coordinator for coordinator user", %{conn: conn} do
+    conn = post conn, coordinator_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == coordinator_path(conn, :index)
+    conn = get conn, coordinator_path(conn, :index)
+    assert html_response(conn, 200)
+  end
+
   test "does not create coordinator for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
