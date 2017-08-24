@@ -144,6 +144,13 @@ defmodule CoursePlanner.VolunteerControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "create volunteer for coordinator user", %{conn: conn} do
+    conn = post conn, volunteer_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == volunteer_path(conn, :index)
+    conn = get conn, volunteer_path(conn, :index)
+    assert html_response(conn, 200)
+  end
+
   test "does not create volunteer for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
