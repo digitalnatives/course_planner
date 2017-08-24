@@ -94,6 +94,13 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "does not delete a non-existing user", %{conn: conn} do
+    conn = delete conn, user_path(conn, :delete, -1)
+    assert redirected_to(conn) == user_path(conn, :index)
+    conn = get conn, user_path(conn, :index)
+    assert html_response(conn, 200) =~ "User was not found."
+  end
+
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
