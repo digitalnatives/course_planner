@@ -1,5 +1,5 @@
 defmodule CoursePlanner.HolidayTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
 
   alias CoursePlanner.Terms.Holiday
 

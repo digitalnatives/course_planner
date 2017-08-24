@@ -1,5 +1,5 @@
 defmodule CoursePlanner.ScheduleControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
   import CoursePlanner.Factory
 
   setup(%{user_role: role}) do

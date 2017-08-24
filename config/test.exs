@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :course_planner, CoursePlanner.Endpoint,
+config :course_planner, CoursePlannerWeb.Endpoint,
   http: [port: 4001],
   server: false
 

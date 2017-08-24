@@ -1,0 +1,26 @@
+<%= form_for @changeset, @action, [method: :put], fn f -> %>
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= CoursePlannerWeb.SharedView.card @title do %>
+        <%= CoursePlannerWeb.SharedView.card_content do %>
+          <%= hidden_input(f, :title, value: @title) %>
+
+          <%= inputs_for f, :system_variables, fn ff -> %>
+            <tr>
+              <%= hidden_input(ff, :id) %>
+              <%= setting_input(ff, :value, ff.data.type, ff.data.key) %>
+            </tr>
+          <% end %>
+        <% end %>
+
+        <%= CoursePlannerWeb.SharedView.card_actions do %>
+          <div class="row row--vspace">
+            <div class="col-xs-12 col-md-3 col-md-offset-9">
+              <%= CoursePlannerWeb.SharedView.form_submit f, "Submit" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<%end%>

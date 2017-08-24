@@ -1,0 +1,6 @@
+
+  <%= render "form.html", title: CoursePlannerWeb.SharedView.display_user_name(@changeset.data),
+                          changeset: @changeset,
+                          action: volunteer_path(@conn, :update, @volunteer),
+                          conn: @conn
+  %>

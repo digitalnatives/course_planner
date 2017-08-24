@@ -1,5 +1,5 @@
 defmodule CoursePlanner.CalendarControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
 
   import CoursePlanner.Factory
 

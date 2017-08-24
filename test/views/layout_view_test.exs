@@ -1,7 +1,7 @@
 defmodule CoursePlanner.LayoutViewTest do
-  use CoursePlanner.ConnCase, async: true
+  use CoursePlannerWeb.ConnCase, async: true
 
-  alias CoursePlanner.LayoutView
+  alias CoursePlannerWeb.LayoutView
   import CoursePlanner.Factory
 
   test "get_program_name returns PROGRAM_NAME system_variable value" do

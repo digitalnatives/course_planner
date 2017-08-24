@@ -1,7 +1,7 @@
 defmodule CoursePlanner.CustomRouteTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.CustomRoute
+  alias CoursePlannerWeb.CustomRoute
   import CoursePlanner.Factory
 
   setup(%{user_role: role}) do

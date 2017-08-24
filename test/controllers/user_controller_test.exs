@@ -1,5 +1,5 @@
 defmodule CoursePlanner.UserControllerTest do
-  use CoursePlanner.ConnCase
+  use CoursePlannerWeb.ConnCase
   alias CoursePlanner.Repo
   alias CoursePlanner.User
 

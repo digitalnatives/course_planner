@@ -1,6 +1,0 @@
-
-  <%= render "form.html", title: CoursePlanner.SharedView.display_user_name(@changeset.data),
-                          changeset: @changeset,
-                          action: teacher_path(@conn, :update, @teacher),
-                          conn: @conn
-  %>

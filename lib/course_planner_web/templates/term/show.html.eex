@@ -1,0 +1,67 @@
+
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= @term.name %>
+        </div>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: term_path(@conn, :edit, @term),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="page">
+        <%= CoursePlannerWeb.SharedView.card do %>
+          <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+            <div class="row row--hspace row--vspace middle-xs">
+              <div class="col-xs-12">
+                <div class="detail">
+                  <div class="detail__name">Name</div>
+                  <div class="detail__value">
+                    <%= @term.name %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Start date</div>
+                  <div class="detail__value">
+                    <%= @term.start_date %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">End date</div>
+                  <div class="detail__value">
+                        <%= @term.end_date %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Holidays
+          </div>
+        </div>
+        <%= CoursePlannerWeb.SharedView.holiday_list @term.holidays %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Courses
+          </div>
+        </div>
+        <%= CoursePlannerWeb.SharedView.course_list @term.offered_courses %>
+
+      </div>
+    </div>
+  </div>
+

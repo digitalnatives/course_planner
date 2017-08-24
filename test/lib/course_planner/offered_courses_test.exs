@@ -1,5 +1,5 @@
 defmodule CoursePlanner.OfferedCoursesTest do
-  use CoursePlanner.ModelCase
+  use CoursePlannerWeb.ModelCase
   import CoursePlanner.Factory
   alias CoursePlanner.OfferedCourses
 

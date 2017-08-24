@@ -3,10 +3,10 @@ defmodule CoursePlanner.PermissionsTest do
 
 
   alias CoursePlanner.{
-    TaskController,
     Terms.Term,
     User
   }
+  alias CoursePlannerWeb.TaskController
 
   @coordinator %User{
     email: "valid@email",

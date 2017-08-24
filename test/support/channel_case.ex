@@ -1,4 +1,4 @@
-defmodule CoursePlanner.ChannelCase do
+defmodule CoursePlannerWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -27,7 +27,7 @@ defmodule CoursePlanner.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint CoursePlanner.Endpoint
+      @endpoint CoursePlannerWeb.Endpoint
     end
   end
 

@@ -1,0 +1,34 @@
+
+  <% volunteers = volunteers_to_select() %>
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= CoursePlannerWeb.SharedView.card @title do %>
+          <%= CoursePlannerWeb.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= CoursePlannerWeb.SharedView.form_text f, :name, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_datetime f, :start_time, required: true, value: %{hour: 8, min: 0} %>
+            <%= CoursePlannerWeb.SharedView.form_datetime f, :finish_time, required: true, value: %{hour: 8, min: 0} %>
+            <%= CoursePlannerWeb.SharedView.form_textarea f, :description %>
+            <%= CoursePlannerWeb.SharedView.form_text f, :max_volunteers, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_multiselect f, :volunteer_ids, volunteers, selected: selected_volunteers(@changeset),
+                                                                                         label: "Volunteers",
+                                                                                         display_images: true,
+                                                                                         tooltip_text: "Add new volunteer"%>
+          <% end %>
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
