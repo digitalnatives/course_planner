@@ -20,6 +20,18 @@ defmodule CoursePlanner.TeacherControllerTest do
     assert html_response(conn, 200) =~ "Teachers"
   end
 
+  test "does not teacher student for coordinator user when data is invalid", %{conn: conn} do
+    conn = post conn, teacher_path(conn, :create), %{"user" => %{"email" => ""}}
+    assert html_response(conn, 200) =~ "Something went wrong."
+  end
+
+  test "create teacher for coordinator user", %{conn: conn} do
+    conn = post conn, teacher_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == teacher_path(conn, :index)
+    conn = get conn, teacher_path(conn, :index)
+    assert html_response(conn, 200)
+  end
+
   test "shows chosen resource", %{conn: conn} do
     teacher = insert(:teacher)
     conn = get conn, teacher_path(conn, :show, teacher)
@@ -45,6 +57,11 @@ defmodule CoursePlanner.TeacherControllerTest do
     assert Repo.get_by(User, email: "foo@bar.com")
   end
 
+  test "does not updates if the resource does not exist", %{conn: conn} do
+    conn = put conn, teacher_path(conn, :update, -1), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 404)
+  end
+
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     teacher = insert(:teacher, %{name: "Foo", family_name: "Bar"})
     conn = put conn, teacher_path(conn, :update, teacher), %{"user" => %{"email" => "not email"}}
@@ -56,6 +73,13 @@ defmodule CoursePlanner.TeacherControllerTest do
     conn = delete conn, teacher_path(conn, :delete, teacher)
     assert redirected_to(conn) == teacher_path(conn, :index)
     refute Repo.get(User, teacher.id)
+  end
+
+  test "does not delete chosen resource when does not exist", %{conn: conn} do
+    conn = delete conn, teacher_path(conn, :delete, "-1")
+    assert redirected_to(conn) == teacher_path(conn, :index)
+    conn = get conn, teacher_path(conn, :index)
+    assert html_response(conn, 200) =~ "Teacher was not found."
   end
 
   test "renders form for new resources", %{conn: conn} do
