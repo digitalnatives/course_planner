@@ -73,4 +73,14 @@ defmodule CoursePlanner.OfferedCoursesTest do
       assert List.first(courses).id == user_course.id
     end
   end
+
+  describe "find_by_term_id/1" do
+    test "find a valid term" do
+      offered_course = insert(:offered_course) |> Repo.preload([:students])
+
+      result = OfferedCourses.find_by_term_id(offered_course.term.id)
+      assert result[offered_course.id].id == offered_course.id
+
+    end
+  end
 end

@@ -25,6 +25,7 @@ defmodule CoursePlanner.TermTest do
     invalid_attrs =
       %{
         name: "Spring",
+        minimum_teaching_days: 1,
         start_date: %{day: 17, month: 4, year: 2010},
         end_date: %{day: 17, month: 4, year: 2010}
       }
