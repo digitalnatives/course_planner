@@ -51,16 +51,18 @@
               <li class="mdl-menu__item">
                 <%= link "Show", to: teacher_path(@conn, :show, teacher) %>
               </li>
-              <li class="mdl-menu__item">
-                <%= link "Edit", to: teacher_path(@conn, :edit, teacher) %>
-              </li>
-              <li class="mdl-menu__item">
-                <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
-                data: [confirm: """
-                Are you sure?
-                No class for the course taught by her can be created.
-                """] %>
-              </li>
+              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: teacher_path(@conn, :edit, teacher) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
+                  data: [confirm: """
+                  Are you sure?
+                  No class for the course taught by her can be created.
+                  """] %>
+                </li>
+              <% end %>
             </ul>
           </td>
         </tr>

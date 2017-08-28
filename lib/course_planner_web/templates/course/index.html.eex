@@ -13,7 +13,9 @@
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Name</th>
         <th class="mdl-data-table__cell--non-numeric">Description</th>
-        <th></th>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <th></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -25,37 +27,39 @@
           <td class="mdl-data-table__cell--non-numeric">
             <%= course.description %>
           </td>
-          <td>
-            <button id="tr_menu_<%= course.id %>"
-                    class="mdl-button mdl-js-button mdl-button--icon"
-            >
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul
-              class="
-                mdl-menu mdl-js-menu
-                <%=
-                  if index > 10 and index > length(@courses)-4 do
-                    'mdl-menu--top-right'
-                  else
-                    'mdl-menu--bottom-right'
-                  end
-                %>
-              "
-              for="tr_menu_<%= course.id %>"
-            >
-              <li class="mdl-menu__item">
-                <%= link "Edit", to: course_path(@conn, :edit, course) %>
-              </li>
-              <li class="mdl-menu__item">
-                <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete,
-                data: [confirm: """
-                Are you sure?
-                All courses and their attached data in all terms will be removed.
-                """] %>
-              </li>
-            </ul>
-          </td>
+          <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+            <td>
+              <button id="tr_menu_<%= course.id %>"
+                      class="mdl-button mdl-js-button mdl-button--icon"
+              >
+                <i class="material-icons">more_vert</i>
+              </button>
+              <ul
+                class="
+                  mdl-menu mdl-js-menu
+                  <%=
+                    if index > 10 and index > length(@courses)-4 do
+                      'mdl-menu--top-right'
+                    else
+                      'mdl-menu--bottom-right'
+                    end
+                  %>
+                "
+                for="tr_menu_<%= course.id %>"
+              >
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: course_path(@conn, :edit, course) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete,
+                  data: [confirm: """
+                  Are you sure?
+                  All courses and their attached data in all terms will be removed.
+                  """] %>
+                </li>
+              </ul>
+            </td>
+          <% end %>
         </tr>
       <% end) %>
     </tbody>

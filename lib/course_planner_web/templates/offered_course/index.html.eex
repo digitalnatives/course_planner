@@ -59,16 +59,18 @@
               <li class="mdl-menu__item">
                 <%= link "Show", to: offered_course_path(@conn, :show, offered_course) %>
               </li>
-              <li class="mdl-menu__item">
-                <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
-              </li>
-              <li class="mdl-menu__item">
-                <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete,
-                data: [confirm: """
-                Are you sure?
-                All of its attached classes and relevant attendances will be removed.
-                """] %>
-              </li>
+              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete,
+                  data: [confirm: """
+                  Are you sure?
+                  All of its attached classes and relevant attendances will be removed.
+                  """] %>
+                </li>
+              <% end %>
             </ul>
           </td>
         </tr>
