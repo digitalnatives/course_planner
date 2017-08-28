@@ -8,7 +8,7 @@
   <%= CoursePlannerWeb.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "All users", @conn, user_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
-  <%= CoursePlannerWeb.SharedView.navbar_item "Courses", @conn, course_path(@conn, :index) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Course types", @conn, course_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Offered Courses", @conn, offered_course_path(@conn, :index) %>

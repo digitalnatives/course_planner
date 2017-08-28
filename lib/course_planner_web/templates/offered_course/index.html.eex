@@ -11,7 +11,7 @@
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
     <thead>
       <tr>
-        <th class="mdl-data-table__cell--non-numeric">Course name</th>
+        <th class="mdl-data-table__cell--non-numeric">Course type</th>
         <th class="mdl-data-table__cell--non-numeric">Term name</th>
         <th>Term start date</th>
         <th>Term end date</th>
