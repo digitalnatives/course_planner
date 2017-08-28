@@ -160,6 +160,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert class1.id in not_filled_classes
       assert class3.id in not_filled_classes
+      refute class2.id in not_filled_classes
     end
 
     test "when there is missing attendances for some classes of multiple offered_courses" do
