@@ -185,7 +185,6 @@ defmodule CoursePlanner.OfferedCoursesTest do
      insert(:offered_course, classes: [class3], students: students, teachers: [teacher])
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
-     #not_filled_offered_courses = OfferedCourses.with_pending_attendances(requested_current_date)
 
      not_filled_classes =
        requested_current_date
