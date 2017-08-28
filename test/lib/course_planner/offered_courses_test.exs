@@ -154,9 +154,9 @@ defmodule CoursePlanner.OfferedCoursesTest do
       insert(:offered_course, classes: [class1, class2, class3], students: students, teachers: [teacher])
 
       requested_current_date =  Timex.shift(Timex.now(), days: 2)
-      [not_filled_offered_course] = OfferedCourses.with_pending_attendances(requested_current_date)
+      [not_filled_offered_courses] = OfferedCourses.with_pending_attendances(requested_current_date)
 
-      not_filled_classes = Enum.map(not_filled_offered_course.classes, &(&1.id))
+      not_filled_classes = Enum.map(not_filled_offered_courses.classes, &(&1.id))
 
       assert class1.id in not_filled_classes
       assert class3.id in not_filled_classes
@@ -180,22 +180,22 @@ defmodule CoursePlanner.OfferedCoursesTest do
      insert(:attendance, student: student2, class: class3, attendance_type: "Not filled")
      insert(:attendance, student: student3, class: class3, attendance_type: "Present")
 
-     offered_course1 =
-       insert(:offered_course, classes: [class1], students: students, teachers: [teacher])
+     insert(:offered_course, classes: [class1], students: students, teachers: [teacher])
      insert(:offered_course, classes: [class2], students: students, teachers: [teacher])
-     offered_course3 =
-       insert(:offered_course, classes: [class3], students: students, teachers: [teacher])
+     insert(:offered_course, classes: [class3], students: students, teachers: [teacher])
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
-     not_filled_offered_courses =
-       OfferedCourses.with_pending_attendances(requested_current_date)
-       |> Enum.map(&(&1.id))
-       |> Enum.sort(&(&1 < &2))
-     expected_result =
-       [offered_course1.id, offered_course3.id]
-       |> Enum.sort(&(&1 < &2))
+     #not_filled_offered_courses = OfferedCourses.with_pending_attendances(requested_current_date)
 
-     assert expected_result == not_filled_offered_courses
+     not_filled_classes =
+       requested_current_date
+       |> OfferedCourses.with_pending_attendances()
+       |> Enum.flat_map(&(&1.classes))
+       |> Enum.map(&(&1.id))
+
+     assert class1.id in not_filled_classes
+     assert class3.id in not_filled_classes
+     refute class2.id in not_filled_classes
     end
   end
 
