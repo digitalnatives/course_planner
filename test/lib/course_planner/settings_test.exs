@@ -36,5 +36,10 @@ defmodule CoursePlanner.SettingsTest do
       insert(:system_variable, %{key: "TEST_KEY", value: value, type: "list"})
       assert ["value1", "value2"] == Settings.get_value("TEST_KEY")
     end
+
+    test "when variable type is url and is empty to return nil" do
+      insert(:system_variable, %{key: "TEST_KEY", value: "", type: "url"})
+      assert nil == Settings.get_value("TEST_KEY")
+    end
   end
 end
