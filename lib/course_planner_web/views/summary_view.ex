@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.DashboardView do
+defmodule CoursePlannerWeb.SummaryView do
   @moduledoc false
   use CoursePlannerWeb, :view
 end

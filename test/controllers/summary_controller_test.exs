@@ -1,4 +1,4 @@
-defmodule CoursePlanner.DashboardControllerTest do
+defmodule CoursePlanner.SummaryControllerTest do
   use CoursePlannerWeb.ConnCase
 
   import CoursePlanner.Factory
@@ -12,8 +12,8 @@ defmodule CoursePlanner.DashboardControllerTest do
     {:ok, conn: conn}
   end
 
-  test "GET /dashboard", %{conn: conn} do
-    conn = get conn, dashboard_path(conn, :show)
+  test "GET /summary", %{conn: conn} do
+    conn = get conn, summary_path(conn, :show)
     assert html_response(conn, 200) =~ "Welcome to Phoenix"
   end
 end

@@ -45,7 +45,7 @@ defmodule CoursePlannerWeb.UserController do
         else
           conn
           |> put_flash(:info, "Your profile has been updated successfully.")
-          |> redirect(to: dashboard_path(conn, :show))
+          |> redirect(to: summary_path(conn, :show))
         end
       {:error, changeset} ->
         render(conn, "edit.html", user: user, changeset: changeset)

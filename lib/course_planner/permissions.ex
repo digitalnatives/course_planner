@@ -4,7 +4,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
   alias CoursePlannerWeb.{
     AttendanceController,
     CalendarController,
-    DashboardController,
+    SummaryController,
     OfferedCourseController,
     PageController,
     ScheduleController,
@@ -29,7 +29,7 @@ defimpl Canada.Can, for: CoursePlanner.User do
     when action in [:index, :show, :grab, :drop], do: true
 
   def can?(_user, _action, CalendarController), do: true
-  def can?(_user, _action, DashboardController), do: true
+  def can?(_user, _action, SummaryController), do: true
   def can?(_user, _action, PageController), do: true
   def can?(_user, _action, ScheduleController), do: true
 

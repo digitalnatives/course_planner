@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.DashboardController do
+defmodule CoursePlannerWeb.SummaryController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 

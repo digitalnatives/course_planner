@@ -14,6 +14,6 @@ defmodule CoursePlanner.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert redirected_to(conn, 301) == dashboard_path(conn, :show)
+    assert redirected_to(conn, 301) == summary_path(conn, :show)
   end
 end

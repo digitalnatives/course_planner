@@ -1,5 +1,5 @@
 <%= CoursePlannerWeb.SharedView.navbar "Course Planner" do %>
-  <%= CoursePlannerWeb.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Summary", @conn, summary_path(@conn, :show) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Calendar", @conn, schedule_path(@conn, :show) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>

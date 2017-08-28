@@ -167,7 +167,7 @@ defmodule CoursePlanner.UserControllerTest do
     |> assign(:current_user, user)
 
     conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
-    assert redirected_to(conn) == dashboard_path(conn, :show)
+    assert redirected_to(conn) == summary_path(conn, :show)
     assert Repo.get_by(User, email: "foo@bar.com")
   end
 
