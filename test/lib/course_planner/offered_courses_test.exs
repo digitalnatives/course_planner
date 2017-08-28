@@ -74,14 +74,14 @@ defmodule CoursePlanner.OfferedCoursesTest do
     end
   end
 
-  describe "get_offered_courses_with_not_filled_class_attendances" do
+  describe "get_offered_courses_with_pending_attendances" do
     test "when there is no offered_course" do
-      assert [] == OfferedCourses.get_offered_courses_with_not_filled_class_attendances()
+      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
     end
 
     test "when there is no class for an offered_course" do
       insert(:offered_course)
-      assert [] == OfferedCourses.get_offered_courses_with_not_filled_class_attendances()
+      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
     end
 
     test "when there is no attendance for class" do
@@ -91,7 +91,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
       requested_current_date =  Timex.shift(Timex.now(), days: 2)
-      assert [] == OfferedCourses.get_offered_courses_with_not_filled_class_attendances(requested_current_date)
+      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
     end
 
     test "when the class is in future" do
@@ -103,7 +103,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       end)
       insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
-      assert [] == OfferedCourses.get_offered_courses_with_not_filled_class_attendances()
+      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
     end
 
     test "when all attendances of the class are filled for an offered_course" do
@@ -116,21 +116,21 @@ defmodule CoursePlanner.OfferedCoursesTest do
      insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
-     assert [] == OfferedCourses.get_offered_courses_with_not_filled_class_attendances(requested_current_date)
+     assert [] == OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
     end
 
     test "when there is missing attendances for one class of an offered_course" do
      students = insert_list(3, :student)
      teacher = insert(:teacher)
-     class = insert(:class, date: Timex.now())
+     class = insert(:class, date: Timex.shift(Timex.now(), days: -2))
      Enum.each(students, fn(student) ->
        insert(:attendance, student: student, class: class, attendance_type: "Not filled")
      end)
      offered_course =
        insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
-     requested_current_date =  Timex.shift(Timex.now(), days: 2)
-     [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_not_filled_class_attendances(requested_current_date)
+     requested_current_date =  Timex.now()
+     [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
      assert offered_course.id == not_filled_offered_course.id
     end
 
@@ -155,7 +155,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
        insert(:offered_course, classes: [class1, class2, class3], students: students, teachers: [teacher])
 
       requested_current_date =  Timex.shift(Timex.now(), days: 2)
-      [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_not_filled_class_attendances(requested_current_date)
+      [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
 
       not_filled_classes =
         not_filled_offered_course.classes
@@ -194,7 +194,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
      not_filled_offered_courses =
-       OfferedCourses.get_offered_courses_with_not_filled_class_attendances(requested_current_date)
+       OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
        |> Enum.map(&(&1.id))
        |> Enum.sort(&(&1 < &2))
      expected_result =
