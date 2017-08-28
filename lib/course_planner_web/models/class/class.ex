@@ -8,9 +8,9 @@ defmodule CoursePlanner.Class do
   alias Ecto.{Time, Date, Changeset}
 
   schema "classes" do
-    field :date, Date
-    field :starting_at, Time
-    field :finishes_at, Time
+    field :date, :date
+    field :starting_at, :time
+    field :finishes_at, :time
     field :classroom, :string
     belongs_to :offered_course, OfferedCourse
     has_many :attendances, Attendance, on_delete: :delete_all

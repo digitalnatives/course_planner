@@ -56,6 +56,8 @@ defmodule CoursePlanner.Mixfile do
      {:ex_machina, "~> 2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
+     # {:timex_ecto, git: "https://github.com/bitwalker/timex_ecto.git", tag: "3.2.0"},
+     {:ecto, "~> 2.2", override: true},
    ]
   end
 
