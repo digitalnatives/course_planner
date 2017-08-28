@@ -102,7 +102,7 @@ CoursePlanner.Repo.delete_all CoursePlanner.User
 |> CoursePlanner.SystemVariable.changeset(
     %{
       key: "PROGRAM_LOGO_URL",
-      value: "http://www.sample.com/logo.jpg",
+      value: "",
       type: "url",
       editable: true,
       visible: true,

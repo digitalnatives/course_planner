@@ -1,6 +1,9 @@
 defmodule CoursePlannerWeb.SharedView do
   @moduledoc false
   use CoursePlannerWeb, :view
+
+  alias CoursePlanner.Settings
+
   # helpers
 
   def path_exact_match(conn, path) do
@@ -257,7 +260,12 @@ defmodule CoursePlannerWeb.SharedView do
   # navbar
 
   def navbar(title, [do: children]) do
-    render "navbar.html", title: title, children: children
+    defaultURI = URI.parse("/images/logo.svg")
+    logoURI = Settings.get_value("PROGRAM_LOGO_URL", defaultURI)
+    logo = URI.to_string(logoURI)
+
+    render "navbar.html", title: title, children: children,
+                                        logo: logo
   end
 
   def navbar_separator do

@@ -31,8 +31,17 @@
   @import "./layout.scss";
   @import "./pages/login.scss";
 
+  .nav-logo-wrapper {
+    margin: 40px 40px 20px 40px;
+    width: calc(100% - 80px);
+  }
+
   .nav-logo {
-    margin: 20px 40px;
+    width: 100%;
+    padding-bottom: 100%;
+    background-position: center center;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 
   .nav-separator {
