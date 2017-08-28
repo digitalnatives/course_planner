@@ -51,14 +51,14 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   @tag user_role: :coordinator
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 200) =~ "Offered courses"
+    assert html_response(conn, 200) =~ "Courses"
   end
 
   @tag user_role: :coordinator
   test "renders form for new resources", %{conn: conn} do
     insert_list(3, :student)
     conn = get conn, offered_course_path(conn, :new)
-    assert html_response(conn, 200) =~ "New offered course"
+    assert html_response(conn, 200) =~ "New course"
   end
 
   @tag user_role: :coordinator
@@ -72,7 +72,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   @tag user_role: :coordinator
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
     conn = post conn, offered_course_path(conn, :create), offered_course: invalid_attrs()
-    assert html_response(conn, 200) =~ "New offered course"
+    assert html_response(conn, 200) =~ "New course"
   end
 
   @tag user_role: :coordinator
@@ -93,7 +93,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "renders form for editing chosen resource", %{conn: conn} do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 200) =~ "Edit offered course"
+    assert html_response(conn, 200) =~ "Edit course"
   end
 
   @tag user_role: :coordinator
@@ -151,7 +151,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
     conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: invalid_attrs()
-    assert html_response(conn, 200) =~ "Edit offered course"
+    assert html_response(conn, 200) =~ "Edit course"
   end
 
   @tag user_role: :coordinator
@@ -183,21 +183,21 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "does not create resource and renders errors when data number_of_sessions is negative", %{conn: conn} do
     attrs = valid_attrs()
     conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: -1}
-    assert html_response(conn, 200) =~ "New offered course"
+    assert html_response(conn, 200) =~ "New course"
   end
 
   @tag user_role: :coordinator
   test "does not create resource and renders errors when data number_of_sessions is zero", %{conn: conn} do
     attrs = valid_attrs()
     conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: 0}
-    assert html_response(conn, 200) =~ "New offered course"
+    assert html_response(conn, 200) =~ "New course"
   end
 
   @tag user_role: :coordinator
   test "does not create resource and renders errors when data number_of_sessions is too big", %{conn: conn} do
     attrs = valid_attrs()
     conn = post conn, offered_course_path(conn, :create), offered_course: %{attrs | number_of_sessions: 100_000_000}
-    assert html_response(conn, 200) =~ "New offered course"
+    assert html_response(conn, 200) =~ "New course"
   end
 
   @tag user_role: :teacher
@@ -211,7 +211,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   test "teacher can edit offered course", %{conn: conn} do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 200) =~ "Edit offered course"
+    assert html_response(conn, 200) =~ "Edit course"
   end
 
   @tag user_role: :teacher

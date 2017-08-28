@@ -58,7 +58,7 @@
                 <%= link "Delete", to: term_path(@conn, :delete, term), method: :delete,
                 data: [confirm: """
                   Are you sure?
-                  All attached offered courses, classes and attendances will be removed
+                  All attached courses, classes and attendances will be removed
                   """] %>
               </li>
               <li class="mdl-menu__item">

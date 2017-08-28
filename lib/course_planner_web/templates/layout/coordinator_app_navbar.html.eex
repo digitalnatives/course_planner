@@ -11,7 +11,7 @@
   <%= CoursePlannerWeb.SharedView.navbar_item "Course types", @conn, course_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Terms", @conn, term_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
-  <%= CoursePlannerWeb.SharedView.navbar_item "Offered Courses", @conn, offered_course_path(@conn, :index) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Courses", @conn, offered_course_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>

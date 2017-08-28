@@ -51,7 +51,7 @@
                 <%= link "Delete", to: course_path(@conn, :delete, course), method: :delete,
                 data: [confirm: """
                 Are you sure?
-                All offered courses and their attached data in all terms will be removed.
+                All courses and their attached data in all terms will be removed.
                 """] %>
               </li>
             </ul>
