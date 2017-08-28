@@ -23,6 +23,9 @@ defmodule CoursePlanner.SettingControllerTest do
     end
 
     test "renders form for editing system setting for coordinator", %{conn: conn} do
+      insert(:system_variable, type: "text", key: "text_type_system_setting", value: "")
+      insert(:system_variable, type: "boolean", key: "boolean_type_system_setting", value: "false")
+
       conn = get conn, setting_path(conn, :edit, setting_type: "system")
       assert html_response(conn, 200) =~ "Edit system setting"
     end

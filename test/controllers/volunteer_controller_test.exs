@@ -45,6 +45,11 @@ defmodule CoursePlanner.VolunteerControllerTest do
     assert Repo.get_by(User, email: "foo@bar.com")
   end
 
+  test "does not updates if the resource does not exist", %{conn: conn} do
+    conn = put conn, volunteer_path(conn, :update, -1), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 404)
+  end
+
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     volunteer = insert(:volunteer, %{name: "Foo", family_name: "Bar"})
     conn = put conn, volunteer_path(conn, :update, volunteer), %{"user" => %{"email" => "not email"}}
@@ -57,6 +62,13 @@ defmodule CoursePlanner.VolunteerControllerTest do
     assert redirected_to(conn) == volunteer_path(conn, :index)
     refute Repo.get(User, volunteer.id)
   end
+
+  test "does not delete chosen resource when does not exist", %{conn: conn} do
+      conn = delete conn, volunteer_path(conn, :delete, "-1")
+      assert redirected_to(conn) == volunteer_path(conn, :index)
+      conn = get conn, volunteer_path(conn, :index)
+      assert html_response(conn, 200) =~ "Volunteer was not found." 
+    end
 
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, volunteer_path(conn, :new)
@@ -142,6 +154,18 @@ defmodule CoursePlanner.VolunteerControllerTest do
 
     conn = get volunteer_conn, volunteer_path(volunteer_conn, :new)
     assert html_response(conn, 403)
+  end
+
+  test "create volunteer for coordinator user", %{conn: conn} do
+    conn = post conn, volunteer_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == volunteer_path(conn, :index)
+    conn = get conn, volunteer_path(conn, :index)
+    assert html_response(conn, 200)
+  end
+
+  test "does not create volunteer for coordinator user when data is wrong", %{conn: conn} do
+    conn = post conn, volunteer_path(conn, :create), %{"user" => %{"email" => ""}}
+    assert html_response(conn, 200) =~ "Something went wrong."
   end
 
   test "does not create volunteer for non coordinator user", %{conn: _conn} do

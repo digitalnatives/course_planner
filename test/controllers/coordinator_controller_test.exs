@@ -39,6 +39,11 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
+  test "does not updates if the resource does not exist", %{conn: conn} do
+    conn = put conn, coordinator_path(conn, :update, -1), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 404)
+  end
+
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
     coordinator = insert(:coordinator, %{})
     conn = put conn, coordinator_path(conn, :update, coordinator), %{"user" => %{"email" => "foo@bar.com"}}
@@ -57,6 +62,13 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     conn = delete conn, coordinator_path(conn, :delete, coordinator)
     assert redirected_to(conn) == coordinator_path(conn, :index)
     refute Repo.get(User, coordinator.id)
+  end
+
+  test "does not delete chosen resource when does not exist", %{conn: conn} do
+    conn = delete conn, coordinator_path(conn, :delete, "-1")
+    assert redirected_to(conn) == coordinator_path(conn, :index)
+    conn = get conn, coordinator_path(conn, :index)
+    assert html_response(conn, 200) =~ "Coordinator was not found."
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -143,6 +155,18 @@ defmodule CoursePlanner.CoordinatorControllerTest do
 
     conn = get volunteer_conn, coordinator_path(volunteer_conn, :new)
     assert html_response(conn, 403)
+  end
+
+  test "does not create coordinator for coordinator user when data is invalid", %{conn: conn} do
+    conn = post conn, coordinator_path(conn, :create), %{"user" => %{"email" => ""}}
+    assert html_response(conn, 200) =~ "Something went wrong."
+  end
+
+  test "create coordinator for coordinator user", %{conn: conn} do
+    conn = post conn, coordinator_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == coordinator_path(conn, :index)
+    conn = get conn, coordinator_path(conn, :index)
+    assert html_response(conn, 200)
   end
 
   test "does not create coordinator for non coordinator user", %{conn: _conn} do

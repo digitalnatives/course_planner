@@ -20,6 +20,35 @@ defmodule CoursePlanner.StudentControllerTest do
     assert html_response(conn, 200) =~ "Students"
   end
 
+  test "does not create student for coordinator user when data is invalid", %{conn: conn} do
+    conn = post conn, student_path(conn, :create), %{"user" => %{"email" => ""}}
+    assert html_response(conn, 200) =~ "Something went wrong."
+  end
+
+  test "create student for coordinator user", %{conn: conn} do
+    conn = post conn, student_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
+    assert redirected_to(conn) == student_path(conn, :index)
+    conn = get conn, student_path(conn, :index)
+    assert html_response(conn, 200)
+  end
+
+  test "does not create student for non coordinator user", %{conn: _conn} do
+    student_conn   = login_as(:student)
+    teacher_conn   = login_as(:teacher)
+    volunteer_conn = login_as(:volunteer)
+
+    student = insert(:student)
+
+    conn = post student_conn, student_path(student_conn, :create), %{"user" => student}
+    assert html_response(conn, 403)
+
+    conn = post teacher_conn, student_path(teacher_conn, :create), %{"user" => student}
+    assert html_response(conn, 403)
+
+    conn = post volunteer_conn, student_path(volunteer_conn, :create), %{"user" => student}
+    assert html_response(conn, 403)
+  end
+
   test "shows chosen resource", %{conn: conn} do
     student = insert(:student)
     conn = get conn, student_path(conn, :show, student)
@@ -45,6 +74,11 @@ defmodule CoursePlanner.StudentControllerTest do
     assert Repo.get_by(User, email: "foo@bar.com")
   end
 
+  test "does not updates if the resource does not exist", %{conn: conn} do
+    conn = put conn, student_path(conn, :update, -1), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 404)
+  end
+
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     student = insert(:student, %{name: "Foo", family_name: "Bar"})
     conn = put conn, student_path(conn, :update, student), %{"user" => %{"email" => "not email"}}
@@ -56,6 +90,13 @@ defmodule CoursePlanner.StudentControllerTest do
     conn = delete conn, student_path(conn, :delete, student)
     assert redirected_to(conn) == student_path(conn, :index)
     refute Repo.get(User, student.id)
+  end
+
+  test "does not delete chosen resource when does not exist", %{conn: conn} do
+    conn = delete conn, student_path(conn, :delete, "-1")
+    assert redirected_to(conn) == student_path(conn, :index)
+    conn = get conn, student_path(conn, :index)
+    assert html_response(conn, 200) =~ "Student was not found."
   end
 
   test "renders form for new resources", %{conn: conn} do

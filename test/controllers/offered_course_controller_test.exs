@@ -56,6 +56,7 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
 
   @tag user_role: :coordinator
   test "renders form for new resources", %{conn: conn} do
+    insert_list(3, :student)
     conn = get conn, offered_course_path(conn, :new)
     assert html_response(conn, 200) =~ "New offered course"
   end
