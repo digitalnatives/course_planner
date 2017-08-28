@@ -74,14 +74,14 @@ defmodule CoursePlanner.OfferedCoursesTest do
     end
   end
 
-  describe "get_offered_courses_with_pending_attendances" do
+  describe "with_pending_attendances" do
     test "when there is no offered_course" do
-      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
+      assert [] == OfferedCourses.with_pending_attendances()
     end
 
     test "when there is no class for an offered_course" do
       insert(:offered_course)
-      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
+      assert [] == OfferedCourses.with_pending_attendances()
     end
 
     test "when there is no attendance for class" do
@@ -91,7 +91,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
       requested_current_date =  Timex.shift(Timex.now(), days: 2)
-      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
+      assert [] == OfferedCourses.with_pending_attendances(requested_current_date)
     end
 
     test "when the class is in future" do
@@ -103,7 +103,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       end)
       insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
-      assert [] == OfferedCourses.get_offered_courses_with_pending_attendances()
+      assert [] == OfferedCourses.with_pending_attendances()
     end
 
     test "when all attendances of the class are filled for an offered_course" do
@@ -116,7 +116,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
      insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
-     assert [] == OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
+     assert [] == OfferedCourses.with_pending_attendances(requested_current_date)
     end
 
     test "when there is missing attendances for one class of an offered_course" do
@@ -130,7 +130,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
        insert(:offered_course, classes: [class], students: students, teachers: [teacher])
 
      requested_current_date =  Timex.now()
-     [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
+     [not_filled_offered_course] = OfferedCourses.with_pending_attendances(requested_current_date)
      assert offered_course.id == not_filled_offered_course.id
     end
 
@@ -154,7 +154,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       insert(:offered_course, classes: [class1, class2, class3], students: students, teachers: [teacher])
 
       requested_current_date =  Timex.shift(Timex.now(), days: 2)
-      [not_filled_offered_course] = OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
+      [not_filled_offered_course] = OfferedCourses.with_pending_attendances(requested_current_date)
 
       not_filled_classes = Enum.map(not_filled_offered_course.classes, &(&1.id))
 
@@ -187,7 +187,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
      requested_current_date =  Timex.shift(Timex.now(), days: 2)
      not_filled_offered_courses =
-       OfferedCourses.get_offered_courses_with_pending_attendances(requested_current_date)
+       OfferedCourses.with_pending_attendances(requested_current_date)
        |> Enum.map(&(&1.id))
        |> Enum.sort(&(&1 < &2))
      expected_result =
