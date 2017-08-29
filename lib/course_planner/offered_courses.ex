@@ -66,4 +66,12 @@ defmodule CoursePlanner.OfferedCourses do
     end)
     |> Enum.uniq_by(fn %{id: id} -> id end)
   end
+
+  def with_pending_attendances(date \\ Timex.now()) do
+   Repo.all(from oc in CoursePlanner.OfferedCourse,
+     join: c in assoc(oc,  :classes),
+     join: a in assoc(c,  :attendances),
+     preload: [:teachers, :course, :term, classes: {c, attendances: a}],
+     where: c.date < ^date and a.attendance_type == "Not filled")
+  end
 end
