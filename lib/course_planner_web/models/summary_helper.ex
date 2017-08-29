@@ -77,7 +77,12 @@ defmodule CoursePlanner.SummaryHelper do
 
          Timex.compare(class_starting_at_datetime, time) >= 0
        end)
-       |> Enum.sort(&(&1.date <= &2.date and &1.starting_at <= &2.starting_at))
+       |> Enum.sort(fn(class1, class2) ->
+          class1_datetime = DateTime.from_date_and_time(class1.date, class1.starting_at)
+          class2_datetime = DateTime.from_date_and_time(class2.date, class2.starting_at)
+          DateTime.compare(class1_datetime, class2_datetime) != :gt
+
+          end)
        |> List.first
   end
   def get_next_class(_offered_courses, _time), do: nil
