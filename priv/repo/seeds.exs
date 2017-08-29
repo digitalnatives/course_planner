@@ -2,7 +2,7 @@ alias CoursePlanner.{User, Repo, SystemVariable}
 import Ecto.Query
 
 has_coordinators? = Repo.one(from u in User, where: u.role == "Coordinator", select: 1, limit: 1)
-if !has_coordinators? do
+unless has_coordinators? do
   %User{}
   |> User.changeset(
       %{
@@ -17,7 +17,7 @@ if !has_coordinators? do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
+unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -31,7 +31,7 @@ if !Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
+unless Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -45,7 +45,7 @@ if !Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -59,7 +59,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -73,7 +73,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -87,7 +87,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -101,7 +101,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -115,7 +115,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -129,7 +129,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -143,7 +143,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
+unless Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -157,7 +157,7 @@ if !Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
+unless Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
@@ -171,7 +171,7 @@ if !Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
   |> Repo.insert!
 end
 
-if !Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
+unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
   %SystemVariable{}
   |> SystemVariable.changeset(
       %{
