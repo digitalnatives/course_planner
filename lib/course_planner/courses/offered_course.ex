@@ -4,7 +4,7 @@ defmodule CoursePlanner.OfferedCourse do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Course, Terms.Term, Accounts.User, Class}
+  alias CoursePlanner.{Course, Terms.Term, Accounts.User, Classes.Class}
 
   schema "offered_courses" do
     belongs_to :term, Term

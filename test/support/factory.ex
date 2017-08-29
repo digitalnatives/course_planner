@@ -3,7 +3,7 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{Accounts.User, Course, OfferedCourse, Class, Attendances.Attendance,
+alias CoursePlanner.{Accounts.User, Course, OfferedCourse, Classes.Class, Attendances.Attendance,
                      Tasks.Task, SystemVariable, Notification}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo

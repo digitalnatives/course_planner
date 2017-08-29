@@ -1,7 +1,7 @@
 defmodule CoursePlanner.ClassControllerTest do
   use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.{Class, Repo, Attendances.Attendance}
+  alias CoursePlanner.{Classes.Class, Repo, Attendances.Attendance}
   import CoursePlanner.Factory
 
   @valid_attrs %{offered_course_id: nil, date: Timex.now(), starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}

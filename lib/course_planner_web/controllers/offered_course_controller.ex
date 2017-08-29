@@ -4,7 +4,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
   alias CoursePlanner.{
     Attendances,
-    ClassHelper,
+    Classes,
     OfferedCourse,
     OfferedCourses,
     Accounts.Students,
@@ -59,8 +59,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     {past_classes, next_classes} =
       offered_course.classes
-      |> ClassHelper.sort_by_starting_time()
-      |> ClassHelper.split_past_and_next()
+      |> Classes.sort_by_starting_time()
+      |> Classes.split_past_and_next()
 
     render(conn, "show.html", offered_course: offered_course,
                               next_classes: next_classes,
@@ -77,8 +77,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     {past_classes, next_classes} =
       id
-      |> ClassHelper.classes_with_attendances(user_id)
-      |> ClassHelper.split_past_and_next()
+      |> Classes.classes_with_attendances(user_id)
+      |> Classes.split_past_and_next()
 
     render(conn, "show.html", offered_course: offered_course,
                               next_classes: next_classes,

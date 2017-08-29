@@ -9,7 +9,7 @@ defmodule CoursePlanner.Attendances.Attendance do
     field :attendance_type, :string
     field :comment, :string
     belongs_to :student, CoursePlanner.Accounts.User
-    belongs_to :class, CoursePlanner.Class
+    belongs_to :class, CoursePlanner.Classes.Class
 
     timestamps()
   end

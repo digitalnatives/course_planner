@@ -1,10 +1,10 @@
-defmodule CoursePlanner.Class do
+defmodule CoursePlanner.Classes.Class do
   @moduledoc """
   This module holds the model for the class table
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, ClassHelper}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, Classes}
   alias Ecto.{Time, Date, Changeset}
 
   schema "classes" do
@@ -30,7 +30,7 @@ defmodule CoursePlanner.Class do
     |> cast(params, cast_params)
     |> validate_required([:offered_course_id, :date, :starting_at, :finishes_at])
     |> validate_date()
-    |> ClassHelper.validate_for_holiday()
+    |> Classes.validate_for_holiday()
   end
 
   def changeset(struct, params, :create) do

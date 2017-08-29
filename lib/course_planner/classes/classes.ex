@@ -1,10 +1,10 @@
-defmodule CoursePlanner.ClassHelper do
+defmodule CoursePlanner.Classes do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, Class, Notifier, Notifications}
+  alias CoursePlanner.{Repo, Classes.Class, Notifier, Notifications}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 

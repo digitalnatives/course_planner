@@ -4,7 +4,7 @@ defmodule CoursePlanner.Attendances do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, ClassHelper}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, Classes}
   alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
@@ -106,7 +106,7 @@ defmodule CoursePlanner.Attendances do
     students = updated_students -- offered_course_students
 
     offered_course_id
-      |> ClassHelper.get_offered_course_classes()
+      |> Classes.get_offered_course_classes()
       |> Enum.map(fn(class) ->
         create_class_attendance_records(class.id, students)
       end)
@@ -122,7 +122,7 @@ defmodule CoursePlanner.Attendances do
 
     class_ids =
       offered_course_id
-        |> ClassHelper.get_offered_course_classes()
+        |> Classes.get_offered_course_classes()
         |> Enum.map(fn(class) ->
           class.id
         end)

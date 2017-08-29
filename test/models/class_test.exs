@@ -2,7 +2,7 @@ defmodule CoursePlanner.ClassTest do
   use CoursePlannerWeb.ModelCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.{Class, Repo}
+  alias CoursePlanner.{Classes.Class, Repo}
 
   @valid_attrs %{offered_course_id: nil, date: Timex.now(), finishes_at: %{hour: 15, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0}}
   @invalid_attrs %{}
