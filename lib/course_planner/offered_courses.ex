@@ -1,8 +1,10 @@
 defmodule CoursePlanner.OfferedCourses do
   @moduledoc false
 
-  alias CoursePlanner.{OfferedCourse, Repo}
+  alias CoursePlanner.{OfferedCourse, Repo, AttendanceHelper, Notifier, Notifications}
   import Ecto.Query
+
+  @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def find_by_term_id(term_id) do
     term_id
@@ -73,5 +75,30 @@ defmodule CoursePlanner.OfferedCourses do
      join: a in assoc(c,  :attendances),
      preload: [:teachers, :course, :term, classes: {c, attendances: a}],
      where: c.date < ^date and a.attendance_type == "Not filled")
+  end
+
+  def create_pending_attendance_notification_map() do
+      with_pending_attendances()
+      |> Enum.flat_map(fn(offered_course) ->
+        offered_course.teachers
+        |> Enum.map(fn(teacher) ->
+           %{
+              user: teacher,
+              type: :attendance_missing,
+              path: AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+            }
+        end)
+      end)
+  end
+
+  def notify_missing_attendances() do
+    create_pending_attendance_notification_map()
+    |> Enum.each(fn(email_data) ->
+         Notifications.new()
+         |> Notifications.type(email_data.type)
+         |> Notifications.resource_path(email_data.path)
+         |> Notifications.to(email_data.user)
+         |> @notifier.notify_later()
+       end)
   end
 end

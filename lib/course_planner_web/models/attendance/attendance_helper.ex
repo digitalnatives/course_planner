@@ -2,7 +2,7 @@ defmodule CoursePlanner.AttendanceHelper do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :model
+  use CoursePlannerWeb, :controller
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
   alias Ecto.{Multi, DateTime}
@@ -133,4 +133,8 @@ defmodule CoursePlanner.AttendanceHelper do
     Repo.delete_all(delete_query)
   end
 
+  def get_offered_course_fill_attendance_path(offered_course_id) do
+    Phoenix.ConnTest.build_conn()
+    |> attendance_fill_course_path(:fill_course, offered_course_id)
+  end
 end

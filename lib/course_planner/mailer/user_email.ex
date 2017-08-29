@@ -46,6 +46,11 @@ defmodule CoursePlanner.Mailer.UserEmail do
         subject: "A class you subscribe to was deleted",
         template: "class_deleted.html"
       },
+    "attendance_missing" =>
+      %{
+        subject: "One or more attendance is not filled",
+        template: "attendance_missing.html"
+      },
   }
 
   def build_email(%{user: %{name: _, email: nil}}), do: {:error, :invalid_recipient}
