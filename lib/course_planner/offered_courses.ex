@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourses do
   @moduledoc false
 
-  alias CoursePlanner.{OfferedCourse, Repo, AttendanceHelper, Notifier, Notifications}
+  alias CoursePlanner.{OfferedCourse, Repo, AttendanceHelper, Notifications}
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
@@ -94,10 +94,8 @@ defmodule CoursePlanner.OfferedCourses do
   def notify_missing_attendances do
     create_pending_attendance_notification_map()
     |> Enum.each(fn(email_data) ->
-         Notifications.new()
-         |> Notifications.type(email_data.type)
-         |> Notifications.resource_path(email_data.path)
-         |> Notifications.to(email_data.user)
+         email_data
+         |> Notifications.create_simple_notification()
          |> @notifier.notify_later()
        end)
   end

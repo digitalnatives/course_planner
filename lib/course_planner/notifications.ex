@@ -74,4 +74,11 @@ defmodule CoursePlanner.Notifications do
       },
       :update)
   end
+
+  def create_simple_notification(%{type: type, user: user, path: path}) do
+    new()
+    |> type(type)
+    |> resource_path(path)
+    |> to(user)
+  end
 end
