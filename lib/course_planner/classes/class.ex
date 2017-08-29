@@ -4,7 +4,7 @@ defmodule CoursePlanner.Class do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, ClassHelper}
   alias Ecto.{Time, Date, Changeset}
 
   schema "classes" do

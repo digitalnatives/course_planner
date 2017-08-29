@@ -1,7 +1,7 @@
 defmodule CoursePlanner.AttendanceTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.{Attendance}
+  alias CoursePlanner.{Attendances.Attendance}
   import CoursePlanner.Factory
 
   @valid_class_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 15, min: 0, sec: 0}}

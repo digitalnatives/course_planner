@@ -3,7 +3,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.{
-    AttendanceHelper,
+    Attendances,
     ClassHelper,
     OfferedCourse,
     OfferedCourses,
@@ -112,9 +112,9 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     case Repo.update(changeset) do
       {:ok, updated_offered_course} ->
-        AttendanceHelper.remove_students_attendances(offered_course.id,
+        Attendances.remove_students_attendances(offered_course.id,
                                                      offered_course.students, students)
-        AttendanceHelper.create_students_attendances(offered_course.id,
+        Attendances.create_students_attendances(offered_course.id,
                                                      offered_course.students, students)
 
         conn

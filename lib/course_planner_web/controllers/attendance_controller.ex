@@ -2,32 +2,32 @@ defmodule CoursePlannerWeb.AttendanceController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{AttendanceHelper, Attendance, OfferedCourse}
+  alias CoursePlanner.{Attendances, Attendances.Attendance, OfferedCourse}
 
   import Canary.Plugs
   plug :authorize_controller
 
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
-    offered_courses = AttendanceHelper.get_all_offered_courses()
+    offered_courses = Attendances.get_all_offered_courses()
 
     render(conn, "index_coordinator.html", offered_courses: offered_courses)
   end
 
   def index(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn, _params) do
-    offered_courses = AttendanceHelper.get_all_teacher_offered_courses(id)
+    offered_courses = Attendances.get_all_teacher_offered_courses(id)
 
     render(conn, "index_teacher.html", offered_courses: offered_courses)
   end
 
   def index(%{assigns: %{current_user: %{id: id, role: "Student"}}} = conn, _params) do
-    offered_courses = AttendanceHelper.get_all_student_offered_courses(id)
+    offered_courses = Attendances.get_all_student_offered_courses(id)
 
     render(conn, "index_student.html", offered_courses: offered_courses)
   end
 
   def show(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn,
            %{"id" => offered_course_id}) do
-    case AttendanceHelper.get_course_attendances(offered_course_id) do
+    case Attendances.get_course_attendances(offered_course_id) do
       nil ->
         conn
         |> put_status(404)
@@ -39,7 +39,7 @@ defmodule CoursePlannerWeb.AttendanceController do
 
   def show(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn,
            %{"id" => offered_course_id}) do
-    case AttendanceHelper.get_teacher_course_attendances(offered_course_id, id) do
+    case Attendances.get_teacher_course_attendances(offered_course_id, id) do
       nil ->
         conn
         |> put_status(404)
@@ -56,7 +56,7 @@ defmodule CoursePlannerWeb.AttendanceController do
     |> Repo.get(offered_course_id)
     |> Repo.preload([:term, :course, :teachers])
 
-    case AttendanceHelper.get_student_attendances(offered_course_id, id) do
+    case Attendances.get_student_attendances(offered_course_id, id) do
      [] ->
        conn
        |> put_status(404)
@@ -69,7 +69,7 @@ defmodule CoursePlannerWeb.AttendanceController do
   def fill_course(%{assigns: %{current_user: %{role: role}}} = conn, %{"attendance_id" => id})
     when role in ["Coordinator", "Teacher"] do
 
-    offered_course = AttendanceHelper.get_course_attendances(id)
+    offered_course = Attendances.get_course_attendances(id)
 
     changeset = OfferedCourse.changeset(offered_course)
 
@@ -95,13 +95,13 @@ defmodule CoursePlannerWeb.AttendanceController do
              Attendance.changeset(attendance, attendance_params)
            end)
 
-      case AttendanceHelper.update_multiple_attendances(attendance_changeset_list) do
+      case Attendances.update_multiple_attendances(attendance_changeset_list) do
         {:ok, _data} ->
           conn
           |> put_flash(:info, "attendances updated successfully.")
           |> redirect(to: attendance_path(conn, :show, offered_course_id))
         {:error, _failed_operation, _failed_value, _changes_so_far} ->
-          offered_course = AttendanceHelper.get_course_attendances(offered_course_id)
+          offered_course = Attendances.get_course_attendances(offered_course_id)
           changeset = OfferedCourse.changeset(offered_course)
           conn
           |> put_flash(:error, "Something went wrong.")

@@ -2,7 +2,7 @@ defmodule CoursePlanner.AttendanceControllerTest do
   use CoursePlannerWeb.ConnCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.{Attendance, Accounts.User}
+  alias CoursePlanner.{Attendances.Attendance, Accounts.User}
 
   @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
 

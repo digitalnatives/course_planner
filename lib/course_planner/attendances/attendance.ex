@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Attendance do
+defmodule CoursePlanner.Attendances.Attendance do
   @moduledoc """
   This module holds the model for the attendance table
   """

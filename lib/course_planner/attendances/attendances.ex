@@ -1,10 +1,10 @@
-defmodule CoursePlanner.AttendanceHelper do
+defmodule CoursePlanner.Attendances do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
+  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, ClassHelper}
   alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
