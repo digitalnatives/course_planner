@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Enum do
+defmodule CoursePlanner.Types.Enum do
   @moduledoc """
   Behaviour to represent Enum with mapping to timestamp
   """
@@ -8,7 +8,7 @@ defmodule CoursePlanner.Enum do
   defmacro __using__(_) do
     quote do
       @behaviour Ecto.Type
-      @behaviour CoursePlanner.Enum
+      @behaviour CoursePlanner.Types.Enum
 
       def cast(value) do
         if Enum.member?(valid_types(), value), do: {:ok, value}, else: :error
