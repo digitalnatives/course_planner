@@ -23,6 +23,7 @@ erl_crash.dump
 # variables.
 /config/prod.secret.exs
 .iex.exs
+/priv/repo/dev_seeds.exs
 
 # Docker
 scripts/docker-compose-up.sh
