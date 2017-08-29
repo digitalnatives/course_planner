@@ -260,9 +260,8 @@ defmodule CoursePlannerWeb.SharedView do
   # navbar
 
   def navbar(title, [do: children]) do
-    defaultURI = URI.parse("/images/logo.svg")
-    logoURI = Settings.get_value("PROGRAM_LOGO_URL", defaultURI)
-    logo = URI.to_string(logoURI)
+    default_uri = URI.parse("/images/logo.svg")
+    logo = "PROGRAM_LOGO_URL" |> Settings.get_value(default_uri) |> URI.to_string()
 
     render "navbar.html", title: title, children: children,
                                         logo: logo
