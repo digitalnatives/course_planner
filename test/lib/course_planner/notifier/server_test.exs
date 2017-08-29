@@ -1,12 +1,12 @@
 defmodule CoursePlanner.Notifier.ServerTest do
   use CoursePlannerWeb.ModelCase
-  doctest CoursePlanner.Notifier.Server
+  doctest CoursePlanner.Notifications.Server
 
   import ExUnit.CaptureLog
   import CoursePlanner.Factory
   import Swoosh.TestAssertions
 
-  alias CoursePlanner.{Notifier.Server, Notifications, Accounts.User}
+  alias CoursePlanner.{Notifications.Server, Notifications, Accounts.User}
 
   test "save notification to send later" do
     user = insert(:user)

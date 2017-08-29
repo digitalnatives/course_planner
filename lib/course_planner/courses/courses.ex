@@ -4,7 +4,7 @@ defmodule CoursePlanner.Courses do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, Courses.Course, Terms, Notifier, Notifications}
+  alias CoursePlanner.{Repo, Courses.Course, Terms, Notifications.Notifier, Notifications}
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 

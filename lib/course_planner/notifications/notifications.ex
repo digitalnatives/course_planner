@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{Accounts.User, Notification, Notifier, Repo, Settings, SystemVariable}
+  alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications.Notifier, Repo, Settings, SystemVariable}
   import Ecto.Query
 
   def new, do: %Notification{}

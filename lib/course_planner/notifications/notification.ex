@@ -1,4 +1,4 @@
-  defmodule CoursePlanner.Notification do
+  defmodule CoursePlanner.Notifications.Notification do
   @moduledoc """
     Schema for persisting email notification to send later
   """

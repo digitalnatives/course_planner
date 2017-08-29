@@ -1,10 +1,10 @@
 defmodule CoursePlanner.NotificationTest do
   use CoursePlannerWeb.ModelCase
-  doctest CoursePlanner.Notification
+  doctest CoursePlanner.Notifications.Notification
 
   import CoursePlanner.Factory
 
-  alias CoursePlanner.Notification
+  alias CoursePlanner.Notifications.Notification
 
   @valid_attrs %{type: "user_modified", resource_path: "/"}
   @invalid_attrs %{type: "invalid_type"}

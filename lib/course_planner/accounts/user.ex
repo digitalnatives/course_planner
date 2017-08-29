@@ -3,6 +3,7 @@ defmodule CoursePlanner.Accounts.User do
   use CoursePlannerWeb, :model
   use Coherence.Schema
   alias CoursePlanner.Types.{UserRole, ParticipationType}
+  alias CoursePlanner.Notifications.Notification
 
   @target_params [
       :name, :family_name, :nickname,
@@ -24,7 +25,7 @@ defmodule CoursePlanner.Accounts.User do
     field :participation_type, ParticipationType
     field :notified_at, :naive_datetime
     field :notification_period_days, :integer
-    has_many :notifications, CoursePlanner.Notification, on_delete: :delete_all
+    has_many :notifications, Notification, on_delete: :delete_all
 
     coherence_schema()
     timestamps()

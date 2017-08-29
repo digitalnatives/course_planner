@@ -2,12 +2,12 @@ defmodule CoursePlanner.Accounts.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, Accounts.User, Notification, Notifications}
+  alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications}
   alias Ecto.{DateTime, Changeset, Multi}
 
   import Ecto.Query
 
-  @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifier)
+  @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
 
   def all do
     Repo.all(User)

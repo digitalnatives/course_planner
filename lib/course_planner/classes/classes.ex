@@ -4,7 +4,7 @@ defmodule CoursePlanner.Classes do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, Classes.Class, Notifier, Notifications}
+  alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 

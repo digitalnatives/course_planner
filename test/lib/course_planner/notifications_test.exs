@@ -4,7 +4,7 @@ defmodule CoursePlanner.NotificationsTest do
 
   import CoursePlanner.Factory
 
-  alias CoursePlanner.{Accounts.User, Notification, Notifications, Settings}
+  alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications, Settings}
 
   test "send notification when it has past at least one day" do
     now = ~N[2017-08-15 10:00:00]

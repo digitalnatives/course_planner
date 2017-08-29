@@ -1,9 +1,9 @@
-defmodule CoursePlanner.Notifier do
+defmodule CoursePlanner.Notifications.Notifier do
   @moduledoc """
   Module responsible for notifying users through e-mail with changes
   """
   use GenServer
-  alias CoursePlanner.{Notification, Accounts.User, Notifier.Server}
+  alias CoursePlanner.{Notifications.Notification, Accounts.User, Notifications.Server}
   require Logger
 
   @spec start_link :: GenServer.start_link
