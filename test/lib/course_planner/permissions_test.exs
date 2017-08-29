@@ -4,7 +4,7 @@ defmodule CoursePlanner.PermissionsTest do
 
   alias CoursePlanner.{
     Terms.Term,
-    User
+    Accounts.User
   }
   alias CoursePlannerWeb.TaskController
 

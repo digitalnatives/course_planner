@@ -7,7 +7,7 @@
   schema "notifications" do
     field :type, :string
     field :resource_path, :string, default: "/"
-    belongs_to :user, CoursePlanner.User
+    belongs_to :user, CoursePlanner.Accounts.User
 
     timestamps()
   end

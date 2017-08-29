@@ -6,7 +6,7 @@ defmodule CoursePlanner.Notifier.ServerTest do
   import CoursePlanner.Factory
   import Swoosh.TestAssertions
 
-  alias CoursePlanner.{Notifier.Server, Notifications, User}
+  alias CoursePlanner.{Notifier.Server, Notifications, Accounts.User}
 
   test "save notification to send later" do
     user = insert(:user)

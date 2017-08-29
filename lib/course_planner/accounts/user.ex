@@ -1,4 +1,4 @@
-defmodule CoursePlanner.User do
+defmodule CoursePlanner.Accounts.User do
   @moduledoc false
   use CoursePlannerWeb, :model
   use Coherence.Schema

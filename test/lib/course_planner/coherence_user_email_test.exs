@@ -1,7 +1,7 @@
 defmodule CoursePlanner.CoherenceUserEmailTest do
   use ExUnit.Case
 
-  alias CoursePlanner.User
+  alias CoursePlanner.Accounts.User
   alias CoursePlannerWeb.Coherence.UserEmail
   alias Coherence.Config
 

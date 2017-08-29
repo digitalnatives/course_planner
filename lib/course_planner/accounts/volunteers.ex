@@ -1,8 +1,8 @@
-defmodule CoursePlanner.Volunteers do
+defmodule CoursePlanner.Accounts.Volunteers do
   @moduledoc false
   import Ecto.Query
   alias Ecto.Changeset
-  alias CoursePlanner.{Repo, User, Users, Tasks.Task}
+  alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, Tasks.Task}
 
   @volunteers from u in User, where: u.role == "Volunteer"
 

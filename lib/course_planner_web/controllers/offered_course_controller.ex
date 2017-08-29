@@ -7,8 +7,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     ClassHelper,
     OfferedCourse,
     OfferedCourses,
-    Students,
-    Teachers,
+    Accounts.Students,
+    Accounts.Teachers,
   }
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]

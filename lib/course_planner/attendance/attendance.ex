@@ -8,7 +8,7 @@ defmodule CoursePlanner.Attendance do
   schema "attendances" do
     field :attendance_type, :string
     field :comment, :string
-    belongs_to :student, CoursePlanner.User
+    belongs_to :student, CoursePlanner.Accounts.User
     belongs_to :class, CoursePlanner.Class
 
     timestamps()

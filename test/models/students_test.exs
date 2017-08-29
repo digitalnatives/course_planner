@@ -1,7 +1,7 @@
 defmodule CoursePlanner.StudentsTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.{Course, OfferedCourse, Repo, Students}
+  alias CoursePlanner.{Course, OfferedCourse, Repo, Accounts.Students}
   alias CoursePlanner.Terms.Term
 
   @valid_attrs %{"name" => "some content", "email" => "valid@email"}

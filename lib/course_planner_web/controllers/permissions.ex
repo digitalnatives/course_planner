@@ -1,6 +1,6 @@
-defimpl Canada.Can, for: CoursePlanner.User do
+defimpl Canada.Can, for: CoursePlanner.Accounts.User do
 
-  alias CoursePlanner.User
+  alias CoursePlanner.Accounts.User
   alias CoursePlannerWeb.{
     AttendanceController,
     CalendarController,

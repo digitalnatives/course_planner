@@ -1,8 +1,8 @@
-defmodule CoursePlanner.Users do
+defmodule CoursePlanner.Accounts.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, User, Notification, Notifications}
+  alias CoursePlanner.{Repo, Accounts.User, Notification, Notifications}
   alias Ecto.{DateTime, Changeset, Multi}
 
   import Ecto.Query

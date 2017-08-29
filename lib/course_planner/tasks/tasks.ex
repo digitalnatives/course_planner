@@ -1,6 +1,6 @@
 defmodule CoursePlanner.Tasks do
   @moduledoc false
-  alias CoursePlanner.{Repo, Volunteers, Tasks.Task}
+  alias CoursePlanner.{Repo, Accounts.Volunteers, Tasks.Task}
   import Ecto.Query, except: [update: 2]
 
   def all do

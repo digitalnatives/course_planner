@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifier do
   Module responsible for notifying users through e-mail with changes
   """
   use GenServer
-  alias CoursePlanner.{Notification, User, Notifier.Server}
+  alias CoursePlanner.{Notification, Accounts.User, Notifier.Server}
   require Logger
 
   @spec start_link :: GenServer.start_link

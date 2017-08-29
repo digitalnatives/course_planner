@@ -1,7 +1,7 @@
 defmodule CoursePlanner.UserTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.User
+  alias CoursePlanner.Accounts.User
 
   describe "required fields" do
     test "changeset is invalid without email" do

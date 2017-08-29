@@ -19,7 +19,7 @@ config :course_planner, CoursePlanner.Mailer,
 
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,
-  user_schema: CoursePlanner.User,
+  user_schema: CoursePlanner.Accounts.User,
   repo: CoursePlanner.Repo,
   module: CoursePlanner,
   web_module: CoursePlannerWeb,

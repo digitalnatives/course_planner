@@ -3,7 +3,7 @@ defmodule CoursePlanner.Tasks.Task do
     Defines a task to be accomplished by volunteers or coordinators
   """
   use CoursePlannerWeb, :model
-  alias CoursePlanner.User
+  alias CoursePlanner.Accounts.User
   alias Ecto.Changeset
 
   @cast_params [:name, :start_time, :finish_time, :description, :max_volunteers]
