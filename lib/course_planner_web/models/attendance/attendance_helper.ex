@@ -5,6 +5,7 @@ defmodule CoursePlanner.AttendanceHelper do
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
+  alias CoursePlannerWeb.{Endpoint, Router.Helpers}
   alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
@@ -134,7 +135,6 @@ defmodule CoursePlanner.AttendanceHelper do
   end
 
   def get_offered_course_fill_attendance_path(offered_course_id) do
-    Phoenix.ConnTest.build_conn()
-    |> attendance_fill_course_path(:fill_course, offered_course_id)
+    Helpers.attendance_fill_course_url Endpoint, :fill_course, offered_course_id
   end
 end

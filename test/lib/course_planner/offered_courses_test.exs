@@ -2,7 +2,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
   use CoursePlannerWeb.ModelCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.{OfferedCourses, Notification}
+  alias CoursePlanner.{OfferedCourses, AttendanceHelper, Notification}
 
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do
@@ -260,7 +260,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert notification.user == teacher
       assert notification.type == "attendance_missing"
-      assert notification.resource_path == "/attendances/#{offered_course.id}/fill_course"
+      assert notification.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
     end
 
     test "when there is one offered_course with multiple teacher have missing attendance" do
@@ -284,11 +284,11 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert notification1.user == teacher1
       assert notification1.type == "attendance_missing"
-      assert notification1.resource_path == "/attendances/#{offered_course.id}/fill_course"
+      assert notification1.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
 
       assert notification2.user == teacher2
       assert notification2.type == "attendance_missing"
-      assert notification2.resource_path == "/attendances/#{offered_course.id}/fill_course"
+      assert notification2.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
     end
 
     test "when multiple offered_course with multiple teacher have missing attendance" do
@@ -314,15 +314,15 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert notification1.user == teacher1
       assert notification1.type == "attendance_missing"
-      assert notification1.resource_path == "/attendances/#{offered_course1.id}/fill_course"
+      assert notification1.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course1.id)
 
       assert notification2.user == teacher2
       assert notification2.type == "attendance_missing"
-      assert notification2.resource_path == "/attendances/#{offered_course2.id}/fill_course"
+      assert notification2.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course2.id)
 
       assert notification3.user == teacher3
       assert notification3.type == "attendance_missing"
-      assert notification3.resource_path == "/attendances/#{offered_course2.id}/fill_course"
+      assert notification3.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course2.id)
     end
   end
 
