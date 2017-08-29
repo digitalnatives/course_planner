@@ -4,7 +4,7 @@ defmodule CoursePlanner.Factory do
 """
 alias CoursePlanner.Terms.{Term,Holiday}
 alias CoursePlanner.{Accounts.User, Courses.Course, OfferedCourse, Classes.Class, Attendances.Attendance,
-                     Tasks.Task, SystemVariable, Notifications.Notification}
+                     Tasks.Task, Settings.SystemVariable, Notifications.Notification}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 

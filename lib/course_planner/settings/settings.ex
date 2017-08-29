@@ -4,7 +4,7 @@ defmodule CoursePlanner.Settings do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, SystemVariable}
+  alias CoursePlanner.{Repo, Settings.SystemVariable}
   alias Ecto.Multi
 
   schema "settings_fake_table" do

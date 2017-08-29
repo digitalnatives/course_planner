@@ -1,4 +1,4 @@
-alias CoursePlanner.{User, Repo, SystemVariable}
+alias CoursePlanner.{Accounts.User, Repo, Settings.SystemVariable}
 import Ecto.Query
 
 has_coordinators? = Repo.one(from u in User, where: u.role == "Coordinator", select: 1, limit: 1)

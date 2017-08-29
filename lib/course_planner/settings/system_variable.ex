@@ -1,4 +1,4 @@
-defmodule CoursePlanner.SystemVariable do
+defmodule CoursePlanner.Settings.SystemVariable do
   @moduledoc """
   This module holds the model for one system variable
   """

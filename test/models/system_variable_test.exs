@@ -1,7 +1,7 @@
 defmodule CoursePlanner.SystemVariableTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.SystemVariable
+  alias CoursePlanner.Settings.SystemVariable
 
   @string_valid_attrs %{key: "sample key", value: "sample value", type: "string", visible: true, editable: true, required: true}
   @text_valid_attrs %{key: "sample key", value: "sample value", type: "text", visible: true, editable: true, required: true}
