@@ -16,12 +16,6 @@
           <%= CoursePlannerWeb.SharedView.card do %>
             <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
               <div class="row row--hspace row--vspace middle-xs">
-                <%= if @program_data.logo do %>
-                  <div class="col-xs-3">
-                    <img src="<%= @program_data.logo %>", class="profile-picture">
-                  </div>
-                <% end %>
-
                 <div class="col-xs-9">
                 <%= if @program_data.address do %>
                   <div class="detail">
