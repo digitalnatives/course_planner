@@ -108,7 +108,7 @@ defmodule CoursePlanner.SystemVariable do
   def parse_url(value) do
     uri = URI.parse(value || "")
     case uri do
-      %URI{host: nil, scheme: nil, path: nil} -> {:ok, ""}
+      %URI{host: nil, scheme: nil, path: nil} -> {:ok, nil}
       %URI{scheme: nil} -> {:error, "Url should start with http:// or https://"}
       %URI{host: nil} -> {:error, "The given URL is not valid"}
       uri -> {:ok, uri}
