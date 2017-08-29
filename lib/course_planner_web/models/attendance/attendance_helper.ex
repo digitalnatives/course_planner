@@ -2,7 +2,7 @@ defmodule CoursePlanner.AttendanceHelper do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :controller
+  use CoursePlannerWeb, :model
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendance, ClassHelper}
   alias CoursePlannerWeb.{Endpoint, Router.Helpers}
