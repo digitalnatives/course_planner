@@ -74,6 +74,130 @@ defmodule CoursePlanner.OfferedCoursesTest do
     end
   end
 
+  describe "with_pending_attendances" do
+    test "when there is no offered_course" do
+      assert [] == OfferedCourses.with_pending_attendances()
+    end
+
+    test "when there is no class for an offered_course" do
+      insert(:offered_course)
+      assert [] == OfferedCourses.with_pending_attendances()
+    end
+
+    test "when there is no attendance for class" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      class = insert(:class, date: Timex.now())
+      insert(:offered_course, classes: [class], students: students, teachers: [teacher])
+
+      requested_current_date =  Timex.shift(Timex.now(), days: 2)
+      assert [] == OfferedCourses.with_pending_attendances(requested_current_date)
+    end
+
+    test "when the class is in future" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      class = insert(:class, date: Timex.shift(Timex.now(), days: 2))
+      Enum.each(students, fn(student) ->
+        insert(:attendance, student: student, class: class, attendance_type: "Not filled")
+      end)
+      insert(:offered_course, classes: [class], students: students, teachers: [teacher])
+
+      assert [] == OfferedCourses.with_pending_attendances()
+    end
+
+    test "when all attendances of the class are filled for an offered_course" do
+     students = insert_list(3, :student)
+     teacher = insert(:teacher)
+     class = insert(:class, date: Timex.now())
+     Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class, attendance_type: "Present")
+     end)
+     insert(:offered_course, classes: [class], students: students, teachers: [teacher])
+
+     requested_current_date =  Timex.shift(Timex.now(), days: 2)
+     assert [] == OfferedCourses.with_pending_attendances(requested_current_date)
+    end
+
+    test "when there is missing attendances for one class of an offered_course" do
+     students = insert_list(3, :student)
+     teacher = insert(:teacher)
+     class = insert(:class, date: Timex.shift(Timex.now(), days: -2))
+     Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class, attendance_type: "Not filled")
+     end)
+     offered_course =
+       insert(:offered_course, classes: [class], students: students, teachers: [teacher])
+
+     requested_current_date =  Timex.now()
+     [not_filled_offered_course] = OfferedCourses.with_pending_attendances(requested_current_date)
+     assert offered_course.id == not_filled_offered_course.id
+    end
+
+    test "when there is missing attendances for some classes of an offered_course" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      [class1, class2, class3] = insert_list(3, :class, date: Timex.now())
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+      end)
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class2, attendance_type: "Present")
+      end)
+
+      [student1, student2, student3] = students
+      insert(:attendance, student: student1, class: class3, attendance_type: "Present")
+      insert(:attendance, student: student2, class: class3, attendance_type: "Not filled")
+      insert(:attendance, student: student3, class: class3, attendance_type: "Present")
+
+      insert(:offered_course, classes: [class1, class2, class3], students: students, teachers: [teacher])
+
+      requested_current_date =  Timex.shift(Timex.now(), days: 2)
+      [not_filled_offered_courses] = OfferedCourses.with_pending_attendances(requested_current_date)
+
+      not_filled_classes = Enum.map(not_filled_offered_courses.classes, &(&1.id))
+
+      assert class1.id in not_filled_classes
+      assert class3.id in not_filled_classes
+      refute class2.id in not_filled_classes
+    end
+
+    test "when there is missing attendances for some classes of multiple offered_courses" do
+     students = insert_list(3, :student)
+     teacher = insert(:teacher)
+     [class1, class2, class3] = insert_list(3, :class, date: Timex.now())
+
+     Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+     end)
+     Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class2, attendance_type: "Present")
+     end)
+
+     [student1, student2, student3] = students
+     insert(:attendance, student: student1, class: class3, attendance_type: "Present")
+     insert(:attendance, student: student2, class: class3, attendance_type: "Not filled")
+     insert(:attendance, student: student3, class: class3, attendance_type: "Present")
+
+     insert(:offered_course, classes: [class1], students: students, teachers: [teacher])
+     insert(:offered_course, classes: [class2], students: students, teachers: [teacher])
+     insert(:offered_course, classes: [class3], students: students, teachers: [teacher])
+
+     requested_current_date =  Timex.shift(Timex.now(), days: 2)
+
+     not_filled_classes =
+       requested_current_date
+       |> OfferedCourses.with_pending_attendances()
+       |> Enum.flat_map(&(&1.classes))
+       |> Enum.map(&(&1.id))
+
+     assert class1.id in not_filled_classes
+     assert class3.id in not_filled_classes
+     refute class2.id in not_filled_classes
+    end
+  end
+
   describe "find_by_term_id/1" do
     test "find a valid term" do
       offered_course = insert(:offered_course) |> Repo.preload([:students])
