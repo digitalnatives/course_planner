@@ -61,12 +61,14 @@
               <li class="mdl-menu__item">
                 <%= link "Show", to: task_path(@conn, :show, task) %>
               </li>
-              <li class="mdl-menu__item">
-                <%= link "Edit", to: task_path(@conn, :edit, task) %>
-              </li>
-              <li class="mdl-menu__item">
-                <%= link "Delete", to: task_path(@conn, :delete, task), method: :delete, data: [confirm: "Are you sure?"] %>
-              </li>
+              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: task_path(@conn, :edit, task) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: task_path(@conn, :delete, task), method: :delete, data: [confirm: "Are you sure?"] %>
+                </li>
+              <% end %>
             </ul>
           </td>
         </tr>

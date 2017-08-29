@@ -2,7 +2,7 @@
   <%= CoursePlannerWeb.SharedView.navbar_item "Dashboard", @conn, dashboard_path(@conn, :show) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Calendar", @conn, schedule_path(@conn, :show) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
-  <%= CoursePlannerWeb.SharedView.navbar_item "Offered Courses", @conn, offered_course_path(@conn, :index) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Courses", @conn, offered_course_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
   <%= if show_program_about?() do %>
     <%= CoursePlannerWeb.SharedView.navbar_separator %>
