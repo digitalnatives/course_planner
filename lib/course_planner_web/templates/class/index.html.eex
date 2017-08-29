@@ -12,12 +12,14 @@
     <thead>
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Term</th>
-        <th class="mdl-data-table__cell--non-numeric">Course</th>
+        <th class="mdl-data-table__cell--non-numeric">Course type</th>
         <th>Classroom</th>
         <th>Class date</th>
         <th>Starting at</th>
         <th>Finishes at</th>
-        <th></th>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <th></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -41,37 +43,39 @@
           <td>
             <%= Timex.format!(class.finishes_at, "{h24}:{m}") %>
           </td>
-          <td>
-            <button id="tr_menu_<%= class.id %>"
-                    class="mdl-button mdl-js-button mdl-button--icon"
-            >
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul
-              class="
-                mdl-menu mdl-js-menu
-                <%=
-                  if index > 10 and index > length(@classes)-4 do
-                    'mdl-menu--top-right'
-                  else
-                    'mdl-menu--bottom-right'
-                  end
-                %>
-              "
-              for="tr_menu_<%= class.id %>"
-            >
-              <li class="mdl-menu__item">
-                <%= link "Edit", to: class_path(@conn, :edit, class) %>
-              </li>
-              <li class="mdl-menu__item">
-                <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete,
-                  data: [confirm: """
-                  Are you sure?
-                  All the attendances of that class will be removed.
-                  """] %>
-              </li>
-            </ul>
-          </td>
+          <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+            <td>
+              <button id="tr_menu_<%= class.id %>"
+                      class="mdl-button mdl-js-button mdl-button--icon"
+              >
+                <i class="material-icons">more_vert</i>
+              </button>
+              <ul
+                class="
+                  mdl-menu mdl-js-menu
+                  <%=
+                    if index > 10 and index > length(@classes)-4 do
+                      'mdl-menu--top-right'
+                    else
+                      'mdl-menu--bottom-right'
+                    end
+                  %>
+                "
+                for="tr_menu_<%= class.id %>"
+              >
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: class_path(@conn, :edit, class) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete,
+                    data: [confirm: """
+                    Are you sure?
+                    All the attendances of that class will be removed.
+                    """] %>
+                </li>
+              </ul>
+            </td>
+          <% end %>
         </tr>
       <% end) %>
     </tbody>

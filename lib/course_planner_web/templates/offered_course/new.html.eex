@@ -1,5 +1,5 @@
 
-  <%= render "form.html", title: "New offered course",
+  <%= render "form.html", title: "New course",
                           changeset: @changeset,
                           action: offered_course_path(@conn, :create),
                           conn: @conn

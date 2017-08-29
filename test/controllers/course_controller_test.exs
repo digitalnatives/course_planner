@@ -23,7 +23,7 @@ defmodule CoursePlanner.CourseControllerTest do
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, course_path(conn, :index)
-    assert html_response(conn, 200) =~ "Courses"
+    assert html_response(conn, 200) =~ "Course types"
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -42,17 +42,6 @@ defmodule CoursePlanner.CourseControllerTest do
     assert html_response(conn, 200) =~ "New course"
   end
 
-  test "shows chosen resource", %{conn: conn} do
-    course = Repo.insert! %Course{}
-    conn = get conn, course_path(conn, :show, course)
-    assert html_response(conn, 200) =~ "Show course"
-  end
-
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    conn = get conn, course_path(conn, :show, -1)
-    assert html_response(conn, 404)
-  end
-
   test "renders form for editing chosen resource", %{conn: conn} do
     course = Repo.insert! %Course{name: "English"}
     conn = get conn, course_path(conn, :edit, course)
@@ -62,7 +51,7 @@ defmodule CoursePlanner.CourseControllerTest do
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
     course = Repo.insert! %Course{}
     conn = put conn, course_path(conn, :update, course), course: @valid_attrs
-    assert redirected_to(conn) == course_path(conn, :show, course)
+    assert redirected_to(conn) == course_path(conn, :index)
     assert Repo.get_by(Course, @valid_attrs)
   end
 
@@ -84,23 +73,6 @@ defmodule CoursePlanner.CourseControllerTest do
     assert redirected_to(conn) == course_path(conn, :index)
     conn = get conn, course_path(conn, :index)
     assert html_response(conn, 200) =~ "Course was not found"
-  end
-
-  test "does not shows chosen resource for non coordinator user", %{conn: _conn} do
-    student_conn   = login_as(:student)
-    teacher_conn   = login_as(:teacher)
-    volunteer_conn = login_as(:volunteer)
-
-    course = insert(:course)
-
-    conn = get student_conn, course_path(student_conn, :show, course)
-    assert html_response(conn, 403)
-
-    conn = get teacher_conn, course_path(teacher_conn, :show, course)
-    assert html_response(conn, 403)
-
-    conn = get volunteer_conn, course_path(volunteer_conn, :show, course)
-    assert html_response(conn, 403)
   end
 
   test "does not list entries on index for non coordinator user", %{conn: _conn} do

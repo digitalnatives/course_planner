@@ -3,6 +3,6 @@ defmodule CoursePlannerWeb.CourseView do
   use CoursePlannerWeb, :view
 
   def page_title do
-    "Courses"
+    "Course types"
   end
 end

@@ -30,17 +30,6 @@ defmodule CoursePlannerWeb.CourseController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    case Repo.get(Course, id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
-      course ->
-        render(conn, "show.html", course: course)
-    end
-  end
-
   def edit(conn, %{"id" => id}) do
     course = Repo.get!(Course, id)
     changeset = Course.changeset(course)
@@ -59,10 +48,10 @@ defmodule CoursePlannerWeb.CourseController do
         CourseHelper.notify_user_course(course,
           current_user,
           :course_updated,
-          course_url(conn, :show, course))
+          course_url(conn, :index))
         conn
         |> put_flash(:info, "Course updated successfully.")
-        |> redirect(to: course_path(conn, :show, course))
+        |> redirect(to: course_path(conn, :index))
       {:error, changeset} ->
         render(conn, "edit.html", course: course, changeset: changeset)
     end

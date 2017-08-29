@@ -15,10 +15,11 @@
               </div>
             <% end %>
             <%= CoursePlannerWeb.SharedView.form_select f, :term_id, terms, selected: selected_term(@changeset),
-                                                                         required: true
+                                                                            required: true
             %>
             <%= CoursePlannerWeb.SharedView.form_select f, :course_id, courses, selected: selected_course(@changeset),
-                                                                             required: true
+                                                                                required: true,
+                                                                                label: "Course type"
             %>
             <%= CoursePlannerWeb.SharedView.form_text f, :number_of_sessions, required: true %>
             <%= CoursePlannerWeb.SharedView.form_textarea f, :syllabus %>

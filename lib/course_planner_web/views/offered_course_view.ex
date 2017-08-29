@@ -68,6 +68,6 @@ defmodule CoursePlannerWeb.OfferedCourseView do
   end
 
   def page_title do
-    "Offered courses"
+    "Courses"
   end
 end

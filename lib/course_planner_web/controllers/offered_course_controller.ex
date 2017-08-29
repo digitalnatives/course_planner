@@ -43,7 +43,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     case Repo.insert(changeset) do
       {:ok, _offered_course} ->
         conn
-        |> put_flash(:info, "Offered course created successfully.")
+        |> put_flash(:info, "Course created successfully.")
         |> redirect(to: offered_course_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
@@ -118,7 +118,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
                                                      offered_course.students, students)
 
         conn
-        |> put_flash(:info, "Offered course updated successfully.")
+        |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: offered_course_path(conn, :show, updated_offered_course))
       {:error, changeset} ->
         render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
@@ -133,7 +133,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     Repo.delete!(offered_course)
 
     conn
-    |> put_flash(:info, "Offered course deleted successfully.")
+    |> put_flash(:info, "Course deleted successfully.")
     |> redirect(to: offered_course_path(conn, :index))
   end
 end
