@@ -61,7 +61,7 @@ defmodule CoursePlannerWeb.Router do
     resources "/teachers", TeacherController
     resources "/volunteers", VolunteerController
 
-    resources "/courses", CourseController
+    resources "/courses", CourseController, except: [:show]
     resources "/terms", TermController do
       get "/course_matrix", CourseMatrixController, :index, as: :course_matrix
     end

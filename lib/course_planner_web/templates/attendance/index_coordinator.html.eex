@@ -9,7 +9,7 @@
     <thead>
       <tr>
         <th class="mdl-data-table__cell--non-numeric">Term</th>
-        <th class="mdl-data-table__cell--non-numeric">Course</th>
+        <th class="mdl-data-table__cell--non-numeric">Course type</th>
         <th class="mdl-data-table__cell--non-numeric">Teachers</th>
         <th></th>
       </tr>
