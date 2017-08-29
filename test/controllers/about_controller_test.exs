@@ -35,11 +35,6 @@ defmodule CoursePlanner.AboutControllerTest do
         type: "list"
        },
       %{
-        key: "PROGRAM_LOGO",
-        value: "http://www.sample.com/logo.jpg",
-        type: "url"
-       },
-      %{
         key: "PROGRAM_DESCRIPTION",
         value: "some sample description of the program",
         type: "text"
