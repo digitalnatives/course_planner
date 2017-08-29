@@ -1,6 +1,8 @@
 
   <div class="mdl-layout__drawer">
-    <img src="/images/logo.svg" class="nav-logo">
+    <div class="nav-logo-wrapper">
+      <div class="nav-logo" style="background-image: url('<%= @logo %>');"></div>
+    </div>
     <nav class="mdl-navigation">
       <%= @children %>
     </nav>
