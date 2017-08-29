@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Course do
+defmodule CoursePlanner.Courses.Course do
   @moduledoc """
   This module holds the model for the course table
   """

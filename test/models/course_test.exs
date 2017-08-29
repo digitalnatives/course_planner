@@ -1,7 +1,7 @@
 defmodule CoursePlanner.CourseTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.Course, as: Course
+  alias CoursePlanner.Courses.Course
 
   @valid_attrs %{description: "some content", name: "some content"}
   @invalid_attrs %{}

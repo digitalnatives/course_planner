@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseControllerTest do
   use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.{Course, OfferedCourse, Repo, Terms, Attendances.Attendance}
+  alias CoursePlanner.{Courses.Course, OfferedCourse, Repo, Terms, Attendances.Attendance}
   import CoursePlanner.Factory
 
   def valid_attrs do
