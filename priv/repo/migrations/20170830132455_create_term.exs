@@ -7,16 +7,9 @@ defmodule CoursePlanner.Repo.Migrations.CreateTerm do
       add :start_date, :date
       add :end_date, :date
       add :holidays, {:array, :map}, default: []
-
-      add :status, :entity_status
-      add :planned_at, :naive_datetime
-      add :activated_at, :naive_datetime
-      add :froze_at, :naive_datetime
-      add :finished_at, :naive_datetime
-      add :deleted_at, :naive_datetime
+      add :minimum_teaching_days, :integer, null: false, default: 1
 
       timestamps()
     end
-
   end
 end
