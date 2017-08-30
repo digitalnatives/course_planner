@@ -13,6 +13,10 @@
     "postdeploy": "POOL_SIZE=2 mix do ecto.create, ecto.migrate, run priv/repo/seeds.exs"
   },
   "env": {
+    "ENDPOINT_URL_HOST": {
+      "description": "This is the host used to build the urls",
+      "value": "app-name.herokuapp.com"
+    },
     "EMAIL_FROM_EMAIL": {
       "description": "Email used to send notifications to users",
       "value": "admin@courseplanner.com"
@@ -29,9 +33,8 @@
       "description": "Number of Database connections used by the application",
       "value": "18"
     },
-    "ENDPOINT_URL_HOST": {
-      "description": "This is the host used to build the urls",
-      "value": "app-name.herokuapp.com"
+    "MIX_ENV": {
+      "value": "prod"
     }
   },
   "addons": [
