@@ -10,7 +10,7 @@
   "logo": "https://course-planner-backend.herokuapp.com/images/logo.svg",
   "success_url": "/",
   "scripts": {
-    "postdeploy": "POOL_SIZE=2 mix do ecto.create, ecto.migrate, run priv/repo/seeds.exs"
+    "postdeploy": "MIX_ENV=prod POOL_SIZE=2 mix do ecto.migrate, run priv/repo/seeds.exs"
   },
   "env": {
     "ENDPOINT_URL_HOST": {
