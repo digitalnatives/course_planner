@@ -120,7 +120,7 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
   |> SystemVariable.changeset(
       %{
         key: "PROGRAM_LOGO_URL",
-        value: "",
+        value: nil,
         type: "url",
         editable: true,
         visible: true,
@@ -178,7 +178,7 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
         key: "NOTIFICATION_JOB_EXECUTED_AT",
         value: DateTime.utc_now() |> DateTime.to_iso8601(),
         type: "utc_datetime",
-        editable: false,
+        editable: true,
         visible: false,
         required: true
       })
