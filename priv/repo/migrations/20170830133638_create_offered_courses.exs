@@ -13,5 +13,10 @@ defmodule CoursePlanner.Repo.Migrations.CreateOfferedCourses do
     create index(:offered_courses, [:term_id])
     create index(:offered_courses, [:course_id])
     create index(:offered_courses, [:term_id, :course_id], unique: true)
+
+    alter table(:classes) do
+      add :offered_course_id, references(:offered_courses, on_delete: :delete_all), null: false
+    end
+    create index(:classes, [:offered_course_id])
   end
 end
