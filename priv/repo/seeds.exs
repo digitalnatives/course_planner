@@ -120,7 +120,7 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
   |> SystemVariable.changeset(
       %{
         key: "PROGRAM_LOGO_URL",
-        value: "",
+        value: nil,
         type: "url",
         editable: true,
         visible: true,
