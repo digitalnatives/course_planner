@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Repo.Migrations.CreateUsersTasks do
+defmodule CoursePlanner.Repo.Migrations.CreateTaskUser do
   use Ecto.Migration
 
   def change do
