@@ -6,7 +6,6 @@
     "elixir",
     "phoenix"
   ],
-  "website": "",
   "repository": "https://github.com/digitalnatives/course_planner",
   "logo": "https://github.com/digitalnatives/course_planner/blob/master/assets/static/images/logo.svg",
   "success_url": "/",
