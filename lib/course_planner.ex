@@ -7,6 +7,13 @@ defmodule CoursePlanner do
   alias CoursePlannerWeb.Endpoint
 
   def start(_type, _args) do
+    IO.inspect "hello!"
+    IO.inspect "hello!"
+    IO.inspect "hello!"
+    IO.inspect "hello!"
+    IO.inspect "hello!"
+    IO.inspect "hello!"
+    IO.inspect "hello!"
     import Supervisor.Spec
 
     children = [
