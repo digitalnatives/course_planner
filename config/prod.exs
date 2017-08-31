@@ -12,7 +12,9 @@ config :logger, level: :info
 config :course_planner, CoursePlanner.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: {:system, "DATABASE_URL"},
-  pool_size: String.to_integer("${POOL_SIZE}" || "10"),
+
+  # TODO: make this configurable by env var again.
+  pool_size: 10,
   ssl: true
 
 config :coherence, CoursePlannerWeb.Coherence.Mailer,
