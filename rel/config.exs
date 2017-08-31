@@ -34,4 +34,3 @@ end
 release :course_planner do
   set version: current_version(:course_planner)
 end
-
