@@ -1,5 +1,7 @@
 <div>
-  <h2>dear <%= @teacher_names%>,</h2>
-  <h2>The attendance is not completely filled for <%= @offered_course_name%> course.</h2>
+  <h2>Dear <%= @name %>,</h2>
+  <h2>The attendances are not completely filled for <%= @data.offered_course_name %></h2>
   <h3>use the following link to update the attendances <%= link "here: ", to: @path%></h3>
+
+  <h3>This is an automatically generated email, please do not reply</h3>
 </div>

@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourses do
   @moduledoc false
 
-  alias CoursePlanner.{OfferedCourse, Repo, AttendanceHelper, Notifications}
+  alias CoursePlanner.{OfferedCourse, Repo, AttendanceHelper, Notifier, Notifications}
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
@@ -86,7 +86,9 @@ defmodule CoursePlanner.OfferedCourses do
            %{
               user: teacher,
               type: :attendance_missing,
-              path: AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+              path: AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id),
+              data: %{offered_course_name:
+                      "#{offered_course.term.name}-#{offered_course.course.name}"}
             }
         end)
       end)
