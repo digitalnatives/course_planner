@@ -20,7 +20,7 @@ config :coherence, CoursePlannerWeb.Coherence.Mailer,
   api_key: {:system, "SENDGRID_API_KEY"}
 
 config :coherence,
-  email_from_name: "${EMAIL_FROM_NAME}"
+  email_from_name: "${EMAIL_FROM_NAME}",
   email_from_email: "${EMAIL_FROM_EMAIL}"
 
 config :course_planner, CoursePlanner.Mailer,
