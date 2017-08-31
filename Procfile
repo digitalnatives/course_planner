@@ -1,1 +1,1 @@
-web: MIX_ENV=heroku mix phx.server
+web: mix phx.server
