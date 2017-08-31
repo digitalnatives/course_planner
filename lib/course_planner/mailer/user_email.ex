@@ -48,7 +48,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
       },
     "attendance_missing" =>
       %{
-        subject: "One or more attendance is not filled",
+        subject: "One or more attendances are not filled",
         template: "attendance_missing.html"
       },
   }

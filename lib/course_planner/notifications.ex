@@ -29,11 +29,9 @@ defmodule CoursePlanner.Notifications do
   end
 
   def build_all_notifications(now \\ DateTime.utc_now) do
-    if Settings.get_value("ENABLE_NOTIFICATION", true) do
-      now
-      |> get_notifiable_users()
-      |> OfferedCourses.create_missing_attendance_notifications()
-    end
+    now
+    |> get_notifiable_users()
+    |> OfferedCourses.create_missing_attendance_notifications()
   end
 
   def send_all_notifications(now \\ DateTime.utc_now, action \\ &Notifier.notify_all/1) do
