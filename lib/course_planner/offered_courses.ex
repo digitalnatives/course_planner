@@ -77,10 +77,11 @@ defmodule CoursePlanner.OfferedCourses do
      where: c.date < ^date and a.attendance_type == "Not filled")
   end
 
-  def create_pending_attendance_notification_map do
+  def create_pending_attendance_notification_map(notifiable_users) do
       with_pending_attendances()
       |> Enum.flat_map(fn(offered_course) ->
         offered_course.teachers
+        |> Enum.filter(fn(teacher) -> teacher in notifiable_users end)
         |> Enum.map(fn(teacher) ->
            %{
               user: teacher,
@@ -91,8 +92,9 @@ defmodule CoursePlanner.OfferedCourses do
       end)
   end
 
-  def notify_missing_attendances do
-    create_pending_attendance_notification_map()
+  def create_missing_attendance_notifications(notifiable_users) do
+    notifiable_users
+    |> create_pending_attendance_notification_map()
     |> Enum.each(fn(email_data) ->
          email_data
          |> Notifications.create_simple_notification()

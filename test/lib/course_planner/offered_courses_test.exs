@@ -201,7 +201,8 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
   describe "test creation of missing attendance notifications" do
     test "when there is no offered_course" do
-      OfferedCourses.notify_missing_attendances()
+      teacher = insert(:teacher)
+      OfferedCourses.create_missing_attendance_notifications([teacher])
       assert [] == Repo.all(Notification)
     end
 
@@ -210,7 +211,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       teacher = insert(:teacher)
 
       insert(:offered_course, classes: [], students: students, teachers: [teacher])
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher])
       assert [] == Repo.all(Notification)
     end
 
@@ -220,7 +221,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
 
       insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher])
       assert [] == Repo.all(Notification)
     end
 
@@ -235,7 +236,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       end)
 
       insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher])
       assert [] == Repo.all(Notification)
     end
 
@@ -251,7 +252,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
 
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher])
       [notification] =
         Notification
         |> Repo.all()
@@ -275,7 +276,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1, teacher2])
 
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher1, teacher2])
       [notification1, notification2] =
         Notification
         |> Repo.all()
@@ -305,7 +306,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
       offered_course1 = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1])
       offered_course2 = insert(:offered_course, classes: [class3], students: students, teachers: [teacher2, teacher3])
 
-      OfferedCourses.notify_missing_attendances()
+      OfferedCourses.create_missing_attendance_notifications([teacher1, teacher2, teacher3])
       [notification1, notification2, notification3] =
         Notification
         |> Repo.all()

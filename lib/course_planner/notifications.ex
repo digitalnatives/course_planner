@@ -3,7 +3,7 @@ defmodule CoursePlanner.Notifications do
   Contains notification logic
   """
 
-  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings, SystemVariable}
+  alias CoursePlanner.{User, Notification, Notifier, Repo, Settings, SystemVariable, OfferedCourses}
   import Ecto.Query
 
   def new, do: %Notification{}
@@ -20,7 +20,16 @@ defmodule CoursePlanner.Notifications do
   def wake_up(now \\ DateTime.utc_now) do
     executed_at = Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT", now)
     if Timex.diff(now, executed_at, :days) >= 1 do
+      build_all_notifications(now)
       send_all_notifications(now)
+    end
+  end
+
+  def build_all_notifications(now \\ DateTime.utc_now) do
+    if Settings.get_value("ENABLE_NOTIFICATION", true) do
+      now
+      |> get_notifiable_users()
+      |> OfferedCourses.create_missing_attendance_notifications()
     end
   end
 
