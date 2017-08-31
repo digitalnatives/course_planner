@@ -28,7 +28,8 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum]]
+                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
+                    :canary, :elixir_make]]
   end
 
   # Specifies which paths to compile per environment.
