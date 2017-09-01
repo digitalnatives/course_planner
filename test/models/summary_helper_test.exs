@@ -1,8 +1,8 @@
-defmodule CoursePlanner.SummaryHelperTest do
+defmodule CoursePlanner.SummariesTest do
   use CoursePlannerWeb.ModelCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.SummaryHelper
+  alias CoursePlanner.Classes.Summaries
 
   @empty_summary_helper_user_data_response %{terms: [], offered_courses: []}
 
@@ -12,14 +12,14 @@ defmodule CoursePlanner.SummaryHelperTest do
     insert_list(4, :offered_course, term: term1)
     insert(:offered_course, term: term2, students: [student])
 
-    student_data = SummaryHelper.get_term_offered_course_for_user(%{student | role: "Unknown"})
+    student_data = Summaries.get_term_offered_course_for_user(%{student | role: "Unknown"})
     assert student_data == @empty_summary_helper_user_data_response
   end
 
   describe "Student summary data" do
     test "when she does not exist" do
       student = build(:student, id: -1)
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
       assert student_data == @empty_summary_helper_user_data_response
     end
 
@@ -27,7 +27,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       student = insert(:student)
       insert(:class)
 
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
       assert student_data == @empty_summary_helper_user_data_response
     end
 
@@ -40,7 +40,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert(:offered_course, term: term2, students: [student])
         |> Repo.preload(:classes)
 
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
       assert student_data == %{terms: [term2], offered_courses: [offered_course]}
     end
 
@@ -53,7 +53,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert_list(2, :offered_course, term: term2, students: [student])
         |> Repo.preload(:classes)
 
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
       assert student_data == %{terms: [term2], offered_courses: offered_courses}
     end
 
@@ -69,7 +69,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert_list(2, :offered_course, term: term2, students: [student])
         |> Repo.preload(:classes)
 
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
 
       student_data_sorted_terms = Enum.sort(student_data.terms, &(&1.id >= &2.id))
       student_data_sorted_offered_courses = Enum.sort(student_data.offered_courses, &(&1.id >= &2.id))
@@ -88,7 +88,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(2, :offered_course, term: term1, students: [student])
       insert_list(2, :offered_course, term: term2, students: [student])
 
-      assert SummaryHelper.get_term_offered_course_for_user(student) == @empty_summary_helper_user_data_response
+      assert Summaries.get_term_offered_course_for_user(student) == @empty_summary_helper_user_data_response
     end
 
     test "when she has multiple courses excluding the term that is finished and its data" do
@@ -101,7 +101,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert_list(2, :offered_course, term: term2, students: [student])
         |> Repo.preload(:classes)
 
-      student_data = SummaryHelper.get_term_offered_course_for_user(student)
+      student_data = Summaries.get_term_offered_course_for_user(student)
       assert student_data == %{terms: [term2], offered_courses: offered_courses2}
     end
 
@@ -110,7 +110,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       student = insert(:student)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(student)
+      next_task = Summaries.get_next_task(student)
 
       assert next_task == nil
     end
@@ -119,7 +119,7 @@ defmodule CoursePlanner.SummaryHelperTest do
   describe "Teacher summary data" do
     test "when she does not exist" do
       teacher = build(:teacher, id: -1)
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       assert teacher_data == @empty_summary_helper_user_data_response
     end
 
@@ -127,7 +127,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       teacher = insert(:teacher)
       insert(:class)
 
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       assert teacher_data == @empty_summary_helper_user_data_response
     end
 
@@ -140,7 +140,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert(:offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       assert teacher_data == %{terms: [term2], offered_courses: [offered_course]}
     end
 
@@ -154,7 +154,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         |> Repo.preload(:classes)
 
       expected_offered_courses = Enum.sort([offered_course1, offered_course2], &(&1.id >= &2.id))
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       teacher_data_returned_offered_courses = Enum.sort(teacher_data.offered_courses, &(&1.id >= &2.id))
 
       assert teacher_data.terms == [term2]
@@ -173,7 +173,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       assert teacher_data == %{terms: [term1, term2], offered_courses: offered_courses1 ++ offered_courses2}
     end
 
@@ -187,7 +187,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
-      teacher_data = SummaryHelper.get_term_offered_course_for_user(teacher)
+      teacher_data = Summaries.get_term_offered_course_for_user(teacher)
       assert teacher_data == %{terms: [term2], offered_courses: offered_courses2}
     end
 
@@ -198,7 +198,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(2, :offered_course, term: term1, teachers: [teacher])
       insert_list(2, :offered_course, term: term2, teachers: [teacher])
 
-      assert SummaryHelper.get_term_offered_course_for_user(teacher) == @empty_summary_helper_user_data_response
+      assert Summaries.get_term_offered_course_for_user(teacher) == @empty_summary_helper_user_data_response
     end
 
     test "has no task" do
@@ -206,7 +206,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       teacher = insert(:teacher)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(teacher)
+      next_task = Summaries.get_next_task(teacher)
 
       assert next_task == nil
     end
@@ -215,7 +215,7 @@ defmodule CoursePlanner.SummaryHelperTest do
   describe "Coordinator summary data" do
     test "when there is no term" do
       coordinator = build(:coordinator, id: -1)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(coordinator)
+      summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
       assert summary_data == @empty_summary_helper_user_data_response
     end
@@ -223,7 +223,7 @@ defmodule CoursePlanner.SummaryHelperTest do
     test "when there are terms but no offered_course" do
       coordinator = insert(:coordinator)
       terms = insert_list(2, :term)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(coordinator)
+      summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
       assert summary_data == %{terms: terms, offered_courses: []}
     end
@@ -235,7 +235,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert(:offered_course, term: term2)
         |> Repo.preload(:classes)
 
-      summary_data = SummaryHelper.get_term_offered_course_for_user(coordinator)
+      summary_data = Summaries.get_term_offered_course_for_user(coordinator)
       assert summary_data == %{terms: [term1, term2], offered_courses: [term2_offered_course]}
     end
 
@@ -248,7 +248,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
       expected_offered_courses = preload_associations_for_offered_courses([term1_offered_course | term2_offered_courses])
-      summary_data = SummaryHelper.get_term_offered_course_for_user(coordinator)
+      summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
       assert summary_data == %{terms: [term1, term2], offered_courses: expected_offered_courses}
     end
@@ -261,7 +261,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
       expected_offered_courses = preload_associations_for_offered_courses(term2_offered_courses)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(coordinator)
+      summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
       assert summary_data == %{terms: [term2], offered_courses: expected_offered_courses}
     end
@@ -273,7 +273,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(6, :offered_course, term: term1)
       insert_list(4, :offered_course, term: term2)
 
-      assert SummaryHelper.get_term_offered_course_for_user(coordinator) == @empty_summary_helper_user_data_response
+      assert Summaries.get_term_offered_course_for_user(coordinator) == @empty_summary_helper_user_data_response
     end
 
     test "has no task" do
@@ -281,7 +281,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       coordinator = insert(:coordinator)
       insert(:task, volunteers: volunteers)
 
-      next_task = SummaryHelper.get_next_task(coordinator)
+      next_task = Summaries.get_next_task(coordinator)
 
       assert next_task == nil
     end
@@ -290,7 +290,7 @@ defmodule CoursePlanner.SummaryHelperTest do
   describe "Volunteer summary data" do
     test "when there is no term" do
       volunteer = build(:volunteer, id: -1)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(volunteer)
+      summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
       assert summary_data == @empty_summary_helper_user_data_response
     end
@@ -298,7 +298,7 @@ defmodule CoursePlanner.SummaryHelperTest do
     test "when there are terms but no offered_course" do
       volunteer = insert(:volunteer)
       terms = insert_list(2, :term)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(volunteer)
+      summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
       assert summary_data == %{terms: terms, offered_courses: []}
     end
@@ -310,7 +310,7 @@ defmodule CoursePlanner.SummaryHelperTest do
         insert(:offered_course, term: term2)
         |> Repo.preload(:classes)
 
-      summary_data = SummaryHelper.get_term_offered_course_for_user(volunteer)
+      summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
       assert summary_data == %{terms: [term1, term2], offered_courses: [term2_offered_course]}
     end
@@ -324,7 +324,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
       expected_offered_courses = preload_associations_for_offered_courses([term1_offered_course | term2_offered_courses])
-      summary_data = SummaryHelper.get_term_offered_course_for_user(volunteer)
+      summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
       assert summary_data == %{terms: [term1, term2], offered_courses: expected_offered_courses}
     end
@@ -337,7 +337,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
       expected_offered_courses = preload_associations_for_offered_courses(term2_offered_courses)
-      summary_data = SummaryHelper.get_term_offered_course_for_user(volunteer)
+      summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
       assert summary_data == %{terms: [term2], offered_courses: expected_offered_courses}
     end
@@ -349,11 +349,11 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert_list(6, :offered_course, term: term1)
       insert_list(4, :offered_course, term: term2)
 
-      assert SummaryHelper.get_term_offered_course_for_user(volunteer) == @empty_summary_helper_user_data_response
+      assert Summaries.get_term_offered_course_for_user(volunteer) == @empty_summary_helper_user_data_response
     end
 
     test "next task is nil when user does not exist" do
-      next_task = SummaryHelper.get_next_task(%{id: -1, role: "Volunteer"})
+      next_task = Summaries.get_next_task(%{id: -1, role: "Volunteer"})
 
       assert next_task == nil
     end
@@ -364,7 +364,7 @@ defmodule CoursePlanner.SummaryHelperTest do
                     start_time: Timex.shift(Timex.now(), days: 2),
                     finish_time: Timex.shift(Timex.now(), days: 3),
                     volunteers: [volunteer1, volunteer2])
-      next_task = SummaryHelper.get_next_task(volunteer1)
+      next_task = Summaries.get_next_task(volunteer1)
 
       assert next_task.id == task.id
     end
@@ -383,7 +383,7 @@ defmodule CoursePlanner.SummaryHelperTest do
              start_time: Timex.shift(Timex.now(), days: 1),
              finish_time: Timex.shift(Timex.now(), days: 1),
              volunteers: [volunteer2, volunteer3])
-      next_task = SummaryHelper.get_next_task(volunteer1)
+      next_task = Summaries.get_next_task(volunteer1)
 
       assert next_task.id == task.id
     end
@@ -402,7 +402,7 @@ defmodule CoursePlanner.SummaryHelperTest do
              start_time: Timex.shift(Timex.now(), days: 1),
              finish_time: Timex.shift(Timex.now(), days: 2),
              volunteers: [volunteer2, volunteer3])
-      next_task = SummaryHelper.get_next_task(volunteer1)
+      next_task = Summaries.get_next_task(volunteer1)
 
       assert next_task == nil
     end
@@ -422,8 +422,8 @@ defmodule CoursePlanner.SummaryHelperTest do
              finish_time: Timex.shift(Timex.now(), days: 2),
              volunteers: [volunteer2, volunteer3])
 
-      next_task_current_time = SummaryHelper.get_next_task(volunteer1)
-      next_task_custom_time = SummaryHelper.get_next_task(volunteer1, Timex.shift(Timex.now(), days: 3))
+      next_task_current_time = Summaries.get_next_task(volunteer1)
+      next_task_custom_time = Summaries.get_next_task(volunteer1, Timex.shift(Timex.now(), days: 3))
 
       assert next_task_current_time.id == task1.id
       assert next_task_custom_time.id == task2.id
@@ -432,20 +432,20 @@ defmodule CoursePlanner.SummaryHelperTest do
 
   describe "get_next_class function" do
     test "when offered_course is an empty list" do
-      next_class = SummaryHelper.get_next_class([])
+      next_class = Summaries.get_next_class([])
 
       assert next_class == nil
     end
 
     test "when offered_course is not a list" do
-      next_class = SummaryHelper.get_next_class(nil)
+      next_class = Summaries.get_next_class(nil)
 
       assert next_class == nil
     end
 
     test "when offered_course have no class" do
       offered_courses = insert_list(4, :offered_course) |> Repo.preload(:classes)
-      next_class = SummaryHelper.get_next_class(offered_courses)
+      next_class = Summaries.get_next_class(offered_courses)
 
       assert next_class == nil
     end
@@ -458,7 +458,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert(:class, offered_course: offered_course2, date: Timex.now(), starting_at: Timex.shift(Timex.now(), hours: 4))
 
       preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
-      next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
+      next_class = Summaries.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
 
       assert next_class == class
     end
@@ -471,7 +471,7 @@ defmodule CoursePlanner.SummaryHelperTest do
       insert(:class, offered_course: offered_course2, starting_at: Timex.now(), date: Timex.shift(Timex.now(), days: 4))
 
       preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
-      next_class = SummaryHelper.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
+      next_class = Summaries.get_next_class(preload_offered_courses) |> Repo.preload([offered_course: [:course, :term]])
 
       assert next_class == class
     end
@@ -485,7 +485,7 @@ defmodule CoursePlanner.SummaryHelperTest do
 
       preload_offered_courses = preload_associations_for_offered_courses([offered_course1, offered_course2])
 
-      assert SummaryHelper.get_next_class(preload_offered_courses) == nil
+      assert Summaries.get_next_class(preload_offered_courses) == nil
     end
   end
 
