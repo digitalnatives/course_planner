@@ -36,5 +36,6 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
    3. `APP_NAME=$(gigalixir create --name course-planner)`
    4. `gigalixig set_config $APP_NAME DATABASE_URL $YOUR_DB_URL`
    5. `git push gigalixir master`
+   6. `gigalixir migrate $APP_NAME`
 
 
