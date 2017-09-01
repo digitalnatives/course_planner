@@ -1,7 +1,8 @@
 defmodule CoursePlanner.OfferedCoursesTest do
   use CoursePlannerWeb.ModelCase
+
   import CoursePlanner.Factory
-  alias CoursePlanner.OfferedCourses
+  alias CoursePlanner.{OfferedCourses, AttendanceHelper, Notification}
 
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do
@@ -195,6 +196,134 @@ defmodule CoursePlanner.OfferedCoursesTest do
      assert class1.id in not_filled_classes
      assert class3.id in not_filled_classes
      refute class2.id in not_filled_classes
+    end
+  end
+
+  describe "test creation of missing attendance notifications" do
+    test "when there is no offered_course" do
+      teacher = insert(:teacher)
+      OfferedCourses.create_missing_attendance_notifications([teacher])
+      assert [] == Repo.all(Notification)
+    end
+
+    test "when there is no classes" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+
+      insert(:offered_course, classes: [], students: students, teachers: [teacher])
+      OfferedCourses.create_missing_attendance_notifications([teacher])
+      assert [] == Repo.all(Notification)
+    end
+
+    test "when there is no attendances" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
+      OfferedCourses.create_missing_attendance_notifications([teacher])
+      assert [] == Repo.all(Notification)
+    end
+
+    test "when there is no missing attendance" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Present")
+       insert(:attendance, student: student, class: class2, attendance_type: "Present")
+      end)
+
+      insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
+      OfferedCourses.create_missing_attendance_notifications([teacher])
+      assert [] == Repo.all(Notification)
+    end
+
+    test "when there is one offered_course with one teacher have missing attendance" do
+      students = insert_list(3, :student)
+      teacher = insert(:teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+      end)
+
+      offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
+
+      OfferedCourses.create_missing_attendance_notifications([teacher])
+      [notification] =
+        Notification
+        |> Repo.all()
+        |> Repo.preload(:user)
+        |> Enum.sort(&(&1.user.id <= &2.user.id))
+
+      assert notification.user == teacher
+      assert notification.type == "attendance_missing"
+      assert notification.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+    end
+
+    test "when there is one offered_course with multiple teacher have missing attendance" do
+      students = insert_list(3, :student)
+      [teacher1, teacher2] = insert_list(2, :teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+      end)
+
+      offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1, teacher2])
+
+      OfferedCourses.create_missing_attendance_notifications([teacher1, teacher2])
+      [notification1, notification2] =
+        Notification
+        |> Repo.all()
+        |> Repo.preload(:user)
+        |> Enum.sort(&(&1.user.id <= &2.user.id))
+
+      assert notification1.user == teacher1
+      assert notification1.type == "attendance_missing"
+      assert notification1.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+
+      assert notification2.user == teacher2
+      assert notification2.type == "attendance_missing"
+      assert notification2.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+    end
+
+    test "when multiple offered_course with multiple teacher have missing attendance" do
+      students = insert_list(3, :student)
+      [teacher1, teacher2, teacher3] = insert_list(3, :teacher)
+      [class1, class2, class3] = insert_list(3, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class3, attendance_type: "Not filled")
+      end)
+
+      offered_course1 = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1])
+      offered_course2 = insert(:offered_course, classes: [class3], students: students, teachers: [teacher2, teacher3])
+
+      OfferedCourses.create_missing_attendance_notifications([teacher1, teacher2, teacher3])
+      [notification1, notification2, notification3] =
+        Notification
+        |> Repo.all()
+        |> Repo.preload(:user)
+        |> Enum.sort(&(&1.user.id <= &2.user.id))
+
+      assert notification1.user == teacher1
+      assert notification1.type == "attendance_missing"
+      assert notification1.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course1.id)
+
+      assert notification2.user == teacher2
+      assert notification2.type == "attendance_missing"
+      assert notification2.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course2.id)
+
+      assert notification3.user == teacher3
+      assert notification3.type == "attendance_missing"
+      assert notification3.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course2.id)
     end
   end
 
