@@ -39,7 +39,8 @@ config :canary,
 
 config :course_planner, CoursePlanner.NotifierScheduler,
   jobs: [
-    {"0 18 * * *", {CoursePlanner.Notifications, :send_all_notifications, []}}
+    {"0 18 * * *", {CoursePlanner.Notifications, :send_all_notifications, []}},
+    {"30 17 * * *", {CoursePlanner.Notifications, :build_all_notifications, []}}
   ]
 
 import_config "#{Mix.env}.exs"
