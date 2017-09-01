@@ -7,6 +7,7 @@
   schema "notifications" do
     field :type, :string
     field :resource_path, :string, default: "/"
+    field :data, :map, default: %{}
     belongs_to :user, CoursePlanner.Accounts.User
 
     timestamps()
@@ -21,7 +22,7 @@
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :resource_path])
+    |> cast(params, [:type, :resource_path, :data])
     |> validate_required([:type])
     |> validate_inclusion(:type, @types)
     |> cast_assoc(:user)

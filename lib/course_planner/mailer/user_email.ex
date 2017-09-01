@@ -46,10 +46,16 @@ defmodule CoursePlanner.Mailer.UserEmail do
         subject: "A class you subscribe to was deleted",
         template: "class_deleted.html"
       },
+    "attendance_missing" =>
+      %{
+        subject: "One or more attendances are not filled",
+        template: "attendance_missing.html"
+      },
   }
 
   def build_email(%{user: %{name: _, email: nil}}), do: {:error, :invalid_recipient}
-  def build_email(%{user: %{name: name, email: email}, type: type, resource_path: path}) do
+  def build_email(%{user: %{name: name, email: email},
+                  type: type, resource_path: path, data: data}) do
     case @notifications[type] do
       nil -> {:error, :wrong_notification_type}
       params ->
@@ -57,7 +63,7 @@ defmodule CoursePlanner.Mailer.UserEmail do
         |> from("admin@courseplanner.com")
         |> to(email)
         |> subject(params.subject)
-        |> render_body(params.template, %{name: name, path: path})
+        |> render_body(params.template, %{name: name, path: path, data: data})
     end
   end
 

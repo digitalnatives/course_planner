@@ -4,7 +4,7 @@ defmodule CoursePlanner.Notifications do
   """
 
   alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications.Notifier,
-                       Repo, Settings, Settings.SystemVariable}
+                       Repo, Settings, Settings.SystemVariable, OfferedCourses}
   import Ecto.Query
 
   def new, do: %Notification{}
@@ -18,11 +18,21 @@ defmodule CoursePlanner.Notifications do
   def to(%Notification{} = notification, %User{} = user),
     do: %{notification | user: user}
 
+  def add_data(%Notification{} = notification, data \\ %{}),
+    do: %{notification | data: data}
+
   def wake_up(now \\ DateTime.utc_now) do
     executed_at = Settings.get_value("NOTIFICATION_JOB_EXECUTED_AT", now)
     if Timex.diff(now, executed_at, :days) >= 1 do
+      build_all_notifications(now)
       send_all_notifications(now)
     end
+  end
+
+  def build_all_notifications(now \\ DateTime.utc_now) do
+    now
+    |> get_notifiable_users()
+    |> OfferedCourses.create_missing_attendance_notifications()
   end
 
   def send_all_notifications(now \\ DateTime.utc_now, action \\ &Notifier.notify_all/1) do
@@ -74,5 +84,13 @@ defmodule CoursePlanner.Notifications do
         type: "utc_datetime"
       },
       :update)
+  end
+
+  def create_simple_notification(%{type: type, user: user, path: path, data: data}) do
+    new()
+    |> type(type)
+    |> resource_path(path)
+    |> to(user)
+    |> add_data(data)
   end
 end

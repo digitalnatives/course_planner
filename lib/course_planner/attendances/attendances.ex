@@ -5,6 +5,7 @@ defmodule CoursePlanner.Attendances do
   use CoursePlannerWeb, :model
 
   alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, Classes}
+  alias CoursePlannerWeb.{Endpoint, Router.Helpers}
   alias Ecto.{Multi, DateTime}
 
   def get_course_attendances(offered_course_id) do
@@ -133,4 +134,7 @@ defmodule CoursePlanner.Attendances do
     Repo.delete_all(delete_query)
   end
 
+  def get_offered_course_fill_attendance_path(offered_course_id) do
+    Helpers.attendance_fill_course_url Endpoint, :fill_course, offered_course_id
+  end
 end

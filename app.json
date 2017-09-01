@@ -1,0 +1,61 @@
+{
+  "name": "Course Planner",
+  "description": "This is an application to manage educational courses.",
+  "keywords": [
+    "education",
+    "elixir",
+    "phoenix"
+  ],
+  "repository": "https://github.com/digitalnatives/course_planner",
+  "logo": "https://course-planner-backend.herokuapp.com/images/logo.svg",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "MIX_ENV=prod POOL_SIZE=2 mix do ecto.migrate, run priv/repo/seeds.exs"
+  },
+  "env": {
+    "ENDPOINT_URL_HOST": {
+      "description": "This is the host used to build the urls",
+      "value": "app-name.herokuapp.com"
+    },
+    "EMAIL_FROM_EMAIL": {
+      "description": "Email used to send notifications to users",
+      "value": "admin@courseplanner.com"
+    },
+    "EMAIL_FROM_NAME": {
+      "description": "Name used to send notifications to users",
+      "value": "Course Planner"
+    },
+    "SECRET_KEY_BASE": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "POOL_SIZE": {
+      "description": "Number of Database connections used by the application",
+      "value": "18"
+    },
+    "MIX_ENV": {
+      "value": "prod"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:hobby-dev",
+      "as": "DATABASE",
+      "options": {
+        "version": "9.6"
+      }
+    },
+    {
+      "plan": "sendgrid:starter",
+      "as": "SENDGRID"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/HashNuke/heroku-buildpack-elixir"
+    },
+    {
+      "url": "https://github.com/gjaldon/heroku-buildpack-phoenix-static.git"
+    }
+  ]
+}

@@ -2,7 +2,8 @@ defmodule CoursePlanner.UserEmailTest do
   use CoursePlannerWeb.ModelCase
   doctest CoursePlanner.Mailer.UserEmail
 
-  alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications, Mailer, Mailer.UserEmail}
+  alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications,
+                       Mailer, Mailer.UserEmail, Attendances}
   import Swoosh.TestAssertions
 
   import CoursePlanner.Factory
@@ -43,6 +44,31 @@ defmodule CoursePlanner.UserEmailTest do
       |> Mailer.deliver()
       assert_email_sent subject: subject
     end
+  end
+
+  test "missing attendance email" do
+    teacher = insert(:teacher)
+    offered_course = insert(:offered_course)
+
+    path = Attendances.get_offered_course_fill_attendance_path(offered_course.id)
+    data = %{offered_course_name: "#{offered_course.term.name}-#{offered_course.course.name}"}
+    insert(:notification, user_id: teacher.id, type: "attendance_missing", resource_path: path, data: data)
+
+    {type, subject} = {:attendance_missing, "One or more attendances are not filled"}
+
+    email =
+    Notifications.new()
+    |> Notifications.to(@valid_user)
+    |> Notifications.type(type)
+    |> Notifications.resource_path(path)
+    |> Notifications.add_data(data)
+    |> UserEmail.build_email()
+
+    assert email.html_body =~ path
+    assert email.html_body =~ data.offered_course_name
+
+    Mailer.deliver(email)
+    assert_email_sent subject: subject
   end
 
   test "build summary email" do
