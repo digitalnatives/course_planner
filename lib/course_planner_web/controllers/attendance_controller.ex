@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.AttendanceController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Attendances, Attendances.Attendance, OfferedCourse}
+  alias CoursePlanner.{Attendances, Attendances.Attendance, Courses.OfferedCourse}
 
   import Canary.Plugs
   plug :authorize_controller

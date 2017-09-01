@@ -2,7 +2,7 @@ defmodule CoursePlanner.Accounts.Students do
   @moduledoc """
     Handle Students specific logics
   """
-  alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, OfferedCourse}
+  alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, Courses.OfferedCourse}
   import Ecto.Query
   alias Ecto.Changeset
 

@@ -4,7 +4,7 @@ defmodule CoursePlanner.Attendances do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse, Attendances.Attendance, Classes}
+  alias CoursePlanner.{Repo, Courses.OfferedCourse, Attendances.Attendance, Classes}
   alias CoursePlannerWeb.{Endpoint, Router.Helpers}
   alias Ecto.{Multi, DateTime}
 

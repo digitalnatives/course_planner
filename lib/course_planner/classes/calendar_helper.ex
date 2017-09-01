@@ -4,7 +4,7 @@ defmodule CoursePlanner.CalendarHelper do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, OfferedCourse}
+  alias CoursePlanner.{Repo, Courses.OfferedCourse}
   alias Ecto.Changeset
 
   def get_user_classes(user, true, week_range) do

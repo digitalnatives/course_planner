@@ -2,7 +2,7 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, OfferedCourses, Notifications.Notifier,
+  alias CoursePlanner.{Repo, Courses.OfferedCourses, Notifications.Notifier,
                        Accounts.Coordinators, Notifications}
   alias CoursePlanner.Terms.{Holiday, Term}
   alias Ecto.Changeset

@@ -1,7 +1,8 @@
-defmodule CoursePlanner.OfferedCourses do
+defmodule CoursePlanner.Courses.OfferedCourses do
   @moduledoc false
 
-  alias CoursePlanner.{OfferedCourse, Repo, Attendances, Notifications.Notifier, Notifications}
+  alias CoursePlanner.{Courses.OfferedCourse, Repo, Attendances, Notifications.Notifier,
+                       Notifications}
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
@@ -70,7 +71,7 @@ defmodule CoursePlanner.OfferedCourses do
   end
 
   def with_pending_attendances(date \\ Timex.now()) do
-   Repo.all(from oc in CoursePlanner.OfferedCourse,
+   Repo.all(from oc in OfferedCourse,
      join: c in assoc(oc,  :classes),
      join: a in assoc(c,  :attendances),
      preload: [:teachers, :course, :term, classes: {c, attendances: a}],

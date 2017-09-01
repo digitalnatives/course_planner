@@ -4,7 +4,7 @@ defmodule CoursePlanner.SummaryHelper do
   """
   use CoursePlannerWeb, :model
 
-  alias CoursePlanner.{Repo, Terms.Term, OfferedCourse, Tasks.Task}
+  alias CoursePlanner.{Repo, Terms.Term, Courses.OfferedCourse, Tasks.Task}
   alias Ecto.DateTime
 
   def get_term_offered_course_for_user(%{id: user_id, role: role}, time \\ Timex.now()) do

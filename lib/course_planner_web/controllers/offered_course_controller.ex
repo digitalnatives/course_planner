@@ -5,8 +5,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   alias CoursePlanner.{
     Attendances,
     Classes,
-    OfferedCourse,
-    OfferedCourses,
+    Courses.OfferedCourse,
+    Courses.OfferedCourses,
     Accounts.Students,
     Accounts.Teachers,
   }

@@ -2,7 +2,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
   use CoursePlannerWeb.ModelCase
 
   import CoursePlanner.Factory
-  alias CoursePlanner.{OfferedCourses, Attendances, Notifications.Notification}
+  alias CoursePlanner.{Courses.OfferedCourses, Attendances, Notifications.Notification}
 
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do

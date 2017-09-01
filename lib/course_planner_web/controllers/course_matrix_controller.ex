@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.CourseMatrixController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.OfferedCourses
+  alias CoursePlanner.Courses.OfferedCourses
 
   import Canary.Plugs
   plug :authorize_controller

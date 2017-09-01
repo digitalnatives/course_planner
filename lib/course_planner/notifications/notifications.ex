@@ -4,7 +4,7 @@ defmodule CoursePlanner.Notifications do
   """
 
   alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications.Notifier,
-                       Repo, Settings, Settings.SystemVariable, OfferedCourses}
+                       Repo, Settings, Settings.SystemVariable, Courses.OfferedCourses}
   import Ecto.Query
 
   def new, do: %Notification{}

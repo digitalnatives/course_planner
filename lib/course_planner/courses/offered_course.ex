@@ -1,4 +1,4 @@
-defmodule CoursePlanner.OfferedCourse do
+defmodule CoursePlanner.Courses.OfferedCourse do
   @moduledoc """
   This is the Course offered in a given Term
   """

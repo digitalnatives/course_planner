@@ -1,7 +1,7 @@
 defmodule CoursePlanner.OfferedCourseTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.{Courses.Course, OfferedCourse, Repo, Terms.Term}
+  alias CoursePlanner.{Courses.Course, Courses.OfferedCourse, Repo, Terms.Term}
 
   test "changeset with valid attributes" do
     changeset =

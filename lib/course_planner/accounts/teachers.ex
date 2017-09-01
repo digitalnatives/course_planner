@@ -2,7 +2,7 @@ defmodule CoursePlanner.Accounts.Teachers do
   @moduledoc false
   import Ecto.Query
   alias Ecto.Changeset
-  alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, OfferedCourse}
+  alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, Courses.OfferedCourse}
 
   @teachers from u in User, where: u.role == "Teacher"
 
