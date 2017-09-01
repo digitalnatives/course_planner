@@ -1,7 +1,9 @@
 defmodule CoursePlanner.Accounts.User do
   @moduledoc false
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
   use Coherence.Schema
+
   alias CoursePlanner.Types.{UserRole, ParticipationType}
   alias CoursePlanner.Notifications.Notification
 

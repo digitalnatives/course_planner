@@ -2,7 +2,9 @@ defmodule CoursePlanner.Classes.Class do
   @moduledoc """
   This module holds the model for the class table
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Courses.OfferedCourse, Attendances.Attendance, Classes}
   alias Ecto.{Time, Date, Changeset}

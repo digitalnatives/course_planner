@@ -2,7 +2,9 @@ defmodule CoursePlanner.Attendances.Attendance do
   @moduledoc """
   This module holds the model for the attendance table
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
+
   alias CoursePlanner.Settings
 
   schema "attendances" do

@@ -2,7 +2,7 @@ defmodule CoursePlanner.Classes.Summaries do
   @moduledoc """
     Provides helper functions for the summary page
   """
-  use CoursePlannerWeb, :model
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Terms.Term, Courses.OfferedCourse, Tasks.Task}
   alias Ecto.DateTime

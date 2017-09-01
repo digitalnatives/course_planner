@@ -2,7 +2,8 @@
   @moduledoc """
     Schema for persisting email notification to send later
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "notifications" do
     field :type, :string

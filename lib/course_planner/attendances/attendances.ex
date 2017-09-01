@@ -2,7 +2,7 @@ defmodule CoursePlanner.Attendances do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :model
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Courses.OfferedCourse, Attendances.Attendance, Classes}
   alias CoursePlannerWeb.{Endpoint, Router.Helpers}

@@ -2,7 +2,8 @@ defmodule CoursePlanner.Courses.Course do
   @moduledoc """
   This module holds the model for the course table
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
   alias CoursePlanner.Courses.OfferedCourse
 

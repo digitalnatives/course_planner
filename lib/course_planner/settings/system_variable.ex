@@ -2,7 +2,8 @@ defmodule CoursePlanner.Settings.SystemVariable do
   @moduledoc """
   This module holds the model for one system variable
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
   alias Ecto.{Changeset, Type}
 

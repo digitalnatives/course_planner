@@ -2,9 +2,10 @@ defmodule CoursePlanner.Terms.Holiday do
   @moduledoc """
     Defines the Holiday structure which is embedded in a Term
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
-  alias Ecto.{Changeset}
+  alias Ecto.Changeset
 
   embedded_schema do
     field :date, :date

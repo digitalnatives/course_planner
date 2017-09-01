@@ -2,7 +2,7 @@ defmodule CoursePlanner.Classes.Calendars do
   @moduledoc """
   This module provides helper functions to populate the json for the calendar view
   """
-  use CoursePlannerWeb, :model
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Courses.OfferedCourse}
   alias Ecto.Changeset

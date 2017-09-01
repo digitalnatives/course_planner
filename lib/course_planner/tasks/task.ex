@@ -2,7 +2,8 @@ defmodule CoursePlanner.Tasks.Task do
   @moduledoc """
     Defines a task to be accomplished by volunteers or coordinators
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
   alias CoursePlanner.Accounts.User
   alias Ecto.Changeset
 

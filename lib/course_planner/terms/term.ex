@@ -2,7 +2,8 @@ defmodule CoursePlanner.Terms.Term do
   @moduledoc """
     Defines the Term, usually a semester, in which courses take place
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
   alias CoursePlanner.{Courses.OfferedCourse, Terms.Holiday}
   alias Ecto.{Date, Changeset}

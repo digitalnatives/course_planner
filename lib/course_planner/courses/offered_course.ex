@@ -2,7 +2,8 @@ defmodule CoursePlanner.Courses.OfferedCourse do
   @moduledoc """
   This is the Course offered in a given Term
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
 
   alias CoursePlanner.{Courses.Course, Terms.Term, Accounts.User, Classes.Class}
 

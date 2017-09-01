@@ -2,7 +2,6 @@ defmodule CoursePlanner.Courses do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :model
 
   alias CoursePlanner.{Repo, Courses.Course, Terms, Notifications.Notifier, Notifications}
 

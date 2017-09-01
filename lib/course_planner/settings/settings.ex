@@ -2,7 +2,9 @@ defmodule CoursePlanner.Settings do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :model
+  use Ecto.Schema
+  import Ecto.Changeset
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Settings.SystemVariable}
   alias Ecto.Multi

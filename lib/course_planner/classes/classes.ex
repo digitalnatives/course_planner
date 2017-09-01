@@ -2,7 +2,8 @@ defmodule CoursePlanner.Classes do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
-  use CoursePlannerWeb, :model
+  import Ecto.Changeset
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications}
   alias CoursePlanner.Terms.Term
