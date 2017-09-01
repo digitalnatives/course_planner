@@ -18,4 +18,23 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 ## Production Setup
 
 ### Heroku
+
+First, be sure `MIX_ENV` is set to `heroku` during compilation
+
+    heroku config:set MIX_ENV=heroku
+
+Then, click the button!
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+### Gigalixir
+
+For more details, see [the quick start](http://gigalixir.readthedocs.io/en/latest/main.html#getting-started-guide)
+
+   1. `pip install gigalixir`
+   2. `gigalixir login`
+   3. `APP_NAME=$(gigalixir create --name course-planner)`
+   4. `gigalixig set_config $APP_NAME DATABASE_URL $YOUR_DB_URL`
+   5. `git push gigalixir master`
+
+
