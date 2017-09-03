@@ -1,3 +1,3 @@
 cd $phoenix_dir
 npm --prefix ./assets run build
-MIX_ENV=prod mix phx.digest
+mix phx.digest
