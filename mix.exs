@@ -7,8 +7,8 @@ defmodule CoursePlanner.Mixfile do
      elixir: "~> 1.2",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
+     build_embedded: Mix.env == :prod or Mix.env == :heroku,
+     start_permanent: Mix.env == :prod or Mix.env == :heroku,
      aliases: aliases(),
      deps: deps(),
      test_coverage: [tool: ExCoveralls],
@@ -28,7 +28,8 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum]]
+                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
+                    :canary, :elixir_make]]
   end
 
   # Specifies which paths to compile per environment.
@@ -51,6 +52,7 @@ defmodule CoursePlanner.Mixfile do
      {:coherence, "0.4.0"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
+     {:distillery, "~> 1.0.0"},
      {:dogma, "~> 0.1.0", only: [:dev, :test]},
      {:credo, "~> 0.7", only: [:dev, :test]},
      {:ex_machina, "~> 2.0", only: :test},
