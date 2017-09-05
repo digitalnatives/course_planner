@@ -34,7 +34,7 @@
       "value": "18"
     },
     "MIX_ENV": {
-      "value": "prod"
+      "value": "heroku"
     }
   },
   "addons": [
