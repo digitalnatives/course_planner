@@ -1,22 +1,21 @@
 alias CoursePlanner.{User, Repo, SystemVariable}
-import Ecto.Query
 
-default_coordinator = Repo.get_by(email: "testuser@example.com")
-has_coordinators? = default_coordinator && default_coordinator.last_sign_in_at
-unless has_coordinators? do
-  %User{}
-  |> User.changeset(
-      %{
-        name: "admin",
-        family_name: "defaul",
-        email: "admin@example.com",
-        password: "secret",
-        password_confirmation: "secret",
-        role: "Coordinator"
-      },
-      :seed)
-  |> Repo.insert!
+default_coordinator = Repo.get_by(User, email: "admin@courseplanner.com")
+if default_coordinator do
+  Repo.delete!(default_coordinator)
 end
+%User{}
+|> User.changeset(
+    %{
+      name: "admin",
+      family_name: "defaul",
+      email: "admin@courseplanner.com",
+      password: "secret",
+      password_confirmation: "secret",
+      role: "Coordinator"
+    },
+    :seed)
+|> Repo.insert!
 
 unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
   %SystemVariable{}
