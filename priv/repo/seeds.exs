@@ -1,14 +1,15 @@
 alias CoursePlanner.{User, Repo, SystemVariable}
 import Ecto.Query
 
-has_coordinators? = Repo.one(from u in User, where: u.role == "Coordinator", select: 1, limit: 1)
+default_coordinator = Repo.get_by(email: "testuser@example.com")
+has_coordinators? = default_coordinator && default_coordinator.last_sign_in_at
 unless has_coordinators? do
   %User{}
   |> User.changeset(
       %{
-        name: "first",
-        family_name: "family",
-        email: "testuser@example.com",
+        name: "admin",
+        family_name: "defaul",
+        email: "admin@example.com",
         password: "secret",
         password_confirmation: "secret",
         role: "Coordinator"
