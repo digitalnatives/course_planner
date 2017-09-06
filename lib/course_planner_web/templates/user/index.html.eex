@@ -3,8 +3,20 @@
     <div class="col-xs-6 col-sm-9 col-md-10 page-title">
       All users
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
-      <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      <table>
+        <body>
+          <tr>
+            <td>
+              <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+            </td>
+            <td>
+              <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: :user, title: "Bulk Students"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+            </td>
+          </tr>
+        </body>
+      </table>
     </div>
   </div>
 
@@ -65,4 +77,3 @@
       <% end) %>
     </tbody>
   </table>
-

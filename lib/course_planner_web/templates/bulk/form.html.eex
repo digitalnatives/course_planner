@@ -1,0 +1,23 @@
+
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @conn, @action, [as: :input], fn f -> %>
+        <%= hidden_input(f, :title, value: @title) %>
+        <%= hidden_input(f, :target, value: @target) %>
+
+        <%= CoursePlannerWeb.SharedView.card @title do %>
+          <%= CoursePlannerWeb.SharedView.card_content do %>
+            <%= CoursePlannerWeb.SharedView.form_textarea f, :csv_data %>
+          <% end %>
+        <% end %>
+
+        <%= CoursePlannerWeb.SharedView.card_actions do %>
+          <div class="row row--vspace">
+            <div class="col-xs-12 col-md-3 col-md-offset-9">
+              <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>

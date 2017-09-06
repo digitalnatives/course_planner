@@ -42,6 +42,12 @@ defmodule CoursePlanner.User do
       greater_than_or_equal_to: 1, less_than_or_equal_to: 7)
   end
 
+  def changeset(model, params, :bulk) do
+    model
+    |> changeset(params)
+    |> validate_required([:role])
+  end
+
   def changeset(model, params, :password) do
     model
     |> cast(params,

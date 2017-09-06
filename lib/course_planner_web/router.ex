@@ -56,8 +56,11 @@ defmodule CoursePlannerWeb.Router do
     resources "/users", UserController, except: [:create, :new]
     post "/notify", UserController, :notify
 
+    resources "/bulk", BulkController, only: [:new, :create], singleton: true
+
     resources "/coordinators", CoordinatorController
     resources "/students", StudentController
+
     resources "/teachers", TeacherController
     resources "/volunteers", VolunteerController
 
