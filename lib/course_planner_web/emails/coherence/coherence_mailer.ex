@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.Coherence.Mailer do
+defmodule CoursePlanner.Coherence.Mailer do
   @moduledoc false
   alias Coherence.Config
 
