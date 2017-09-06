@@ -46,4 +46,4 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
 
       This workaround is necessary because the app won't start without running the migrations.
    
-   7. Connect to the consoel with `gigalixir remote_console $APP_NAME` and manually run the seeds.
+   7. Connect to the console with `gigalixir remote_console $APP_NAME` and manually run the seeds.
