@@ -12,7 +12,7 @@
               <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
             </td>
             <td>
-              <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Students"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+              <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Users"), class: "mdl-button mdl-js-button mdl-button--raised" %>
             </td>
           </tr>
         </body>
