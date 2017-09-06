@@ -38,8 +38,4 @@ defmodule CoursePlanner.BulkHelper do
       end)
     Repo.transaction(multi)
   end
-
-  def notify__created_users(_created_record) do
-
-  end
 end
