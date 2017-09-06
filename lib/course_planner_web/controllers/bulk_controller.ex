@@ -16,7 +16,7 @@ defmodule CoursePlannerWeb.BulkController do
         conn
         |> put_flash(:info, "All users are created and notified by.")
         |> redirect(to: user_path(conn, :index))
-      {:error, "bulk_creation", failed_value, _changes_so_far} ->
+      {:error, "bulk_user_creation", failed_value, _changes_so_far} ->
         conn
         |> put_flash(:error, failed_value)
         |> render("new.html", target: target, title: title)
@@ -36,6 +36,7 @@ defmodule CoursePlannerWeb.BulkController do
   defp bulk_target_handler(csv_data, target) do
     case target do
       "user" -> BulkHelper.bulk_user_creation(csv_data)
+      _      -> {:error, "", :illegal_operation, ""}
     end
   end
 end

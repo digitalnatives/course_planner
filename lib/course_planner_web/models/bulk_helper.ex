@@ -8,19 +8,18 @@ defmodule CoursePlanner.BulkHelper do
 
   def bulk_user_creation(csv_data) do
     csv_parsed_result = CsvParser.parse(csv_data, 5)
-    operation_name = "bulk_user_creation"
     case csv_parsed_result do
       {:ok, parsed_params} ->
         create_users_with_transaction(parsed_params)
       {:error, message} ->
-        {:error, operation_name, message, ""}
+        {:error, "bulk_user_creation", message, ""}
     end
   end
 
-  defp create_users_with_transaction(student_records) do
+  defp create_users_with_transaction(user_records) do
     multi =
-      Enum.reduce(student_records, Multi.new, fn(student, out) ->
-        [name, family_name, nickname, email, role] = student
+      Enum.reduce(user_records, Multi.new, fn(user, out) ->
+        [name, family_name, nickname, email, role] = user
         token = ControllerHelpers.random_string 48
         params = %{}
           |> Map.put_new("name", name)
