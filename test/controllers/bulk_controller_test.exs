@@ -52,4 +52,12 @@ defmodule CoursePlanner.BulkControllerTest do
     end
   end
 
+  @moduletag user_role: :coordinator
+  describe "settings functionality for coordinator user" do
+    test "does not render new page", %{conn: conn} do
+      conn = get conn, bulk_path(conn, :new, target: "user", title: "Bulk Users")
+      assert html_response(conn, 200) =~ "Bulk Users"
+    end
+  end
+
 end
