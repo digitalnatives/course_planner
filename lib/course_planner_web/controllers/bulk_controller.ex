@@ -41,7 +41,7 @@ defmodule CoursePlannerWeb.BulkController do
   defp bulk_target_handler(csv_data, target) do
     case target do
       "user" -> BulkHelper.bulk_user_creation(csv_data)
-      _      -> {:error, "", :illegal_operation, ""}
+      _      -> {:error, "", "", ""}
     end
   end
 

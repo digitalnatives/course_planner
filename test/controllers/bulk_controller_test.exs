@@ -104,6 +104,14 @@ defmodule CoursePlanner.BulkControllerTest do
       assert conn.private.phoenix_flash == %{"error" => "email has already been taken"}
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
+
+    test "returning error if no action is implemented for the requested target", %{conn: conn} do
+      params = create_input_params("invalid target", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
+      conn = post conn, bulk_path(conn, :create, params)
+      assert html_response(conn, 200)
+      assert conn.private.phoenix_flash == %{"error" => "Something went wrong."}
+      refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
+    end
   end
 
 end
