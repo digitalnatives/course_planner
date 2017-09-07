@@ -1,6 +1,6 @@
 defmodule CoursePlanner.VolunteerControllerTest do
   use CoursePlannerWeb.ConnCase
-  alias CoursePlanner.{Repo, User}
+  alias CoursePlanner.{Repo, Accounts.User}
 
   import CoursePlanner.Factory
 
@@ -67,7 +67,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
       conn = delete conn, volunteer_path(conn, :delete, "-1")
       assert redirected_to(conn) == volunteer_path(conn, :index)
       conn = get conn, volunteer_path(conn, :index)
-      assert html_response(conn, 200) =~ "Volunteer was not found." 
+      assert html_response(conn, 200) =~ "Volunteer was not found."
     end
 
   test "renders form for new resources", %{conn: conn} do

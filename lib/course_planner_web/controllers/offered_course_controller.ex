@@ -3,12 +3,12 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.{
-    AttendanceHelper,
-    ClassHelper,
-    OfferedCourse,
-    OfferedCourses,
-    Students,
-    Teachers,
+    Attendances,
+    Classes,
+    Courses.OfferedCourse,
+    Courses.OfferedCourses,
+    Accounts.Students,
+    Accounts.Teachers,
   }
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
@@ -59,8 +59,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     {past_classes, next_classes} =
       offered_course.classes
-      |> ClassHelper.sort_by_starting_time()
-      |> ClassHelper.split_past_and_next()
+      |> Classes.sort_by_starting_time()
+      |> Classes.split_past_and_next()
 
     render(conn, "show.html", offered_course: offered_course,
                               next_classes: next_classes,
@@ -77,8 +77,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     {past_classes, next_classes} =
       id
-      |> ClassHelper.classes_with_attendances(user_id)
-      |> ClassHelper.split_past_and_next()
+      |> Classes.classes_with_attendances(user_id)
+      |> Classes.split_past_and_next()
 
     render(conn, "show.html", offered_course: offered_course,
                               next_classes: next_classes,
@@ -112,9 +112,9 @@ defmodule CoursePlannerWeb.OfferedCourseController do
 
     case Repo.update(changeset) do
       {:ok, updated_offered_course} ->
-        AttendanceHelper.remove_students_attendances(offered_course.id,
+        Attendances.remove_students_attendances(offered_course.id,
                                                      offered_course.students, students)
-        AttendanceHelper.create_students_attendances(offered_course.id,
+        Attendances.create_students_attendances(offered_course.id,
                                                      offered_course.students, students)
 
         conn

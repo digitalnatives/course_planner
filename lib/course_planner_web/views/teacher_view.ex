@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.TeacherView do
   @moduledoc false
   use CoursePlannerWeb, :view
 
-  alias CoursePlanner.Teachers
+  alias CoursePlanner.Accounts.Teachers
 
   def teacher_courses(teacher_id) do
     Teachers.courses(teacher_id)

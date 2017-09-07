@@ -1,7 +1,7 @@
 defmodule CoursePlannerWeb.TaskView do
   @moduledoc false
   use CoursePlannerWeb, :view
-  alias CoursePlanner.Volunteers
+  alias CoursePlanner.Accounts.Volunteers
   alias CoursePlannerWeb.SharedView
   alias Ecto.Changeset
 
