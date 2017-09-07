@@ -2,7 +2,7 @@ defmodule CoursePlanner.CoherenceUserEmailTest do
   use ExUnit.Case
 
   alias CoursePlanner.User
-  alias CoursePlannerWeb.Coherence.UserEmail
+  alias CoursePlanner.Coherence.UserEmail
   alias Coherence.Config
 
   @sample_url "http://www.sample-url.com"

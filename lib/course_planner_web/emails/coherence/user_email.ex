@@ -1,6 +1,6 @@
 Code.ensure_loaded Phoenix.Swoosh
 
-defmodule CoursePlannerWeb.Coherence.UserEmail do
+defmodule CoursePlanner.Coherence.UserEmail do
   @moduledoc false
   use Phoenix.Swoosh, view: CoursePlannerWeb.Coherence.EmailView,
                       layout: {CoursePlannerWeb.Coherence.LayoutView, :email}
