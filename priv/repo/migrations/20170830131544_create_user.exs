@@ -1,10 +1,34 @@
-defmodule CoursePlanner.Repo.Migrations.CreateCoherenceUser do
+defmodule CoursePlanner.Repo.Migrations.CreateUser do
   use Ecto.Migration
-  def change do
-    create table(:users) do
 
+  def change do
+    execute("""
+          CREATE TYPE user_role AS ENUM (
+            'Student',
+            'Teacher',
+            'Coordinator',
+            'Volunteer'
+          )
+        """)
+    execute("""
+          CREATE TYPE participation_type AS ENUM (
+            'Official',
+            'Guest'
+          )
+    """)
+    create table(:users) do
       add :name, :string
       add :email, :string
+      add :family_name, :text
+      add :nickname, :string
+      add :student_id, :string
+      add :comments, :string
+      add :role, :user_role
+      add :participation_type, :participation_type
+      add :phone_number, :string
+      add :notified_at, :naive_datetime
+      add :notification_period_days, :integer, null: false, default: 1
+
       # authenticatable
       add :password_hash, :string
       # recoverable

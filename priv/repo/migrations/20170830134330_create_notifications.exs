@@ -5,6 +5,7 @@ defmodule CoursePlanner.Repo.Migrations.CreateNotifications do
     create table(:notifications) do
       add :type, :string, null: false
       add :resource_path, :string
+      add :data, :map
       add :user_id, references(:users, on_delete: :delete_all), null: false
 
       timestamps()

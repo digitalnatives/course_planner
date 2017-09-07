@@ -1,4 +1,4 @@
-defmodule CoursePlanner.Repo.Migrations.CreateTasks do
+defmodule CoursePlanner.Repo.Migrations.CreateTask do
   use Ecto.Migration
 
   def change do
@@ -6,9 +6,8 @@ defmodule CoursePlanner.Repo.Migrations.CreateTasks do
       add :name, :string
       add :start_time, :naive_datetime
       add :finish_time, :naive_datetime
-      add :user_id, references(:users)
-
-      add :deleted_at, :naive_datetime
+      add :description, :text
+      add :max_volunteers, :integer, null: false, default: 1
 
       timestamps()
     end
