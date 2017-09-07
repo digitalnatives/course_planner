@@ -15,7 +15,7 @@ defmodule CoursePlanner.CsvParser do
     if validate_column_count(trimmed_splitted_csv, column_count) do
       {:ok, Enum.chunk_every(trimmed_splitted_csv, column_count)}
     else
-      {:error, "input data is not matching the column number"}
+      {:error, "Input data is not matching the column number."}
     end
   end
 

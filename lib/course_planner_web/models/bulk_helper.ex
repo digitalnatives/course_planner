@@ -12,7 +12,7 @@ defmodule CoursePlanner.BulkHelper do
       {:ok, parsed_params} ->
         create_users_with_transaction(parsed_params)
       {:error, message} ->
-        {:error, "bulk_user_creation", message, ""}
+        {:error, "parsing_csv", message, ""}
     end
   end
 

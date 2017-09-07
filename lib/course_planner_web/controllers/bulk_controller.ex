@@ -16,10 +16,12 @@ defmodule CoursePlannerWeb.BulkController do
     case bulk_target_handler(csv_data, target) do
       {:ok, created_entities} ->
         post_creation(conn, created_entities, target)
+
         conn
         |> put_flash(:info, "All users are created and notified by.")
         |> redirect(to: user_path(conn, :index))
-      {:error, "bulk_user_creation", failed_value, _changes_so_far} ->
+      {:error, "parsing_csv", failed_value, _changes_so_far} ->
+
         conn
         |> put_flash(:error, failed_value)
         |> render("new.html", target: target, title: title)
@@ -27,7 +29,7 @@ defmodule CoursePlannerWeb.BulkController do
         {error_field, {error_message, _etc}} = List.first(errors)
 
         conn
-        |> put_flash(:error, "#{to_string(error_field)} #{error_message}")
+        |> put_flash(:error, "#{error_field} #{error_message}")
         |> render("new.html", target: target, title: title)
       {:error, _failed_operation, _failed_value, _changes_so_far} ->
         conn
