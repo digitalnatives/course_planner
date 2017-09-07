@@ -1,7 +1,7 @@
 defmodule CoursePlanner.SettingControllerTest do
   use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.SystemVariable
+  alias CoursePlanner.Settings.SystemVariable
   import CoursePlanner.Factory
 
   setup(%{user_role: role}) do

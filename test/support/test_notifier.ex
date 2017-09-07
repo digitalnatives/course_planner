@@ -1,6 +1,6 @@
 defmodule CoursePlanner.TestNotifier do
 
-  alias CoursePlanner.{Notification, Notifier.Server}
+  alias CoursePlanner.{Notifications.Notification, Notifications.Server}
 
   def notify_user(_), do: :ok
   def notify_later(%Notification{} = notification) do
