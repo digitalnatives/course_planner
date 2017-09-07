@@ -6,13 +6,9 @@ defmodule CoursePlanner.Repo.Migrations.CreateClass do
       add :date, :date
       add :starting_at, :time
       add :finishes_at, :time
-      add :status, :entity_status
-      add :deleted_at, :naive_datetime
-      add :course_id, references(:courses, on_delete: :delete_all)
+      add :classroom, :string
 
       timestamps()
     end
-    create index(:classes, [:course_id])
-
   end
 end
