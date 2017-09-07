@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.CourseController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Repo, Course, CourseHelper}
+  alias CoursePlanner.{Repo, Courses.Course, Courses}
 
   import Canary.Plugs
   plug :authorize_controller
@@ -45,7 +45,7 @@ defmodule CoursePlannerWeb.CourseController do
 
     case Repo.update(changeset) do
       {:ok, course} ->
-        CourseHelper.notify_user_course(course,
+        Courses.notify_user_course(course,
           current_user,
           :course_updated,
           course_url(conn, :index))
@@ -58,9 +58,9 @@ defmodule CoursePlannerWeb.CourseController do
   end
 
   def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
-    case CourseHelper.delete(id) do
+    case Courses.delete(id) do
       {:ok, course} ->
-        CourseHelper.notify_user_course(course, current_user, :course_deleted)
+        Courses.notify_user_course(course, current_user, :course_deleted)
         conn
         |> put_flash(:info, "Course deleted successfully.")
         |> redirect(to: course_path(conn, :index))

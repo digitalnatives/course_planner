@@ -3,11 +3,13 @@ defmodule CoursePlanner.Factory do
   provides factory function for tests
 """
 alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{User, Course, OfferedCourse, Class, Attendance, Tasks.Task, SystemVariable, Notification}
+alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Classes.Class,
+                     Attendances.Attendance, Tasks.Task, Settings.SystemVariable,
+                     Notifications.Notification}
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
-  @password_hash CoursePlanner.User.encrypt_password("secret")
+  @password_hash User.encrypt_password("secret")
 
  def user_factory do
    %User{
