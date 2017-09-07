@@ -37,6 +37,31 @@ defmodule CoursePlanner.UserTest do
       assert {:error, error_changeset} = Repo.insert(changeset)
       assert error_changeset.errors[:email] == {"has already been taken", []}
     end
+
+    test "changeset disregards email case sensitivity and won't inserted when email already exists" do
+      changeset_orig = User.changeset(
+        %User{},
+        %{
+          name: "foo",
+          family_name: "bar",
+          email: "foo@bar.com",
+          password: "secret",
+          password_confirmation: "secret"
+          })
+      assert {:ok, _} = Repo.insert(changeset_orig)
+
+      changeset_dup = User.changeset(
+        %User{},
+        %{
+          name: "foo",
+          family_name: "bar",
+          email: "Foo@bar.com",
+          password: "secret",
+          password_confirmation: "secret"
+          })
+      assert {:error, error_changeset} = Repo.insert(changeset_dup)
+      assert error_changeset.errors[:email] == {"has already been taken", []}
+    end
   end
 
   describe "comments lentgh" do

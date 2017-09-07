@@ -33,6 +33,7 @@ defmodule CoursePlanner.User do
   def changeset(model, params \\ %{}) do
     model
     |> cast(params, @target_params ++ coherence_fields())
+    |> update_change(:email, &String.downcase/1)
     |> validate_required([:email])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
