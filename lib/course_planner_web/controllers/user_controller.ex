@@ -15,7 +15,7 @@ defmodule CoursePlannerWeb.UserController do
 
   def show(conn, %{"id" => id}) do
     case Users.get(id) do
-      {:ok, user} -> render(conn, "show.html", user: user, changeset: User.changeset(user))
+      {:ok, user} -> render(conn, "show.html", user: user)
       {:error, :not_found} ->
         conn
         |> put_status(404)
