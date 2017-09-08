@@ -46,6 +46,7 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
 
       This workaround is necessary because the app won't start without running the migrations.
    
-   7. Copy the contents of the `priv/repo/seeds.exs` file
+   
+   7. Copy the contents of the `priv/repo/seeds.exs` file
       Connect to the console with `gigalixir remote_console $APP_NAME`
       Paste the contents of `seeds.exs` in the console
