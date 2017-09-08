@@ -1,4 +1,9 @@
 defmodule CoursePlanner.ReleaseTasks do
+  @moduledoc """
+  Module containing the migration/seeds tasks
+  They are supposed to run from `rel/commands/migrate.sh` before the application is started
+  """
+  alias Ecto.Migrator
 
   @start_apps [
     :crypto,
@@ -43,16 +48,15 @@ defmodule CoursePlanner.ReleaseTasks do
 
   def migrate, do: Enum.each(repos(), &run_migrations_for/1)
 
-  def priv_dir(app), do: "#{:code.priv_dir(app)}"
+  def priv_dir(app), do: :code.priv_dir(app)
 
   defp run_migrations_for(repo) do
     app = Keyword.get(repo.config, :otp_app)
     IO.puts "Running migrations for #{app}"
-    Ecto.Migrator.run(repo, migrations_path(app), :up, all: true)
+    Migrator.run(repo, migrations_path(app), :up, all: true)
   end
 
   defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
   defp seed_path(app), do: Path.join([priv_dir(app), "repo", "seeds.exs"])
-
 
 end
