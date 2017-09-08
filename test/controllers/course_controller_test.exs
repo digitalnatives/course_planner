@@ -1,6 +1,6 @@
 defmodule CoursePlanner.CourseControllerTest do
   use CoursePlannerWeb.ConnCase
-  alias CoursePlanner.Course
+  alias CoursePlanner.Courses.Course
 
   import CoursePlanner.Factory
 
