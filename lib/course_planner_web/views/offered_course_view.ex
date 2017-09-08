@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.OfferedCourseView do
   @moduledoc false
   use CoursePlannerWeb, :view
 
-  alias CoursePlanner.{Repo, Teachers, Terms, Students, Course}
+  alias CoursePlanner.{Repo, Accounts.Teachers, Terms, Accounts.Students, Courses.Course}
   alias CoursePlannerWeb.SharedView
   alias Ecto.Changeset
 

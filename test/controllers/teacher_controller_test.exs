@@ -1,7 +1,7 @@
 defmodule CoursePlanner.TeacherControllerTest do
   use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.{Repo, User}
+  alias CoursePlanner.{Repo, Accounts.User}
   import CoursePlanner.Factory
 
   setup do

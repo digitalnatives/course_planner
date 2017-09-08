@@ -1,7 +1,7 @@
 defmodule CoursePlannerWeb.UserController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{User, Users}
+  alias CoursePlanner.{Accounts.User, Accounts.Users}
   require Logger
 
   import Canary.Plugs

@@ -3,7 +3,7 @@ defmodule CoursePlanner do
   This is the main module of the app
   """
   use Application
-  alias CoursePlanner.{Repo, Notifier, NotifierScheduler}
+  alias CoursePlanner.{Repo, Notifications.Notifier, Notifications.NotifierScheduler}
   alias CoursePlannerWeb.Endpoint
 
   def start(_type, _args) do
