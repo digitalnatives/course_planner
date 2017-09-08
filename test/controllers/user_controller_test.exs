@@ -185,4 +185,11 @@ defmodule CoursePlanner.UserControllerTest do
     conn = put user_conn, user_path(user_conn, :resend_email, user.id)
     assert redirected_to(conn) == user_path(conn, :show, user)
   end
+
+  test "don't resend notification to inexistent user" do
+    user_conn = login_as(:coordinator)
+
+    conn = put user_conn, user_path(user_conn, :resend_email, -1)
+    assert html_response(conn, 404)
+  end
 end
