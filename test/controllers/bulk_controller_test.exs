@@ -1,7 +1,7 @@
 defmodule CoursePlanner.BulkControllerTest do
   use CoursePlannerWeb.ConnCase
 
-  alias CoursePlanner.{Repo, User}
+  alias CoursePlanner.{Repo, Accounts.User}
 
   import CoursePlanner.Factory
 
