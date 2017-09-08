@@ -12,22 +12,18 @@ defmodule CoursePlanner.ReleaseTasks do
     :ecto
   ]
 
-  def myapp, do: Application.get_application(__MODULE__)
-
-  def repos, do: Application.get_env(myapp(), :ecto_repos, [])
+  def repos, do: Application.get_env(:course_planner, :ecto_repos, [])
 
   def seed do
-    me = myapp()
-
-    IO.puts "Loading #{me}.."
-    # Load the code for myapp, but don't start it
-    :ok = Application.load(me)
+    IO.puts "Loading course_planner.."
+    # Load the code for course_planner, but don't start it
+    :ok = Application.load(:course_planner)
 
     IO.puts "Starting dependencies.."
     # Start apps necessary for executing migrations
     Enum.each(@start_apps, &Application.ensure_all_started/1)
 
-    # Start the Repo(s) for myapp
+    # Start the Repo(s) for course_planner
     IO.puts "Starting repos.."
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
 
@@ -35,7 +31,7 @@ defmodule CoursePlanner.ReleaseTasks do
     migrate()
 
     # Run the seed script if it exists
-    seed_script = Path.join([priv_dir(:myapp), "repo", "seeds.exs"])
+    seed_script = Path.join([seed_path(:course_planner), "repo", "seeds.exs"])
     if File.exists?(seed_script) do
       IO.puts "Running seed script.."
       Code.eval_file(seed_script)
