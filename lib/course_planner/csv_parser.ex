@@ -7,12 +7,6 @@ defmodule CoursePlanner.CsvParser do
   def parse(csv_data, column_count, trim_elements \\ true) do
     trimmed_and_splitted_csv = csv_splitter(csv_data, trim_elements)
 
-#    if validate_column_count(trimmed_and_splitted_csv, column_count) do
-#      {:ok, trimmed_and_splitted_csv}
-#    else
-#      {:error, "Input data is not matching the column number."}
-#    end
-
     case validate_column_count(trimmed_and_splitted_csv, column_count) do
       {:ok, :ok} -> {:ok, trimmed_and_splitted_csv}
       {:error, :empty} -> {:error, "Input can not be empty."}
