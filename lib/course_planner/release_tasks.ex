@@ -7,10 +7,7 @@ defmodule CoursePlanner.ReleaseTasks do
     :ecto
   ]
 
-  def myapp do
-    {:ok, app} = Application.get_application(__MODULE__)
-    app
-  end
+  def myapp, do: Application.get_application(__MODULE__)
 
   def repos, do: Application.get_env(myapp(), :ecto_repos, [])
 
