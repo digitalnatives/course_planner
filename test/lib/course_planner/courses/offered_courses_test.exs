@@ -362,7 +362,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert notification.user == teacher2
       assert notification.type == "attendance_missing"
-      assert notification.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course.id)
+      assert notification.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course.id)
     end
 
     test "when multiple offered_course with multiple teacher have missing attendance and some teachers can get notification" do
@@ -388,11 +388,11 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       assert notification1.user == teacher1
       assert notification1.type == "attendance_missing"
-      assert notification1.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course1.id)
+      assert notification1.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course1.id)
 
       assert notification2.user == teacher3
       assert notification2.type == "attendance_missing"
-      assert notification2.resource_path == AttendanceHelper.get_offered_course_fill_attendance_path(offered_course2.id)
+      assert notification2.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course2.id)
     end
 
   end
