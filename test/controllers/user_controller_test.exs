@@ -177,4 +177,12 @@ defmodule CoursePlanner.UserControllerTest do
     conn = post user_conn, user_path(user_conn, :notify)
     assert redirected_to(conn) == user_path(conn, :index)
   end
+
+  test "resend notification to user" do
+    user_conn = login_as(:coordinator)
+    user = insert(:user)
+
+    conn = put user_conn, user_path(user_conn, :resend_email, user.id)
+    assert redirected_to(conn) == user_path(conn, :show, user)
+  end
 end
