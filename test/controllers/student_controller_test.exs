@@ -28,8 +28,7 @@ defmodule CoursePlanner.StudentControllerTest do
   test "create student for coordinator user", %{conn: conn} do
     conn = post conn, student_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == student_path(conn, :index)
-    conn = get conn, student_path(conn, :index)
-    assert html_response(conn, 200)
+    assert conn.private.plug_session == %{"phoenix_flash" => %{"info" => "Student created and notified by."}}
   end
 
   test "does not create student for non coordinator user", %{conn: _conn} do
@@ -95,8 +94,7 @@ defmodule CoursePlanner.StudentControllerTest do
   test "does not delete chosen resource when does not exist", %{conn: conn} do
     conn = delete conn, student_path(conn, :delete, "-1")
     assert redirected_to(conn) == student_path(conn, :index)
-    conn = get conn, student_path(conn, :index)
-    assert html_response(conn, 200) =~ "Student was not found."
+    assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Student was not found."}}
   end
 
   test "renders form for new resources", %{conn: conn} do

@@ -71,8 +71,7 @@ defmodule CoursePlanner.CourseControllerTest do
   test "deletes with an invalid id", %{conn: conn} do
     conn = delete conn, course_path(conn, :delete, -1)
     assert redirected_to(conn) == course_path(conn, :index)
-    conn = get conn, course_path(conn, :index)
-    assert html_response(conn, 200) =~ "Course was not found"
+    assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Course was not found."}}
   end
 
   test "does not list entries on index for non coordinator user", %{conn: _conn} do
