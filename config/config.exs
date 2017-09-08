@@ -19,7 +19,7 @@ config :course_planner, CoursePlanner.Mailer,
 
 # %% Coherence Configuration %%   Don't remove this line
 config :coherence,
-  user_schema: CoursePlanner.User,
+  user_schema: CoursePlanner.Accounts.User,
   repo: CoursePlanner.Repo,
   module: CoursePlanner,
   web_module: CoursePlannerWeb,
@@ -37,7 +37,7 @@ config :canary,
   repo: CoursePlanner.Repo,
   unauthorized_handler: {CoursePlannerWeb.Helper, :handle_unauthorized}
 
-config :course_planner, CoursePlanner.NotifierScheduler,
+config :course_planner, CoursePlanner.Notifications.NotifierScheduler,
   jobs: [
     {"0 18 * * *", {CoursePlanner.Notifications, :send_all_notifications, []}},
     {"30 17 * * *", {CoursePlanner.Notifications, :build_all_notifications, []}}

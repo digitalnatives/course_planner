@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.ClassController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Class, ClassHelper, AttendanceHelper}
+  alias CoursePlanner.{Classes.Class, Classes, Attendances}
 
   import Canary.Plugs
   plug :authorize_controller
@@ -26,13 +26,13 @@ defmodule CoursePlannerWeb.ClassController do
     case Repo.insert(changeset) do
       {:ok, class} ->
 
-        ClassHelper.notify_class_students(class,
+        Classes.notify_class_students(class,
           current_user,
           :class_subscribed,
           offered_course_url(conn, :show, class.offered_course_id))
 
         preload_class = Repo.preload(class, :students)
-        AttendanceHelper.create_class_attendance_records(preload_class.id, preload_class.students)
+        Attendances.create_class_attendance_records(preload_class.id, preload_class.students)
 
         conn
         |> put_flash(:info, "Class created successfully.")
@@ -57,7 +57,7 @@ defmodule CoursePlannerWeb.ClassController do
 
     case Repo.update(changeset) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class,
+        Classes.notify_class_students(class,
           current_user,
           :class_updated,
           offered_course_url(conn, :show, class.offered_course_id))
@@ -70,9 +70,9 @@ defmodule CoursePlannerWeb.ClassController do
   end
 
   def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
-    case ClassHelper.delete(id) do
+    case Classes.delete(id) do
       {:ok, class} ->
-        ClassHelper.notify_class_students(class, current_user, :class_deleted)
+        Classes.notify_class_students(class, current_user, :class_deleted)
         conn
         |> put_flash(:info, "Class deleted successfully.")
         |> redirect(to: class_path(conn, :index))
