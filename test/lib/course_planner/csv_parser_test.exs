@@ -27,7 +27,11 @@ defmodule CoursePlanner.CsvParserTest do
   end
 
   test "when input has more than one set of data" do
-    assert CsvParser.parse("a,b,c,d,e,f,g,h", 4) == {:ok, [["a","b","c", "d"], ["e","f","g","h"]]}
+    data = """
+    a,b,c,d
+    e,f,g,h
+    """
+    assert CsvParser.parse(data, 4) == {:ok, [["a","b","c", "d"], ["e","f","g","h"]]}
   end
 
   test "parsing csv with element space trimming" do
