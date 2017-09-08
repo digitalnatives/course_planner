@@ -16,10 +16,10 @@ defmodule CoursePlanner.CsvParserTest do
   end
 
   test "when data and required columns do not match" do
-    assert CsvParser.parse("", 4) == {:error, "Input data is not matching the column number."}
-    assert CsvParser.parse("a,b,c", 4) == {:error, "Input data is not matching the column number."}
-    assert CsvParser.parse("a,b,c,d,e", 4) == {:error, "Input data is not matching the column number."}
-    assert CsvParser.parse("a,b,c,d,e,f,g,h,i", 4) == {:error, "Input data is not matching the column number."}
+    assert CsvParser.parse("", 4) == {:error, "Input can not be empty."}
+    assert CsvParser.parse("a,b,c", 4) == {:error, "Input data in row #1 is not matching the column number."}
+    assert CsvParser.parse("a,b,c,d,e", 4) == {:error, "Input data in row #1 is not matching the column number."}
+    assert CsvParser.parse("a,b,c,d,e,f,g,h,i", 4) == {:error, "Input data in row #1 is not matching the column number."}
   end
 
   test "when input has one set of data" do

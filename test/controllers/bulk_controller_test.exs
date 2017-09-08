@@ -84,7 +84,7 @@ defmodule CoursePlanner.BulkControllerTest do
     test "does not create bulk request if input fields are not enough", %{conn: conn} do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com")
       conn = post conn, bulk_path(conn, :create, params)
-      assert html_response(conn, 200) =~ "Input data is not matching the column number."
+      assert html_response(conn, 200) =~ "Input data in row #1 is not matching the column number."
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
 
