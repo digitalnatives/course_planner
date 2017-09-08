@@ -1,4 +1,4 @@
-alias CoursePlanner.{User, Repo, SystemVariable}
+alias CoursePlanner.{Accounts.User, Repo, Settings.SystemVariable}
 
 default_coordinator = Repo.get_by(User, email: "admin@courseplanner.com")
 if default_coordinator do
