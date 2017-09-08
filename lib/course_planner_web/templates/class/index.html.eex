@@ -38,10 +38,14 @@
             <%= class.date %>
           </td>
           <td>
-            <%= Timex.format!(class.starting_at, "{h24}:{m}") %>
+            <%= class.date
+                |> Ecto.DateTime.from_date_and_time(class.starting_at)
+                |> Timex.format!("{h24}:{m}") %>
           </td>
           <td>
-            <%= Timex.format!(class.finishes_at, "{h24}:{m}") %>
+            <%= class.date
+                |> Ecto.DateTime.from_date_and_time(class.finishes_at)
+                |> Timex.format!("{h24}:{m}") %>
           </td>
           <%= if @conn.assigns.current_user.role == "Coordinator" do %>
             <td>
