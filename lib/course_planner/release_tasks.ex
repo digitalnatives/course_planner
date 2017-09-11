@@ -1,7 +1,8 @@
 defmodule CoursePlanner.ReleaseTasks do
   @moduledoc """
   Module containing the migration/seeds tasks
-  They are supposed to run from `rel/commands/migrate.sh` before the application is started
+  They are supposed to run from `rel/commands/migrate.sh`
+  and `rel/commands/setup.sh` before the application is started
   """
   alias Ecto.Migrator
 
@@ -14,37 +15,31 @@ defmodule CoursePlanner.ReleaseTasks do
 
   def repos, do: Application.get_env(:course_planner, :ecto_repos, [])
 
-  def seed do
+  def prepare do
     IO.puts "Loading course_planner.."
-    # Load the code for course_planner, but don't start it
     :ok = Application.load(:course_planner)
 
     IO.puts "Starting dependencies.."
-    # Start apps necessary for executing migrations
     Enum.each(@start_apps, &Application.ensure_all_started/1)
 
-    # Start the Repo(s) for course_planner
     IO.puts "Starting repos.."
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
+  end
 
-    # Run migrations
+  def setup do
+
+    prepare()
     migrate()
+    seed()
 
-    # Run the seed script if it exists
-    seed_script = Path.join([seed_path(:course_planner), "repo", "seeds.exs"])
-    if File.exists?(seed_script) do
-      IO.puts "Running seed script.."
-      Code.eval_file(seed_script)
-    end
-
-    # Signal shutdown
     IO.puts "Success!"
     :init.stop()
   end
 
-  def migrate, do: Enum.each(repos(), &run_migrations_for/1)
-
-  def priv_dir(app), do: :code.priv_dir(app)
+  def migrate do
+    prepare()
+    Enum.each(repos(), &run_migrations_for/1)
+  end
 
   defp run_migrations_for(repo) do
     app = Keyword.get(repo.config, :otp_app)
@@ -53,6 +48,17 @@ defmodule CoursePlanner.ReleaseTasks do
   end
 
   defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
+
+  def seed do
+    seed_script = seed_path(:course_planner)
+    if File.exists?(seed_script) do
+      IO.puts "Running seed script.."
+      Code.eval_file(seed_script)
+    end
+  end
+
   defp seed_path(app), do: Path.join([priv_dir(app), "repo", "seeds.exs"])
+
+  defp priv_dir(app), do: :code.priv_dir(app)
 
 end
