@@ -82,7 +82,9 @@ defmodule CoursePlanner.Courses.OfferedCourses do
       with_pending_attendances()
       |> Enum.flat_map(fn(offered_course) ->
         offered_course.teachers
-        |> Enum.filter(fn(teacher) -> teacher in notifiable_users end)
+        |> Enum.filter(fn(teacher) ->
+             Enum.any?(notifiable_users, &(&1.id == teacher.id))
+           end)
         |> Enum.map(fn(teacher) ->
            %{
               user: teacher,
