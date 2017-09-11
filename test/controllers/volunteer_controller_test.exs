@@ -66,9 +66,8 @@ defmodule CoursePlanner.VolunteerControllerTest do
   test "does not delete chosen resource when does not exist", %{conn: conn} do
       conn = delete conn, volunteer_path(conn, :delete, "-1")
       assert redirected_to(conn) == volunteer_path(conn, :index)
-      conn = get conn, volunteer_path(conn, :index)
-      assert html_response(conn, 200) =~ "Volunteer was not found."
-    end
+      assert get_flash(conn, "error") == "Volunteer was not found."
+  end
 
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, volunteer_path(conn, :new)
@@ -159,8 +158,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
   test "create volunteer for coordinator user", %{conn: conn} do
     conn = post conn, volunteer_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == volunteer_path(conn, :index)
-    conn = get conn, volunteer_path(conn, :index)
-    assert html_response(conn, 200)
+    assert get_flash(conn, "info") == "Volunteer created and notified by."
   end
 
   test "does not create volunteer for coordinator user when data is wrong", %{conn: conn} do
