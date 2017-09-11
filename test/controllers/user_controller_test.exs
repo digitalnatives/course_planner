@@ -179,7 +179,7 @@ defmodule CoursePlanner.UserControllerTest do
 
   test "resend notification to user" do
     user_conn = login_as(:coordinator)
-    user = insert(:user)
+    user = insert(:user, %{reset_password_token: "whatever"})
 
     conn = put user_conn, user_path(user_conn, :resend_email, user.id)
     assert redirected_to(conn) == user_path(conn, :show, user)
