@@ -2,6 +2,8 @@ defmodule CoursePlannerWeb.UserController do
   @moduledoc false
   use CoursePlannerWeb, :controller
   alias CoursePlanner.{Accounts.User, Accounts.Users}
+  alias CoursePlannerWeb.Router.Helpers
+  alias Coherence.ControllerHelpers
   require Logger
 
   import Canary.Plugs
@@ -74,5 +76,21 @@ defmodule CoursePlannerWeb.UserController do
     conn
     |> put_flash(:info, "Users notified successfully.")
     |> redirect(to: user_path(conn, :index))
+  end
+
+  def resend_email(conn, %{"id" => id}) do
+    case Users.get(id) do
+      {:ok, user} ->
+        url = Helpers.password_url(conn, :edit, user.reset_password_token)
+        ControllerHelpers.send_user_email(:welcome, user, url)
+
+        conn
+        |> put_flash(:info, "Reset e-mail sent.")
+        |> redirect(to: user_path(conn, :show, user))
+      {:error, :not_found} ->
+        conn
+        |> put_status(404)
+        |> render(CoursePlannerWeb.ErrorView, "404.html")
+    end
   end
 end
