@@ -67,7 +67,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   test "does not delete chosen resource when does not exist", %{conn: conn} do
     conn = delete conn, coordinator_path(conn, :delete, "-1")
     assert redirected_to(conn) == coordinator_path(conn, :index)
-    assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Coordinator was not found."}}
+    assert get_flash(conn, "error") == "Coordinator was not found."
   end
 
   test "renders form for new resources", %{conn: conn} do
@@ -164,7 +164,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   test "create coordinator for coordinator user", %{conn: conn} do
     conn = post conn, coordinator_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == coordinator_path(conn, :index)
-    assert conn.private.plug_session == %{"phoenix_flash" => %{"info" => "Coordinator created and notified by."}}
+    assert get_flash(conn, "info") == "Coordinator created and notified by."
   end
 
   test "does not create coordinator for non coordinator user", %{conn: _conn} do

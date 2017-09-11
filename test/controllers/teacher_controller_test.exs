@@ -28,7 +28,7 @@ defmodule CoursePlanner.TeacherControllerTest do
   test "create teacher for coordinator user", %{conn: conn} do
     conn = post conn, teacher_path(conn, :create), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == teacher_path(conn, :index)
-    assert conn.private.plug_session == %{"phoenix_flash" => %{"info" => "Teacher created and notified by."}}
+    assert get_flash(conn, "info") == "Teacher created and notified by."
   end
 
   test "shows chosen resource", %{conn: conn} do
@@ -77,7 +77,7 @@ defmodule CoursePlanner.TeacherControllerTest do
   test "does not delete chosen resource when does not exist", %{conn: conn} do
     conn = delete conn, teacher_path(conn, :delete, "-1")
     assert redirected_to(conn) == teacher_path(conn, :index)
-    assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Teacher was not found."}}
+    assert get_flash(conn, "error") == "Teacher was not found."
   end
 
   test "renders form for new resources", %{conn: conn} do

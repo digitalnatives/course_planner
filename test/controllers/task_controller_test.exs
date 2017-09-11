@@ -258,7 +258,7 @@ defmodule CoursePlanner.TaskControllerTest do
     test "does not delete a non-existing resource", %{conn: conn, user: _user} do
       conn = delete conn, task_path(conn, :delete, -1)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Task was not found."}}
+      assert get_flash(conn, "error") == "Task was not found."
     end
 
     test "does not grab a task", %{conn: conn, user: user} do
@@ -362,7 +362,7 @@ defmodule CoursePlanner.TaskControllerTest do
     test "does not grab a non-existing resource", %{conn: conn, user: _user} do
       conn = post conn, task_grab_path(conn, :grab, -1)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Task was not found."}}
+      assert get_flash(conn, "error") == "Task was not found."
     end
 
     test "does not grab when max_volunteer is reached", %{conn: conn, user: _user} do
@@ -371,7 +371,7 @@ defmodule CoursePlanner.TaskControllerTest do
 
       conn = post conn, task_grab_path(conn, :grab, task)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "The maximum number of volunteers needed for this task is reached"}}
+      assert get_flash(conn, "error") == "The maximum number of volunteers needed for this task is reached"
     end
 
     test "does not grab an expired task", %{conn: conn, user: _user} do
@@ -380,7 +380,7 @@ defmodule CoursePlanner.TaskControllerTest do
 
       conn = post conn, task_grab_path(conn, :grab, task)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Task is expired"}}
+      assert get_flash(conn, "error") == "Task is expired"
     end
 
     test "grab an already task doesn't add the volunteer twice", %{conn: conn, user: user} do
@@ -400,7 +400,7 @@ defmodule CoursePlanner.TaskControllerTest do
     test "does not drop a non-existing resource", %{conn: conn, user: _user} do
       conn = post conn, task_drop_path(conn, :drop, -1)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Task was not found."}}
+      assert get_flash(conn, "error") == "Task was not found."
     end
 
     test "drop a task with only one volunteer", %{conn: conn, user: user} do
@@ -444,7 +444,7 @@ defmodule CoursePlanner.TaskControllerTest do
 
       conn = post conn, task_drop_path(conn, :drop, task)
       assert redirected_to(conn) == task_path(conn, :index)
-      assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "Task is expired"}}
+      assert get_flash(conn, "error") == "Task is expired"
     end
   end
 end

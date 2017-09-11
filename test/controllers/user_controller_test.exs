@@ -97,7 +97,7 @@ defmodule CoursePlanner.UserControllerTest do
   test "does not delete a non-existing user", %{conn: conn} do
     conn = delete conn, user_path(conn, :delete, -1)
     assert redirected_to(conn) == user_path(conn, :index)
-    assert conn.private.plug_session == %{"phoenix_flash" => %{"error" => "User was not found."}}
+    assert get_flash(conn, "error") == "User was not found."
   end
 
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
