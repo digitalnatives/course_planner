@@ -74,10 +74,8 @@ defmodule CoursePlanner.BulkControllerTest do
     test "creates bulk request", %{conn: conn} do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
       conn = post conn, bulk_path(conn, :create, params)
-      assert  redirected_to(conn) == user_path(conn, :index)
-      conn = get conn, user_path(conn, :index)
-      assert html_response(conn, 200)
-      assert conn.private.phoenix_flash == %{"info" => "All users are created and notified by."}
+      assert redirected_to(conn) == user_path(conn, :index)
+      assert get_flash(conn, "info") == "All users are created and notified by."
       assert Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
 
@@ -92,7 +90,7 @@ defmodule CoursePlanner.BulkControllerTest do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,unknown")
       conn = post conn, bulk_path(conn, :create, params)
       assert html_response(conn, 200)
-      assert conn.private.phoenix_flash == %{"error" => "role is invalid"}
+      assert get_flash(conn, "error") == "role is invalid"
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
 
@@ -101,7 +99,7 @@ defmodule CoursePlanner.BulkControllerTest do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
       conn = post conn, bulk_path(conn, :create, params)
       assert html_response(conn, 200)
-      assert conn.private.phoenix_flash == %{"error" => "email has already been taken"}
+      assert get_flash(conn, "error") == "email has already been taken"
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
 
@@ -109,7 +107,7 @@ defmodule CoursePlanner.BulkControllerTest do
       params = create_input_params("invalid target", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
       conn = post conn, bulk_path(conn, :create, params)
       assert html_response(conn, 200)
-      assert conn.private.phoenix_flash == %{"error" => "Something went wrong."}
+      assert get_flash(conn, "error") == "Something went wrong."
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
   end
