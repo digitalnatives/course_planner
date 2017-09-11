@@ -55,6 +55,7 @@ defmodule CoursePlannerWeb.Router do
 
     resources "/users", UserController, except: [:create, :new]
     post "/notify", UserController, :notify
+    put "/resend_email/:id", UserController, :resend_email
 
     resources "/coordinators", CoordinatorController
     resources "/students", StudentController
