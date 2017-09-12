@@ -113,7 +113,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
            |> Enum.filter(fn(teacher) ->
                 Enum.any?(notifiable_users, &(&1.id == teacher.id))
               end)
-          %{offered_course | teachers: notifiable_teachers}
+         %{offered_course | teachers: notifiable_teachers}
        end)
   end
 end
