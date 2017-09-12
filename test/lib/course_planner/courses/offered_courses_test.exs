@@ -252,7 +252,7 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
 
-      OfferedCourses.create_missing_attendance_notifications([teacher])
+      OfferedCourses.create_missing_attendance_notifications([%{teacher | updated_at: NaiveDateTime.utc_now}])
       [notification] =
         Notification
         |> Repo.all()
@@ -325,6 +325,76 @@ defmodule CoursePlanner.OfferedCoursesTest do
       assert notification3.type == "attendance_missing"
       assert notification3.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course2.id)
     end
+
+    test "when there is one offered_course with multiple teacher have missing attendance but no teacher should get notification" do
+      students = insert_list(3, :student)
+      [teacher1, teacher2] = insert_list(2, :teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+      end)
+
+      insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1, teacher2])
+
+      OfferedCourses.create_missing_attendance_notifications([])
+      assert [] == Repo.all(Notification)
+    end
+
+    test "when there is one offered_course with multiple teacher have missing attendance but only one teacher should get notification" do
+      students = insert_list(3, :student)
+      [teacher1, teacher2, teacher3] = insert_list(3, :teacher)
+      [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+      end)
+
+      offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1, teacher2, teacher3])
+
+      OfferedCourses.create_missing_attendance_notifications([teacher2])
+      notification =
+        Notification
+        |> Repo.one()
+        |> Repo.preload(:user)
+
+      assert notification.user == teacher2
+      assert notification.type == "attendance_missing"
+      assert notification.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course.id)
+    end
+
+    test "when multiple offered_course with multiple teacher have missing attendance and some teachers can get notification" do
+      students = insert_list(3, :student)
+      [teacher1, teacher2, teacher3] = insert_list(3, :teacher)
+      [class1, class2, class3] = insert_list(3, :class, date: Timex.shift(Timex.now(), days: -2))
+
+      Enum.each(students, fn(student) ->
+       insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
+       insert(:attendance, student: student, class: class3, attendance_type: "Not filled")
+      end)
+
+      offered_course1 = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher1])
+      offered_course2 = insert(:offered_course, classes: [class3], students: students, teachers: [teacher2, teacher3])
+
+      OfferedCourses.create_missing_attendance_notifications([teacher1, teacher3] ++ students)
+      [notification1, notification2] =
+        Notification
+        |> Repo.all()
+        |> Repo.preload(:user)
+        |> Enum.sort(&(&1.user.id <= &2.user.id))
+
+      assert notification1.user == teacher1
+      assert notification1.type == "attendance_missing"
+      assert notification1.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course1.id)
+
+      assert notification2.user == teacher3
+      assert notification2.type == "attendance_missing"
+      assert notification2.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course2.id)
+    end
+
   end
 
   describe "find_by_term_id/1" do
