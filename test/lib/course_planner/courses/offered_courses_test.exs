@@ -406,28 +406,4 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
     end
   end
-
-  test "bah" do
-  students = insert_list(3, :student)
-  teacher = insert(:teacher)
-  [class1, class2] = insert_list(2, :class, date: Timex.shift(Timex.now(), days: -2))
-
-  Enum.each(students, fn(student) ->
-   insert(:attendance, student: student, class: class1, attendance_type: "Not filled")
-   insert(:attendance, student: student, class: class2, attendance_type: "Not filled")
-  end)
-
-  offered_course = insert(:offered_course, classes: [class1, class2], students: students, teachers: [teacher])
-
-  OfferedCourses.create_missing_attendance_notifications([%{teacher | updated_at: NaiveDateTime.utc_now}])
-  [notification] =
-    Notification
-    |> Repo.all()
-    |> Repo.preload(:user)
-    |> Enum.sort(&(&1.user.id <= &2.user.id))
-
-  assert notification.user == teacher
-  assert notification.type == "attendance_missing"
-  assert notification.resource_path == Attendances.get_offered_course_fill_attendance_path(offered_course.id)
-end
 end
