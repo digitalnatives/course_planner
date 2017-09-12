@@ -18,8 +18,7 @@ end
 |> Repo.insert!
 
 unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "ATTENDANCE_DESCRIPTIONS",
         value: "sick leave, informed beforehand",
@@ -27,13 +26,11 @@ unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
         editable: true,
         visible: true,
         required: true
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "SHOW_PROGRAM_ABOUT_PAGE",
         value: "true",
@@ -41,13 +38,11 @@ unless Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
         editable: true,
         visible: true,
         required: true
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_NAME",
         value: "some name",
@@ -55,13 +50,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
         editable: true,
         visible: true,
         required: true
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_ADDRESS",
         value: "some address",
@@ -69,13 +62,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_EMAIL",
         value: "some email",
@@ -83,13 +74,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
         editable: true,
         visible: false,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_DESCRIPTION",
         value: "some sample description of the program",
@@ -97,13 +86,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_INFORMATION",
         value: "our office is open from 11am until 6pm monday to friday",
@@ -111,13 +98,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_LOGO_URL",
         value: nil,
@@ -125,13 +110,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_WEBSITE_URL",
         value: "http://www.program-website-url.com/",
@@ -139,13 +122,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_PHONE",
         value: "+0036 111 1111",
@@ -153,13 +134,11 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
         editable: true,
         visible: true,
         required: false
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "ENABLE_NOTIFICATION",
         value: "true",
@@ -167,13 +146,11 @@ unless Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
         editable: true,
         visible: true,
         required: true
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
 
 unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
-  %SystemVariable{}
-  |> SystemVariable.changeset(
+  %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "NOTIFICATION_JOB_EXECUTED_AT",
         value: DateTime.utc_now() |> DateTime.to_iso8601(),
@@ -181,6 +158,5 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
         editable: true,
         visible: false,
         required: true
-      })
-  |> Repo.insert!
+      }) |> Repo.insert!
 end
