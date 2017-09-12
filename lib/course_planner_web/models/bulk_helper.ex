@@ -1,6 +1,6 @@
 defmodule CoursePlanner.BulkHelper do
   @moduledoc """
-    Handle Students specific logics
+    Handle bulk creation specific logics
   """
   alias CoursePlanner.{CsvParser, Repo, Accounts.User}
   alias Coherence.ControllerHelpers
