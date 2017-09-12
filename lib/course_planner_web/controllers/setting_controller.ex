@@ -63,7 +63,7 @@ defmodule CoursePlannerWeb.SettingController do
           changesets
           |> Enum.sort_by(&(Changeset.get_field(&1, :key)), &<=/2)
           |> Settings.wrap()
-          |> Map.put(:action, :update)
+          |> Map.put(:action, :user_update)
         render(conn, "edit.html", changeset: changeset, title: title)
     end
   end
