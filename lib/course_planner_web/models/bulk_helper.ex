@@ -13,7 +13,8 @@ defmodule CoursePlanner.BulkHelper do
       {:ok, parsed_params} ->
         create_users_with_transaction(parsed_params)
       {:validate_error, row_index} ->
-        {:error, "parsing_csv", "Input data in row ##{row_index + 1} is not matching the column number.", ""}
+        {:error, "parsing_csv",
+          "Input data in row ##{row_index + 1} is not matching the column number.", ""}
       {:error, :empty} ->
         {:error, "parsing_csv", "Input can not be empty.", ""}
       {:error, message} ->
