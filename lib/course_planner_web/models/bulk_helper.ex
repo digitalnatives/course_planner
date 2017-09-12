@@ -2,7 +2,7 @@ defmodule CoursePlanner.BulkHelper do
   @moduledoc """
     Handle bulk creation specific logics
   """
-  alias CoursePlanner.{CsvParser, Repo, Accounts.User}
+  alias CoursePlanner.{Repo, Accounts.User}
   alias Coherence.ControllerHelpers
   alias Ecto.{DateTime, Multi}
 
