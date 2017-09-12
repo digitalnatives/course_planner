@@ -61,7 +61,6 @@ defmodule CoursePlannerWeb.Router do
 
     resources "/coordinators", CoordinatorController
     resources "/students", StudentController
-
     resources "/teachers", TeacherController
     resources "/volunteers", VolunteerController
 
