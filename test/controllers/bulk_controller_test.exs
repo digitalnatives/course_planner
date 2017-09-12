@@ -5,6 +5,8 @@ defmodule CoursePlanner.BulkControllerTest do
 
   import CoursePlanner.Factory
 
+  @file_path "/tmp/csv_test.txt"
+
   setup(%{user_role: role}) do
     user = insert(role)
 
@@ -15,7 +17,9 @@ defmodule CoursePlanner.BulkControllerTest do
   end
 
   defp create_input_params(target, title, csv_data) do
-    %{"input" => %{"csv_data" => csv_data, "target" => target, "title" => title}}
+    File.touch!(@file_path)
+    File.write!(@file_path, csv_data)
+    %{"input" => %{"csv_file" => %{"path" => "#{@file_path}"}, "target" => target, "title" => title}}
   end
 
   @moduletag user_role: :student
@@ -111,5 +115,4 @@ defmodule CoursePlanner.BulkControllerTest do
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
   end
-
 end

@@ -12,8 +12,21 @@ defmodule CoursePlannerWeb.BulkController do
     render(conn, "new.html", target: target, title: title)
   end
 
-  def create(conn, %{"input" => %{"csv_data" => csv_data, "target" => target, "title" => title}}) do
-    case bulk_target_handler(csv_data, target) do
+  def create(conn, %{"input" => %{"target" => target,
+                                  "title" => title,
+                                  "csv_file" => %{"path" => file_path}}}) do
+    file_path
+    |> File.stream!()
+    |> handle_csv_file_data(conn, target, title)
+  end
+  def create(conn, %{"input" => %{"target" => target, "title" => title}}) do
+    conn
+    |> put_flash(:error, "You have to select a file.")
+    |> render("new.html", target: target, title: title)
+  end
+
+  defp handle_csv_file_data(file_stream, conn, target, title) do
+    case bulk_target_handler(file_stream, target) do
       {:ok, created_entities} ->
         post_creation(conn, created_entities, target)
 
@@ -32,6 +45,7 @@ defmodule CoursePlannerWeb.BulkController do
         |> put_flash(:error, "#{error_field} #{error_message}")
         |> render("new.html", target: target, title: title)
       {:error, _failed_operation, _failed_value, _changes_so_far} ->
+
         conn
         |> put_flash(:error, "Something went wrong.")
         |> render("new.html", target: target, title: title)
