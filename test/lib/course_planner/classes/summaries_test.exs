@@ -54,7 +54,11 @@ defmodule CoursePlanner.SummariesTest do
         |> Repo.preload(:classes)
 
       student_data = Summaries.get_term_offered_course_for_user(student)
-      assert student_data == %{terms: [term2], offered_courses: offered_courses}
+      expected_data_offered_courses = Enum.sort(offered_courses, &(&1.id >= &2.id))
+      student_data_sorted_offered_courses = Enum.sort(student_data.offered_courses, &(&1.id >= &2.id))
+
+      assert student_data.terms == [term2]
+      assert student_data_sorted_offered_courses == expected_data_offered_courses
     end
 
     test "when she has multiple courses in multiple terms" do
@@ -101,8 +105,13 @@ defmodule CoursePlanner.SummariesTest do
         insert_list(2, :offered_course, term: term2, students: [student])
         |> Repo.preload(:classes)
 
+      expected_offered_courses = Enum.sort(offered_courses2, &(&1.id >= &2.id))
+
       student_data = Summaries.get_term_offered_course_for_user(student)
-      assert student_data == %{terms: [term2], offered_courses: offered_courses2}
+      student_data_returned_offered_courses = Enum.sort(student_data.offered_courses, &(&1.id >= &2.id))
+
+      assert student_data.terms == [term2]
+      assert student_data_returned_offered_courses == expected_offered_courses
     end
 
     test "has no task" do
@@ -173,8 +182,15 @@ defmodule CoursePlanner.SummariesTest do
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
+      expected_offered_courses = Enum.sort(offered_courses1 ++ offered_courses2, &(&1.id >= &2.id))
+      expected_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+
       teacher_data = Summaries.get_term_offered_course_for_user(teacher)
-      assert teacher_data == %{terms: [term1, term2], offered_courses: offered_courses1 ++ offered_courses2}
+      teacher_data_returned_offered_courses = Enum.sort(teacher_data.offered_courses, &(&1.id >= &2.id))
+      teacher_data_returned_terms = Enum.sort(teacher_data.terms, &(&1.id >= &2.id))
+
+      assert teacher_data_returned_terms == expected_terms
+      assert teacher_data_returned_offered_courses == expected_offered_courses
     end
 
     test "when she has multiple courses excluding the term that is finished and its data" do
@@ -187,8 +203,13 @@ defmodule CoursePlanner.SummariesTest do
         insert_list(2, :offered_course, term: term2, teachers: [teacher])
         |> Repo.preload(:classes)
 
+      expected_offered_courses = Enum.sort(offered_courses2, &(&1.id >= &2.id))
+
       teacher_data = Summaries.get_term_offered_course_for_user(teacher)
-      assert teacher_data == %{terms: [term2], offered_courses: offered_courses2}
+      teacher_data_returned_offered_courses = Enum.sort(teacher_data.offered_courses, &(&1.id >= &2.id))
+
+      assert teacher_data.terms == [term2]
+      assert teacher_data_returned_offered_courses == expected_offered_courses
     end
 
     test "when she has multiple courses the end_date of all terms are passed" do
@@ -225,7 +246,11 @@ defmodule CoursePlanner.SummariesTest do
       terms = insert_list(2, :term)
       summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
-      assert summary_data == %{terms: terms, offered_courses: []}
+      expected_terms = Enum.sort(terms, &(&1.id >= &2.id))
+      summary_data_returned_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+
+      assert summary_data_returned_terms == expected_terms
+      assert summary_data.offered_courses == []
     end
 
     test "when only one term has offered_course" do
@@ -236,7 +261,12 @@ defmodule CoursePlanner.SummariesTest do
         |> Repo.preload(:classes)
 
       summary_data = Summaries.get_term_offered_course_for_user(coordinator)
-      assert summary_data == %{terms: [term1, term2], offered_courses: [term2_offered_course]}
+
+      expected_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+      summary_data_returned_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+
+      assert summary_data_returned_terms == expected_terms
+      assert summary_data.offered_courses == [term2_offered_course]
     end
 
     test "when each term has offered_courses" do
@@ -247,10 +277,19 @@ defmodule CoursePlanner.SummariesTest do
         |> Repo.preload(:classes)
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
-      expected_offered_courses = preload_associations_for_offered_courses([term1_offered_course | term2_offered_courses])
       summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
-      assert summary_data == %{terms: [term1, term2], offered_courses: expected_offered_courses}
+      expected_offered_courses =
+        [term1_offered_course | term2_offered_courses]
+        |> preload_associations_for_offered_courses()
+        |> Enum.sort(&(&1.id >= &2.id))
+      expected_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+
+      summary_data_returned_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+      summary_data_returned_offered_courses = Enum.sort(summary_data.offered_courses, &(&1.id >= &2.id))
+
+      assert summary_data_returned_terms == expected_terms
+      assert expected_offered_courses == summary_data_returned_offered_courses
     end
 
     test "when term end time is past all it's data will be excluded" do
@@ -260,10 +299,16 @@ defmodule CoursePlanner.SummariesTest do
       insert(:offered_course, term: term1)
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
-      expected_offered_courses = preload_associations_for_offered_courses(term2_offered_courses)
       summary_data = Summaries.get_term_offered_course_for_user(coordinator)
 
-      assert summary_data == %{terms: [term2], offered_courses: expected_offered_courses}
+      expected_offered_courses =
+        term2_offered_courses
+        |> preload_associations_for_offered_courses()
+        |> Enum.sort(&(&1.id >= &2.id))
+      summary_data_returned_offered_courses = Enum.sort(summary_data.offered_courses, &(&1.id >= &2.id))
+
+      assert summary_data.terms == [term2]
+      assert expected_offered_courses == summary_data_returned_offered_courses
     end
 
     test "no data returns when every term's end date is passed" do
@@ -298,9 +343,14 @@ defmodule CoursePlanner.SummariesTest do
     test "when there are terms but no offered_course" do
       volunteer = insert(:volunteer)
       terms = insert_list(2, :term)
+
       summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
-      assert summary_data == %{terms: terms, offered_courses: []}
+      expected_terms = Enum.sort(terms, &(&1.id >= &2.id))
+      summary_data_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+
+      assert summary_data_terms == expected_terms
+      assert summary_data.offered_courses == []
     end
 
     test "when only one term has offered_course" do
@@ -312,7 +362,11 @@ defmodule CoursePlanner.SummariesTest do
 
       summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
-      assert summary_data == %{terms: [term1, term2], offered_courses: [term2_offered_course]}
+      expected_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+      summary_data_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+
+      assert summary_data_terms == expected_terms
+      assert summary_data.offered_courses == [term2_offered_course]
     end
 
     test "when each term has offered_courses" do
@@ -323,10 +377,19 @@ defmodule CoursePlanner.SummariesTest do
         |> Repo.preload(:classes)
       term2_offered_courses = insert_list(4, :offered_course, term: term2)
 
-      expected_offered_courses = preload_associations_for_offered_courses([term1_offered_course | term2_offered_courses])
       summary_data = Summaries.get_term_offered_course_for_user(volunteer)
 
-      assert summary_data == %{terms: [term1, term2], offered_courses: expected_offered_courses}
+      expected_offered_courses =
+        [term1_offered_course | term2_offered_courses]
+        |> preload_associations_for_offered_courses()
+        |> Enum.sort(&(&1.id >= &2.id))
+      expected_terms = Enum.sort([term1, term2], &(&1.id >= &2.id))
+
+      summary_data_returned_terms = Enum.sort(summary_data.terms, &(&1.id >= &2.id))
+      summary_data_returned_offered_courses = Enum.sort(summary_data.offered_courses, &(&1.id >= &2.id))
+
+      assert summary_data_returned_terms == expected_terms
+      assert expected_offered_courses == summary_data_returned_offered_courses
     end
 
     test "when term end time is past all it's data will be excluded" do
