@@ -85,7 +85,7 @@ defmodule CoursePlanner.Settings do
       is_nil(found_system_variable) -> :non_existing_resource
       not found_system_variable.editable -> :uneditable_resource
       found_system_variable.editable ->
-        SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :update)
+        SystemVariable.changeset(found_system_variable, %{"value" => param_value}, :user_update)
     end
   end
 

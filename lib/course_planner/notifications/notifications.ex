@@ -72,7 +72,7 @@ defmodule CoursePlanner.Notifications do
         type: "utc_datetime",
         required: true,
         visible: false,
-        editable: true
+        editable: false
       })
   end
 
@@ -82,8 +82,7 @@ defmodule CoursePlanner.Notifications do
       %{
         value: DateTime.to_iso8601(timestamp),
         type: "utc_datetime"
-      },
-      :update)
+      })
   end
 
   def create_simple_notification(%{type: type, user: user, path: path, data: data}) do
