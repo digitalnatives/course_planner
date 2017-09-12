@@ -79,20 +79,15 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   end
 
   def create_pending_attendance_notification_map(notifiable_users) do
-    with_pending_attendances()
-    |> filter_with_notifiable_teachers(notifiable_users)
-    |> Enum.flat_map(fn(offered_course) ->
-      offered_course.teachers
-      |> Enum.map(fn(teacher) ->
-         %{
-            user: teacher,
-            type: :attendance_missing,
-            path: Attendances.get_offered_course_fill_attendance_path(offered_course.id),
-            data: %{offered_course_name:
-                    "#{offered_course.term.name}-#{offered_course.course.name}"}
-          }
-         end)
-      end)
+    notifiable_ids = Enum.map(notifiable_users, &(&1.id))
+    for oc <- with_pending_attendances(), t <- oc.teachers, t.id in notifiable_ids do
+      %{
+        user: t,
+        type: :attendance_missing,
+        path: Attendances.get_offered_course_fill_attendance_path(oc.id),
+        data: %{offered_course_name: "#{oc.term.name}-#{oc.course.name}"}
+      }
+    end
   end
 
   def create_missing_attendance_notifications(notifiable_users) do
@@ -102,18 +97,6 @@ defmodule CoursePlanner.Courses.OfferedCourses do
          email_data
          |> Notifications.create_simple_notification()
          |> @notifier.notify_later()
-       end)
-  end
-
-  defp filter_with_notifiable_teachers(offered_courses, notifiable_users) do
-    offered_courses
-    |> Enum.map(fn(offered_course) ->
-         notifiable_teachers =
-           offered_course.teachers
-           |> Enum.filter(fn(teacher) ->
-                Enum.any?(notifiable_users, &(&1.id == teacher.id))
-              end)
-         %{offered_course | teachers: notifiable_teachers}
        end)
   end
 end
