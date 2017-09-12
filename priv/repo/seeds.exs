@@ -153,7 +153,7 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
         key: "NOTIFICATION_JOB_EXECUTED_AT",
         value: DateTime.utc_now() |> DateTime.to_iso8601(),
         type: "utc_datetime",
-        editable: true,
+        editable: false,
         visible: false,
         required: true
       }) |> Repo.insert!

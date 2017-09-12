@@ -37,7 +37,7 @@ defmodule CoursePlanner.Settings.SystemVariable do
     |> validate_value_type()
   end
 
-  def changeset(struct, params, :update) do
+  def changeset(struct, params, :user_update) do
     target_params =
       [
        :value,
