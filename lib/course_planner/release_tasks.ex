@@ -39,12 +39,14 @@ defmodule CoursePlanner.ReleaseTasks do
   def migrate do
     prepare()
     Enum.each(repos(), &run_migrations_for/1)
+    :init.stop()
   end
 
   defp run_migrations_for(repo) do
     app = Keyword.get(repo.config, :otp_app)
-    IO.puts "Running migrations for #{app}"
+    IO.puts "Running migrations for #{inspect repo}"
     Migrator.run(repo, migrations_path(app), :up, all: true)
+    IO.puts "Migrations for #{inspect repo} ran successfully."
   end
 
   defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
