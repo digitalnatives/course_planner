@@ -40,4 +40,4 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
    5. `git push gigalixir master`
   
    6. Connect to the console with `gigalixir remote_console $APP_NAME`
-      Run the following command: `CoursePlanner.ReleaseTasks.seed(true)`
+      Run the following command: `CoursePlanner.ReleaseTasks.seed()`
