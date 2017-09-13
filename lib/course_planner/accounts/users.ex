@@ -4,6 +4,7 @@ defmodule CoursePlanner.Accounts.Users do
   """
   alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications}
   alias Ecto.{DateTime, Changeset, Multi}
+  alias Coherence.ControllerHelpers
 
   import Ecto.Query
 
@@ -13,15 +14,22 @@ defmodule CoursePlanner.Accounts.Users do
     Repo.all(User)
   end
 
-  def new_user(user, token) do
-    user =
-      user
-      |> Map.put_new("reset_password_token", token)
-      |> Map.put_new("reset_password_sent_at", DateTime.utc())
-      |> Map.put_new("password", "fakepassword")
-      |> Map.put_new("password_confirmation", "fakepassword")
+  def add_default_password_params(user, token) do
+    random_default_password = ControllerHelpers.random_string 12
 
-    User.changeset(%User{}, user)
+    user
+    |> Map.put_new("reset_password_token", token)
+    |> Map.put_new("reset_password_sent_at", DateTime.utc())
+    |> Map.put_new("password", random_default_password)
+    |> Map.put_new("password_confirmation", random_default_password)
+  end
+
+  def new_user(user, token) do
+    updated_user = add_default_password_params(user, token)
+
+    %User{}
+    |> User.changeset(updated_user)
+    |> Repo.insert()
   end
 
   def get(id) do
