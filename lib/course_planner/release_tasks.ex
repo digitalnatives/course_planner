@@ -13,9 +13,24 @@ defmodule CoursePlanner.ReleaseTasks do
     :ecto
   ]
 
-  def repos, do: Application.get_env(:course_planner, :ecto_repos, [])
+  def migrate do
+    prepare()
+    Enum.each(repos(), &run_migrations_for/1)
+    :init.stop()
+  end
 
-  def prepare do
+  def seed do
+    prepare()
+    seed_script = seed_path(:course_planner)
+    if File.exists?(seed_script) do
+      IO.puts "Running seed script.."
+      Code.eval_file(seed_script)
+    end
+  end
+
+  defp repos, do: Application.get_env(:course_planner, :ecto_repos, [])
+
+  defp prepare do
     IO.puts "Loading course_planner.."
     :ok = Application.load(:course_planner)
 
@@ -26,38 +41,13 @@ defmodule CoursePlanner.ReleaseTasks do
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
   end
 
-  def setup do
-
-    prepare()
-    migrate()
-    seed()
-
-    IO.puts "Success!"
-    :init.stop()
-  end
-
-  def migrate do
-    prepare()
-    Enum.each(repos(), &run_migrations_for/1)
-    :init.stop()
-  end
-
   defp run_migrations_for(repo) do
     app = Keyword.get(repo.config, :otp_app)
     IO.puts "Running migrations for #{inspect repo}"
     Migrator.run(repo, migrations_path(app), :up, all: true)
-    IO.puts "Migrations for #{inspect repo} ran successfully."
   end
 
   defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
-
-  def seed do
-    seed_script = seed_path(:course_planner)
-    if File.exists?(seed_script) do
-      IO.puts "Running seed script.."
-      Code.eval_file(seed_script)
-    end
-  end
 
   defp seed_path(app), do: Path.join([priv_dir(app), "repo", "seeds.exs"])
 

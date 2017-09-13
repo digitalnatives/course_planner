@@ -35,6 +35,7 @@ end
 release :course_planner do
   set version: current_version(:course_planner)
   set commands: [
-    "migrate": "rel/commands/migrate.sh"
+    "migrate": "rel/commands/migrate.sh",
+    "seed": "rel/commands/seed.sh"
   ]
 end
