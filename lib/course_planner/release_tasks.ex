@@ -19,7 +19,7 @@ defmodule CoursePlanner.ReleaseTasks do
     :init.stop()
   end
 
-  def seed() do
+  def seed do
     seed_script = seed_path(:course_planner)
     if File.exists?(seed_script) do
       IO.puts "Running seed script.."
