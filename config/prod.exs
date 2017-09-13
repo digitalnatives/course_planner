@@ -8,7 +8,7 @@ config :course_planner, CoursePlannerWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: "${SECRET_KEY_BASE}"
 
-config :logger, level: :info
+config :logger, level: :debug
 
 config :course_planner, CoursePlanner.Repo,
   adapter: Ecto.Adapters.Postgres,
