@@ -25,7 +25,6 @@ defmodule CoursePlanner.ReleaseTasks do
       IO.puts "Running seed script.."
       Code.eval_file(seed_script)
     end
-    :init.stop()
   end
 
   defp repos, do: Application.get_env(:course_planner, :ecto_repos, [])
