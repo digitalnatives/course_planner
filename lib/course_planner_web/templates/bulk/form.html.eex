@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div class="row">
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <%= form_for @conn, @action, [as: :input], fn f -> %>
+
+    <%= CoursePlannerWeb.SharedView.card do %>
+      <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+        <div class="row row--hspace row--vspace middle-xs">
+          <div class="col-xs-9">
+            <div class="detail">
+              <div class="detail__name">Required fields per entry</div>
+              <div class="detail__value">
+                <%= CoursePlannerWeb.BulkView.get_csv_fields(@target) %>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-9">
+            <div class="detail">
+              <div class="detail__name">Fields marked with * are mandatory</div>
+              <div class="detail__value">
+                E.g  field1,field2,field3,field4
+              </div>
+              <div class="detail__name">Other fields can be left empty</div>
+              <div class="detail__value">
+                E.g  field1,field2,,field4
+              </div>
+            </div>
+          </div>
+
+          <%= hidden_input(f, :title, value: @title) %>
+          <%= hidden_input(f, :target, value: @target) %>
+
+          <%= CoursePlannerWeb.SharedView.card @title do %>
+            <%= CoursePlannerWeb.SharedView.card_content do %>
+              <%= CoursePlannerWeb.SharedView.form_textarea f, :csv_data %>
+            <% end %>
+          <% end %>
+
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <% end %>
+        <% end %>
+      </div>
+    </div>
