@@ -2,9 +2,9 @@ defmodule CoursePlanner.BulkHelper do
   @moduledoc """
     Handle bulk creation specific logics
   """
-  alias CoursePlanner.{Repo, Accounts.User}
+  alias CoursePlanner.{Repo, Accounts.Users, Accounts.User}
   alias Coherence.ControllerHelpers
-  alias Ecto.{DateTime, Multi}
+  alias Ecto.Multi
 
   @user_required_headers ["name", "family_name", "nickname", "email", "role"]
 
@@ -34,14 +34,9 @@ defmodule CoursePlanner.BulkHelper do
     multi =
       Enum.reduce(user_records, Multi.new, fn(user, out) ->
         token = ControllerHelpers.random_string 48
-        params =
-          user
-          |> Map.put_new("reset_password_token", token)
-          |> Map.put_new("reset_password_sent_at", DateTime.utc())
-          |> Map.put_new("password", "fakepassword")
-          |> Map.put_new("password_confirmation", "fakepassword")
+        params = Users.add_default_password_params(user, token)
 
-        changeset = User.changeset(%User{}, params, :bulk)
+        changeset = User.changeset(%User{}, params)
 
         Multi.insert(out, token, changeset)
       end)
