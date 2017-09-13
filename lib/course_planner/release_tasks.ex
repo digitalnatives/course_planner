@@ -36,6 +36,12 @@ defmodule CoursePlanner.ReleaseTasks do
     :init.stop()
   end
 
+  def migrate_and_stop do
+    migrate()
+    IO.puts "Success!"
+    :init.stop()
+  end
+
   def migrate do
     prepare()
     Enum.each(repos(), &run_migrations_for/1)
