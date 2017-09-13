@@ -1,0 +1,6 @@
+
+  <%= render "form.html", title: @title,
+                          action: bulk_path(@conn, :create),
+                          target: @target,
+                          conn: @conn
+  %>

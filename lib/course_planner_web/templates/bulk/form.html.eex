@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<div class="row">
+  <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <%= form_for @conn, @action, [as: :input, multipart: true], fn f -> %>
+
+    <%= CoursePlannerWeb.SharedView.card do %>
+      <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+        <div class="row row--hspace row--vspace middle-xs">
+          <div class="col-xs-9">
+            <div class="detail">
+              <div class="detail__name">Required fields per entry</div>
+              <div class="detail__value">
+                <%= CoursePlannerWeb.BulkView.get_csv_fields(@target) %>
+              </div>
+            </div>
+          </div>
+
+          <%= hidden_input(f, :title, value: @title) %>
+          <%= hidden_input(f, :target, value: @target) %>
+
+          <%= CoursePlannerWeb.SharedView.card @title do %>
+            <%= CoursePlannerWeb.SharedView.card_content do %>
+              <%= file_input(f, :csv_file) %>
+            <% end %>
+          <% end %>
+
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        <% end %>
+        <% end %>
+      </div>
+    </div>

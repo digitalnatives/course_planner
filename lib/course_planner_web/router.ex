@@ -57,6 +57,8 @@ defmodule CoursePlannerWeb.Router do
     post "/notify", UserController, :notify
     put "/resend_email/:id", UserController, :resend_email
 
+    resources "/bulk", BulkController, only: [:new, :create], singleton: true
+
     resources "/coordinators", CoordinatorController
     resources "/students", StudentController
     resources "/teachers", TeacherController
