@@ -5,8 +5,6 @@ defmodule CoursePlanner.BulkControllerTest do
 
   import CoursePlanner.Factory
 
-  @file_path "/tmp/csv_test.txt"
-
   setup(%{user_role: role}) do
     user = insert(role)
 
@@ -17,9 +15,9 @@ defmodule CoursePlanner.BulkControllerTest do
   end
 
   defp create_input_params(target, title, csv_data) do
-    File.touch!(@file_path)
-    File.write!(@file_path, csv_data)
-    %{"input" => %{"csv_file" => %{"path" => "#{@file_path}"}, "target" => target, "title" => title}}
+    path = Plug.Upload.random_file!("csv")
+    File.write!(path, csv_data)
+    %{"input" => %{"csv_file" => %{"path" => path}, "target" => target, "title" => title}}
   end
 
   @moduletag user_role: :student
