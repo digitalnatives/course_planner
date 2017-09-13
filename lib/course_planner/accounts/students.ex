@@ -4,7 +4,6 @@ defmodule CoursePlanner.Accounts.Students do
   """
   alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, Courses.OfferedCourse}
   import Ecto.Query
-  alias Ecto.Changeset
 
   @students from u in User, where: u.role == "Student"
 
@@ -18,9 +17,8 @@ defmodule CoursePlanner.Accounts.Students do
 
   def new(user, token) do
     user
+    |> Map.put("role", "Student")
     |> Users.new_user(token)
-    |> Changeset.put_change(:role, "Student")
-    |> Repo.insert()
   end
 
   def update(id, params) do

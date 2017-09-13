@@ -1,7 +1,6 @@
 defmodule CoursePlanner.Accounts.Coordinators do
   @moduledoc false
   import Ecto.Query
-  alias Ecto.Changeset
   alias CoursePlanner.{Repo, Accounts.User, Accounts.Users}
 
   @coordinators from u in User, where: u.role == "Coordinator"
@@ -12,9 +11,8 @@ defmodule CoursePlanner.Accounts.Coordinators do
 
   def new(user, token) do
     user
+    |> Map.put("role", "Coordinator")
     |> Users.new_user(token)
-    |> Changeset.put_change(:role, "Coordinator")
-    |> Repo.insert()
   end
 
   def update(id, params) do
