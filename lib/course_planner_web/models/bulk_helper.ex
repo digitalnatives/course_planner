@@ -28,7 +28,8 @@ defmodule CoursePlanner.BulkHelper do
        end)
   end
 
-  defp create_users_with_transaction([]), do: {:error, "bulk_creation", "Input can not be empty", ""}
+  defp create_users_with_transaction([]),
+    do: {:error, "bulk_creation", "Input can not be empty", ""}
   defp create_users_with_transaction(user_records) do
     multi =
       Enum.reduce(user_records, Multi.new, fn(user, out) ->
