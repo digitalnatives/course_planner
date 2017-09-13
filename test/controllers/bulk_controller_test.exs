@@ -112,16 +112,43 @@ defmodule CoursePlanner.BulkControllerTest do
       assert html_response(conn, 200) =~ "Input can not be empty"
     end
 
-    test "does not create bulk request even if one of the lines is invalid", %{conn: conn} do
+    test "does not create bulk request if input file is just new lines", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation",
+        """
+
+
+
+        """)
+      conn = post conn, bulk_path(conn, :create, params)
+      assert get_flash(conn, "error") == "Row has length 1 - expected length 5 on line 1"
+    end
+
+    test "does not create bulk request even if one of the lines is invalid when changeset fails", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation",
+        """
+          Aname,AFamile,Anickname,a@a.com,Student
+          Bname,BFamile,Bnickname,b@b.com,Teacher
+          Cname,CFamile,Cnickname,,Volunteer
+          Dname,DFamile,Dnickname,d@d.com,Coordinator
+        """)
+      conn = post conn, bulk_path(conn, :create, params)
+      assert get_flash(conn, "error") == "email can't be blank"
+      refute Repo.get_by(User, email: "a@a.com")
+      refute Repo.get_by(User, email: "b@b.com")
+      refute Repo.get_by(User, email: "c@c.com")
+      refute Repo.get_by(User, email: "d@d.com")
+    end
+
+    test "does not create bulk request even if one of the lines is invalid when csv fails", %{conn: conn} do
       params = create_input_params("user", "user bulk creation",
       """
          Aname,AFamile,Anickname,a@a.com,Student
          Bname,BFamile,Bnickname,b@b.com,Teacher
-         Cname,CFamile,Cnickname,,Volunteer
+         Cname,CFamile,Cnickname,Volunteer
          Dname,DFamile,Dnickname,d@d.com,Coordinator
       """)
       conn = post conn, bulk_path(conn, :create, params)
-      assert get_flash(conn, "error") == "email can't be blank"
+      assert get_flash(conn, "error") == "Row has length 4 - expected length 5 on line 3"
       refute Repo.get_by(User, email: "a@a.com")
       refute Repo.get_by(User, email: "b@b.com")
       refute Repo.get_by(User, email: "c@c.com")
