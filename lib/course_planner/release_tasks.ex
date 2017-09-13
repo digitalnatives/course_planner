@@ -14,13 +14,13 @@ defmodule CoursePlanner.ReleaseTasks do
   ]
 
   def migrate do
-    prepare()
+    prepare(false)
     Enum.each(repos(), &run_migrations_for/1)
     :init.stop()
   end
 
-  def seed do
-    prepare()
+  def seed(loaded \\ false) do
+    prepare(loaded)
     seed_script = seed_path(:course_planner)
     if File.exists?(seed_script) do
       IO.puts "Running seed script.."
@@ -30,7 +30,7 @@ defmodule CoursePlanner.ReleaseTasks do
 
   defp repos, do: Application.get_env(:course_planner, :ecto_repos, [])
 
-  defp prepare do
+  defp prepare(false) do
     IO.puts "Loading course_planner.."
     :ok = Application.load(:course_planner)
 
@@ -40,6 +40,7 @@ defmodule CoursePlanner.ReleaseTasks do
     IO.puts "Starting repos.."
     Enum.each(repos(), &(&1.start_link(pool_size: 1)))
   end
+  defp prepare(true), do: :nothing
 
   defp run_migrations_for(repo) do
     app = Keyword.get(repo.config, :otp_app)
