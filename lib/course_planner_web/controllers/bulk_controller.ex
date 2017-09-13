@@ -14,7 +14,7 @@ defmodule CoursePlannerWeb.BulkController do
 
   def create(conn, %{"input" => %{"target" => target,
                                   "title" => title,
-                                  "csv_file" => %{"path" => file_path}}}) do
+                                  "csv_file" => %Plug.Upload{path: file_path}}}) do
     file_path
     |> File.stream!()
     |> handle_csv_file_data(conn, target, title)
