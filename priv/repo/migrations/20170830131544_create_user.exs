@@ -3,25 +3,19 @@ defmodule CoursePlanner.Repo.Migrations.CreateUser do
 
   def change do
     execute("""
-      do $$
-        BEGIN
-          IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
-            CREATE TYPE user_role AS ENUM (
-              'Student',
-              'Teacher',
-              'Coordinator',
-              'Volunteer'
-            );
-          END IF;
-          IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'participation_type') THEN
-            CREATE TYPE participation_type AS ENUM (
-              'Official',
-              'Guest'
-            );
-          END IF;
-        END
-      $$
+          CREATE TYPE user_role AS ENUM (
+            'Student',
+            'Teacher',
+            'Coordinator',
+            'Volunteer'
+          )
         """)
+    execute("""
+          CREATE TYPE participation_type AS ENUM (
+            'Official',
+            'Guest'
+          )
+    """)
     create table(:users) do
       add :name, :string
       add :email, :string
