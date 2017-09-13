@@ -72,7 +72,7 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
         value: "some email",
         type: "string",
         editable: true,
-        visible: false,
+        visible: true,
         required: false
       }) |> Repo.insert!
 end

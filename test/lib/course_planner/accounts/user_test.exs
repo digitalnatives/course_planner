@@ -30,6 +30,7 @@ defmodule CoursePlanner.UserTest do
           name: "foo",
           family_name: "bar",
           email: "foo@bar.com",
+          role: "Coordinator",
           password: "secret",
           password_confirmation: "secret"
           })
@@ -45,6 +46,7 @@ defmodule CoursePlanner.UserTest do
           name: "foo",
           family_name: "bar",
           email: "foo@bar.com",
+          role: "Coordinator",
           password: "secret",
           password_confirmation: "secret"
           })
@@ -56,6 +58,7 @@ defmodule CoursePlanner.UserTest do
           name: "foo",
           family_name: "bar",
           email: "Foo@bar.com",
+          role: "Coordinator",
           password: "secret",
           password_confirmation: "secret"
           })
