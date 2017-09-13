@@ -33,20 +33,12 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
 
    1. `pip install gigalixir`
    2. `gigalixir login`
-   3. `APP_NAME=$(gigalixir create --name course-planner)`
+   3. `APP_NAME=$(gigalixir create --name your-app-name)` (should be unique)
    4. `gigalixig set_config $APP_NAME DATABASE_URL $YOUR_DB_URL`
       
       If you don't have a database, you can create one by running `gigalixir create_database $APP_NAME` and waiting for it to become `AVAILABLE`.
    5. `git push gigalixir master`
    
-   6. `MIX_ENV=prod mix release --env=prod`
-      `MIX_ENV=prod DATABASE_URL="$YOUR_DB_URL" mix ecto.migrate`
-
-      `$YOUR_DB_URL` is in the format: `ecto://user:pass@host:port/db` and you can find those parameters by running `gigalixir databases $APP_NAME`
-
-      This workaround is necessary because the app won't start without running the migrations.
-   
-   
-   7. Copy the contents of the `priv/repo/seeds.exs` file
+   6. Copy the contents of the `priv/repo/seeds.exs` file
       Connect to the console with `gigalixir remote_console $APP_NAME`
       Paste the contents of `seeds.exs` in the console
