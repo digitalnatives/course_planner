@@ -21,7 +21,7 @@ defmodule CoursePlannerWeb.BulkController do
   end
   def create(conn, %{"input" => %{"target" => target, "title" => title}}) do
     conn
-    |> put_flash(:error, "You have to select a file.")
+    |> put_flash(:error, "You have to select a file")
     |> render("new.html", target: target, title: title)
   end
 
@@ -31,9 +31,9 @@ defmodule CoursePlannerWeb.BulkController do
         post_creation(conn, created_entities, target)
 
         conn
-        |> put_flash(:info, "All users are created and notified by.")
+        |> put_flash(:info, "All users are created and notified by")
         |> redirect(to: user_path(conn, :index))
-      {:error, "parsing_csv", failed_value, _changes_so_far} ->
+      {:error, "bulk_creation", failed_value, _changes_so_far} ->
 
         conn
         |> put_flash(:error, failed_value)
@@ -47,7 +47,7 @@ defmodule CoursePlannerWeb.BulkController do
       {:error, _failed_operation, _failed_value, _changes_so_far} ->
 
         conn
-        |> put_flash(:error, "Something went wrong.")
+        |> put_flash(:error, "Something went wrong")
         |> render("new.html", target: target, title: title)
     end
   end

@@ -75,18 +75,70 @@ defmodule CoursePlanner.BulkControllerTest do
     end
 
     @tag user_role: :coordinator
-    test "creates bulk request", %{conn: conn} do
+    test "creates bulk request with one row of data", %{conn: conn} do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
       conn = post conn, bulk_path(conn, :create, params)
       assert redirected_to(conn) == user_path(conn, :index)
-      assert get_flash(conn, "info") == "All users are created and notified by."
+      assert get_flash(conn, "info") == "All users are created and notified by"
       assert Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
+    end
+
+    test "creates bulk request with multiple rows of data", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation",
+        """
+           Aname,AFamile,Anickname,a@a.com,Student
+           Bname,BFamile,Bnickname,b@b.com,Teacher
+           Cname,CFamile,Cnickname,c@c.com,Volunteer
+           Dname,DFamile,Dnickname,d@d.com,Coordinator
+        """)
+      conn = post conn, bulk_path(conn, :create, params)
+      assert redirected_to(conn) == user_path(conn, :index)
+      assert get_flash(conn, "info") == "All users are created and notified by"
+      assert Repo.get_by(User, email: "a@a.com")
+      assert Repo.get_by(User, email: "b@b.com")
+      assert Repo.get_by(User, email: "c@c.com")
+      assert Repo.get_by(User, email: "d@d.com")
+    end
+
+    test "does not create bulk request if input file is missing", %{conn: conn} do
+      params = %{"input" => %{"target" => "user", "title" => "user bulk creation"}}
+      conn = post conn, bulk_path(conn, :create, params)
+      assert html_response(conn, 200) =~ "You have to select a file"
+    end
+
+    test "does not create bulk request if input file is empty", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation", "")
+      conn = post conn, bulk_path(conn, :create, params)
+      assert html_response(conn, 200) =~ "Input can not be empty"
+    end
+
+    test "does not create bulk request even if one of the lines is invalid", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation",
+      """
+         Aname,AFamile,Anickname,a@a.com,Student
+         Bname,BFamile,Bnickname,b@b.com,Teacher
+         Cname,CFamile,Cnickname,,Volunteer
+         Dname,DFamile,Dnickname,d@d.com,Coordinator
+      """)
+      conn = post conn, bulk_path(conn, :create, params)
+      assert get_flash(conn, "error") == "email can't be blank"
+      refute Repo.get_by(User, email: "a@a.com")
+      refute Repo.get_by(User, email: "b@b.com")
+      refute Repo.get_by(User, email: "c@c.com")
+      refute Repo.get_by(User, email: "d@d.com")
+    end
+
+    test "does not create bulk request if input file does not have the correct format", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation", "Aname,AFamile,,Anickname,a@a.com\nBname")
+      conn = post conn, bulk_path(conn, :create, params)
+      assert html_response(conn, 200) =~ "Row has length 1 - expected length 5 on line 2"
+      refute Repo.get_by(User, name: "Aname", family_name: "AFamile", email: "a@a.com", role: "Student")
     end
 
     test "does not create bulk request if input fields are not enough", %{conn: conn} do
       params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com")
       conn = post conn, bulk_path(conn, :create, params)
-      assert html_response(conn, 200) =~ "Input data in row #1 is not matching the column number."
+      assert html_response(conn, 200) =~ "Row has length 4 - expected length 5 on line 1"
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
 
@@ -111,7 +163,7 @@ defmodule CoursePlanner.BulkControllerTest do
       params = create_input_params("invalid target", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
       conn = post conn, bulk_path(conn, :create, params)
       assert html_response(conn, 200)
-      assert get_flash(conn, "error") == "Something went wrong."
+      assert get_flash(conn, "error") == "Something went wrong"
       refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
     end
   end
