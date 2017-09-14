@@ -39,6 +39,14 @@ defmodule CoursePlanner.Accounts.Users do
     end
   end
 
+  def delete(id, current_user_id) do
+    if to_string(id) == to_string(current_user_id) do
+      {:error, :self_deletion}
+    else
+      delete(id)
+    end
+  end
+
   def delete(id) do
     case get(id) do
       {:ok, user} -> Repo.delete(user)
