@@ -1,28 +1,30 @@
 <h3>Course Conflict</h3>
-<ul>
-  <%= for {course1_id, courses} <- @matrix do %>
-    <li>
-      <p>
-        <strong>Course:</strong> <%= course_name(@courses, course1_id) %>
-      </p>
-      <p>
-        <strong>Total students:</strong> <%= total_students(@courses, course1_id) %>
-      </p>
-      <ul>
-      <%= for {course2_id, students} <- courses do %>
-        <li>
-          <p>
-            <strong>Course:</strong> <%= course_name(@courses, course2_id) %>
-          </p>
-          <p>
-            <strong>Total students:</strong> <%= total_students(@courses, course2_id) %>
-          </p>
-          <p>
-            <strong>Students in common:</strong> <%= students %>
-          </p>
-        </li>
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+  <thead>
+    <tr>
+      <th></th>
+      <%= for {course_id, _courses} <- @matrix do %>
+        <th class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course_id) %> </th>
       <% end %>
-      </ul>
-    </li>
-  <% end %>
-</ul>
+      <th> Total students </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for {course1_id, courses} <- @matrix do %>
+      <tr>
+        <td class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course1_id) %> </td>
+
+        <%= for {course2_id, students} <- courses do %>
+          <%= if course1_id == course2_id do %>
+            <td class="mdl-data-table__cell--non-numeric">NA</td>
+          <% else %>
+            <td class="mdl-data-table__cell--non-numeric"> <%= students %> </th>
+          <% end %>
+        <% end %>
+
+        <td> <%= total_students(@courses, course1_id) %> </th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
