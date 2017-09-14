@@ -37,7 +37,5 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
    4. `gigalixig set_config $APP_NAME DATABASE_URL $YOUR_DB_URL`
 
       If you don't have a database, you can create one by running `gigalixir create_database $APP_NAME` and waiting for it to become `AVAILABLE`.
-   5. `git push gigalixir master`
-  
-   6. Connect to the console with `gigalixir remote_console $APP_NAME`
-      Run the following command: `CoursePlanner.ReleaseTasks.seed()`
+   5. `git push gigalixir master` 
+   6. Run the following command: `gigalixir run $APP_NAME Elixir.CoursePlanner.ReleaseTasks seed`
