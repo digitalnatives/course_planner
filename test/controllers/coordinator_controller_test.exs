@@ -64,7 +64,6 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     refute Repo.get(User, coordinator.id)
   end
 
-  @tag :mytest
   test "fails when doing a selfdeletion", %{conn: conn} do
     current_logged_in_coordinator = conn.assigns.current_user
     conn = delete conn, coordinator_path(conn, :delete, current_logged_in_coordinator)
