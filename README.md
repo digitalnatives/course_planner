@@ -38,4 +38,4 @@ For more details, see [the quick start](http://gigalixir.readthedocs.io/en/lates
 
       If you don't have a database, you can create one by running `gigalixir create_database $APP_NAME` and waiting for it to become `AVAILABLE`.
    5. `git push gigalixir master` 
-   6. Run the following command: `gigalixir run $APP_NAME Elixir.CoursePlanner.ReleaseTasks seed`
+   6. `gigalixir run $APP_NAME Elixir.CoursePlanner.ReleaseTasks seed`
