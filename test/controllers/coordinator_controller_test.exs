@@ -64,6 +64,14 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     refute Repo.get(User, coordinator.id)
   end
 
+  test "fails when doing a selfdeletion", %{conn: conn} do
+    current_logged_in_coordinator = conn.assigns.current_user
+    conn = delete conn, coordinator_path(conn, :delete, current_logged_in_coordinator)
+    assert redirected_to(conn) == coordinator_path(conn, :index)
+    assert get_flash(conn, "error") == "Coordinator cannot delete herself."
+    assert Repo.get(User, current_logged_in_coordinator.id)
+  end
+
   test "does not delete chosen resource when does not exist", %{conn: conn} do
     conn = delete conn, coordinator_path(conn, :delete, "-1")
     assert redirected_to(conn) == coordinator_path(conn, :index)

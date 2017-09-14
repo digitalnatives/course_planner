@@ -344,4 +344,10 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     conn = delete conn, offered_course_path(conn, :delete, offered_course)
     assert html_response(conn, 403)
   end
+
+  @tag user_role: :teacher
+  test "teacher can't see new course button", %{conn: conn} do
+    conn = get conn, offered_course_path(conn, :index)
+    refute html_response(conn, 200) =~ "New course"
+  end
 end

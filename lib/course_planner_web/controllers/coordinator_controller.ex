@@ -63,8 +63,8 @@ defmodule CoursePlannerWeb.CoordinatorController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    case Users.delete(id) do
+  def delete(%{assigns: %{current_user: %User{id: current_user_id}}} = conn, %{"id" => id}) do
+    case Users.delete(id, current_user_id) do
       {:ok, _coordinator} ->
         conn
         |> put_flash(:info, "Coordinator deleted successfully.")
@@ -72,6 +72,10 @@ defmodule CoursePlannerWeb.CoordinatorController do
       {:error, :not_found} ->
         conn
         |> put_flash(:error, "Coordinator was not found.")
+        |> redirect(to: coordinator_path(conn, :index))
+      {:error, :self_deletion} ->
+        conn
+        |> put_flash(:error, "Coordinator cannot delete herself.")
         |> redirect(to: coordinator_path(conn, :index))
       {:error, _changeset} ->
         conn
