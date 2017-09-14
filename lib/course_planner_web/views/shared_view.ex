@@ -233,8 +233,17 @@ defmodule CoursePlannerWeb.SharedView do
         ""
       end
 
+    class =
+      if opts[:grid] do
+        "card--grid"
+      else
+        ""
+      end
+
+
     render "card.html", title: title,
                         title_class: title_class,
+                        class: class,
                         children: children
   end
 

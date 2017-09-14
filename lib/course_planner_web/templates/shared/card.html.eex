@@ -1,5 +1,5 @@
 
-<div class="card mdl-card mdl-shadow--2dp">
+<div class="card mdl-card mdl-shadow--2dp <%= @class %>">
   <%= if @title do %>
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text <%= @title_class %>">

@@ -8,6 +8,10 @@
     margin: 20px 0;
     position: relative;
 
+    &--grid {
+      height: 100%;
+    }
+
     &__title {
       &--highlighted {
         color: white;

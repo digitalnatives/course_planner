@@ -1,4 +1,107 @@
-<div class="jumbotron">
-  <h2><%= gettext "Welcome to %{name}", name: "Phoenix!" %></h2>
-  <p class="lead">A productive web framework that<br />does not compromise speed and maintainability.</p>
-</div>
+
+  <% current_user = @conn.assigns.current_user %>
+  <% role = current_user.role %>
+  <%
+    %{offered_courses: offered_courses, terms: terms} =
+      SummaryHelper.get_term_offered_course_for_user(current_user)
+
+    next_class = SummaryHelper.get_next_class(current_user)
+
+    next_task = SummaryHelper.get_next_task(current_user)
+  %>
+
+  <div class="row row--hspace row--vspace">
+    <div class="col-xs-12 <%= if ( next_class || next_task ) do "col-md-8" end %>">
+      <%= CoursePlannerWeb.SharedView.card "Current Terms", grid: true do %>
+        <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eget leo volutpat, vestibulum felis vitae, accumsan metus. Morbi et neque ac augue pulvinar efficitur ut ut purus. Nullam ex metus, scelerisque ut mauris ac, ullamcorper finibus turpis. Maecenas non ligula diam. Pellentesque posuere blandit eros, in aliquet sapien cursus vitae. Aenean vulputate ut lorem eu feugiat. In non nunc molestie, posuere felis non, fringilla urna. Nulla sed diam dui. Cras ut tortor in metus blandit pharetra. Praesent ullamcorper tincidunt nisl, sit amet lobortis velit semper a.
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if next_class do %>
+      <div class="col-xs-12 col-md-4">
+        <%= CoursePlannerWeb.SharedView.card "Next class", grid: true do %>
+          <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+            Mauris dictum lectus felis, et elementum enim convallis et. Suspendisse iaculis augue arcu, eu porta sapien efficitur sit amet.
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if next_task do %>
+      <div class="col-xs-12 col-md-4">
+        <%= CoursePlannerWeb.SharedView.card "Next task", grid: true do %>
+          <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+            Mauris dictum lectus felis, et elementum enim convallis et. Suspendisse iaculis augue arcu, eu porta sapien efficitur sit amet.
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="col-xs-12">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          Courses
+        </div>
+      </div>
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">Course name</th>
+            <th class="mdl-data-table__cell--non-numeric">Term name</th>
+            <th>Term start date</th>
+            <th>Term end date</th>
+            <th>Number of sessions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= Enum.with_index(offered_courses) |> Enum.map(fn {offered_course,index} -> %>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric">
+                <%= offered_course.course.name %>
+              </td>
+              <td class="mdl-data-table__cell--non-numeric">
+                <%= offered_course.term.name %>
+              </td>
+              <td>
+                <%= offered_course.term.start_date %>
+              </td>
+              <td>
+                <%= offered_course.term.end_date %>
+              </td>
+              <td>
+                <%= offered_course.number_of_sessions %>
+              </td>
+              <td>
+                <button id="tr_menu_<%= offered_course.id %>"
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                >
+                  <i class="material-icons">more_vert</i>
+                </button>
+                <ul
+                  class="
+                    mdl-menu mdl-js-menu
+                    <%=
+                      if index > 10 and index > length(@offered_courses)-4 do
+                        'mdl-menu--top-right'
+                      else
+                        'mdl-menu--bottom-right'
+                      end
+                    %>
+                  "
+                  for="tr_menu_<%= offered_course.id %>"
+                >
+                  <li class="mdl-menu__item">
+                    <%= link "Show", to: offered_course_path(@conn, :show, offered_course) %>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          <% end) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
