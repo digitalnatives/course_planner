@@ -110,7 +110,7 @@
             Teachers
           </div>
         </div>
-        <%= CoursePlannerWeb.SharedView.user_list @offered_course.teachers, empty_text: "This course has no teachers yet" %>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.teachers, empty_text: "This course has no teachers yet" %>
 
       </div>
     </div>

@@ -1,8 +1,13 @@
 
   <a class="user-bubble" href="<%= @url %>">
-    <div class="user-bubble__image-wrapper">
-      <div class="user-bubble__image" style="background-image: url('<%= @profile_picture %>');">
+  <%= if @clickable do %>
+    <a class="user-bubble" href="<%= @url %>">
+  <% else %>
+    <a class="user-bubble">
+  <% end %>
+      <div class="user-bubble__image-wrapper">
+        <div class="user-bubble__image" style="background-image: url('<%= @profile_picture %>');">
+        </div>
       </div>
-    </div>
-    <div class="user-bubble__name"><%= @name %></div>
-  </a>
+      <div class="user-bubble__name"><%= @name %></div>
+    </a>
