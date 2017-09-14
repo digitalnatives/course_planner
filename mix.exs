@@ -58,6 +58,7 @@ defmodule CoursePlanner.Mixfile do
      {:ex_machina, "~> 2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
+     {:csv, "~> 2.0.0"},
    ]
   end
 
