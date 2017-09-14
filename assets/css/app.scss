@@ -31,6 +31,18 @@
   @import "./layout.scss";
   @import "./pages/login.scss";
 
+  @media only screen and (min-width: 64em) {
+    .container {
+      width: 55rem;
+    }
+  }
+
+  @media only screen and (min-width: 75em) {
+    .container {
+      width: 67rem;
+    }
+  }
+
   .nav-logo-wrapper {
     margin: 40px 40px 20px 40px;
     width: calc(100% - 80px);
