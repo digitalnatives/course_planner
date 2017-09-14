@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th></th>
-      <%= for {course_id, courses} <- @matrix do %>
+      <%= for {course_id, _courses} <- @matrix do %>
         <th class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course_id) %> </th>
       <% end %>
       <th> Total students </th>
