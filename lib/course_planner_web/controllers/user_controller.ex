@@ -80,6 +80,11 @@ defmodule CoursePlannerWeb.UserController do
 
   def resend_email(conn, %{"id" => id}) do
     case Users.get(id) do
+      {:ok, %User{reset_password_token: nil} = user} ->
+        conn
+        |> put_flash(:info, "User has already set her password in the system.")
+        |> redirect(to: user_path(conn, :show, user))
+
       {:ok, user} ->
         url = Helpers.password_url(conn, :edit, user.reset_password_token)
         ControllerHelpers.send_user_email(:welcome, user, url)
