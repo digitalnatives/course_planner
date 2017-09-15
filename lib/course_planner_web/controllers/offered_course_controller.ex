@@ -86,6 +86,37 @@ defmodule CoursePlannerWeb.OfferedCourseController do
                               user_role: user_role)
   end
 
+  def edit(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn, %{"id" => id})
+  when user_role == "Teacher" do
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers, :classes])
+
+    can_user_edit_this_offered_course? =
+      offered_course.teachers
+      |> Enum.any?(fn(teacher) -> teacher.id ==  user_id end)
+
+    if can_user_edit_this_offered_course? do
+      {past_classes, next_classes} =
+        offered_course.classes
+        |> Classes.sort_by_starting_time()
+        |> Classes.split_past_and_next()
+
+      changeset = OfferedCourse.changeset(offered_course)
+
+      render(conn, "teacher_edit.html", offered_course: offered_course,
+                                next_classes: next_classes,
+                                past_classes: past_classes,
+                                user_role: user_role,
+                                changeset: changeset)
+    else
+      conn
+      |> put_status(403)
+      |> render(CoursePlannerWeb.ErrorView, "403.html")
+    end
+  end
+
   def edit(conn, %{"id" => id}) do
     offered_course =
       OfferedCourse
@@ -93,6 +124,46 @@ defmodule CoursePlannerWeb.OfferedCourseController do
       |> Repo.preload([:term, :course, :students, :teachers])
     changeset = OfferedCourse.changeset(offered_course)
     render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
+  end
+
+  def update(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn,
+    %{"id" => id, "offered_course" => %{"syllabus" => syllabus}}) when user_role == "Teacher" do
+
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers, :classes])
+
+      can_user_update_this_offered_course? =
+        offered_course.teachers
+        |> Enum.any?(fn(teacher) -> teacher.id ==  user_id end)
+
+      if can_user_update_this_offered_course? do
+        {past_classes, next_classes} =
+          offered_course.classes
+          |> Classes.sort_by_starting_time()
+          |> Classes.split_past_and_next()
+
+        changeset = OfferedCourse.changeset(offered_course, %{syllabus: syllabus})
+
+        case Repo.update(changeset) do
+          {:ok, updated_offered_course} ->
+            conn
+            |> put_flash(:info, "Course updated successfully.")
+            |> redirect(to: offered_course_path(conn, :show, updated_offered_course))
+          {:error, changeset} ->
+            render(conn, "teacher_edit.html", offered_course: offered_course,
+                                      next_classes: next_classes,
+                                      past_classes: past_classes,
+                                      user_role: user_role,
+                                      changeset: changeset)
+
+        end
+      else
+        conn
+        |> put_status(403)
+        |> render(CoursePlannerWeb.ErrorView, "403.html")
+      end
   end
 
   def update(conn, %{"id" => id, "offered_course" => offered_course_params}) do

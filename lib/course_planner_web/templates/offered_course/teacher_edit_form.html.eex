@@ -1,0 +1,83 @@
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= Enum.join [@offered_course.course.name, @offered_course.term.name], " - " %>
+        </div>
+        <%= if @user_role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: offered_course_path(@conn, :edit, @offered_course),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= CoursePlannerWeb.SharedView.card @title do %>
+          <%= CoursePlannerWeb.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= CoursePlannerWeb.SharedView.form_textarea f, :syllabus %>
+          <% end %>
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+        <%= if length(@next_classes) > 0 do %>
+          <div class="row middle-xs page-header">
+            <div class="col-xs-12 page-title page-title--small">
+              Next Classes
+            </div>
+          </div>
+          <%= CoursePlannerWeb.SharedView.class_list @next_classes, empty_text: "This course has no classes yet",
+                                                                 show_attendances: @user_role === "Student"
+          %>
+        <% end %>
+
+        <%= if length(@past_classes) > 0 do %>
+          <div class="row middle-xs page-header">
+            <div class="col-xs-12 page-title page-title--small">
+              Past Classes
+            </div>
+          </div>
+          <%= CoursePlannerWeb.SharedView.class_list @past_classes, empty_text: "This course has no classes yet",
+                                                                 show_attendances: @user_role === "Student"
+          %>
+        <% end %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Teachers
+          </div>
+        </div>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.teachers, empty_text: "This course has no teachers yet" %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            <%= if @user_role == "Student" do %>
+              Classmates
+            <% else %>
+              Students
+            <% end %>
+          </div>
+        </div>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.students, empty_text: "This course has no students yet" %>
+
+      </div>
+    </div>
+  </div>

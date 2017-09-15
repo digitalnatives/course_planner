@@ -208,19 +208,51 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   @tag user_role: :teacher
-  test "teacher can edit offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
+  test "teacher can edit offered course if assigned to her", %{conn: conn} do
+    teacher = conn.assigns.current_user
+    offered_course = insert(:offered_course, teachers: [teacher])
     conn = get conn, offered_course_path(conn, :edit, offered_course)
     assert html_response(conn, 200) =~ "Edit course"
   end
 
   @tag user_role: :teacher
-  test "teacher can update offered course", %{conn: conn} do
+  test "teacher cannot edit offered course if is not assigned to her", %{conn: conn} do
     offered_course = insert(:offered_course)
+    conn = get conn, offered_course_path(conn, :edit, offered_course)
+    assert html_response(conn, 403)
+  end
+
+  @tag user_role: :teacher
+  test "teacher can update offered course if assigned to her", %{conn: conn} do
+    teacher = conn.assigns.current_user
+    offered_course = insert(:offered_course, teachers: [teacher])
     params = %{syllabus: "New syllabus"}
     conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
     assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
     assert Repo.get_by(OfferedCourse, params)
+  end
+
+  @tag user_role: :teacher
+  test "teacher can not update offered syllabus course if is not assigned to her", %{conn: conn} do
+    offered_course = insert(:offered_course)
+    params = %{syllabus: "New syllabus"}
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+    assert html_response(conn, 403)
+  end
+
+  @tag user_role: :teacher
+  test "teacher can not update anything beside syllabus", %{conn: conn} do
+    teacher = conn.assigns.current_user
+    offered_course = insert(:offered_course, teachers: [teacher])
+    params = %{syllabus: "New syllabus", term: nil, course: nil, number_of_sessions: -1}
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+    assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
+    updated_offered_course = Repo.get!(OfferedCourse, offered_course.id)
+
+    assert "New syllabus" == updated_offered_course.syllabus
+    assert offered_course.course_id == updated_offered_course.course_id
+    assert offered_course.term_id == updated_offered_course.term_id
+    assert offered_course.number_of_sessions == updated_offered_course.number_of_sessions
   end
 
   @tag user_role: :teacher
