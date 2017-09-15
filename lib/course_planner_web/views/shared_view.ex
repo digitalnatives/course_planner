@@ -283,18 +283,20 @@ defmodule CoursePlannerWeb.SharedView do
 
   # show pages
 
-  def user_list(users, opts \\ []) do
+  def user_list(current_user, users, opts \\ []) do
+    clickable = current_user.role == "Coordinator"
     empty_text = opts[:empty_text] || "There are no users here yet"
     render "user_list.html", users: users,
-                             empty_text: empty_text
+                             empty_text: empty_text,
+                             clickable: clickable
   end
 
-  def user_bubble(user) do
+  def user_bubble(user, clickable) do
     profile_picture = get_gravatar_url(user.email, 200)
 
     name = display_user_name(user)
 
-    url = user_show_path(user)
+    url = if clickable, do: user_show_path(user), else: ""
 
     render "user_bubble.html", url: url,
                                profile_picture: profile_picture,
