@@ -6,6 +6,11 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   @valid_insert_attrs %{offered_course: nil, date: %{day: 17, month: 4, year: 2010}, starting_at: %{hour: 14, min: 0, sec: 0}, finishes_at: %{hour: 15, min: 0, sec: 0}}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   defp create_attendance_with_teacher(students, teachers) do
     offered_course = insert(:offered_course, %{students: students, teachers: teachers})
     class_attrs = %{@valid_insert_attrs | offered_course: offered_course}

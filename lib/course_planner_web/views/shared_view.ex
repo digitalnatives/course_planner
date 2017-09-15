@@ -112,7 +112,7 @@ defmodule CoursePlannerWeb.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
-    default = opts[:value] || Ecto.Date.utc()
+    default = opts[:value] || Settings.now_with_timezone(Ecto.Date.utc())
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     error = error_message(form, field)
@@ -146,7 +146,7 @@ defmodule CoursePlannerWeb.SharedView do
   end
 
   def form_datetime(form, field, opts \\ []) do
-    default = Map.merge(Ecto.DateTime.utc(), opts[:value] || %{})
+    default = Map.merge(Settings.now_with_timezone(Ecto.DateTime.utc()), opts[:value] || %{})
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     error = error_message(form, field)

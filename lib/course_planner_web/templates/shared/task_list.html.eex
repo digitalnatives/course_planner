@@ -7,13 +7,13 @@
         </div>
         <div class="task-list__col">
           from
-          <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 0, 10 %>
-          <%= String.slice NaiveDateTime.to_iso8601(task.start_time), 11, 5 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.start_time |> Settings.now_with_timezone()), 0, 10 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.start_time |> Settings.now_with_timezone()), 11, 5 %>
         </div>
         <div class="task-list__col">
           to
-          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 0, 10 %>
-          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time), 11, 5 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time |> Settings.now_with_timezone()), 0, 10 %>
+          <%= String.slice NaiveDateTime.to_iso8601(task.finish_time |> Settings.now_with_timezone()), 11, 5 %>
         </div>
       </div>
     <% end %>

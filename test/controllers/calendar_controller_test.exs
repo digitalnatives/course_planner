@@ -10,6 +10,11 @@ defmodule CoursePlanner.CalendarControllerTest do
   @class_on_first_of_January  %{"classes" => [%{"classroom" => "r101","date" => "2017-01-01","finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
   @class_on_the_current_week  %{"classes" => [%{"classroom" => "r106","date" => to_string(Date.utc_today()),"finishes_at" => "12:00:00","starting_at" => "10:00:00","course_name" => "english","teachers" => [%{"family_name" => "tf1","nickname" => "tn1","name" => "t1"}],"term_name" => "term1"}]}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "UTC", type: "timezone"})
+    :ok
+  end
+
   def create_test_data do
     term = insert(:term, %{name: "term1"})
 

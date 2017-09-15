@@ -40,11 +40,13 @@
           <td>
             <%= class.date
                 |> Ecto.DateTime.from_date_and_time(class.starting_at)
+                |> Settings.now_with_timezone()
                 |> Timex.format!("{h24}:{m}") %>
           </td>
           <td>
             <%= class.date
                 |> Ecto.DateTime.from_date_and_time(class.finishes_at)
+                |> Settings.now_with_timezone()
                 |> Timex.format!("{h24}:{m}") %>
           </td>
           <%= if @conn.assigns.current_user.role == "Coordinator" do %>
