@@ -256,6 +256,15 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   @tag user_role: :teacher
+  test "teacher can not update if syllabus is empty", %{conn: conn} do
+    teacher = conn.assigns.current_user
+    offered_course = insert(:offered_course, teachers: [teacher])
+    params = %{syllabus: ""}
+    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+    assert html_response(conn, 200) =~ "Edit course"
+  end
+
+  @tag user_role: :teacher
   test "teacher can list their offered courses", %{conn: conn} do
     conn = get conn, offered_course_path(conn, :index)
     assert html_response(conn, 200)
