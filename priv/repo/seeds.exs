@@ -158,3 +158,5 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
         required: true
       }) |> Repo.insert!
 end
+
+"Seed ran successfully."
