@@ -179,10 +179,14 @@ defmodule CoursePlanner.UserControllerTest do
 
   test "resend notification to user" do
     user_conn = login_as(:coordinator)
-    user = insert(:user, %{reset_password_token: "whatever"})
+    old_reset_password_token = "whatever"
+    user = insert(:teacher, %{reset_password_token: old_reset_password_token})
 
     conn = put user_conn, user_path(user_conn, :resend_email, user.id)
     assert redirected_to(conn) == user_path(conn, :show, user)
+
+    user_after_resent_password_url = Repo.get!(User, user.id)
+    refute old_reset_password_token == user_after_resent_password_url.reset_password_token
   end
 
   test "don't resend notification to inexistent user" do
