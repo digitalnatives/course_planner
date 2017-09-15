@@ -10,6 +10,7 @@ defmodule CoursePlanner.SystemVariableTest do
   @boolean_valid_attrs %{key: "sample key", value: "true", type: "boolean", visible: true, editable: true, required: true}
   @list_valid_attrs %{key: "sample key", value: "value1,value2", type: "list", visible: true, editable: true, required: true}
   @utc_datetime_valid_attrs %{key: "sample key", value: "2017-08-15T09:07:59.935703Z", type: "utc_datetime", visible: true, editable: true, required: true}
+  @timezone_valid_attrs %{key: "sample key", value: "Europe/Budapest", type: "timezone", visible: true, editable: true, required: true}
   @invalid_attrs %{}
 
   test "changeset with invalid attributes" do
@@ -282,6 +283,19 @@ defmodule CoursePlanner.SystemVariableTest do
     test "empty is invalid" do
       changeset = SystemVariable.changeset(%SystemVariable{}, %{@utc_datetime_valid_attrs | value: ""})
       refute changeset.valid?
+    end
+  end
+
+  describe "changeset for timezone type" do
+    test "valid timezone" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, @timezone_valid_attrs)
+      assert changeset.valid?
+    end
+
+    test "invalid timezone" do
+      changeset = SystemVariable.changeset(%SystemVariable{}, %{@timezone_valid_attrs | value: "Kekistan"})
+      refute changeset.valid?
+      assert changeset.errors[:value] == {"the timezone Kekistan is not valid.", []}
     end
   end
 end
