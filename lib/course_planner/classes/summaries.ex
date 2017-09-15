@@ -4,10 +4,13 @@ defmodule CoursePlanner.Classes.Summaries do
   """
   import Ecto.Query
 
-  alias CoursePlanner.{Repo, Terms.Term, Courses.OfferedCourse, Tasks.Task}
+  alias CoursePlanner.{Repo, Terms.Term, Courses.OfferedCourse, Tasks.Task, Helpers}
   alias Ecto.DateTime
 
-  def get_term_offered_course_for_user(%{id: user_id, role: role}, time \\ Timex.now()) do
+  def get_term_offered_course_for_user(user) do
+    get_term_offered_course_for_user(user, Helpers.now_with_timezone())
+  end
+  def get_term_offered_course_for_user(%{id: user_id, role: role}, time) do
     case role do
       "Student" -> get_student_registered_data(user_id, time)
       "Teacher" -> get_teacher_registered_data(user_id, time)
@@ -64,7 +67,9 @@ defmodule CoursePlanner.Classes.Summaries do
   end
   defp extract_data_from_offered_courses(_offered_courses), do: %{terms: [], offered_courses: []}
 
-  def get_next_class(offered_courses, time \\ Timex.now())
+  def get_next_class(offered_courses) do
+    get_next_class(offered_courses, Helpers.now_with_timezone())
+  end
   def get_next_class(offered_courses, time)
     when is_list(offered_courses) and length(offered_courses) > 0 do
      offered_courses
@@ -87,7 +92,9 @@ defmodule CoursePlanner.Classes.Summaries do
   end
   def get_next_class(_offered_courses, _time), do: nil
 
-  def get_next_task(user, time \\ Timex.now())
+  def get_next_task(user) do
+    get_next_task(user, Helpers.now_with_timezone())
+  end
   def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
     Repo.one(from t in Task,
       join: v in assoc(t, :volunteers),

@@ -4,6 +4,11 @@ defmodule CoursePlanner.OfferedCoursesTest do
   import CoursePlanner.Factory
   alias CoursePlanner.{Courses.OfferedCourses, Attendances, Notifications.Notification}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do
       term = insert(:term)

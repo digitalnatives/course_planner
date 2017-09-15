@@ -4,6 +4,11 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   alias CoursePlanner.{Courses.Course, Courses.OfferedCourse, Repo, Terms, Attendances.Attendance}
   import CoursePlanner.Factory
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   def valid_attrs do
     %{
       term_id: term().id,

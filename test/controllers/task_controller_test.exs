@@ -8,6 +8,7 @@ defmodule CoursePlanner.TaskControllerTest do
   @invalid_attrs %{}
 
   setup(%{user_role: role}) do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     user = insert(role)
 
     conn =
