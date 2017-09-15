@@ -5,7 +5,7 @@ defmodule CoursePlanner.Classes do
   import Ecto.Changeset
   import Ecto.Query
 
-  alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications, Helpers}
+  alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications, Settings}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 
@@ -93,7 +93,7 @@ defmodule CoursePlanner.Classes do
   end
 
   def split_past_and_next(classes) do
-    now = Helpers.now_with_timezone
+    now = Settings.now_with_timezone(Timex.now())
     {reversed_past_classes, next_classes} =
       Enum.split_with(classes, fn class ->
         class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)

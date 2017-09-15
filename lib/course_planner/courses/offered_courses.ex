@@ -2,7 +2,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   @moduledoc false
 
   alias CoursePlanner.{Courses.OfferedCourse, Repo, Attendances, Notifications.Notifier,
-                       Notifications, Helpers}
+                       Notifications, Settings}
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
@@ -71,7 +71,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   end
 
   def with_pending_attendances do
-    with_pending_attendances(Helpers.now_with_timezone)
+    with_pending_attendances(Settings.now_with_timezone(Timex.now()))
   end
   def with_pending_attendances(date) do
    Repo.all(from oc in OfferedCourse,

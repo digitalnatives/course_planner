@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.TaskController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Tasks, Tasks.Task, Helpers}
+  alias CoursePlanner.{Tasks, Tasks.Task, Settings}
 
   import Canary.Plugs
   plug :authorize_controller
@@ -13,7 +13,7 @@ defmodule CoursePlannerWeb.TaskController do
 
   def index(%{assigns: %{current_user: %{id: id, role: "Volunteer"}}} = conn, params) do
     sort_opt = Map.get(params, "sort", nil)
-    now = Helpers.now_with_timezone
+    now = Settings.now_with_timezone(Timex.now())
     render(conn, "index_volunteer.html",
       available_tasks: Tasks.get_availables(sort_opt, id, now),
       your_past_tasks: Tasks.get_past(sort_opt, id, now),

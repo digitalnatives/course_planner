@@ -105,4 +105,15 @@ defmodule CoursePlanner.Settings do
     name = changeset.data.id |> Integer.to_string |> String.to_atom
     Multi.update(multi, name, changeset)
   end
+
+  def now_with_timezone(now) do
+    Timex.to_datetime(now, get_timezone())
+  end
+
+  def get_timezone do
+    case Repo.get_by(SystemVariable, key: "TIMEZONE") do
+      %{value: nil} -> "UTC"
+      %{value: value} -> value
+    end
+  end
 end

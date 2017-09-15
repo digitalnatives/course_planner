@@ -4,7 +4,7 @@ defmodule CoursePlanner.Tasks.Task do
   """
   use Ecto.Schema
   import Ecto.Changeset
-  alias CoursePlanner.{Accounts.User, Repo, Helpers}
+  alias CoursePlanner.{Accounts.User, Settings}
   alias Ecto.Changeset
 
   @cast_params [:name, :start_time, :finish_time, :description, :max_volunteers]
@@ -82,7 +82,7 @@ defmodule CoursePlanner.Tasks.Task do
 
   defp validate_expiration(%{valid?: true} = changeset) do
     finish_time = Changeset.get_field(changeset, :finish_time)
-    now = Helpers.now_with_timezone
+    now = Settings.now_with_timezone(Timex.now())
 
     if Timex.compare(finish_time, now) < 1 do
       add_error(changeset, :finish_time, "Task is expired")
