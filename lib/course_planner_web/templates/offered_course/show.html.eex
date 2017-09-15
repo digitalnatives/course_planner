@@ -55,7 +55,7 @@
             Teachers
           </div>
         </div>
-        <%= CoursePlannerWeb.SharedView.user_list @offered_course.teachers, empty_text: "This course has no teachers yet" %>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.teachers, empty_text: "This course has no teachers yet" %>
 
         <div class="row middle-xs page-header">
           <div class="col-xs-12 page-title page-title--small">
@@ -66,7 +66,7 @@
             <% end %>
           </div>
         </div>
-        <%= CoursePlannerWeb.SharedView.user_list @offered_course.students, empty_text: "This course has no students yet" %>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.students, empty_text: "This course has no students yet" %>
 
       </div>
     </div>

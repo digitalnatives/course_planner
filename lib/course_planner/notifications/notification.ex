@@ -16,7 +16,7 @@
 
   @types ~w(user_modified course_updated course_deleted
            term_updated term_deleted class_subscribed
-           class_updated class_deleted)
+           class_updated class_deleted attendance_missing)
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

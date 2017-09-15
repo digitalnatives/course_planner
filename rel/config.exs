@@ -24,6 +24,7 @@ environment :prod do
   set include_erts: true
   set include_src: false
   set cookie: :"t7:P5P|$c)woML.V0`gY.>)6vOqrm}S_H<J[i~$)7D{=f1difrmV^)8c,LCxbymD"
+  set pre_start_hook: "rel/commands/migrate.sh"
 end
 
 # You may define one or more releases in this file.
@@ -33,4 +34,7 @@ end
 
 release :course_planner do
   set version: current_version(:course_planner)
+  set commands: [
+    "migrate": "rel/commands/migrate.sh"
+  ]
 end

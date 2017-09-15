@@ -41,7 +41,7 @@
   }
 
   function renderHour ( hour ) {
-    return `0${hour}:00`.slice( -5 );
+    return `${hour}`.slice(0, 5);
   }
 
   function updatePointer ( ) {
@@ -254,7 +254,7 @@
                     </div>
                     <div class="calendar__class-time">
                       ${ cl.classroom ? cl.classroom + "," : "" }
-                      ${ renderHour( cl.starting_at.slice(0,2) ) }-${ renderHour( cl.finishes_at.slice(0,2) ) }
+                      ${ renderHour( cl.starting_at ) }-${ renderHour( cl.finishes_at ) }
                     </div>
                   </div>
                   <div
@@ -267,7 +267,7 @@
                     ${ cl.course_name }<br />
                     ${ cl.teachers.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }<br />
                     ${ cl.classroom ? cl.classroom + "," : "" }
-                    ${ renderHour( cl.starting_at.slice(0,2) ) }-${ renderHour( cl.finishes_at.slice(0,2) ) }
+                    ${ renderHour( cl.starting_at ) }-${ renderHour( cl.finishes_at ) }
                   </div>
                 `
               ).join( "" )
