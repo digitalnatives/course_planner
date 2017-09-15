@@ -25,7 +25,7 @@ defmodule CoursePlanner.Notifier.ServerTest do
     user = insert(:user)
     insert(:notification, %{user_id: user.id})
     insert(:notification, %{user_id: user.id})
-    insert(:notification, %{user_id: user.id})
+    insert(:notification, %{user_id: user.id, type: "attendance_missing", data: %{offered_course_name: "Bah"}})
 
     saved_user = Repo.get(User, user.id) |> Repo.preload(:notifications)
 

@@ -56,13 +56,20 @@ defmodule CoursePlanner.UserEmailTest do
 
     {type, subject} = {:attendance_missing, "One or more attendances are not filled"}
 
+    notification =
+      Notifications.new()
+      |> Notifications.to(@valid_user)
+      |> Notifications.type(type)
+      |> Notifications.resource_path(path)
+      |> Notifications.add_data(data)
+      |> Notifications.Notification.changeset()
+      |> CoursePlanner.Repo.insert!
+
     email =
-    Notifications.new()
-    |> Notifications.to(@valid_user)
-    |> Notifications.type(type)
-    |> Notifications.resource_path(path)
-    |> Notifications.add_data(data)
-    |> UserEmail.build_email()
+      Notifications.Notification
+      |> CoursePlanner.Repo.get(notification.id)
+      |> CoursePlanner.Repo.preload(:user)
+      |> UserEmail.build_email()
 
     assert email.html_body =~ path
     assert email.html_body =~ data.offered_course_name

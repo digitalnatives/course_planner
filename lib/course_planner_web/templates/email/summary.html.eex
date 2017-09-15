@@ -1,6 +1,8 @@
 <h1>Here's your activity summary:</h1>
 <ul>
   <%= for notification <- @notifications do %>
-    <li><%= render @view_module, @params[notification.type].template, assigns |> Map.put(:path, notification.resource_path) %></li>
+    <% template = @params[notification.type].template %>
+    <% attributes = %{path: notification.resource_path, data: notification.data} %>
+    <li><%= render @view_module, template, Map.merge(assigns, attributes) %></li>
   <% end %>
 </ul>

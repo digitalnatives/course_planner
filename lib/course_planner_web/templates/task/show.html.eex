@@ -66,7 +66,7 @@
             Assignee
           </div>
         </div>
-        <%= CoursePlannerWeb.SharedView.user_list @task.volunteers %>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @task.volunteers %>
 
       </div>
     </div>
