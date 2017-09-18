@@ -19,12 +19,6 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ### Heroku
 
-First, be sure `MIX_ENV` is set to `heroku` during compilation
-
-    heroku config:set MIX_ENV=heroku
-
-Then, click the button!
-
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
 ### Gigalixir
