@@ -31,38 +31,5 @@
         <% end %>
       <% end %>
 
-        <%= if length(@next_classes) > 0 do %>
-          <div class="row middle-xs page-header">
-            <div class="col-xs-12 page-title page-title--small">
-              Next Classes
-            </div>
-          </div>
-          <%= CoursePlannerWeb.SharedView.class_list @next_classes, empty_text: "This course has no classes yet" %>
-        <% end %>
-
-        <%= if length(@past_classes) > 0 do %>
-          <div class="row middle-xs page-header">
-            <div class="col-xs-12 page-title page-title--small">
-              Past Classes
-            </div>
-          </div>
-          <%= CoursePlannerWeb.SharedView.class_list @past_classes, empty_text: "This course has no classes yet" %>
-        <% end %>
-
-        <div class="row middle-xs page-header">
-          <div class="col-xs-12 page-title page-title--small">
-            Teachers
-          </div>
-        </div>
-        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.teachers, empty_text: "This course has no teachers yet" %>
-
-        <div class="row middle-xs page-header">
-          <div class="col-xs-12 page-title page-title--small">
-            Students
-          </div>
-        </div>
-        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.students, empty_text: "This course has no students yet" %>
-
       </div>
     </div>
-  </div>

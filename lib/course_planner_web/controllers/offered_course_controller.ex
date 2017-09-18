@@ -86,30 +86,12 @@ defmodule CoursePlannerWeb.OfferedCourseController do
                               user_role: user_role)
   end
 
-  def edit(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn, %{"id" => id})
+  def edit(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn, %{"id" => id})
   when user_role == "Teacher" do
-    offered_course =
-      OfferedCourse
-      |> Repo.get!(id)
-      |> Repo.preload([:term, :course, :students, :teachers, :classes])
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
 
-    can_user_edit_this_offered_course? =
-      offered_course.teachers
-      |> Enum.any?(fn(teacher) -> teacher.id ==  user_id end)
-
-    if can_user_edit_this_offered_course? do
-      {past_classes, next_classes} =
-        offered_course.classes
-        |> Classes.sort_by_starting_time()
-        |> Classes.split_past_and_next()
-
-      changeset = OfferedCourse.changeset(offered_course)
-
-      render(conn, "teacher_edit.html", offered_course: offered_course,
-                                next_classes: next_classes,
-                                past_classes: past_classes,
-                                user_role: user_role,
-                                changeset: changeset)
+    if OfferedCourses.can_teacher_edit_and_update_offered_course?(current_user, offered_course) do
+      render(conn, "teacher_edit.html", offered_course: offered_course, changeset: changeset)
     else
       conn
       |> put_status(403)
@@ -118,11 +100,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   end
 
   def edit(conn, %{"id" => id}) do
-    offered_course =
-      OfferedCourse
-      |> Repo.get!(id)
-      |> Repo.preload([:term, :course, :students, :teachers])
-    changeset = OfferedCourse.changeset(offered_course)
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
+
     render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
   end
 
@@ -132,18 +111,13 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
-      |> Repo.preload([:term, :course, :students, :teachers, :classes])
+      |> Repo.preload([:term, :course, :students, :teachers])
 
       can_user_update_this_offered_course? =
         offered_course.teachers
         |> Enum.any?(fn(teacher) -> teacher.id ==  user_id end)
 
       if can_user_update_this_offered_course? do
-        {past_classes, next_classes} =
-          offered_course.classes
-          |> Classes.sort_by_starting_time()
-          |> Classes.split_past_and_next()
-
         changeset = OfferedCourse.changeset(offered_course, %{syllabus: syllabus})
 
         case Repo.update(changeset) do
@@ -153,11 +127,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
             |> redirect(to: offered_course_path(conn, :show, updated_offered_course))
           {:error, changeset} ->
             render(conn, "teacher_edit.html", offered_course: offered_course,
-                                      next_classes: next_classes,
-                                      past_classes: past_classes,
-                                      user_role: user_role,
-                                      changeset: changeset)
-
+                                              changeset: changeset)
         end
       else
         conn

@@ -3,9 +3,5 @@
                           changeset: @changeset,
                           action: offered_course_path(@conn, :update, @offered_course),
                           conn: @conn,
-                          offered_course: @offered_course,
-                          next_classes: @next_classes,
-                          past_classes: @past_classes,
-                          user_role: @user_role
-
+                          offered_course: @offered_course
   %>
