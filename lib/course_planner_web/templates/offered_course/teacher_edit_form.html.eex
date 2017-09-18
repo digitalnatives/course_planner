@@ -9,13 +9,6 @@
         <div class="col-xs-6 col-sm-9 col-md-10 page-title">
           <%= Enum.join [@offered_course.course.name, @offered_course.term.name], " - " %>
         </div>
-        <%= if @user_role == "Coordinator" do %>
-          <div class="col-xs-6 col-sm-3 col-md-2">
-            <%= link "Edit", to: offered_course_path(@conn, :edit, @offered_course),
-                             class: "mdl-button mdl-js-button mdl-button--raised"
-            %>
-          </div>
-        <% end %>
       </div>
 
       <%= form_for @changeset, @action, fn f -> %>
@@ -44,9 +37,7 @@
               Next Classes
             </div>
           </div>
-          <%= CoursePlannerWeb.SharedView.class_list @next_classes, empty_text: "This course has no classes yet",
-                                                                 show_attendances: @user_role === "Student"
-          %>
+          <%= CoursePlannerWeb.SharedView.class_list @next_classes, empty_text: "This course has no classes yet" %>
         <% end %>
 
         <%= if length(@past_classes) > 0 do %>
@@ -55,9 +46,7 @@
               Past Classes
             </div>
           </div>
-          <%= CoursePlannerWeb.SharedView.class_list @past_classes, empty_text: "This course has no classes yet",
-                                                                 show_attendances: @user_role === "Student"
-          %>
+          <%= CoursePlannerWeb.SharedView.class_list @past_classes, empty_text: "This course has no classes yet" %>
         <% end %>
 
         <div class="row middle-xs page-header">
@@ -69,11 +58,7 @@
 
         <div class="row middle-xs page-header">
           <div class="col-xs-12 page-title page-title--small">
-            <%= if @user_role == "Student" do %>
-              Classmates
-            <% else %>
-              Students
-            <% end %>
+            Students
           </div>
         </div>
         <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @offered_course.students, empty_text: "This course has no students yet" %>
