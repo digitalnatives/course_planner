@@ -42,4 +42,9 @@ defmodule CoursePlanner.Accounts.Teachers do
       where: oct.teacher_id == ^teacher_id,
       order_by: [desc: t.start_date])
   end
+
+  def can_update_offered_course?(user, offered_course) do
+    offered_course.teachers
+    |> Enum.any?(fn(teacher) -> teacher.id ==  user.id end)
+  end
 end
