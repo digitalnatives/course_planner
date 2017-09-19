@@ -30,6 +30,26 @@ defmodule CoursePlanner.UserTest do
       changeset = User.changeset(%User{}, %{email: "foo@bar.com"})
       refute changeset.errors[:email]
     end
+
+    test "changeset is invalid when email doesn't contain `@` for seed" do
+      changeset = User.changeset(%User{}, %{email: "not email"}, :seed)
+      assert changeset.errors[:email] == {"has invalid format", [validation: :format]}
+    end
+
+    test "changeset is valid when email contains `@` for seed" do
+      changeset = User.changeset(%User{}, %{email: "foo@bar.com"}, :seed)
+      refute changeset.errors[:email]
+    end
+
+    test "changeset is invalid when email doesn't contain `@` for update" do
+      changeset = User.changeset(%User{}, %{email: "not email"}, :update)
+      assert changeset.errors[:email] == {"has invalid format", [validation: :format]}
+    end
+
+    test "changeset is valid when email contains `@` for update" do
+      changeset = User.changeset(%User{}, %{email: "foo@bar.com"}, :update)
+      refute changeset.errors[:email]
+    end
   end
 
   describe "email uniqueness" do
