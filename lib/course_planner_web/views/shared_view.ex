@@ -5,6 +5,9 @@ defmodule CoursePlannerWeb.SharedView do
   alias CoursePlanner.Settings
 
   # helpers
+  def format_text_to_html(text) do
+    Phoenix.HTML.Format.text_to_html(text)
+  end
 
   def path_exact_match(conn, path) do
     conn.request_path == path
