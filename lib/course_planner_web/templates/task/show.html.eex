@@ -53,7 +53,7 @@
                 <div class="detail">
                   <div class="detail__name">Description</div>
                   <div class="detail__value">
-                    <%= @task.description %>
+                    <%= CoursePlannerWeb.SharedView.format_text_to_html(@task.description) %>
                   </div>
                 </div>
               </div>
