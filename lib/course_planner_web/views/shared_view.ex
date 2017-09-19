@@ -8,7 +8,7 @@ defmodule CoursePlannerWeb.SharedView do
   # helpers
 
   def format_text_to_html(text) do
-    Format.text_to_html(text)
+    text && Format.text_to_html(text)
   end
 
   def path_exact_match(conn, path) do
