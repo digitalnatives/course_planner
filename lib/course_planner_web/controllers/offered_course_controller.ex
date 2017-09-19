@@ -86,13 +86,50 @@ defmodule CoursePlannerWeb.OfferedCourseController do
                               user_role: user_role)
   end
 
+  def edit(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn, %{"id" => id})
+  when user_role == "Teacher" do
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
+
+    if Teachers.can_update_offered_course?(current_user, offered_course) do
+      render(conn, "teacher_edit.html", offered_course: offered_course, changeset: changeset)
+    else
+      conn
+      |> put_status(403)
+      |> render(CoursePlannerWeb.ErrorView, "403.html")
+    end
+  end
+
   def edit(conn, %{"id" => id}) do
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
+
+    render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
+  end
+
+  def update(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn,
+    %{"id" => id, "offered_course" => %{"syllabus" => syllabus}}) when user_role == "Teacher" do
+
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
       |> Repo.preload([:term, :course, :students, :teachers])
-    changeset = OfferedCourse.changeset(offered_course)
-    render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
+
+      if Teachers.can_update_offered_course?(current_user, offered_course) do
+        changeset = OfferedCourse.changeset(offered_course, %{syllabus: syllabus})
+
+        case Repo.update(changeset) do
+          {:ok, updated_offered_course} ->
+            conn
+            |> put_flash(:info, "Course updated successfully.")
+            |> redirect(to: offered_course_path(conn, :show, updated_offered_course))
+          {:error, changeset} ->
+            render(conn, "teacher_edit.html", offered_course: offered_course,
+                                              changeset: changeset)
+        end
+      else
+        conn
+        |> put_status(403)
+        |> render(CoursePlannerWeb.ErrorView, "403.html")
+      end
   end
 
   def update(conn, %{"id" => id, "offered_course" => offered_course_params}) do
