@@ -69,7 +69,7 @@
                 <div class="detail">
                   <div class="detail__name">Comments</div>
                   <div class="detail__value">
-                    <%= @student.comments %>
+                    <%= CoursePlannerWeb.SharedView.format_text_to_html(@student.comments) %>
                   </div>
                 </div>
                 <div class="detail">

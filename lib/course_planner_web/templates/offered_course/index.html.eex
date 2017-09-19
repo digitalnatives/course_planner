@@ -73,6 +73,11 @@
                   """] %>
                 </li>
               <% end %>
+              <%= if @conn.assigns.current_user.role == "Teacher" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
+                </li>
+              <% end %>
             </ul>
           </td>
         </tr>

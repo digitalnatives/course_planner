@@ -21,7 +21,7 @@
                   <div class="detail">
                     <div class="detail__name">Address</div>
                     <div class="detail__value">
-                      <%= @program_data.address %>
+                      <%= CoursePlannerWeb.SharedView.format_text_to_html(@program_data.address) %>
                     </div>
                   </div>
                 <% end%>
@@ -39,7 +39,7 @@
                   <div class="detail">
                     <div class="detail__name">Phone number</div>
                     <div class="detail__value">
-                      <%= @program_data.phone %>
+                      <%= CoursePlannerWeb.SharedView.format_text_to_html(@program_data.phone) %>
                     </div>
                   </div>
                 <% end %>
@@ -48,7 +48,7 @@
                   <div class="detail">
                     <div class="detail__name">Website</div>
                     <div class="detail__value">
-                      <%= @program_data.website %>
+                      <%= CoursePlannerWeb.SharedView.format_text_to_html(@program_data.website) %>
                     </div>
                   </div>
                 <% end %>
@@ -57,7 +57,7 @@
                   <div class="detail">
                     <div class="detail__name">Description</div>
                     <div class="detail__value">
-                      <%= @program_data.description %>
+                      <%= CoursePlannerWeb.SharedView.format_text_to_html(@program_data.description) %>
                     </div>
                   </div>
                 <% end %>
@@ -66,7 +66,7 @@
                   <div class="detail">
                     <div class="detail__name">Information</div>
                     <div class="detail__value">
-                      <%= @program_data.information %>
+                      <%= CoursePlannerWeb.SharedView.format_text_to_html(@program_data.information) %>
                     </div>
                   </div>
                 <% end %>
