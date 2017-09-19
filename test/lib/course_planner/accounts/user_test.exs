@@ -8,6 +8,16 @@ defmodule CoursePlanner.UserTest do
       changeset = User.changeset(%User{}, %{})
       assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
     end
+
+    test "changeset is invalid without email for seeds" do
+      changeset = User.changeset(%User{}, %{}, :seed)
+      assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+    end
+
+    test "changeset is invalid without email for update" do
+      changeset = User.changeset(%User{}, %{}, :update)
+      assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+    end
   end
 
   describe "email format" do
