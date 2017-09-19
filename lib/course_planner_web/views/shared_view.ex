@@ -3,10 +3,12 @@ defmodule CoursePlannerWeb.SharedView do
   use CoursePlannerWeb, :view
 
   alias CoursePlanner.Settings
+  alias Phoenix.HTML.Format
 
   # helpers
+
   def format_text_to_html(text) do
-    Phoenix.HTML.Format.text_to_html(text)
+    Format.text_to_html(text)
   end
 
   def path_exact_match(conn, path) do
