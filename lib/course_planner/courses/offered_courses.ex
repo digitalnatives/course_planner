@@ -109,9 +109,4 @@ defmodule CoursePlanner.Courses.OfferedCourses do
 
     {:ok, offered_course, changeset}
   end
-
-  def can_teacher_edit_and_update_offered_course?(user, offered_course) do
-    offered_course.teachers
-    |> Enum.any?(fn(teacher) -> teacher.id ==  user.id end)
-  end
 end

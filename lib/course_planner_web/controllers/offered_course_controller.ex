@@ -90,7 +90,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   when user_role == "Teacher" do
     {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
 
-    if OfferedCourses.can_teacher_edit_and_update_offered_course?(current_user, offered_course) do
+    if Teachers.can_update_offered_course?(current_user, offered_course) do
       render(conn, "teacher_edit.html", offered_course: offered_course, changeset: changeset)
     else
       conn
@@ -105,7 +105,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
   end
 
-  def update(%{assigns: %{current_user: %{role: user_role, id: user_id}}} = conn,
+  def update(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn,
     %{"id" => id, "offered_course" => %{"syllabus" => syllabus}}) when user_role == "Teacher" do
 
     offered_course =
@@ -113,11 +113,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
       |> Repo.get!(id)
       |> Repo.preload([:term, :course, :students, :teachers])
 
-      can_user_update_this_offered_course? =
-        offered_course.teachers
-        |> Enum.any?(fn(teacher) -> teacher.id ==  user_id end)
-
-      if can_user_update_this_offered_course? do
+      if Teachers.can_update_offered_course?(current_user, offered_course) do
         changeset = OfferedCourse.changeset(offered_course, %{syllabus: syllabus})
 
         case Repo.update(changeset) do
