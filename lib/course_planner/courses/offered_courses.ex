@@ -99,4 +99,14 @@ defmodule CoursePlanner.Courses.OfferedCourses do
          |> @notifier.notify_later()
        end)
   end
+
+  def load_offered_course_for_edit(id) do
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
+    changeset = OfferedCourse.changeset(offered_course)
+
+    {:ok, offered_course, changeset}
+  end
 end
