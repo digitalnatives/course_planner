@@ -11,10 +11,44 @@ defmodule CoursePlanner.Classes do
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
+  def all do
+    Class
+    |> Repo.all()
+    |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
+  end
+
+  def new do
+    Class.changeset(%Class{})
+  end
+
   def get(id) do
     case Repo.get(Class, id) do
       nil -> {:error, :not_found}
       class -> {:ok, class}
+    end
+  end
+
+  def edit(id) do
+    case get(id) do
+      {:ok, class} -> {:ok, class, Class.changeset(class)}
+      error -> error
+    end
+  end
+
+  def create(params) do
+    %Class{}
+    |> Class.changeset(params, :create)
+    |> Repo.insert()
+  end
+
+  def update(id, params) do
+    case get(id) do
+      {:ok, class} ->
+        class
+        |> Class.changeset(params, :update)
+        |> Repo.update()
+        |> format_error(class)
+      error -> error
     end
   end
 
@@ -45,7 +79,7 @@ defmodule CoursePlanner.Classes do
   def delete(id) do
     case get(id) do
       {:ok, class} -> Repo.delete(class)
-      {:error, :not_found} -> {:error, :not_found}
+      error -> error
     end
   end
 
@@ -107,4 +141,7 @@ defmodule CoursePlanner.Classes do
 
     {Enum.reverse(reversed_past_classes), next_classes}
   end
+
+  defp format_error({:ok, class}, _), do: {:ok, class}
+  defp format_error({:error, changeset}, class), do: {:error, class, changeset}
 end

@@ -7,12 +7,47 @@ defmodule CoursePlanner.Courses do
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
+  def all do
+    Repo.all(Course)
+  end
+
+  def new do
+    Course.changeset(%Course{})
+  end
+
   def get(id) do
     case Repo.get(Course, id) do
       nil -> {:error, :not_found}
       course -> {:ok, course}
     end
   end
+
+  def insert(params) do
+    %Course{}
+    |> Course.changeset(params, :create)
+    |> Repo.insert()
+  end
+
+  def edit(id) do
+    case get(id) do
+      {:ok, course} -> {:ok, course, Course.changeset(course)}
+      error -> error
+    end
+  end
+
+  def update(id, params) do
+    case get(id) do
+      {:ok, course} ->
+        course
+        |> Course.changeset(params)
+        |> Repo.update()
+        |> format_update_error(course)
+      error -> error
+    end
+  end
+
+  defp format_update_error({:ok, _} = result, _), do: result
+  defp format_update_error({:error, changeset}, course), do: {:error, course, changeset}
 
   def delete(id) do
     case get(id) do

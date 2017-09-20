@@ -2,29 +2,22 @@ defmodule CoursePlannerWeb.ClassController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Classes.Class, Classes, Attendances}
+  alias CoursePlanner.{Classes, Attendances}
 
   import Canary.Plugs
   plug :authorize_controller
   action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
-    classes =
-      Class
-      |> Repo.all()
-      |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
-    render(conn, "index.html", classes: classes)
+    render(conn, "index.html", classes: Classes.all())
   end
 
   def new(conn, _params) do
-    changeset = Class.changeset(%Class{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: Classes.new())
   end
 
   def create(%{assigns: %{current_user: current_user}} = conn, %{"class" => class_params}) do
-    changeset = Class.changeset(%Class{}, class_params, :create)
-
-    case Repo.insert(changeset) do
+    case Classes.create(class_params) do
       {:ok, class} ->
 
         Classes.notify_class_students(class,
@@ -44,21 +37,15 @@ defmodule CoursePlannerWeb.ClassController do
   end
 
   def edit(conn, %{"id" => id}) do
-    with {:ok, class} <- Classes.get(id),
-         changeset   <- Class.changeset(class)
-    do
-      render(conn, "edit.html", class: class, changeset: changeset)
-    end
+    with {:ok, class, changeset} <- Classes.edit(id),
+    do: render(conn, "edit.html", class: class, changeset: changeset)
   end
 
   def update(
     %{assigns: %{current_user: current_user}} = conn,
     %{"id" => id, "class" => class_params}) do
 
-    class = Repo.get!(Class, id)
-    changeset = Class.changeset(class, class_params, :update)
-
-    case Repo.update(changeset) do
+    case Classes.update(id, class_params) do
       {:ok, class} ->
         Classes.notify_class_students(class,
           current_user,
@@ -67,7 +54,7 @@ defmodule CoursePlannerWeb.ClassController do
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :index))
-      {:error, changeset} ->
+      {:error, class, changeset} ->
         render(conn, "edit.html", class: class, changeset: changeset)
     end
   end

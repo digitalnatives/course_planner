@@ -2,26 +2,22 @@ defmodule CoursePlannerWeb.CourseController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Repo, Courses.Course, Courses}
+  alias CoursePlanner.Courses
 
   import Canary.Plugs
   plug :authorize_controller
   action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
-    courses = Repo.all(Course)
-    render(conn, "index.html", courses: courses)
+    render(conn, "index.html", courses: Courses.all())
   end
 
   def new(conn, _params) do
-    changeset = Course.changeset(%Course{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: Courses.new())
   end
 
   def create(conn, %{"course" => course_params}) do
-    changeset = Course.changeset(%Course{}, course_params, :create)
-
-    case Repo.insert(changeset) do
+    case Courses.insert(course_params) do
       {:ok, _course} ->
         conn
         |> put_flash(:info, "Course created successfully.")
@@ -32,21 +28,15 @@ defmodule CoursePlannerWeb.CourseController do
   end
 
   def edit(conn, %{"id" => id}) do
-    with {:ok, course} <- Courses.get(id),
-         changeset     <- Course.changeset(course)
-    do
-      render(conn, "edit.html", course: course, changeset: changeset)
-    end
+    with {:ok, course, changeset} <- Courses.edit(id),
+    do: render(conn, "edit.html", course: course, changeset: changeset)
   end
 
   def update(
     %{assigns: %{current_user: current_user}} = conn,
     %{"id" => id, "course" => course_params}) do
 
-    course = Repo.get!(Course, id)
-    changeset = Course.changeset(course, course_params)
-
-    case Repo.update(changeset) do
+    case Courses.update(id, course_params) do
       {:ok, course} ->
         Courses.notify_user_course(course,
           current_user,
@@ -55,7 +45,7 @@ defmodule CoursePlannerWeb.CourseController do
         conn
         |> put_flash(:info, "Course updated successfully.")
         |> redirect(to: course_path(conn, :index))
-      {:error, changeset} ->
+      {:error, course, changeset} ->
         render(conn, "edit.html", course: course, changeset: changeset)
     end
   end
