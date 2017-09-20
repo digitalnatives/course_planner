@@ -24,26 +24,27 @@ defmodule CoursePlanner.Terms do
   end
 
   def get(id) do
-    Term
-    |> Repo.get(id)
-    |> Repo.preload([:courses])
+    case Repo.get(Term, id) do
+      nil -> {:error, :not_found}
+      term -> {:ok, Repo.preload(term, [:courses])}
+    end
   end
 
   def edit(id) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term -> {:ok, term, Term.changeset(term)}
+      {:ok, term} -> {:ok, term, Term.changeset(term)}
+      error -> error
     end
   end
 
   def update(id, params) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term ->
+      {:ok, term} ->
         term
         |> term_changeset_with_holidays(params)
         |> Repo.update
         |> format_update_error(term)
+      error -> error
     end
   end
 
@@ -70,8 +71,8 @@ defmodule CoursePlanner.Terms do
 
   def delete(id) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term -> Repo.delete(term)
+      {:ok, term} -> Repo.delete(term)
+      error -> error
     end
   end
 

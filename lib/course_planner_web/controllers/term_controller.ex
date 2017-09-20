@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.TermController do
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", terms: Terms.all)
@@ -30,25 +31,19 @@ defmodule CoursePlannerWeb.TermController do
 
   def show(conn, %{"id" => id}) do
     case Terms.get(id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
-      term ->
+      {:ok, term} ->
         term_with_offered_courses =
           Repo.preload(term, [offered_courses: [:course, :term]])
         render(conn, "show.html", term: term_with_offered_courses)
+      error -> error
     end
   end
 
   def edit(conn, %{"id" => id}) do
     case Terms.edit(id) do
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:ok, term, changeset} ->
         render(conn, "edit.html", term: term, changeset: changeset)
+      error -> error
     end
   end
 
@@ -78,10 +73,7 @@ defmodule CoursePlannerWeb.TermController do
         conn
         |> put_flash(:info, "Term deleted successfully.")
         |> redirect(to: term_path(conn, :index))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      {:error, :not_found} -> {:error, :not_found}
       {:error, _changeset} ->
         conn
         |> put_status(500)
