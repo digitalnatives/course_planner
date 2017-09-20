@@ -11,6 +11,13 @@ defmodule CoursePlanner.Classes do
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
+  def get(id) do
+    case Repo.get(Class, id) do
+      nil -> {:error, :not_found}
+      class -> {:ok, class}
+    end
+  end
+
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
     offered_course_id = changeset |> Changeset.get_field(:offered_course_id)
@@ -36,11 +43,9 @@ defmodule CoursePlanner.Classes do
   def validate_for_holiday(changeset), do: changeset
 
   def delete(id) do
-    class = Repo.get(Class, id)
-    if is_nil(class) do
-      {:error, :not_found}
-    else
-      Repo.delete(class)
+    case get(id) do
+      {:ok, class} -> Repo.delete(class)
+      {:error, :not_found} -> {:error, :not_found}
     end
   end
 

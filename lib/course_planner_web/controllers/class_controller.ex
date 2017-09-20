@@ -6,6 +6,7 @@ defmodule CoursePlannerWeb.ClassController do
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     classes =
@@ -43,9 +44,11 @@ defmodule CoursePlannerWeb.ClassController do
   end
 
   def edit(conn, %{"id" => id}) do
-    class = Repo.get!(Class, id)
-    changeset = Class.changeset(class)
-    render(conn, "edit.html", class: class, changeset: changeset)
+    with {:ok, class} <- Classes.get(id),
+         changeset   <- Class.changeset(class)
+    do
+      render(conn, "edit.html", class: class, changeset: changeset)
+    end
   end
 
   def update(
@@ -76,10 +79,7 @@ defmodule CoursePlannerWeb.ClassController do
         conn
         |> put_flash(:info, "Class deleted successfully.")
         |> redirect(to: class_path(conn, :index))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      {:error, :not_found} -> {:error, :not_found}
       {:error, _changeset} ->
         conn
         |> put_flash(:error, "Something went wrong.")
