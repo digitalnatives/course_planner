@@ -2,7 +2,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   @moduledoc false
 
   alias CoursePlanner.{Courses.OfferedCourse, Repo, Attendances, Notifications.Notifier,
-                       Notifications}
+                       Notifications, Terms.Term}
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
@@ -17,20 +17,30 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   end
 
   def find_all_by_user(%{role: "Coordinator"}) do
-    Repo.all(OfferedCourse)
+    Repo.all(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      join: co in assoc(oc, :course),
+      preload: [offered_courses: {oc, course: co}],
+      order_by: [asc: t.start_date, asc: co.name])
   end
   def find_all_by_user(%{role: "Teacher", id: user_id}) do
-    Repo.all(
-      from oc in OfferedCourse,
-      join: t in assoc(oc, :teachers),
-      where: t.id == ^user_id
+    Repo.all(from t in Term,
+        join: oc in assoc(t, :offered_courses),
+        join: co in assoc(oc, :course),
+        join: te in assoc(oc, :teachers),
+        preload: [offered_courses: {oc, course: co, teachers: te}],
+        where: te.id == ^user_id,
+        order_by: [asc: t.start_date, asc: co.name]
     )
   end
   def find_all_by_user(%{role: "Student", id: user_id}) do
-    Repo.all(
-      from oc in OfferedCourse,
+    Repo.all(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      join: co in assoc(oc, :course),
       join: s in assoc(oc, :students),
-      where: s.id == ^user_id
+      preload: [offered_courses: {oc, course: co, students: s}],
+      where: s.id == ^user_id,
+      order_by: [asc: t.start_date, asc: co.name]
     )
   end
 

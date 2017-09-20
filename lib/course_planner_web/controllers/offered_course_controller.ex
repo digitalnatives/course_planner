@@ -16,12 +16,9 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   import Canary.Plugs
   plug :authorize_controller
 
-  def index(conn, _params) do
-    offered_courses =
-      conn.assigns.current_user
-      |> OfferedCourses.find_all_by_user()
-      |> Repo.preload([:term, :course])
-    render(conn, "index.html", offered_courses: offered_courses)
+  def index(%{assigns: %{current_user: current_user}} = conn, _params) do
+    terms = OfferedCourses.find_all_by_user(current_user)
+    render(conn, "index.html", terms: terms)
   end
 
   def new(conn, _params) do

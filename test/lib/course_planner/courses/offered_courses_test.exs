@@ -45,22 +45,27 @@ defmodule CoursePlanner.OfferedCoursesTest do
   describe "find_all_by_user/1" do
     test "coordinators should see all offered courses" do
       user = insert(:coordinator)
-      insert_list(2, :offered_course)
+      term = insert(:term)
+      insert_list(2, :offered_course, term: term)
 
-      courses = OfferedCourses.find_all_by_user(user)
+      terms = OfferedCourses.find_all_by_user(user)
+      assert length(terms) == 1
 
-      assert length(courses) == 2
+      term = List.first(terms)
+      assert length(term.offered_courses) == 2
     end
 
     test "teachers should see the offered courses they are assigned to" do
       user = insert(:teacher)
-      user_course = insert(:offered_course, teachers: [user])
-      insert(:offered_course)
+      term = insert(:term)
+      user_course = insert(:offered_course, term: term, teachers: [user])
+      insert(:offered_course, term: term)
 
-      courses = OfferedCourses.find_all_by_user(user)
+      terms = OfferedCourses.find_all_by_user(user)
+      assert length(terms) == 1
 
-      assert length(courses) == 1
-      assert List.first(courses).id == user_course.id
+      term = List.first(terms)
+      assert List.first(term.offered_courses).id == user_course.id
     end
 
     test "students should see the offered courses they are assigned to" do
@@ -68,10 +73,11 @@ defmodule CoursePlanner.OfferedCoursesTest do
       user_course = insert(:offered_course, students: [user])
       insert(:offered_course)
 
-      courses = OfferedCourses.find_all_by_user(user)
+      terms = OfferedCourses.find_all_by_user(user)
+      assert length(terms) == 1
 
-      assert length(courses) == 1
-      assert List.first(courses).id == user_course.id
+      term = List.first(terms)
+      assert List.first(term.offered_courses).id == user_course.id
     end
   end
 
