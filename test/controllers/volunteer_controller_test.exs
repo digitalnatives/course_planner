@@ -27,9 +27,8 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, volunteer_path(conn, :show, -1)
-    end
+    conn = get conn, volunteer_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do

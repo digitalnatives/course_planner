@@ -1,4 +1,7 @@
 defmodule CoursePlannerWeb.FallbackController do
+  @moduledoc """
+  Fallback module for controllers that doesn't return `Plug.Conn`
+  """
   use Phoenix.Controller
 
   def call(conn, {:error, :not_found}) do

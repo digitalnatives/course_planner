@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.TeacherController do
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", teachers: Teachers.all())
@@ -34,14 +35,17 @@ defmodule CoursePlannerWeb.TeacherController do
   end
 
   def show(conn, %{"id" => id}) do
-    teacher = Repo.get!(User, id)
-    render(conn, "show.html", teacher: teacher)
+    with {:ok, teacher} <- Users.get(id) do
+      render(conn, "show.html", teacher: teacher)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    teacher = Repo.get!(User, id)
-    changeset = User.changeset(teacher)
-    render(conn, "edit.html", teacher: teacher, changeset: changeset)
+    with {:ok, teacher} <- Users.get(id),
+         changeset   <- User.changeset(teacher)
+    do
+      render(conn, "edit.html", teacher: teacher, changeset: changeset)
+    end
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -51,12 +55,9 @@ defmodule CoursePlannerWeb.TeacherController do
         conn
         |> put_flash(:info, "Teacher updated successfully.")
         |> redirect(to: teacher_path(conn, :show, teacher))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, teacher, changeset} ->
         render(conn, "edit.html", teacher: teacher, changeset: changeset)
+      error -> error
     end
   end
 

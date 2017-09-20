@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.VolunteerController do
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", volunteers: Volunteers.all())
@@ -34,19 +35,19 @@ defmodule CoursePlannerWeb.VolunteerController do
   end
 
   def show(conn, %{"id" => id}) do
-    volunteer =
-      User
-      |> Repo.get!(id)
-
-    tasks = Volunteers.get_tasks(volunteer)
-
-    render(conn, "show.html", volunteer: volunteer, tasks: tasks)
+    with {:ok, volunteer} <- Users.get(id),
+         tasks            <- Volunteers.get_tasks(volunteer)
+    do
+      render(conn, "show.html", volunteer: volunteer, tasks: tasks)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    volunteer = Repo.get!(User, id)
-    changeset = User.changeset(volunteer)
-    render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+    with {:ok, volunteer} <- Users.get(id),
+         changeset   <- User.changeset(volunteer)
+    do
+      render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+    end
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -59,12 +60,9 @@ defmodule CoursePlannerWeb.VolunteerController do
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, volunteer, changeset} ->
         render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+      error -> error
     end
   end
 

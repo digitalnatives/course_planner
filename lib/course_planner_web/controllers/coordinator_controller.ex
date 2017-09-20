@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.CoordinatorController do
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", coordinators: Coordinators.all())
@@ -34,14 +35,17 @@ defmodule CoursePlannerWeb.CoordinatorController do
   end
 
   def show(conn, %{"id" => id}) do
-    coordinator = Repo.get!(User, id)
-    render(conn, "show.html", coordinator: coordinator)
+    with {:ok, coordinator} <- Users.get(id) do
+      render(conn, "show.html", coordinator: coordinator)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    coordinator = Repo.get!(User, id)
-    changeset = User.changeset(coordinator)
-    render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
+    with {:ok, coordinator} <- Users.get(id),
+         changeset   <- User.changeset(coordinator)
+    do
+      render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
+    end
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -54,12 +58,9 @@ defmodule CoursePlannerWeb.CoordinatorController do
         conn
         |> put_flash(:info, "Coordinator updated successfully.")
         |> redirect(to: coordinator_path(conn, :show, coordinator))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, coordinator, changeset} ->
         render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
+      error -> error
     end
   end
 

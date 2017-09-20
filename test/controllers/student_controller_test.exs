@@ -55,15 +55,19 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, student_path(conn, :show, -1)
-    end
+    conn = get conn, student_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
     student = insert(:student, %{name: "Foo", family_name: "Bar"})
     conn = get conn, student_path(conn, :edit, student)
     assert html_response(conn, 200) =~ "Foo Bar"
+  end
+
+  test "renders page not found for editing inexistent resource", %{conn: conn} do
+    conn = get conn, student_path(conn, :edit, -1)
+    assert html_response(conn, 404)
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do

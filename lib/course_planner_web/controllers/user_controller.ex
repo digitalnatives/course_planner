@@ -8,25 +8,24 @@ defmodule CoursePlannerWeb.UserController do
 
   import Canary.Plugs
   plug :authorize_resource, model: User, non_id_actions: [:notify]
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", users: Users.all())
   end
 
   def show(conn, %{"id" => id}) do
-    case Users.get(id) do
-      {:ok, user} -> render(conn, "show.html", user: user)
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+    with {:ok, user} <- Users.get(id) do
+      render(conn, "show.html", user: user)
     end
   end
 
   def edit(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    changeset = User.changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+    with {:ok, user} <- Users.get(id),
+         changeset   <- User.changeset(user)
+    do
+      render(conn, "edit.html", user: user, changeset: changeset)
+    end
   end
 
   def update(
@@ -92,10 +91,7 @@ defmodule CoursePlannerWeb.UserController do
         conn
         |> put_flash(:info, "Reset e-mail sent.")
         |> redirect(to: user_path(conn, :show, user))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      error -> error
     end
   end
 end
