@@ -10,9 +10,10 @@ defmodule CoursePlannerWeb.ClassController do
   def index(conn, _params) do
     query = from t in Term,
     join: oc in assoc(t, :offered_courses),
+    join: co in assoc(oc, :course),
     join: c in assoc(oc, :classes),
-    preload: [offered_courses: :course, offered_courses: {oc, classes: c}],
-    order_by: [asc: t.start_date, asc: c.date, asc: c.starting_at, asc: c.finishes_at]
+    preload: [offered_courses: {oc, classes: c, course: co}],
+    order_by: [asc: t.start_date, asc: co.name, asc: c.date, asc: c.starting_at, asc: c.finishes_at]
 
     terms = Repo.all(query)
 
