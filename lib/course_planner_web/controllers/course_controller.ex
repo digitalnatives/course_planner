@@ -6,6 +6,7 @@ defmodule CoursePlannerWeb.CourseController do
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     courses = Repo.all(Course)
@@ -31,9 +32,11 @@ defmodule CoursePlannerWeb.CourseController do
   end
 
   def edit(conn, %{"id" => id}) do
-    course = Repo.get!(Course, id)
-    changeset = Course.changeset(course)
-    render(conn, "edit.html", course: course, changeset: changeset)
+    with {:ok, course} <- Courses.get(id),
+         changeset     <- Course.changeset(course)
+    do
+      render(conn, "edit.html", course: course, changeset: changeset)
+    end
   end
 
   def update(

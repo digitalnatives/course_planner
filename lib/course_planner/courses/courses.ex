@@ -7,12 +7,17 @@ defmodule CoursePlanner.Courses do
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
+  def get(id) do
+    case Repo.get(Course, id) do
+      nil -> {:error, :not_found}
+      course -> {:ok, course}
+    end
+  end
+
   def delete(id) do
-    course = Repo.get(Course, id)
-    if is_nil(course) do
-      {:error, :not_found}
-    else
-      Repo.delete(course)
+    case get(id) do
+      {:ok, course} -> Repo.delete(course)
+      error -> error
     end
   end
 
