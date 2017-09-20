@@ -10,77 +10,76 @@
     <% end %>
   </div>
 
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
-    <thead>
-      <tr>
-        <th class="mdl-data-table__cell--non-numeric">Course type</th>
-        <th class="mdl-data-table__cell--non-numeric">Term name</th>
-        <th>Term start date</th>
-        <th>Term end date</th>
-        <th>Number of sessions</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <%= Enum.with_index(@offered_courses) |> Enum.map(fn {offered_course,index} -> %>
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= offered_course.course.name %>
-          </td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= offered_course.term.name %>
-          </td>
-          <td>
-            <%= offered_course.term.start_date %>
-          </td>
-          <td>
-            <%= offered_course.term.end_date %>
-          </td>
-          <td>
-            <%= offered_course.number_of_sessions %>
-          </td>
-          <td>
-            <button id="tr_menu_<%= offered_course.id %>"
-                    class="mdl-button mdl-js-button mdl-button--icon"
-            >
-              <i class="material-icons">more_vert</i>
-            </button>
-            <ul
-              class="
-                mdl-menu mdl-js-menu
-                <%=
-                  if index > 10 and index > length(@offered_courses)-4 do
-                    'mdl-menu--top-right'
-                  else
-                    'mdl-menu--bottom-right'
-                  end
-                %>
-              "
-              for="tr_menu_<%= offered_course.id %>"
-            >
-              <li class="mdl-menu__item">
-                <%= link "Show", to: offered_course_path(@conn, :show, offered_course) %>
-              </li>
-              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
-                <li class="mdl-menu__item">
-                  <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
-                </li>
-                <li class="mdl-menu__item">
-                  <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete,
-                  data: [confirm: """
-                  Are you sure?
-                  All of its attached classes and relevant attendances will be removed.
-                  """] %>
-                </li>
-              <% end %>
-              <%= if @conn.assigns.current_user.role == "Teacher" do %>
-                <li class="mdl-menu__item">
-                  <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
-                </li>
-              <% end %>
-            </ul>
-          </td>
-        </tr>
-      <% end) %>
-    </tbody>
-  </table>
+  <%= for term <- @terms do %>
+    <div class="row row--hspace row--vspace middle-xs">
+      <div class="col-xs-9">
+        <div class="row middle-xs page-header">
+          <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+            <%= term.name %>
+          </div>
+        </div>
+      </div>
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+        <thead>
+          <tr>
+            <th class="mdl-data-table__cell--non-numeric">Course type</th>
+            <th>Number of sessions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= Enum.with_index(term.offered_courses) |> Enum.map(fn {offered_course,index} -> %>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric">
+                <%= offered_course.course.name %>
+              </td>
+              <td>
+                <%= offered_course.number_of_sessions %>
+              </td>
+              <td>
+                <button id="tr_menu_<%= offered_course.id %>"
+                        class="mdl-button mdl-js-button mdl-button--icon"
+                >
+                  <i class="material-icons">more_vert</i>
+                </button>
+                <ul
+                  class="
+                    mdl-menu mdl-js-menu
+                    <%=
+                      if index > 10 and index > length(@offered_courses)-4 do
+                        'mdl-menu--top-right'
+                      else
+                        'mdl-menu--bottom-right'
+                      end
+                    %>
+                  "
+                  for="tr_menu_<%= offered_course.id %>"
+                >
+                  <li class="mdl-menu__item">
+                    <%= link "Show", to: offered_course_path(@conn, :show, offered_course) %>
+                  </li>
+                  <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                    <li class="mdl-menu__item">
+                      <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
+                    </li>
+                    <li class="mdl-menu__item">
+                      <%= link "Delete", to: offered_course_path(@conn, :delete, offered_course), method: :delete,
+                      data: [confirm: """
+                      Are you sure?
+                      All of its attached classes and relevant attendances will be removed.
+                      """] %>
+                    </li>
+                  <% end %>
+                  <%= if @conn.assigns.current_user.role == "Teacher" do %>
+                    <li class="mdl-menu__item">
+                      <%= link "Edit", to: offered_course_path(@conn, :edit, offered_course) %>
+                    </li>
+                  <% end %>
+                </ul>
+              </td>
+            </tr>
+          <% end) %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>

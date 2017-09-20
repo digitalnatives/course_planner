@@ -2,6 +2,8 @@ defmodule CoursePlanner.Terms do
   @moduledoc """
     Handle all interactions with Terms, create, list, fetch, edit, and delete
   """
+  import Ecto.Query
+
   alias CoursePlanner.{Repo, Courses.OfferedCourses, Notifications.Notifier,
                        Accounts.Coordinators, Notifications}
   alias CoursePlanner.Terms.{Holiday, Term}
@@ -97,5 +99,33 @@ defmodule CoursePlanner.Terms do
 
     students_and_teachers = OfferedCourses.get_subscribed_users(offered_courses)
     students_and_teachers ++ Coordinators.all()
+  end
+
+  def find_all_by_user(%{role: "Coordinator"}) do
+    Repo.all(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      join: co in assoc(oc, :course),
+      preload: [offered_courses: {oc, course: co}],
+      order_by: [asc: t.start_date, asc: co.name])
+  end
+  def find_all_by_user(%{role: "Teacher", id: user_id}) do
+    Repo.all(from t in Term,
+        join: oc in assoc(t, :offered_courses),
+        join: co in assoc(oc, :course),
+        join: te in assoc(oc, :teachers),
+        preload: [offered_courses: {oc, course: co, teachers: te}],
+        where: te.id == ^user_id,
+        order_by: [asc: t.start_date, asc: co.name]
+    )
+  end
+  def find_all_by_user(%{role: "Student", id: user_id}) do
+    Repo.all(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      join: co in assoc(oc, :course),
+      join: s in assoc(oc, :students),
+      preload: [offered_courses: {oc, course: co, students: s}],
+      where: s.id == ^user_id,
+      order_by: [asc: t.start_date, asc: co.name]
+    )
   end
 end
