@@ -2,17 +2,22 @@ defmodule CoursePlannerWeb.ClassController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Classes.Class, Classes, Attendances}
+  alias CoursePlanner.{Classes.Class, Classes, Attendances, Terms.Term}
 
   import Canary.Plugs
   plug :authorize_controller
 
   def index(conn, _params) do
-    classes =
-      Class
-      |> Repo.all()
-      |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
-    render(conn, "index.html", classes: classes)
+    query = from t in Term,
+    join: oc in assoc(t, :offered_courses),
+    join: co in assoc(oc, :course),
+    join: c in assoc(oc, :classes),
+    preload: [offered_courses: {oc, classes: c, course: co}],
+    order_by: [asc: t.start_date, asc: co.name, asc: c.date, asc: c.starting_at, asc: c.finishes_at]
+
+    terms = Repo.all(query)
+
+    render(conn, "index.html", terms: terms)
   end
 
   def new(conn, _params) do
