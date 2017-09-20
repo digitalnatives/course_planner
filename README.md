@@ -19,7 +19,8 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ### Heroku
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+  1. [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy) Deploy with the previous Heroku button. Make sure to setup the environment variable `ENDPOINT_URL_HOST` in the deploy page. For example, if the selected `App name` is `course-planner`, then the `ENDPOINT_URL_HOST` should be `course-planner.herokuapp.com`.
+  2. Create a SendGrid API Key and add it to the environment variable `SENDGRID_API_KEY` in the Heroku Settings tab.
 
 ### Gigalixir
 
