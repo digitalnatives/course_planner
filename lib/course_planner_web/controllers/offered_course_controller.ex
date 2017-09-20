@@ -9,6 +9,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     Courses.OfferedCourses,
     Accounts.Students,
     Accounts.Teachers,
+    Terms
   }
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
@@ -17,7 +18,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   plug :authorize_controller
 
   def index(%{assigns: %{current_user: current_user}} = conn, _params) do
-    terms = OfferedCourses.find_all_by_user(current_user)
+    terms = Terms.find_all_by_user(current_user)
     render(conn, "index.html", terms: terms)
   end
 
