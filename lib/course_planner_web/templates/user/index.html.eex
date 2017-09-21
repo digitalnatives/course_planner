@@ -1,22 +1,16 @@
 
   <div class="row middle-xs page-header">
-    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+    <div class="col-xs-6 col-sm-9 col-md-8 page-title">
       All users
     </div>
 
-    <div class="col-xs-6 col-sm-3 col-md-3">
-      <table>
-        <body>
-          <tr>
-            <td>
-              <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
-            </td>
-            <td>
-              <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Users"), class: "mdl-button mdl-js-button mdl-button--raised" %>
-            </td>
-          </tr>
-        </body>
-      </table>
+    <div class="row col-xs-6 col-sm-3 col-md-4">
+      <div class="col-sm-6">
+        <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
+      <div class="col-sm-6">
+        <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Users"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
     </div>
   </div>
 
