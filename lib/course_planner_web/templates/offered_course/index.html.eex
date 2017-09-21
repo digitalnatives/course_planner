@@ -46,7 +46,7 @@
                   class="
                     mdl-menu mdl-js-menu
                     <%=
-                      if index > 10 and index > length(@offered_courses)-4 do
+                      if index > 10 and index > length(term.offered_courses)-4 do
                         'mdl-menu--top-right'
                       else
                         'mdl-menu--bottom-right'
