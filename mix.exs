@@ -49,7 +49,7 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, "0.5.0"},
+     {:coherence, github: "ghatighorias/coherence", tag: "v0.5.1"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
      {:distillery, "~> 1.0.0"},
