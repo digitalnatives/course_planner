@@ -3,6 +3,8 @@ defmodule CoursePlanner.UserTest do
 
   alias CoursePlanner.Accounts.User
 
+  import CoursePlanner.Factory
+
   describe "required fields" do
     test "changeset is invalid without email" do
       changeset = User.changeset(%User{}, %{})
@@ -133,6 +135,20 @@ defmodule CoursePlanner.UserTest do
     test "period is greater than boundary" do
       changeset = User.changeset(%User{}, %{notification_period_days: 8})
       assert changeset.errors[:notification_period_days] == {"must be less than or equal to %{number}", [validation: :number, number: 7]}
+    end
+  end
+
+  describe "password changeset" do
+    test "when current password is not provided" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"})
+      assert {"can't be blank", []} == changeset.errors[:current_password]
+    end
+
+    test "when password and its confirmation does not match" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"})
+      assert {"does not match confirmation", [validation: :confirmation]} == changeset.errors[:password_confirmation]
     end
   end
 end
