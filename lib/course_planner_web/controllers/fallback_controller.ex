@@ -9,6 +9,11 @@ defmodule CoursePlannerWeb.FallbackController do
     |> put_status(:not_found)
     |> render(CoursePlannerWeb.ErrorView, "404.html")
   end
+  def call(conn, {:error, :forbidden}) do
+    conn
+    |> put_status(:forbidden)
+    |> render(CoursePlannerWeb.ErrorView, "403.html")
+  end
   def call(conn, _) do
     conn
     |> put_status(:internal_server_error)
