@@ -41,11 +41,8 @@ defmodule CoursePlannerWeb.CoordinatorController do
   end
 
   def edit(conn, %{"id" => id}) do
-    with {:ok, coordinator} <- Users.get(id),
-         changeset   <- User.changeset(coordinator)
-    do
-      render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
-    end
+    with {:ok, coordinator, changeset} <- Coordinators.edit(id),
+    do: render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
