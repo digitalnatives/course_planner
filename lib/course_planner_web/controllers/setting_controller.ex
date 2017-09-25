@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.SettingController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Settings, Settings.SystemVariable}
+  alias CoursePlanner.Settings
   alias Ecto.Changeset
 
   import Canary.Plugs
