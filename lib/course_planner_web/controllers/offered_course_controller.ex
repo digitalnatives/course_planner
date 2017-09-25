@@ -9,6 +9,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     Courses.OfferedCourses,
     Accounts.Students,
     Accounts.Teachers,
+    Terms
   }
   alias Ecto.Changeset
   import Ecto.Query, only: [from: 2]
@@ -16,12 +17,9 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   import Canary.Plugs
   plug :authorize_controller
 
-  def index(conn, _params) do
-    offered_courses =
-      conn.assigns.current_user
-      |> OfferedCourses.find_all_by_user()
-      |> Repo.preload([:term, :course])
-    render(conn, "index.html", offered_courses: offered_courses)
+  def index(%{assigns: %{current_user: current_user}} = conn, _params) do
+    terms = Terms.find_all_by_user(current_user)
+    render(conn, "index.html", terms: terms)
   end
 
   def new(conn, _params) do
@@ -86,13 +84,50 @@ defmodule CoursePlannerWeb.OfferedCourseController do
                               user_role: user_role)
   end
 
+  def edit(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn, %{"id" => id})
+  when user_role == "Teacher" do
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
+
+    if Teachers.can_update_offered_course?(current_user, offered_course) do
+      render(conn, "teacher_edit.html", offered_course: offered_course, changeset: changeset)
+    else
+      conn
+      |> put_status(403)
+      |> render(CoursePlannerWeb.ErrorView, "403.html")
+    end
+  end
+
   def edit(conn, %{"id" => id}) do
+    {:ok, offered_course, changeset} = OfferedCourses.load_offered_course_for_edit(id)
+
+    render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
+  end
+
+  def update(%{assigns: %{current_user: %{role: user_role} = current_user}} = conn,
+    %{"id" => id, "offered_course" => %{"syllabus" => syllabus}}) when user_role == "Teacher" do
+
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
       |> Repo.preload([:term, :course, :students, :teachers])
-    changeset = OfferedCourse.changeset(offered_course)
-    render(conn, "edit.html", offered_course: offered_course, changeset: changeset)
+
+      if Teachers.can_update_offered_course?(current_user, offered_course) do
+        changeset = OfferedCourse.changeset(offered_course, %{syllabus: syllabus})
+
+        case Repo.update(changeset) do
+          {:ok, updated_offered_course} ->
+            conn
+            |> put_flash(:info, "Course updated successfully.")
+            |> redirect(to: offered_course_path(conn, :show, updated_offered_course))
+          {:error, changeset} ->
+            render(conn, "teacher_edit.html", offered_course: offered_course,
+                                              changeset: changeset)
+        end
+      else
+        conn
+        |> put_status(403)
+        |> render(CoursePlannerWeb.ErrorView, "403.html")
+      end
   end
 
   def update(conn, %{"id" => id, "offered_course" => offered_course_params}) do

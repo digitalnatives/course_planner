@@ -23,7 +23,7 @@
         <%= CoursePlannerWeb.SharedView.card "Syllabus", highlighted_title: true do %>
           <%= CoursePlannerWeb.SharedView.card_content do %>
             <div class="card-text">
-              <%= @offered_course.syllabus %>
+              <%= CoursePlannerWeb.SharedView.format_text_to_html(@offered_course.syllabus) %>
             </div>
           <% end %>
         <% end %>

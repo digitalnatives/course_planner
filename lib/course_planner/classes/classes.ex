@@ -69,7 +69,7 @@ defmodule CoursePlanner.Classes do
     Repo.all(from c in Class, where: c.offered_course_id == ^offered_course_id)
   end
 
- def classes_with_attendances(offered_course_id, user_id) do
+  def classes_with_attendances(offered_course_id, user_id) do
     query = from c in Class,
       left_join: a in assoc(c, :attendances), on: a.student_id == ^user_id,
       where: c.offered_course_id == ^offered_course_id,

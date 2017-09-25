@@ -16,24 +16,6 @@ defmodule CoursePlanner.Courses.OfferedCourses do
     |> Enum.into(%{})
   end
 
-  def find_all_by_user(%{role: "Coordinator"}) do
-    Repo.all(OfferedCourse)
-  end
-  def find_all_by_user(%{role: "Teacher", id: user_id}) do
-    Repo.all(
-      from oc in OfferedCourse,
-      join: t in assoc(oc, :teachers),
-      where: t.id == ^user_id
-    )
-  end
-  def find_all_by_user(%{role: "Student", id: user_id}) do
-    Repo.all(
-      from oc in OfferedCourse,
-      join: s in assoc(oc, :students),
-      where: s.id == ^user_id
-    )
-  end
-
   def student_matrix(term_id) do
     offered_courses =
       term_id
@@ -101,5 +83,15 @@ defmodule CoursePlanner.Courses.OfferedCourses do
          |> Notifications.create_simple_notification()
          |> @notifier.notify_later()
        end)
+  end
+
+  def load_offered_course_for_edit(id) do
+    offered_course =
+      OfferedCourse
+      |> Repo.get!(id)
+      |> Repo.preload([:term, :course, :students, :teachers])
+    changeset = OfferedCourse.changeset(offered_course)
+
+    {:ok, offered_course, changeset}
   end
 end

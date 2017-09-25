@@ -1,0 +1,7 @@
+
+  <%= render "teacher_edit_form.html", title: "Edit course",
+                          changeset: @changeset,
+                          action: offered_course_path(@conn, :update, @offered_course),
+                          conn: @conn,
+                          offered_course: @offered_course
+  %>
