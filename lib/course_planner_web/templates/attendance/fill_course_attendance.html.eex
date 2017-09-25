@@ -37,7 +37,7 @@
                 <table class="attendance-table">
                   <thead>
                     <tr class="attendance-table__thead-tr">
-                      <%= for student <- @offered_course.students do %>
+                      <%= for student <- CoursePlannerWeb.AttendanceView.get_offered_course_students(@offered_course) do %>
                         <th class="attendance-table__th">
                           <div class="attendance-table__th-wrapper">
                             <div class="attendance-table__profile-picture">
