@@ -30,7 +30,7 @@ defmodule CoursePlanner.Attendances do
       preload: [:term, :course, :students, teachers: t],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
-      order_by: [asc: ac.date, asc: ac.name, asc: ac.family_name])
+      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
   end
 
   def get_student_attendances(offered_course_id, student_id) do
