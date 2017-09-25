@@ -30,6 +30,8 @@ defmodule CoursePlanner.Tasks.Task do
     |> validate_required(@required_params)
     |> validate_datetime()
     |> validate_expiration()
+    |> convert_timezone(:start_time)
+    |> convert_timezone(:finish_time)
     |> validate_number(:max_volunteers, greater_than: 0, less_than: 1_000)
   end
 
@@ -80,9 +82,20 @@ defmodule CoursePlanner.Tasks.Task do
   end
   defp validate_datetime(changeset), do: changeset
 
+  defp convert_timezone(changeset, field) do
+    changeset
+    |> Changeset.update_change(field, &do_convert_datetime/1)
+  end
+
+  defp do_convert_datetime(datetime) do
+    datetime
+    |> Settings.timezone_to_utc()
+    |> Timex.to_naive_datetime()
+  end
+
   defp validate_expiration(%{valid?: true} = changeset) do
     finish_time = Changeset.get_field(changeset, :finish_time)
-    now = Settings.now_with_timezone(Timex.now())
+    now = Settings.utc_to_system_timezone()
 
     if Timex.compare(finish_time, now) < 1 do
       add_error(changeset, :finish_time, "Task is expired")

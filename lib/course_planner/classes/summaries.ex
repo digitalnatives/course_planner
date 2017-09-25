@@ -8,7 +8,7 @@ defmodule CoursePlanner.Classes.Summaries do
   alias Ecto.DateTime
 
   def get_term_offered_course_for_user(user) do
-    get_term_offered_course_for_user(user, Settings.now_with_timezone(Timex.now()))
+    get_term_offered_course_for_user(user, Settings.utc_to_system_timezone(Timex.now()))
   end
   def get_term_offered_course_for_user(%{id: user_id, role: role}, time) do
     case role do
@@ -68,7 +68,7 @@ defmodule CoursePlanner.Classes.Summaries do
   defp extract_data_from_offered_courses(_offered_courses), do: %{terms: [], offered_courses: []}
 
   def get_next_class(offered_courses) do
-    get_next_class(offered_courses, Settings.now_with_timezone(Timex.now()))
+    get_next_class(offered_courses, Settings.utc_to_system_timezone(Timex.now()))
   end
   def get_next_class(offered_courses, time)
     when is_list(offered_courses) and length(offered_courses) > 0 do
@@ -93,7 +93,7 @@ defmodule CoursePlanner.Classes.Summaries do
   def get_next_class(_offered_courses, _time), do: nil
 
   def get_next_task(user) do
-    get_next_task(user, Settings.now_with_timezone(Timex.now()))
+    get_next_task(user, Settings.utc_to_system_timezone(Timex.now()))
   end
   def get_next_task(%{id: user_id, role: "Volunteer"}, time) do
     Repo.one(from t in Task,

@@ -93,7 +93,7 @@ defmodule CoursePlanner.Classes do
   end
 
   def split_past_and_next(classes) do
-    now = Settings.now_with_timezone(Timex.now())
+    now = Settings.utc_to_system_timezone(Timex.now())
     {reversed_past_classes, next_classes} =
       Enum.split_with(classes, fn class ->
         class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)

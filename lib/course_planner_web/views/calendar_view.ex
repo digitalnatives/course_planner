@@ -34,7 +34,7 @@ defmodule CoursePlannerWeb.CalendarView do
   defp convert_and_format_time(date, time) do
     date
     |> Ecto.DateTime.from_date_and_time(time)
-    |> Settings.now_with_timezone()
+    |> Settings.utc_to_system_timezone()
     |> Timex.format!("{h24}:{m}:{s}")
   end
 end

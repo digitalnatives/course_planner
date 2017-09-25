@@ -8,6 +8,9 @@ defmodule CoursePlanner.Settings do
 
   alias CoursePlanner.{Repo, Settings.SystemVariable}
   alias Ecto.Multi
+  # alias Calendar.DateTime, as: CalendarDateTime
+  # alias Ecto.DateTime, as: EctoDateTime
+  alias Timex.Timezone
 
   schema "settings_fake_table" do
     embeds_many :system_variables, SystemVariable
@@ -106,11 +109,36 @@ defmodule CoursePlanner.Settings do
     Multi.update(multi, name, changeset)
   end
 
-  def now_with_timezone(now) do
-    Timex.to_datetime(now, get_timezone())
+  def timezone_to_utc(datetime) do
+    datetime
+    |> add_timezone_info(get_system_timezone())
+    |> Timezone.convert("Etc/UTC")
   end
 
-  def get_timezone do
+  def utc_to_system_timezone(now \\ Timex.now()) do
+    now
+    |> add_timezone_info("Etc/UTC")
+    |> Timezone.convert(get_system_timezone())
+  end
+
+  defp add_timezone_info(%NaiveDateTime{} = datetime, timezone) do
+    case Calendar.DateTime.from_naive(datetime, timezone) do
+      {:ok, datetime_with_tz} -> datetime_with_tz
+      error -> error
+    end
+  end
+  defp add_timezone_info(%Ecto.DateTime{} = datetime, timezone) do
+    datetime
+    |> Ecto.DateTime.to_erl()
+    |> Calendar.DateTime.from_erl!(timezone)
+  end
+  defp add_timezone_info(%DateTime{} = datetime, timezone) do
+    datetime
+    |> DateTime.to_naive()
+    |> add_timezone_info(timezone)
+  end
+
+  def get_system_timezone do
     case Repo.get_by(SystemVariable, key: "TIMEZONE") do
       %{value: nil} -> "UTC"
       %{value: value} -> value

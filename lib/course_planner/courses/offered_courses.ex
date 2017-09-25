@@ -53,7 +53,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   end
 
   def with_pending_attendances do
-    with_pending_attendances(Settings.now_with_timezone(Timex.now()))
+    with_pending_attendances(Settings.utc_to_system_timezone(Timex.now()))
   end
   def with_pending_attendances(date) do
    Repo.all(from oc in OfferedCourse,

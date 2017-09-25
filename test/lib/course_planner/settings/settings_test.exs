@@ -46,7 +46,7 @@ defmodule CoursePlanner.SettingsTest do
   test "retrieve current time according to configured timezone" do
     insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     now = Timex.now()
-    shifted = Settings.now_with_timezone(now)
+    shifted = Settings.utc_to_system_timezone(now)
     assert shifted.time_zone == "Europe/Budapest"
   end
 end

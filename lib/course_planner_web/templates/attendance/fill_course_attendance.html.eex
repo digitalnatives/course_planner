@@ -31,7 +31,7 @@
                           <%= class.date %>
                           <%= class.date
                               |> Ecto.DateTime.from_date_and_time(class.starting_at)
-                              |> Settings.now_with_timezone()
+                              |> Settings.utc_to_system_timezone()
                               |> Timex.format!("{h24}:{m}") %>
                         </td>
                       </tr>
