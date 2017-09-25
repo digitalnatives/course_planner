@@ -17,7 +17,7 @@ defmodule CoursePlannerWeb.FallbackController do
   def call(conn, _) do
     conn
     |> put_status(:internal_server_error)
-    |> render("500.html")
+    |> render(CoursePlannerWeb.ErrorView, "500.html")
   end
 
 end
