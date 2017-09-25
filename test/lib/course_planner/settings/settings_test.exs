@@ -4,6 +4,11 @@ defmodule CoursePlanner.SettingsTest do
   alias CoursePlanner.Settings
   import CoursePlanner.Factory
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   describe "test the get_value" do
     test "when key does not exist" do
       assert Settings.get_value("TEST_KEY") == nil
@@ -43,10 +48,23 @@ defmodule CoursePlanner.SettingsTest do
     end
   end
 
-  test "retrieve current time according to configured timezone" do
-    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
-    now = Timex.now()
-    shifted = Settings.utc_to_system_timezone(now)
-    assert shifted.time_zone == "Europe/Budapest"
+  describe "timezone functions" do
+    test "retrieve current time using Timex.now()" do
+      now = Timex.now()
+      shifted = Settings.utc_to_system_timezone(now)
+      assert shifted.time_zone == "Europe/Budapest"
+    end
+
+    test "retrieve current time using naive datetime" do
+      now = ~N[2017-01-01 15:00:00]
+      shifted = Settings.utc_to_system_timezone(now)
+      assert shifted.time_zone == "Europe/Budapest"
+    end
+
+    test "retrieve current time using ecto datetime" do
+      now = Ecto.DateTime.utc()
+      shifted = Settings.utc_to_system_timezone(now)
+      assert shifted.time_zone == "Europe/Budapest"
+    end
   end
 end
