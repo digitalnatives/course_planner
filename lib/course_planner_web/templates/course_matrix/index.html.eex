@@ -1,5 +1,6 @@
 <h3>Course Conflict</h3>
-<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+<div class="page" style="overflow: auto;">
+<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
     <tr>
       <th></th>
@@ -28,3 +29,4 @@
     <% end %>
   </tbody>
 </table>
+</div>
