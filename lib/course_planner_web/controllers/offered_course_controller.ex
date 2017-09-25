@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
     Classes,
     Courses.OfferedCourses,
     Accounts.Teachers,
+    Terms
   }
 
   import Canary.Plugs
@@ -14,8 +15,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   action_fallback CoursePlannerWeb.FallbackController
 
   def index(%{assigns: %{current_user: current_user}} = conn, _params) do
-    offered_courses = OfferedCourses.find_all_by_user(current_user, [:term, :course])
-    render(conn, "index.html", offered_courses: offered_courses)
+    terms = Terms.find_all_by_user(current_user)
+    render(conn, "index.html", terms: terms)
   end
 
   def new(conn, _params) do

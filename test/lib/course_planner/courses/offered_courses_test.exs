@@ -42,39 +42,6 @@ defmodule CoursePlanner.OfferedCoursesTest do
     end
   end
 
-  describe "find_all_by_user/1" do
-    test "coordinators should see all offered courses" do
-      user = insert(:coordinator)
-      insert_list(2, :offered_course)
-
-      courses = OfferedCourses.find_all_by_user(user)
-
-      assert length(courses) == 2
-    end
-
-    test "teachers should see the offered courses they are assigned to" do
-      user = insert(:teacher)
-      user_course = insert(:offered_course, teachers: [user])
-      insert(:offered_course)
-
-      courses = OfferedCourses.find_all_by_user(user)
-
-      assert length(courses) == 1
-      assert List.first(courses).id == user_course.id
-    end
-
-    test "students should see the offered courses they are assigned to" do
-      user = insert(:student)
-      user_course = insert(:offered_course, students: [user])
-      insert(:offered_course)
-
-      courses = OfferedCourses.find_all_by_user(user)
-
-      assert length(courses) == 1
-      assert List.first(courses).id == user_course.id
-    end
-  end
-
   describe "with_pending_attendances" do
     test "when there is no offered_course" do
       assert [] == OfferedCourses.with_pending_attendances()

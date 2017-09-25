@@ -1,4 +1,3 @@
-
   <div class="row middle-xs page-header">
     <div class="col-xs-6 col-sm-9 col-md-10 page-title">
       Classes
@@ -8,79 +7,87 @@
     </div>
   </div>
 
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
-    <thead>
-      <tr>
-        <th class="mdl-data-table__cell--non-numeric">Term</th>
-        <th class="mdl-data-table__cell--non-numeric">Course type</th>
-        <th>Classroom</th>
-        <th>Class date</th>
-        <th>Starting at</th>
-        <th>Finishes at</th>
-        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
-          <th></th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <%= Enum.with_index(@classes) |> Enum.map(fn {class,index} -> %>
-        <tr>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= class.offered_course.term.name %>
-          </td>
-          <td class="mdl-data-table__cell--non-numeric">
-            <%= class.offered_course.course.name %>
-          </td>
-          <td>
-            <%= class.classroom %>
-          </td>
-          <td>
-            <%= class.date %>
-          </td>
-          <td>
-            <%= class.date
-                |> Ecto.DateTime.from_date_and_time(class.starting_at)
-                |> Timex.format!("{h24}:{m}") %>
-          </td>
-          <td>
-            <%= class.date
-                |> Ecto.DateTime.from_date_and_time(class.finishes_at)
-                |> Timex.format!("{h24}:{m}") %>
-          </td>
-          <%= if @conn.assigns.current_user.role == "Coordinator" do %>
-            <td>
-              <button id="tr_menu_<%= class.id %>"
-                      class="mdl-button mdl-js-button mdl-button--icon"
-              >
-                <i class="material-icons">more_vert</i>
-              </button>
-              <ul
-                class="
-                  mdl-menu mdl-js-menu
-                  <%=
-                    if index > 10 and index > length(@classes)-4 do
-                      'mdl-menu--top-right'
-                    else
-                      'mdl-menu--bottom-right'
-                    end
-                  %>
-                "
-                for="tr_menu_<%= class.id %>"
-              >
-                <li class="mdl-menu__item">
-                  <%= link "Edit", to: class_path(@conn, :edit, class) %>
-                </li>
-                <li class="mdl-menu__item">
-                  <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete,
-                    data: [confirm: """
-                    Are you sure?
-                    All the attendances of that class will be removed.
-                    """] %>
-                </li>
-              </ul>
+  <%= for term <- @terms do %>
+    <div class="row row--hspace row--vspace middle-xs">
+      <div class="col-xs-9">
+        <div class="row middle-xs page-header">
+          <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+            <%= term.name %>
+          </div>
+        </div>
+      </div>
+      <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+        <thead>
+          <tr>
+            <th>Class date</th>
+            <th>Starting at</th>
+            <th>Finishes at</th>
+            <th>Classroom</th>
+            <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+              <th></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for offered_course <- term.offered_courses do %>
+            <td class="mdl-data-table__cell--non-numeric">
+              <b><%= offered_course.course.name %></b>
             </td>
+            <%= Enum.with_index(offered_course.classes) |> Enum.map(fn {class,index} -> %>
+              <tr>
+                <td>
+                  <%= class.date %>
+                </td>
+                <td>
+                  <%= class.date
+                      |> Ecto.DateTime.from_date_and_time(class.starting_at)
+                      |> Timex.format!("{h24}:{m}") %>
+                </td>
+                <td>
+                  <%= class.date
+                      |> Ecto.DateTime.from_date_and_time(class.finishes_at)
+                      |> Timex.format!("{h24}:{m}") %>
+                </td>
+                <td>
+                  <%= class.classroom %>
+                </td>
+                <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                  <td>
+                    <button id="tr_menu_<%= class.id %>"
+                            class="mdl-button mdl-js-button mdl-button--icon"
+                    >
+                      <i class="material-icons">more_vert</i>
+                    </button>
+                    <ul
+                      class="
+                        mdl-menu mdl-js-menu
+                        <%=
+                          if index > 10 and index > length(@classes)-4 do
+                            'mdl-menu--top-right'
+                          else
+                            'mdl-menu--bottom-right'
+                          end
+                        %>
+                      "
+                      for="tr_menu_<%= class.id %>"
+                    >
+                      <li class="mdl-menu__item">
+                        <%= link "Edit", to: class_path(@conn, :edit, class) %>
+                      </li>
+                      <li class="mdl-menu__item">
+                        <%= link "Delete", to: class_path(@conn, :delete, class), method: :delete,
+                          data: [confirm: """
+                          Are you sure?
+                          All the attendances of that class will be removed.
+                          """] %>
+                      </li>
+                    </ul>
+                  </td>
+                <% end %>
+              </tr>
+            <% end) %>
           <% end %>
-        </tr>
-      <% end) %>
-    </tbody>
-  </table>
+        </tbody>
+      </table>
+    </div>
+  <% end %>

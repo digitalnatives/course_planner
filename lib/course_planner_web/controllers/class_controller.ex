@@ -2,14 +2,14 @@ defmodule CoursePlannerWeb.ClassController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Classes, Attendances}
+  alias CoursePlanner.{Classes, Attendances, Terms}
 
   import Canary.Plugs
   plug :authorize_controller
   action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
-    render(conn, "index.html", classes: Classes.all())
+    render(conn, "index.html", terms: Terms.all_for_classes())
   end
 
   def new(conn, _params) do
