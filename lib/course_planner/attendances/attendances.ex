@@ -12,13 +12,14 @@ defmodule CoursePlanner.Attendances do
     Repo.one(from oc in OfferedCourse,
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
+      join: cs in assoc(c, :students),
       join: a in assoc(c,  :attendances),
       join: as in assoc(a, :student),
       join: ac in assoc(a, :class),
       preload: [:term, :course, :teachers, :students],
-      preload: [classes: {c, attendances: {a, student: as, class: ac}}],
+      preload: [classes: {c, students: cs, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
-      order_by: [asc: ac.date, asc: s.name, asc: s.family_name])
+      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
   end
 
   def get_teacher_course_attendances(offered_course_id, teacher_id) do
@@ -26,11 +27,12 @@ defmodule CoursePlanner.Attendances do
       join: t in assoc(oc, :teachers),
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
+      join: cs in assoc(c, :students),
       join: a in assoc(c,  :attendances),
       join: as in assoc(a, :student),
       join: ac in assoc(a, :class),
-      preload: [:term, :course, teachers: t, students: s],
-      preload: [classes: {c, attendances: {a, student: as, class: ac}}],
+      preload: [:term, :course, teachers: s, students: t],
+      preload: [classes: {c, students: cs, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
       order_by: [asc: ac.date, asc: s.name, asc: s.family_name])
   end
