@@ -9,6 +9,25 @@ defmodule CoursePlanner.OfferedCoursesTest do
     |> Enum.map(&("#{&1.name} #{&1.family_name}"))
   end
 
+  describe "count_intersection/2" do
+    test "when there are students in common" do
+      [student1, student2, student3, student4, student5] = insert_list(5, :student)
+
+      assert 3 == OfferedCourses.count_intersection([student1, student2, student3],
+                    [student1, student2, student3, student4, student5])
+    end
+
+    test "when there are no students in common" do
+      [student1, student2, student3, student4, student5] = insert_list(5, :student)
+
+      assert 0 == OfferedCourses.count_intersection([student1, student2, student3], [student4, student5])
+    end
+
+    test "when input is empty" do
+      assert 0 == OfferedCourses.count_intersection([],[])
+    end
+  end
+
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do
       term = insert(:term)
