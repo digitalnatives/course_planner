@@ -25,4 +25,22 @@ defmodule CoursePlanner.SharedViewTest do
       refute SharedView.path_exact_match(conn, "/random/path")
     end
   end
+
+  describe "class_list" do
+
+    @tag user_role: :coordinator
+    test "when class list is not empty", %{conn: _conn} do
+      class = insert(:class, date: Timex.shift(Timex.now(), years: -2), finishes_at: %{hour: 14, min: 0, sec: 0}, starting_at: %{hour: 14, min: 0, sec: 0})
+      result = SharedView.class_list([class])
+      assert Phoenix.HTML.safe_to_string(result) =~ to_string(class.date)
+      refute Phoenix.HTML.safe_to_string(result) =~ to_string(class.starting_at)
+      refute Phoenix.HTML.safe_to_string(result) =~ to_string(class.finishes_at)
+    end
+
+    @tag user_role: :coordinator
+    test "when class list is empty", %{conn: _conn} do
+      result = SharedView.class_list([])
+      assert Phoenix.HTML.safe_to_string(result) =~ "\n  <div class=\"class-list\">\n  </div>"
+    end
+  end
 end
