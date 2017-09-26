@@ -9,4 +9,8 @@ defmodule CoursePlannerWeb.CourseMatrixView do
   def total_students(offered_courses, id) do
     length(offered_courses[id].students)
   end
+
+  def format_student_names(student_names) do
+    Enum.join(student_names, "\n")
+  end
 end

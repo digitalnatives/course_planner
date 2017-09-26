@@ -28,4 +28,14 @@ defmodule CoursePlanner.CourseMatrixViewTest do
     assert 6 == CourseMatrixView.total_students(offered_courses, offered_course1.id)
     assert 4 == CourseMatrixView.total_students(offered_courses, offered_course2.id)
   end
+
+  describe "format_student_names/1" do
+    test "when input has list of student names" do
+      assert "name1 family1\nname2 family2" == CourseMatrixView.format_student_names(["name1 family1", "name2 family2"])
+    end
+
+    test "when input is an empty list" do
+      assert "" == CourseMatrixView.format_student_names([])
+    end
+  end
 end
