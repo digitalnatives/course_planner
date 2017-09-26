@@ -1,5 +1,5 @@
 <h3>Course Conflict</h3>
-<div class="page" style="overflow: auto;">
+<div class="overflow_auto page">
 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
   <thead>
     <tr>
@@ -16,15 +16,28 @@
       <tr>
         <td class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course1_id) %> </td>
 
-        <%= for {course2_id, students} <- courses do %>
+        <%= for {course2_id, student_count, students} <- courses do %>
+
           <%= if course1_id == course2_id do %>
             <td class="mdl-data-table__cell--non-numeric">NA</td>
           <% else %>
-            <td class="mdl-data-table__cell--non-numeric"> <%= students %> </th>
+            <td class="mdl-data-table__cell--non-numeric"
+              id="conflict__<%= "#{course1_id}-#{course2_id}" %>">
+              <%= if student_count > 0 do %>
+                <div
+                  class="mdl-tooltip mdl-tooltip--right"
+                  data-mdl-for="conflict__<%= "#{course1_id}-#{course2_id}" %>">
+                  <%= students
+                      |> format_student_names()
+                      |> CoursePlannerWeb.SharedView.format_text_to_html()%>
+                </div>
+              <% end %>
+              <%= student_count %>
+            </td>
           <% end %>
         <% end %>
 
-        <td> <%= total_students(@courses, course1_id) %> </th>
+        <td> <%= total_students(@courses, course1_id) %> </td>
       </tr>
     <% end %>
   </tbody>
