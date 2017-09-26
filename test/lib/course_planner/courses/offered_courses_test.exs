@@ -9,6 +9,30 @@ defmodule CoursePlanner.OfferedCoursesTest do
     :ok
   end
 
+  defp get_students_full_name_map(students) do
+    students
+    |> Enum.map(&("#{&1.name} #{&1.family_name}"))
+  end
+
+  describe "count_intersection/2" do
+    test "when there are students in common" do
+      [student1, student2, student3, student4, student5] = insert_list(5, :student)
+
+      assert 3 == OfferedCourses.count_intersection([student1, student2, student3],
+                    [student1, student2, student3, student4, student5])
+    end
+
+    test "when there are no students in common" do
+      [student1, student2, student3, student4, student5] = insert_list(5, :student)
+
+      assert 0 == OfferedCourses.count_intersection([student1, student2, student3], [student4, student5])
+    end
+
+    test "when input is empty" do
+      assert 0 == OfferedCourses.count_intersection([],[])
+    end
+  end
+
   describe "student_matrix/1" do
     test "should return the amount of common students by pair of courses" do
       term = insert(:term)
@@ -21,15 +45,15 @@ defmodule CoursePlanner.OfferedCoursesTest do
 
       students = OfferedCourses.student_matrix(term.id)
 
-      assert {course1.id, 2} in Map.get(students, course1.id)
-      assert {course2.id, 1} in Map.get(students, course1.id)
-      assert {course3.id, 0} in Map.get(students, course1.id)
-      assert {course1.id, 1} in Map.get(students, course2.id)
-      assert {course2.id, 1} in Map.get(students, course2.id)
-      assert {course3.id, 0} in Map.get(students, course2.id)
-      assert {course1.id, 0} in Map.get(students, course3.id)
-      assert {course2.id, 0} in Map.get(students, course3.id)
-      assert {course3.id, 1} in Map.get(students, course3.id)
+      assert {course1.id, 2, get_students_full_name_map([student1, student2])} in Map.get(students, course1.id)
+      assert {course2.id, 1, get_students_full_name_map([student1])} in Map.get(students, course1.id)
+      assert {course3.id, 0, []} in Map.get(students, course1.id)
+      assert {course1.id, 1, get_students_full_name_map([student1])} in Map.get(students, course2.id)
+      assert {course2.id, 1, get_students_full_name_map([student1])} in Map.get(students, course2.id)
+      assert {course3.id, 0, []} in Map.get(students, course2.id)
+      assert {course1.id, 0, []} in Map.get(students, course3.id)
+      assert {course2.id, 0, []} in Map.get(students, course3.id)
+      assert {course3.id, 1, get_students_full_name_map([student3])} in Map.get(students, course3.id)
     end
   end
 
