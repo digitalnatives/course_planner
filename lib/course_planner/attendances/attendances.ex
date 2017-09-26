@@ -14,7 +14,7 @@ defmodule CoursePlanner.Attendances do
       join: a in assoc(c,  :attendances),
       join: as in assoc(a, :student),
       join: ac in assoc(a, :class),
-      preload: [:term, :course, :teachers, :students],
+      preload: [:term, :course, :teachers],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
       order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
@@ -27,7 +27,7 @@ defmodule CoursePlanner.Attendances do
       join: a in assoc(c,  :attendances),
       join: as in assoc(a, :student),
       join: ac in assoc(a, :class),
-      preload: [:term, :course, :students, teachers: t],
+      preload: [:term, :course, teachers: t],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
       order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
