@@ -35,25 +35,23 @@ defmodule CoursePlanner.ClassesTest do
 
     classes = [class1, class2, class3, class4, class5]
     expected_past_classes =
-      [class1.id, class4.id]
-      |> Enum.sort()
+      [class1, class4]
+      |> Enum.sort(&(&1.id < &2.id))
 
     expected_next_classes =
-      [class3.id, class5.id, class2.id]
-      |> Enum.sort()
+      [class3, class5, class2]
+      |> Enum.sort(&(&1.id < &2.id))
 
     {past_classes, next_classes} =
       Classes.split_past_and_next(classes)
 
     sorted_past_classes_result =
       past_classes
-      |> Enum.map(&(&1.id))
-      |> Enum.sort()
+      |> Enum.sort(&(&1.id < &2.id))
 
     sorted_next_classes_result =
       next_classes
-      |> Enum.map(&(&1.id))
-      |> Enum.sort()
+      |> Enum.sort(&(&1.id < &2.id))
 
     assert expected_past_classes == sorted_past_classes_result
     assert expected_next_classes == sorted_next_classes_result
