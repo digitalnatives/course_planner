@@ -29,7 +29,7 @@ defmodule CoursePlanner.Mixfile do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
-                    :canary, :elixir_make]]
+                    :canary, :elixir_make, :email_checker]]
   end
 
   # Specifies which paths to compile per environment.
@@ -59,6 +59,7 @@ defmodule CoursePlanner.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
+     {:email_checker, github: "rhnonose/email_checker", ref: "4acbb64"},
    ]
   end
 
