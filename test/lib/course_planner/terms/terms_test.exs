@@ -1,7 +1,7 @@
 defmodule CoursePlanner.TermsTest do
   use CoursePlannerWeb.ModelCase
 
-  alias CoursePlanner.Terms
+  alias CoursePlanner.{Terms, Notifications.Notification}
   import CoursePlanner.Factory
 
   test "should return the subscribed users of terms" do
@@ -54,5 +54,14 @@ defmodule CoursePlanner.TermsTest do
       term = List.first(terms)
       assert List.first(term.offered_courses).id == user_course.id
     end
+  end
+
+  test "notify_user/3" do
+   user = insert(:coordinator)
+   type = :term_created
+   path = "/sample_path"
+
+   Terms.notify_user(user, type, path)
+   assert Repo.get_by(Notification, user_id: user.id, type: to_string(type), resource_path: path)
   end
 end
