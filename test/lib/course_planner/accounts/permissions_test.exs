@@ -9,20 +9,20 @@ defmodule CoursePlanner.PermissionsTest do
   alias CoursePlannerWeb.TaskController
 
   @coordinator %User{
-    email: "valid@email",
+    email: "coordiantor@courseplanner.com",
     role: "Coordinator"
   }
   @volunteer %User{
     id: 2,
-    email: "valid@email2",
+    email: "volunteer@courseplanner.com",
     role: "Volunteer"
   }
   @student %User{
-    email: "student@example.com",
+    email: "student@courseplanner.com",
     role: "Student"
   }
   @teacher %User{
-    email: "teacher@example.com",
+    email: "teacher@courseplanner.com",
     role: "Teacher"
   }
 
