@@ -59,7 +59,7 @@ defmodule CoursePlanner.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
-     {:email_checker, github: "rhnonose/email_checker", ref: "4acbb64"},
+     {:email_checker, "~> 0.1.1"},
    ]
   end
 
