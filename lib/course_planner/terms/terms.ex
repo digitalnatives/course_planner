@@ -128,4 +128,15 @@ defmodule CoursePlanner.Terms do
       order_by: [asc: t.start_date, asc: co.name]
     )
   end
+
+  def student_attendances(student_id) do
+    Repo.all(from t in Term,
+      join: oc in assoc(t, :offered_courses),
+      join: co in assoc(oc, :course),
+      join: s in assoc(oc, :students),
+      join: c in assoc(oc, :classes),
+      join: a in assoc(c,  :attendances),
+      preload: [offered_courses: {oc, course: co, classes: {c, attendances: a}, students: s}],
+      order_by: [asc: t.start_date, asc: t.end_date, asc: co.name, asc: c.date, asc: c.starting_at])
+  end
 end
