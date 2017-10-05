@@ -14,7 +14,7 @@
   <tbody>
     <%= for {course1_id, courses} <- @matrix do %>
       <tr>
-        <td class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course1_id) %> </td>
+        <th class="mdl-data-table__cell--non-numeric"> <%= course_name(@courses, course1_id) %> </th>
 
         <%= for {course2_id, student_count, students} <- courses do %>
 

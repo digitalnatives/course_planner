@@ -17,36 +17,30 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   end
 
   def student_matrix(term_id) do
-    offered_courses =
-      term_id
-      |> query_by_term_id()
-      |> Repo.all()
-      |> Repo.preload([:students])
+    offered_courses = Repo.all(from oc in OfferedCourse,
+      join: c in assoc(oc, :course),
+      preload: [:students, course: c],
+      order_by: [asc: c.name],
+      where: oc.term_id == ^term_id)
 
-    course_intersections =
-      for oc1 <- offered_courses, oc2 <- offered_courses do
-        student_ids1 = Enum.map(oc1.students, &("#{&1.name} #{&1.family_name}"))
-        student_ids2 = Enum.map(oc2.students, &("#{&1.name} #{&1.family_name}"))
-        intersection = get_intersection(student_ids1, student_ids2)
-        {oc1.id, oc2.id, length(intersection), intersection}
-      end
-
-    Enum.group_by(
-      course_intersections,
-      fn {oc1, _, _, _} -> oc1 end,
-      fn {_, oc2, student_count, students} -> {oc2, student_count, students} end)
+    offered_courses
+    |> Enum.map(fn(main_offered_course) ->
+         {main_offered_course.id, get_intersection(main_offered_course, offered_courses)}
+       end)
   end
 
   def query_by_term_id(term_id) do
     from oc in OfferedCourse, where: oc.term_id == ^term_id
   end
 
-  def get_intersection(students1, students2) do
-    Enum.filter(students1, &(&1 in students2))
-  end
-
-  def count_intersection(students1, students2) do
-    Enum.count(students1, &(&1 in students2))
+  def get_intersection(main_offered_course, all_offered_courses) do
+    all_offered_courses
+    |> Enum.map(fn(target_offered_course) ->
+      student_ids1 = Enum.map(main_offered_course.students, &("#{&1.name} #{&1.family_name}"))
+      student_ids2 = Enum.map(target_offered_course.students, &("#{&1.name} #{&1.family_name}"))
+      intersection = Enum.filter(student_ids1, &(&1 in student_ids2))
+      {target_offered_course.id, length(intersection), intersection}
+    end)
   end
 
   def get_subscribed_users(offered_courses) do
