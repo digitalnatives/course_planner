@@ -36,7 +36,7 @@ defmodule CoursePlannerWeb.StudentController do
 
   def show(conn, %{"id" => id}) do
     with {:ok, student} <- Users.get(id),
-         {:ok, terms} <- Terms.student_attendances(student.id)
+         terms <- Terms.student_attendances(student.id)
       do
       render(conn, "show.html", student: student, terms: terms)
     end
