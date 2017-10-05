@@ -44,4 +44,7 @@ config :course_planner, CoursePlanner.Notifications.NotifierScheduler,
     {"30 17 * * *", {CoursePlanner.Notifications, :build_all_notifications, []}}
   ]
 
+config :email_checker,
+  validations: [EmailChecker.Check.Format]
+
 import_config "#{Mix.env}.exs"

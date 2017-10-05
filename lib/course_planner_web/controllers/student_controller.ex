@@ -1,7 +1,7 @@
 defmodule CoursePlannerWeb.StudentController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{Accounts.User, Accounts.Students, Accounts.Users}
+  alias CoursePlanner.{Accounts.User, Accounts.Students, Accounts.Users, Terms}
   alias CoursePlannerWeb.Router.Helpers
   alias Coherence.ControllerHelpers
 
@@ -35,8 +35,10 @@ defmodule CoursePlannerWeb.StudentController do
   end
 
   def show(conn, %{"id" => id}) do
-    with {:ok, student} <- Users.get(id) do
-      render(conn, "show.html", student: student)
+    with {:ok, student} <- Users.get(id),
+         {:ok, terms} <- Terms.student_attendances(student.id)
+      do
+      render(conn, "show.html", student: student, terms: terms)
     end
   end
 

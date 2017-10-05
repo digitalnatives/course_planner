@@ -3,9 +3,21 @@ defmodule CoursePlanner.UserTest do
 
   alias CoursePlanner.Accounts.User
 
+  import CoursePlanner.Factory
+
   describe "required fields" do
     test "changeset is invalid without email" do
       changeset = User.changeset(%User{}, %{})
+      assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+    end
+
+    test "changeset is invalid without email for seeds" do
+      changeset = User.changeset(%User{}, %{}, :seed)
+      assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
+    end
+
+    test "changeset is invalid without email for update" do
+      changeset = User.changeset(%User{}, %{}, :update)
       assert changeset.errors[:email] == {"can't be blank", [validation: :required]}
     end
   end
@@ -18,6 +30,26 @@ defmodule CoursePlanner.UserTest do
 
     test "changeset is valid when email contains `@`" do
       changeset = User.changeset(%User{}, %{email: "foo@bar.com"})
+      refute changeset.errors[:email]
+    end
+
+    test "changeset is invalid when email doesn't contain `@` for seed" do
+      changeset = User.changeset(%User{}, %{email: "not email"}, :seed)
+      assert changeset.errors[:email] == {"has invalid format", [validation: :format]}
+    end
+
+    test "changeset is valid when email contains `@` for seed" do
+      changeset = User.changeset(%User{}, %{email: "foo@bar.com"}, :seed)
+      refute changeset.errors[:email]
+    end
+
+    test "changeset is invalid when email doesn't contain `@` for update" do
+      changeset = User.changeset(%User{}, %{email: "not email"}, :update)
+      assert changeset.errors[:email] == {"has invalid format", [validation: :format]}
+    end
+
+    test "changeset is valid when email contains `@` for update" do
+      changeset = User.changeset(%User{}, %{email: "foo@bar.com"}, :update)
       refute changeset.errors[:email]
     end
   end
@@ -103,6 +135,20 @@ defmodule CoursePlanner.UserTest do
     test "period is greater than boundary" do
       changeset = User.changeset(%User{}, %{notification_period_days: 8})
       assert changeset.errors[:notification_period_days] == {"must be less than or equal to %{number}", [validation: :number, number: 7]}
+    end
+  end
+
+  describe "password changeset" do
+    test "when setting password" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"}, :password)
+      assert changeset.valid?
+    end
+
+    test "when password and its confirmation does not match" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"}, :password)
+      assert {"does not match confirmation", [validation: :confirmation]} == changeset.errors[:password_confirmation]
     end
   end
 end

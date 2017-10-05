@@ -90,6 +90,42 @@
         </div>
         <%= CoursePlannerWeb.SharedView.course_list student_courses(@student.id) %>
 
+      <div class="row middle-xs page-header">
+        <div class="col-xs-12 page-title page-title--small">
+          Attendances
+        </div>
       </div>
+
+      <%= for term <- @terms do %>
+        <div class="term-list">
+          <div class="term-list__row">
+            <div class="term-list__col">
+              <b> <%= term.name %> </b>
+            </div>
+          </div>
+          <%= for offered_course <- term.offered_courses do %>
+            <div class="course-list__row">
+              <div class="course-list__col">
+                <%= offered_course.course.name %>
+              </div>
+              <div class="course-list__col">
+                <%= for class <- offered_course.classes do %>
+                  <% attendance = List.first(class.attendances) %>
+                  <%= if attendance.attendance_type === "Present" do %>
+                    <i class="material-icons attendance--present">check_circle</i>
+                  <% end %>
+                  <%= if attendance.attendance_type === "Absent" do %>
+                    <i class="material-icons attendance--absent">add_circle</i>
+                  <% end %>
+                  <%= if attendance.attendance_type === "Not filled" do %>
+                    <i class="material-icons attendance--not-filled">radio_button_unchecked</i>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
     </div>
   </div>

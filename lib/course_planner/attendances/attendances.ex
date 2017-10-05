@@ -10,27 +10,27 @@ defmodule CoursePlanner.Attendances do
 
   def get_course_attendances(offered_course_id) do
     Repo.one(from oc in OfferedCourse,
-      join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
       join: a in assoc(c,  :attendances),
       join: as in assoc(a, :student),
       join: ac in assoc(a, :class),
-      preload: [:term, :course, :teachers, :students],
+      preload: [:term, :course, :teachers],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
-      order_by: [asc: ac.date, asc: s.name, asc: s.family_name])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_teacher_course_attendances(offered_course_id, teacher_id) do
     Repo.one(from oc in OfferedCourse,
       join: t in assoc(oc, :teachers),
-      join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
       join: a in assoc(c,  :attendances),
-      preload: [:term, :course, teachers: t, students: s],
-      preload: [classes: {c, attendances: a}],
+      join: as in assoc(a, :student),
+      join: ac in assoc(a, :class),
+      preload: [:term, :course, teachers: t],
+      preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
-      order_by: [asc: c.date])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_student_attendances(offered_course_id, student_id) do
@@ -40,7 +40,7 @@ defmodule CoursePlanner.Attendances do
       join: oc in assoc(c, :offered_course),
       preload: [class: {c, [offered_course: {oc, [:course, :term]}]}, student: s],
       where: a.student_id == ^student_id and oc.id == ^offered_course_id,
-      order_by: [asc: c.date])
+      order_by: [asc: c.date, asc: c.starting_at])
   end
 
   def get_all_offered_courses do

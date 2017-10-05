@@ -21,4 +21,12 @@ defmodule CoursePlannerWeb.AttendanceView do
     |> Map.new(fn (option) -> {option, option} end)
     |> Map.merge(%{"Not set": ""})
   end
+
+  def get_offered_course_students(offered_course) do
+    one_class =
+      offered_course.classes
+      |> List.first()
+
+    Enum.map(one_class.attendances, &(&1.student))
+  end
 end
