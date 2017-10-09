@@ -1,11 +1,11 @@
 defmodule CoursePlanner.Accounts.User do
   @moduledoc false
   use Ecto.Schema
-  import Ecto.Changeset
   use Coherence.Schema
 
   alias CoursePlanner.Types.{UserRole, ParticipationType}
   alias CoursePlanner.Notifications.Notification
+  alias Ecto.Changeset
 
   @target_params [
       :name, :family_name, :nickname,
@@ -38,7 +38,7 @@ defmodule CoursePlanner.Accounts.User do
     |> cast(params, @target_params ++ coherence_fields())
     |> update_change(:email, &String.downcase/1)
     |> validate_required([:email, :role])
-    |> validate_format(:email, ~r/@/)
+    |> validate_email_format(:email)
     |> unique_constraint(:email)
     |> validate_length(:comments, max: 255)
     |> validate_coherence(params)
@@ -59,5 +59,23 @@ defmodule CoursePlanner.Accounts.User do
 
   def changeset(model, params, :update) do
     changeset(model, params)
+  end
+
+  defp validate_email_format(changeset, field) do
+    if Changeset.get_field(changeset, field) do
+      do_validate_email_format(changeset, field)
+    else
+      changeset
+    end
+  end
+
+  defp do_validate_email_format(changeset, field) do
+    changeset
+    |> Changeset.get_field(field)
+    |> EmailChecker.valid?()
+    |> case do
+      true -> changeset
+      false -> Changeset.add_error(changeset, field, "has invalid format", [validation: :format])
+    end
   end
 end

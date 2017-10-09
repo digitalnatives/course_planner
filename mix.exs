@@ -29,7 +29,7 @@ defmodule CoursePlanner.Mixfile do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
-                    :canary, :elixir_make, :calendar]]
+                    :canary, :elixir_make, :calendar, :email_checker]]
   end
 
   # Specifies which paths to compile per environment.
@@ -49,7 +49,7 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, github: "ghatighorias/coherence", tag: "v0.5.1"},
+     {:coherence, github: "ghatighorias/coherence", tag: "v0.5.2"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
      {:distillery, "~> 1.0.0"},
@@ -60,6 +60,7 @@ defmodule CoursePlanner.Mixfile do
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
      {:calendar, "~> 0.17.2"},
+     {:email_checker, "~> 0.1.1"},
    ]
   end
 
