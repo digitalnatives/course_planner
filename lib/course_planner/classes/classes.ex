@@ -95,11 +95,17 @@ defmodule CoursePlanner.Classes do
   def split_past_and_next(classes) do
     now = Settings.utc_to_system_timezone(Timex.now())
     {reversed_past_classes, next_classes} =
-      Enum.split_with(classes, fn class ->
-        class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)
-        DateTime.compare(class_datetime, now) == :lt
-      end)
+      Enum.split_with(classes, &(compare_class_date_time(&1, now)))
 
     {Enum.reverse(reversed_past_classes), next_classes}
+  end
+
+  defp compare_class_date_time(class, now) do
+    class_datetime =
+          class.date
+          |> DateTime.from_date_and_time(class.starting_at)
+          |> Settings.utc_to_system_timezone()
+
+        Timex.compare(class_datetime, now) == -1
   end
 end
