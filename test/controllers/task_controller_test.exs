@@ -8,6 +8,7 @@ defmodule CoursePlanner.TaskControllerTest do
   @invalid_attrs %{}
 
   setup(%{user_role: role}) do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     user = insert(role)
 
     conn =
@@ -156,7 +157,7 @@ defmodule CoursePlanner.TaskControllerTest do
     test "create task without assigned volunteer", %{conn: conn, user: _user} do
       conn = post conn, task_path(conn, :create), task: @valid_attrs
       assert redirected_to(conn) == task_path(conn, :index)
-      reloaded_task = Repo.get_by(Task, @valid_attrs) |> Repo.preload(:volunteers)
+      reloaded_task = Repo.get_by(Task, name: "some content") |> Repo.preload(:volunteers)
       assert reloaded_task.volunteers == []
     end
 

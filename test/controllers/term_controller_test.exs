@@ -5,6 +5,7 @@ defmodule CoursePlanner.TermControllerTest do
   import CoursePlanner.Factory
 
   setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     conn = login_as(:coordinator)
     {:ok, conn: conn}
   end

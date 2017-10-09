@@ -9,6 +9,7 @@ defmodule CoursePlanner.ClassControllerTest do
   @invalid_attrs %{}
 
   setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     conn =
       Phoenix.ConnTest.build_conn()
         |> assign(:current_user, insert(:coordinator))

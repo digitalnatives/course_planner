@@ -159,4 +159,16 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
       }) |> Repo.insert!
 end
 
+unless Repo.get_by(SystemVariable, key: "TIMEZONE") do
+  %SystemVariable{} |> SystemVariable.changeset(
+      %{
+        key: "TIMEZONE",
+        value: "Europe/Budapest",
+        type: "timezone",
+        editable: true,
+        visible: true,
+        required: true
+      }) |> Repo.insert!
+end
+
 "Seed ran successfully."

@@ -6,6 +6,11 @@ defmodule CoursePlanner.NotificationsTest do
 
   alias CoursePlanner.{Accounts.User, Notifications.Notification, Notifications, Settings}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   test "send notification when it has past at least one day" do
     now = ~N[2017-08-15 10:00:00]
 

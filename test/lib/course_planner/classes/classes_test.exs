@@ -4,6 +4,10 @@ defmodule CoursePlanner.ClassesTest do
   import CoursePlanner.Factory
   alias CoursePlanner.Classes
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
 
   test "sort by starting time when input is an empty list" do
     assert [] = Classes.sort_by_starting_time([])
