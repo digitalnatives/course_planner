@@ -48,3 +48,10 @@ config :email_checker,
   validations: [EmailChecker.Check.Format]
 
 import_config "#{Mix.env}.exs"
+
+config :guardian, Guardian,
+   issuer: "CoursePlanner.#{Mix.env}",
+   ttl: {1, :days},
+   verify_issuer: true,
+   serializer: CoursePlanner.Auth.GuardianSerializer,
+   secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"

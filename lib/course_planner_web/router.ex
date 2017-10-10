@@ -11,7 +11,7 @@ defmodule CoursePlannerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session
+  #  plug Coherence.Authentication.Session
   end
 
   pipeline :protected do
@@ -29,8 +29,15 @@ defmodule CoursePlannerWeb.Router do
     plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
   end
 
+  pipeline :with_session do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
+  end
+
   scope "/" do
     pipe_through :browser
+    resources "/guardian_sessions", CoursePlannerWeb.SessionController, only: [:new, :create, :delete]
     coherence_routes()
   end
 
@@ -46,7 +53,7 @@ defmodule CoursePlannerWeb.Router do
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through :protected
+    pipe_through [:browser, :with_session]
 
     get "/", PageController, :index
 

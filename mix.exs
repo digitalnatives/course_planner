@@ -29,7 +29,7 @@ defmodule CoursePlanner.Mixfile do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
-                    :canary, :elixir_make, :email_checker]]
+                    :canary, :elixir_make, :email_checker, :guardian]]
   end
 
   # Specifies which paths to compile per environment.
@@ -60,6 +60,7 @@ defmodule CoursePlanner.Mixfile do
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
      {:email_checker, "~> 0.1.1"},
+     {:guardian, "~> 0.14.5"}
    ]
   end
 
