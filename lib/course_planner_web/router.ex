@@ -11,16 +11,6 @@ defmodule CoursePlannerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-  #  plug Coherence.Authentication.Session
-  end
-
-  pipeline :protected do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true
   end
 
   pipeline :protected_api do
@@ -35,15 +25,14 @@ defmodule CoursePlannerWeb.Router do
     plug CoursePlanner.CurrentUser
   end
 
-  scope "/" do
-    pipe_through :browser
-    resources "/guardian_sessions", CoursePlannerWeb.SessionController, only: [:new, :create, :delete]
-    coherence_routes()
+  pipeline :login_required do
+    plug Guardian.Plug.EnsureAuthenticated,
+         handler: CoursePlanner.Auth.GuardianErrorHandler
   end
 
   scope "/" do
-    pipe_through :protected
-    coherence_routes :protected
+    pipe_through :browser
+    resources "/guardian_sessions", CoursePlannerWeb.SessionController, only: [:new, :create, :delete]
   end
 
   scope "/", CoursePlannerWeb do
@@ -53,7 +42,7 @@ defmodule CoursePlannerWeb.Router do
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through [:browser, :with_session]
+    pipe_through [:browser, :with_session, :login_required]
 
     get "/", PageController, :index
 
