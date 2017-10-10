@@ -1,12 +1,32 @@
-<h1>Sign in</h1>
-<%= form_for @conn, session_path(@conn, :create), [as: :session], fn f -> %>
-  <div class="form-group">
-    <%= text_input f, :email, placeholder: "Email",
-                              class: "form-control" %>
+<%= form_for @conn, session_path(@conn, :create), [as: :session], fn f  -> %>
+
+  <% login_field = Coherence.Config.login_field %>
+
+  <% error = get_flash(@conn, :error) %>
+
+  <div class="login__wrapper">
+
+    <div class="row row--vspace login__form">
+      <div class="col-xs-12 mdl-layout-title login__title">
+        Welcome back!
+      </div>
+      <div class="col-xs-12 login__error-wrapper">
+        <%= CoursePlannerWeb.SharedView.form_text f, login_field, required: true %>
+        <%= if error do %>
+          <div class="login__error">
+            <%= error %>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-xs-12">
+        <%= CoursePlannerWeb.SharedView.form_password f, :password, required: true %>
+      </div>
+      <div class="col-xs-12">
+        <%= CoursePlannerWeb.SharedView.form_submit f, "Next", class: "login__button" %>
+      </div>
+      
+    </div>
+
   </div>
-  <div class="form-group">
-    <%= password_input f, :password, placeholder: "Password",
-                                     class: "form-control" %>
-  </div>
-  <%= submit "Sign in", class: "btn btn-primary" %>
+
 <% end %>
