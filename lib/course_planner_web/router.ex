@@ -15,10 +15,9 @@ defmodule CoursePlannerWeb.Router do
 
   pipeline :protected_api do
     plug :accepts, ["json"]
-    plug :fetch_session
-    # plug Guardian.Plug.VerifyHeader, realm: "Bearer" # <- New line (1)
-    # plug Guardian.Plug.LoadResource                  # <- New line (2)
-    plug Guardian.Plug.EnsureAuthenticated, handler: JsonLogin
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
   end
 
   pipeline :with_session do

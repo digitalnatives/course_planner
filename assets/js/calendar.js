@@ -376,6 +376,7 @@
     );
 
     req.open( "GET", `/calendar?date=${ startDate }&my_classes=${ !displayEvery }` );
+    req.setRequestHeader("authorization", `Bearer ${JWT}`)
     req.send( );
   }
 
