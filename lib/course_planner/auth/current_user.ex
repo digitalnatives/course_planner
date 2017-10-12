@@ -1,4 +1,7 @@
 defmodule CoursePlanner.CurrentUser do
+  @moduledoc """
+    this module is used by guardian through router to populate loged-in user
+  """
   import Plug.Conn
   import Guardian.Plug
 

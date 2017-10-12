@@ -5,7 +5,7 @@ defmodule CoursePlannerWeb.JsonLogin do
   import Plug.Conn, only: [put_status: 2, halt: 1]
   import Phoenix.Controller, only: [render: 3]
 
-  def callback(conn) do
+  def unauthenticated(conn, _params) do
     conn
     |> put_status(401)
     |> render(CoursePlannerWeb.ErrorView, "401.json")

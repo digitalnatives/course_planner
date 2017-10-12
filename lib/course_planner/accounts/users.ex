@@ -2,9 +2,8 @@ defmodule CoursePlanner.Accounts.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications}
+  alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications, Auth.Helper}
   alias Ecto.{DateTime, Changeset, Multi}
-  alias Coherence.ControllerHelpers
 
   import Ecto.Query
 
@@ -15,7 +14,7 @@ defmodule CoursePlanner.Accounts.Users do
   end
 
   def add_default_password_params(user, token) do
-    random_default_password = ControllerHelpers.random_string 12
+    random_default_password = Helper.get_random_token_with_length 12
 
     user
     |> Map.put_new("reset_password_token", token)
@@ -28,7 +27,7 @@ defmodule CoursePlanner.Accounts.Users do
     updated_user = add_default_password_params(user, token)
 
     %User{}
-    |> User.changeset(updated_user)
+    |> User.changeset(updated_user, :create)
     |> Repo.insert()
   end
 

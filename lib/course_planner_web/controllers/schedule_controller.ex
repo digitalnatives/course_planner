@@ -6,6 +6,7 @@ defmodule CoursePlannerWeb.ScheduleController do
   plug :authorize_controller
 
   def show(conn, params) do
-    render(conn, "show.html", params: params)
+    conn
+    |> render("show.html", params: params)
   end
 end

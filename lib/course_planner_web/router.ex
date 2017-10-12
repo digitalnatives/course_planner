@@ -16,7 +16,9 @@ defmodule CoursePlannerWeb.Router do
   pipeline :protected_api do
     plug :accepts, ["json"]
     plug :fetch_session
-    plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
+    # plug Guardian.Plug.VerifyHeader, realm: "Bearer" # <- New line (1)
+    # plug Guardian.Plug.LoadResource                  # <- New line (2)
+    plug Guardian.Plug.EnsureAuthenticated, handler: JsonLogin
   end
 
   pipeline :with_session do
@@ -32,11 +34,14 @@ defmodule CoursePlannerWeb.Router do
 
   scope "/" do
     pipe_through :browser
-    resources "/guardian_sessions", CoursePlannerWeb.SessionController, only: [:new, :create, :delete]
+    resources "/sessions", CoursePlannerWeb.Auth.SessionController,
+      only: [:new, :create, :delete]
+    resources "/passwords", CoursePlannerWeb.Auth.PasswordController,
+      only: [:new, :create, :edit, :update]
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through :protected_api
+    pipe_through [:protected_api]
 
     resources "/calendar", CalendarController, only: [:show], singleton: true
   end

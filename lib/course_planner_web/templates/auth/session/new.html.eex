@@ -1,7 +1,5 @@
 <%= form_for @conn, session_path(@conn, :create), [as: :session], fn f  -> %>
 
-  <% login_field = Coherence.Config.login_field %>
-
   <% error = get_flash(@conn, :error) %>
 
   <div class="login__wrapper">
@@ -11,7 +9,7 @@
         Welcome back!
       </div>
       <div class="col-xs-12 login__error-wrapper">
-        <%= CoursePlannerWeb.SharedView.form_text f, login_field, required: true %>
+        <%= CoursePlannerWeb.SharedView.form_text f, :email, required: true %>
         <%= if error do %>
           <div class="login__error">
             <%= error %>
@@ -23,9 +21,6 @@
       </div>
       <div class="col-xs-12">
         <%= CoursePlannerWeb.SharedView.form_submit f, "Next", class: "login__button" %>
-      </div>
-      <div class="col-xs-12 login__links">
-        <%= coherence_links(@conn, :new_session) %>
       </div>
     </div>
 

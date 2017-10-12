@@ -1,44 +1,43 @@
-defmodule CoursePlannerWeb.SessionController do
+defmodule CoursePlannerWeb.Auth.SessionController do
+  @moduledoc """
+    This module handles loging in to the system
+  """
   use CoursePlannerWeb, :controller
 
   plug :put_layout, "session_layout.html"
 
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias CoursePlanner.Accounts.User
+  alias Guardian.Plug
 
   def new(conn, _) do
     render conn, "new.html"
   end
+
   def create(conn, %{"session" => %{"email" => email,
                                     "password" => password}}) do
-      # try to get user by unique email from DB
     trimmed_downcased_email =
       email
       |> String.trim()
       |> String.downcase()
-
     user = Repo.get_by(User, email: trimmed_downcased_email)
-    # examine the result
 
     result = cond do
-      # if user was found and provided password hash equals to stored
-      # hash
-      user && checkpw(password, user.password_hash) ->
-        {:ok, login(conn, user)}
-      # else if we just found the use
-      user ->
-        {:error, :unauthorized, conn}
-      # otherwise
-      true ->
-        # simulate check password hash timing
-        dummy_checkpw()
+
+      user && checkpw(password, user.password_hash) -> {:ok, login(conn, user)}
+
+      user -> {:error, :unauthorized, conn}
+
+      true ->  dummy_checkpw()
         {:error, :not_found, conn}
     end
+
     case result do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "You’re now logged in!")
-        |> redirect(to: "/dashboard")#dashboard_path(conn, :show))
+        |> redirect(to: dashboard_path(conn, :show))
+
       {:error, _reason, conn} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
@@ -55,10 +54,11 @@ defmodule CoursePlannerWeb.SessionController do
 
   defp login(conn, user) do
     conn
-    |> Guardian.Plug.sign_in(user)
+    |> Plug.sign_in(user)
   end
 
   defp logout(conn) do
-    Guardian.Plug.sign_out(conn)
+    conn
+    |> Plug.sign_out()
   end
 end

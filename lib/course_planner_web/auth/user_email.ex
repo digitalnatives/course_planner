@@ -1,14 +1,19 @@
 Code.ensure_loaded Phoenix.Swoosh
 
-defmodule CoursePlannerWeb.Coherence.UserEmail do
+defmodule CoursePlannerWeb.Auth.UserEmail do
   @moduledoc false
-  use Phoenix.Swoosh, view: CoursePlannerWeb.Coherence.EmailView,
-                      layout: {CoursePlannerWeb.Coherence.LayoutView, :email}
-  alias Swoosh.Email
-  require Logger
-  alias Coherence.Config
+  use Phoenix.Swoosh, view: CoursePlannerWeb.Auth.EmailView,
+                      layout: {CoursePlannerWeb.Auth.LayoutView, :email}
 
-  defp site_name, do: Config.site_name(inspect Config.module)
+  require Logger
+
+  alias Swoosh.Email
+  alias CoursePlanner.Mailer
+
+  defp site_name, do: Application.get_env(:course_planner, :site_name)
+  defp email_reply_to, do: Application.get_env(:course_planner, :auth_email_reply_to)
+  defp email_from_name, do: Application.get_env(:course_planner, :auth_email_from_name)
+  defp email_from_email, do: Application.get_env(:course_planner, :auth_email_from_email)
 
   def password(user, url) do
     create_modular_email(user, "#{site_name()} - Reset password instructions", "password.html",
@@ -48,7 +53,7 @@ defmodule CoursePlannerWeb.Coherence.UserEmail do
   end
 
   defp add_reply_to(mail) do
-    case Config.email_reply_to do
+    case email_reply_to() do
       nil              -> mail
       true             -> reply_to mail, from_email()
       address          -> reply_to mail, address
@@ -62,20 +67,23 @@ defmodule CoursePlannerWeb.Coherence.UserEmail do
   defp user_email(%{name: name, email: email}), do: {name, email}
 
   defp from_email do
-    log_string = ~s{Need to configure :coherence, :email_from_name, "Name", \
+    log_string = ~s{Need to configure :auth_email, :email_from_name, "Name", \
 and :email_from_email, "me@example.com"}
 
-    case Config.email_from do
-      nil ->
-        Logger.error log_string
-        nil
-      {name, email} = email_tuple ->
-        if is_nil(name) or is_nil(email) do
-          Logger.error log_string
-          nil
-        else
-          email_tuple
-        end
+    name  = email_from_name()
+    email = email_from_email()
+
+    if is_nil(name) or is_nil(email) do
+      Logger.error log_string
+      nil
+    else
+      {name, email}
     end
+  end
+
+  def send_user_email(fun, model, url) do
+    email = apply(__MODULE__, fun, [model, url])
+    Logger.debug fn -> "#{fun} email: #{inspect email}" end
+    Mailer.deliver(email)
   end
 end

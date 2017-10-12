@@ -1,7 +1,9 @@
 use Mix.Config
 
 config :course_planner,
-  ecto_repos: [CoursePlanner.Repo]
+  ecto_repos: [CoursePlanner.Repo],
+  site_name: "CoursePlanner",
+  auth_email_reply_to: nil
 
 config :course_planner, CoursePlannerWeb.Endpoint,
   url: [host: "localhost"],
