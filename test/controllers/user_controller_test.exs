@@ -93,6 +93,14 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "coordinator delete a user successfully", %{conn: conn} do
+    user = insert(:student)
+
+    conn = delete conn, user_path(conn, :delete, user.id)
+    assert redirected_to(conn) == user_path(conn, :index)
+    assert get_flash(conn, "info") == "User deleted successfully."
+  end
+
   test "does not delete a non-existing user", %{conn: conn} do
     conn = delete conn, user_path(conn, :delete, -1)
     assert redirected_to(conn) == user_path(conn, :index)
