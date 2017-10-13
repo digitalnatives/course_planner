@@ -4,11 +4,11 @@ defmodule CoursePlanner.PageControllerTest do
   import CoursePlanner.Factory
 
   setup do
-    user = build(:coordinator)
-
     conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, user)
+      :coordinator
+      |> insert()
+      |> guardian_login_html()
+
     {:ok, conn: conn}
   end
 

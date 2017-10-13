@@ -8,10 +8,9 @@ defmodule CoursePlanner.MatrixControllerTest do
   end
 
   defp login_as(user_type) do
-    user = insert(user_type)
-
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_type
+    |> insert()
+    |> guardian_login_html()
   end
 
   test "request index page", %{conn: conn} do

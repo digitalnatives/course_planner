@@ -1,9 +1,6 @@
 defmodule CoursePlannerWeb.Router do
   @moduledoc false
   use CoursePlannerWeb, :router
-  use Coherence.Router
-
-  alias CoursePlannerWeb.JsonLogin
 
   pipeline :browser do
     plug :accepts, ["html"]

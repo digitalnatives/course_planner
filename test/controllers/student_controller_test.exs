@@ -9,10 +9,9 @@ defmodule CoursePlanner.StudentControllerTest do
   end
 
   defp login_as(user_type) do
-    user = insert(user_type)
-
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_type
+    |> insert()
+    |> guardian_login_html()
   end
 
   test "lists all entries on index", %{conn: conn} do
@@ -202,8 +201,7 @@ defmodule CoursePlanner.StudentControllerTest do
 
   test "show the student himself" do
     student = insert(:student)
-    student_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, student)
+    student_conn = guardian_login_html(student)
 
     conn = get student_conn, student_path(student_conn, :show, student)
     assert html_response(conn, 200) =~ "#{student.name} #{student.family_name}"
@@ -211,8 +209,7 @@ defmodule CoursePlanner.StudentControllerTest do
 
   test "edit the student himself" do
     student = insert(:student, %{name: "Foo", family_name: "Bar"})
-    student_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, student)
+    student_conn = guardian_login_html(student)
 
     conn = get student_conn, student_path(student_conn, :edit, student)
     assert html_response(conn, 200) =~ "Foo Bar"
@@ -220,8 +217,7 @@ defmodule CoursePlanner.StudentControllerTest do
 
   test "update the student himself" do
     student = insert(:student)
-    student_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, student)
+    student_conn = guardian_login_html(student)
 
     conn = put student_conn, student_path(student_conn, :update, student), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == student_path(conn, :show, student)

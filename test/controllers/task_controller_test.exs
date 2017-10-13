@@ -10,9 +10,7 @@ defmodule CoursePlanner.TaskControllerTest do
   setup(%{user_role: role}) do
     user = insert(role)
 
-    conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, user)
+    conn = guardian_login_html(user)
 
     {:ok, conn: conn, user: user}
   end

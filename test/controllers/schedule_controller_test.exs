@@ -4,8 +4,10 @@ defmodule CoursePlanner.ScheduleControllerTest do
 
   setup(%{user_role: role}) do
     conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, insert(role))
+      role
+      |> insert()
+      |> guardian_login_html()
+
     {:ok, conn: conn}
   end
 
