@@ -17,6 +17,8 @@ config :course_planner, CoursePlanner.Repo,
 
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: System.get_env("SENDGRID_API_KEY"),
+  api_key: System.get_env("SENDGRID_API_KEY")
+
+config :course_planner,
   auth_email_from_name: "${EMAIL_FROM_NAME}",
   auth_email_from_email: "${EMAIL_FROM_EMAIL}"

@@ -7,9 +7,9 @@ alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Class
                      Attendances.Attendance, Tasks.Task, Settings.SystemVariable,
                      Notifications.Notification}
 
-  use ExMachina.Ecto, repo: CoursePlanner.Repo
+use ExMachina.Ecto, repo: CoursePlanner.Repo
 
-  @password_hash User.encrypt_password("secret")
+@password_hash User.encrypt_password("secret")
 
  def user_factory do
    %User{

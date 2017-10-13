@@ -1,5 +1,3 @@
-Code.ensure_loaded Phoenix.Swoosh
-
 defmodule CoursePlannerWeb.Auth.UserEmail do
   @moduledoc false
   use Phoenix.Swoosh, view: CoursePlannerWeb.Auth.EmailView,

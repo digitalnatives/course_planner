@@ -162,6 +162,6 @@ defmodule CoursePlanner.Accounts.User do
   defp updates_hashed_password(changeset), do: changeset
 
   def encrypt_password(password) do
-   Bcrypt.hashpwsalt(password)
+    Bcrypt.hashpwsalt(password)
   end
 end

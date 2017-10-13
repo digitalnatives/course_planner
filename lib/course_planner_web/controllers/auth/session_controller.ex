@@ -6,8 +6,8 @@ defmodule CoursePlannerWeb.Auth.SessionController do
 
   plug :put_layout, "session_layout.html"
 
-  import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
   alias CoursePlanner.Accounts.User
+  alias Comeonin.Bcrypt
   alias Guardian.Plug
 
   def new(conn, _) do
@@ -24,11 +24,11 @@ defmodule CoursePlannerWeb.Auth.SessionController do
 
     result = cond do
 
-      user && checkpw(password, user.password_hash) -> {:ok, login(conn, user)}
+      user && Bcrypt.checkpw(password, user.password_hash) -> {:ok, login(conn, user)}
 
       user -> {:error, :unauthorized, conn}
 
-      true ->  dummy_checkpw()
+      true -> Bcrypt.dummy_checkpw()
         {:error, :not_found, conn}
     end
 
