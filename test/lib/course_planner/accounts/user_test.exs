@@ -141,13 +141,13 @@ defmodule CoursePlanner.UserTest do
   describe "password changeset" do
     test "when setting password" do
       coordinator = insert(:coordinator)
-      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"}, :password)
+      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"}, :password_reset)
       assert changeset.valid?
     end
 
     test "when password and its confirmation does not match" do
       coordinator = insert(:coordinator)
-      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"}, :password)
+      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"}, :password_reset)
       assert {"does not match confirmation", [validation: :confirmation]} == changeset.errors[:password_confirmation]
     end
   end
