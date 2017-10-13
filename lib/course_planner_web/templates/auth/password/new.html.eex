@@ -17,7 +17,7 @@
         <% end %>
       </div>
       <div class="col-xs-6">
-        <%= link "Cancel", to: Coherence.Config.logged_out_url("/"), class: "mdl-button mdl-js-button" %>
+        <%= link "Cancel", to: session_path(@conn, :new), class: "mdl-button mdl-js-button" %>
       </div>
       <div class="col-xs-6">
         <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
