@@ -3,7 +3,8 @@ use Mix.Config
 config :course_planner,
   ecto_repos: [CoursePlanner.Repo],
   site_name: "CoursePlanner",
-  auth_email_reply_to: nil
+  auth_email_reply_to: nil,
+  auth_email_title: "Course Planner"
 
 config :course_planner, CoursePlannerWeb.Endpoint,
   url: [host: "localhost"],
@@ -18,23 +19,6 @@ config :logger, :console,
 
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Local
-
-# %% Coherence Configuration %%   Don't remove this line
-config :coherence,
-  user_schema: CoursePlanner.Accounts.User,
-  repo: CoursePlanner.Repo,
-  module: CoursePlanner,
-  web_module: CoursePlannerWeb,
-  router: CoursePlannerWeb.Router,
-  logged_out_url: "/",
-  title: "Course Planner",
-  layout: {CoursePlannerWeb.Coherence.LayoutView, "app.html"},
-  messages_backend: CoursePlannerWeb.Coherence.Messages,
-  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token]
-
-config :coherence, CoursePlannerWeb.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Local
-# %% End Coherence Configuration %%
 
 config :canary,
   repo: CoursePlanner.Repo,

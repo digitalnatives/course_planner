@@ -28,7 +28,7 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
+                    :phoenix_ecto, :postgrex, :swoosh, :quantum, :canada,
                     :canary, :elixir_make, :email_checker, :guardian]]
   end
 
@@ -49,7 +49,6 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, github: "ghatighorias/coherence", tag: "v0.5.1"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
      {:distillery, "~> 1.0.0"},

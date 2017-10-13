@@ -18,14 +18,8 @@ config :course_planner, CoursePlanner.Repo,
   pool_size: 10,
   ssl: true
 
-config :coherence, CoursePlannerWeb.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: {:system, "SENDGRID_API_KEY"}
-
-config :coherence,
-  email_from_name: "${EMAIL_FROM_NAME}",
-  email_from_email: "${EMAIL_FROM_EMAIL}"
-
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
-  api_key: {:system, "SENDGRID_API_KEY"}
+  api_key: {:system, "SENDGRID_API_KEY"},
+  auth_email_from_name: "${EMAIL_FROM_NAME}",
+  auth_email_from_email: "${EMAIL_FROM_EMAIL}"

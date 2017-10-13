@@ -3,7 +3,6 @@
   "canada": {:hex, :canada, "1.0.1", "da96d0ff101a0c2a6cc7b07d92b8884ff6508f058781d3679999416feacf41c5", [:mix], [], "hexpm"},
   "canary": {:git, "https://github.com/cpjk/canary.git", "a4159160d39a208ffd396011cbf34599285ef797", []},
   "certifi": {:hex, :certifi, "2.0.0", "a0c0e475107135f76b8c1d5bc7efb33cd3815cb3cf3dea7aefdd174dabead064", [:rebar3], [], "hexpm"},
-  "coherence": {:git, "https://github.com/ghatighorias/coherence.git", "e39282e5edf7fcf835cae9b667052dd7b5696cfe", [tag: "v0.5.1"]},
   "combine": {:hex, :combine, "0.10.0", "eff8224eeb56498a2af13011d142c5e7997a80c8f5b97c499f84c841032e429f", [:mix], [], "hexpm"},
   "comeonin": {:hex, :comeonin, "3.2.0", "cb10995a22aed6812667efb3856f548818c85d85394d8132bc116fbd6995c1ef", [:make, :mix], [{:elixir_make, "~> 0.4", [hex: :elixir_make, repo: "hexpm", optional: false]}], "hexpm"},
   "connection": {:hex, :connection, "1.0.4", "a1cae72211f0eef17705aaededacac3eb30e6625b04a6117c1b2db6ace7d5976", [:mix], [], "hexpm"},
