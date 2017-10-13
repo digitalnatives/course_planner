@@ -53,8 +53,8 @@ defmodule CoursePlannerWeb.Auth.UserEmail do
   defp add_reply_to(mail) do
     case email_reply_to() do
       nil              -> mail
-      true             -> reply_to mail, from_email()
-      address          -> reply_to mail, address
+      true             -> reply_to(mail, from_email())
+      address          -> reply_to(mail, address)
     end
   end
 
