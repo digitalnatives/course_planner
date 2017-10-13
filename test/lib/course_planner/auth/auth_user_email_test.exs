@@ -3,10 +3,16 @@ defmodule CoursePlanner.AuthUserEmailTest do
 
   alias CoursePlanner.Accounts.User
   alias CoursePlannerWeb.Auth.UserEmail
-  alias Coherence.Config
 
   @sample_url "http://www.sample-url.com"
   @valid_user %User{name: "mahname", email: "valid@email", role: "Student"}
+
+  defp email_from do
+    {
+      Application.get_env(:course_planner, :auth_email_from_name),
+      Application.get_env(:course_planner, :auth_email_from_email)
+    }
+  end
 
   test "Welcome email" do
     email = UserEmail.welcome(@valid_user, @sample_url)
@@ -24,7 +30,7 @@ defmodule CoursePlanner.AuthUserEmailTest do
 
     assert email.assigns.name == @valid_user.name
     assert email.assigns.url  == @sample_url
-    assert email.from         == Config.email_from
+    assert email.from         == email_from()
     assert email.html_body    =~ "- Reset password instructions"
   end
 
@@ -33,7 +39,7 @@ defmodule CoursePlanner.AuthUserEmailTest do
 
     assert email.assigns.name == @valid_user.name
     assert email.assigns.url  == @sample_url
-    assert email.from         == Config.email_from
+    assert email.from         == email_from()
     assert email.html_body    =~ "- Confirm your new account"
   end
 
@@ -42,7 +48,7 @@ defmodule CoursePlanner.AuthUserEmailTest do
 
     assert email.assigns.name == @valid_user.name
     assert email.assigns.url  == @sample_url
-    assert email.from         == Config.email_from
+    assert email.from         == email_from()
     assert email.html_body    =~ "- Invitation to create a new account"
   end
 
@@ -51,7 +57,7 @@ defmodule CoursePlanner.AuthUserEmailTest do
 
     assert email.assigns.name == @valid_user.name
     assert email.assigns.url  == @sample_url
-    assert email.from         == Config.email_from
+    assert email.from         == email_from()
     assert email.html_body    =~ "- Unlock Instructions"
   end
 end
