@@ -17,7 +17,7 @@ defmodule CoursePlanner.Attendances do
       preload: [:term, :course, :teachers],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
-      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_teacher_course_attendances(offered_course_id, teacher_id) do
@@ -30,7 +30,7 @@ defmodule CoursePlanner.Attendances do
       preload: [:term, :course, teachers: t],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
-      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_student_attendances(offered_course_id, student_id) do
@@ -40,7 +40,7 @@ defmodule CoursePlanner.Attendances do
       join: oc in assoc(c, :offered_course),
       preload: [class: {c, [offered_course: {oc, [:course, :term]}]}, student: s],
       where: a.student_id == ^student_id and oc.id == ^offered_course_id,
-      order_by: [asc: c.date])
+      order_by: [asc: c.date, asc: c.starting_at])
   end
 
   def get_all_offered_courses do

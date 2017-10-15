@@ -6,6 +6,11 @@ defmodule CoursePlanner.SummariesTest do
 
   @empty_summary_helper_user_data_response %{terms: [], offered_courses: []}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   test "when user role is unknown" do
     student = insert(:student)
     [term1, term2] = insert_list(2, :term)

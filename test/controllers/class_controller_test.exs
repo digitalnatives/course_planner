@@ -9,6 +9,7 @@ defmodule CoursePlanner.ClassControllerTest do
   @invalid_attrs %{}
 
   setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     conn =
       :coordinator
       |> insert()

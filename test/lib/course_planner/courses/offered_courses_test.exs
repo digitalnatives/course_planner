@@ -4,6 +4,11 @@ defmodule CoursePlanner.OfferedCoursesTest do
   import CoursePlanner.Factory
   alias CoursePlanner.{Courses.OfferedCourses, Attendances, Notifications.Notification}
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   defp get_students_full_name_map(students) do
     students
     |> Enum.map(&("#{&1.name} #{&1.family_name}"))
