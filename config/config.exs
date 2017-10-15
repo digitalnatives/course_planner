@@ -4,7 +4,8 @@ config :course_planner,
   ecto_repos: [CoursePlanner.Repo],
   site_name: "CoursePlanner",
   auth_email_reply_to: nil,
-  auth_email_title: "Course Planner"
+  auth_email_title: "Course Planner",
+  auth_password_reset_token_validation_days: 2
 
 config :course_planner, CoursePlannerWeb.Endpoint,
   url: [host: "localhost"],

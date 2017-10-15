@@ -9,6 +9,9 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
   alias CoursePlanner.Accounts.User
   alias Timex.Comparable
 
+  defp auth_password_reset_token_validation_days,
+    do: Application.get_env(:course_planner, :auth_password_reset_token_validation_days)
+
   def new(conn, _) do
     render conn, "new.html"
   end
@@ -92,9 +95,11 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     current_datetime = Timex.now()
     reset_password_sent_at = user.reset_password_sent_at
 
-    diff = Comparable.diff(current_datetime, reset_password_sent_at, :days)
+    days_since_reset_token_sent =
+      Comparable.diff(current_datetime, reset_password_sent_at, :days)
 
-    diff <= 2
+    #diff <= 2
+    auth_password_reset_token_validation_days() >= days_since_reset_token_sent
   end
 
   defp set_new_password(user, password, password_confirmation) do
