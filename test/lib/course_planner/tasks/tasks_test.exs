@@ -4,6 +4,11 @@ defmodule CoursePlanner.TasksTest do
   alias CoursePlanner.{Tasks, Tasks.Task}
   import CoursePlanner.Factory
 
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
+
   describe "task sorting functionality when" do
     test "query without sort option" do
       task1 = insert(:task)

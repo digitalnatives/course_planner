@@ -29,7 +29,7 @@ defmodule CoursePlanner.Mixfile do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :swoosh, :phoenix_swoosh, :quantum, :canada,
-                    :canary, :elixir_make, :email_checker, :guardian, :comeonin,
+                    :canary, :elixir_make, :calendar, :email_checker, :guardian, :comeonin,
                     :bcrypt_elixir, :timex, :timex_ecto]]
   end
 
@@ -60,6 +60,7 @@ defmodule CoursePlanner.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
+     {:calendar, "~> 0.17.2"},
      {:email_checker, "~> 0.1.1"},
      {:comeonin, "~> 4.0"},
      {:bcrypt_elixir, "~> 1.0"},

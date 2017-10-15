@@ -1,9 +1,10 @@
 defmodule CoursePlannerWeb.StudentController do
   @moduledoc false
   use CoursePlannerWeb, :controller
+
   alias CoursePlanner.{Accounts.Users, Accounts.User,
                        Accounts.Students,
-                       Auth.Helper}
+                       Auth.Helper, Terms}
   alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
@@ -36,7 +37,8 @@ defmodule CoursePlannerWeb.StudentController do
 
   def show(conn, %{"id" => id}) do
     student = Repo.get!(User, id)
-    render(conn, "show.html", student: student)
+    terms = Terms.student_attendances(id)
+    render(conn, "show.html", student: student, terms: terms)
   end
 
   def edit(conn, %{"id" => id}) do

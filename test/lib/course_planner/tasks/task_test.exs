@@ -1,10 +1,16 @@
 defmodule CoursePlanner.TaskTest do
   use CoursePlannerWeb.ModelCase
 
+  import CoursePlanner.Factory
   alias CoursePlanner.Tasks.Task
 
   @valid_attrs %{name: "mahname", max_volunteers: 2, start_time: Timex.now(), finish_time: Timex.shift(Timex.now(), days: 2)}
   @invalid_attrs %{}
+
+  setup do
+    insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
+    :ok
+  end
 
   describe "test basic model tests :" do
     test "changeset with valid attributes" do
