@@ -98,7 +98,6 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     days_since_reset_token_sent =
       Comparable.diff(current_datetime, reset_password_sent_at, :days)
 
-    #diff <= 2
     auth_password_reset_token_validation_days() >= days_since_reset_token_sent
   end
 
