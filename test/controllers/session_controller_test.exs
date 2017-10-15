@@ -127,10 +127,17 @@ defmodule CoursePlanner.SessionControllerTest do
        assert redirected_to(conn) == session_path(conn, :new)
      end
 
-    test "nothing happenps when loging out request comes from a not loged in user", %{conn: conn} do
-      conn = delete conn, session_path(conn, :delete, 1234)
-      assert html_response(conn, 302)
-      assert redirected_to(conn) == session_path(conn, :new)
+
+    test "a logged-in user cannot be logged out by a non logged-in request", %{conn: conn} do
+      current_logged_in_user = conn.assigns.current_user
+
+      unauthenticated_conn = Phoenix.ConnTest.build_conn
+      unauthenticated_conn = delete unauthenticated_conn, session_path(unauthenticated_conn, :delete, current_logged_in_user)
+      assert html_response(unauthenticated_conn, 302)
+      assert redirected_to(unauthenticated_conn) == session_path(unauthenticated_conn, :new)
+
+      conn = get conn, dashboard_path(conn, :show)
+      assert html_response(conn, 200)
     end
   end
 end
