@@ -1,7 +1,13 @@
 defmodule CoursePlanner.PasswordControllerTest do
   use CoursePlannerWeb.ConnCase
 
+  use ExUnit.Case, async: true
+
   import CoursePlanner.Factory
+  import Swoosh.TestAssertions
+
+  alias CoursePlanner.{Repo, Accounts.User}
+  alias CoursePlannerWeb.{Auth.UserEmail, Router.Helpers}
 
   setup(param) do
     conn =
@@ -43,20 +49,31 @@ defmodule CoursePlanner.PasswordControllerTest do
       assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
     end
 
-    test "sending of the current token if it is still valid", %{conn: conn} do
-      user = insert(:student, reset_password_token: nil)
+    test "sending of the current token when it's still valid", %{conn: conn} do
+      user = insert(:student,
+        reset_password_token: "sample_reset_token",
+        reset_password_sent_at: Timex.now())
       params = %{password: %{email: user.email}}
       conn = post conn, password_path(conn, :create, params)
       assert html_response(conn, 302) =~ "/sessions/new"
       assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
+
+      password_reset_url =  Helpers.password_url(conn, :edit, user.reset_password_token)
+      assert_email_sent UserEmail.password(user, password_reset_url)
     end
 
     test "creation and sending of the password reset link", %{conn: conn} do
-      user = insert(:student)
+      user = insert(:student,
+        reset_password_token: nil,
+        reset_password_sent_at: Timex.shift(Timex.now(), days: -10))
       params = %{password: %{email: user.email}}
       conn = post conn, password_path(conn, :create, params)
       assert html_response(conn, 302) =~ "/sessions/new"
       assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
+
+      updated_user = Repo.get_by(User, email: user.email)
+      password_reset_url =  Helpers.password_url(conn, :edit, updated_user.reset_password_token)
+      assert_email_sent UserEmail.password(user, password_reset_url)
     end
   end
 

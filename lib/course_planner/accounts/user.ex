@@ -73,7 +73,11 @@ defmodule CoursePlanner.Accounts.User do
     model
     |> cast(params,
       ~w(password password_confirmation reset_password_token reset_password_sent_at))
-    |> validate_password_if_changed()
+    |> validate_required(:password)
+    |> validate_length(:password, min: 6)
+    |> validate_confirmation(:password)
+    |> updates_hashed_password()
+
   end
 
   def changeset(model, params, :seed) do
@@ -139,12 +143,17 @@ defmodule CoursePlanner.Accounts.User do
     end
   end
 
-  def validate_password_if_changed(%{valid?: true} = changeset) do
-    changeset
-    |> validate_required(:password)
-    |> validate_length(:password, min: 6)
-    |> validate_confirmation(:password)
-    |> updates_hashed_password()
+  def validate_password_if_changed(%{changes: changes, valid?: true} = changeset) do
+    password = Map.get(changes, :password)
+
+    if password do
+      changeset
+      |> validate_length(:password, min: 6)
+      |> validate_confirmation(:password)
+      |> updates_hashed_password()
+    else
+      changeset
+    end
   end
   def validate_password_if_changed(changeset), do: changeset
 

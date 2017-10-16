@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
   plug :put_layout, "session_layout.html"
 
   alias CoursePlanner.Accounts.{Users, User}
+  alias CoursePlannerWeb.{Auth.UserEmail, Router.Helpers}
 
   def new(conn, _) do
     render conn, "new.html"
@@ -20,15 +21,9 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     user = Repo.get_by(User, email: trimmed_downcased_email)
 
     if user do
-      Users.reset_password_token_valid?(user)
-      # here we send the actual email to the user
-
-      # if the token is valid send it
-      # if not
-      # creates a new reset token
-
-      # creates the reset url
-      # send the email
+      updated_user = set_new_password_reset_token(user)
+      password_reset_url =  Helpers.password_url(conn, :edit, updated_user.reset_password_token)
+      UserEmail.send_user_email(:password, updated_user, password_reset_url)
     end
 
     conn
@@ -101,7 +96,11 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     |> Repo.update()
   end
 
-  # defp updates_reset_token do
-  #
-  # end
+  defp set_new_password_reset_token(user) do
+    update_params = Users.get_new_password_reset_token(user)
+
+    user
+    |> User.changeset(update_params)
+    |> Repo.update!()
+  end
 end

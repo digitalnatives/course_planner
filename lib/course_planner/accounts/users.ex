@@ -18,7 +18,7 @@ defmodule CoursePlanner.Accounts.Users do
   end
 
   def add_default_password_params(user, token) do
-    random_default_password = Helper.get_random_token_with_length 12
+    random_default_password = Helper.get_random_token_with_length(12)
 
     user
     |> Map.put_new("reset_password_token", token)
@@ -100,5 +100,19 @@ defmodule CoursePlanner.Accounts.Users do
       Comparable.diff(current_datetime, reset_password_sent_at, :days)
 
     auth_password_reset_token_validation_days() >= days_since_reset_token_sent
+  end
+
+  def get_new_password_reset_token(user) do
+    if reset_password_token_valid?(user) do
+      %{
+        reset_password_token: user.reset_password_token,
+        reset_password_sent_at: user.reset_password_sent_at
+       }
+    else
+      %{
+        reset_password_token: Helper.get_random_token_with_length(12),
+        reset_password_sent_at: DateTime.utc()
+       }
+    end
   end
 end
