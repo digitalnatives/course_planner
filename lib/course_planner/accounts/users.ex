@@ -5,6 +5,7 @@ defmodule CoursePlanner.Accounts.Users do
   alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications, Auth.Helper}
   alias Ecto.{DateTime, Changeset, Multi}
   alias Timex.Comparable
+  alias Comeonin.Bcrypt
 
   import Ecto.Query
 
@@ -113,6 +114,17 @@ defmodule CoursePlanner.Accounts.Users do
         reset_password_token: Helper.get_random_token_with_length(12),
         reset_password_sent_at: DateTime.utc()
        }
+    end
+  end
+
+  def check_password(user, password) do
+    cond do
+      user && Bcrypt.checkpw(password, user.password_hash) -> {:ok, :login}
+
+      user -> {:error, :unauthorized}
+
+      true -> Bcrypt.dummy_checkpw()
+        {:error, :not_found}
     end
   end
 end

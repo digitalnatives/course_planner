@@ -6,8 +6,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
 
   plug :put_layout, "session_layout.html"
 
-  alias CoursePlanner.Accounts.User
-  alias Comeonin.Bcrypt
+  alias CoursePlanner.Accounts.{Users, User}
   alias Guardian.Plug
 
   def new(conn, _) do
@@ -22,23 +21,14 @@ defmodule CoursePlannerWeb.Auth.SessionController do
       |> String.downcase()
     user = Repo.get_by(User, email: trimmed_downcased_email)
 
-    result = cond do
-
-      user && Bcrypt.checkpw(password, user.password_hash) -> {:ok, login(conn, user)}
-
-      user -> {:error, :unauthorized, conn}
-
-      true -> Bcrypt.dummy_checkpw()
-        {:error, :not_found, conn}
-    end
-
-    case result do
-      {:ok, conn} ->
+    case Users.check_password(user, password) do
+      {:ok, _reason} ->
         conn
+        |> login(user)
         |> put_flash(:info, "You’re now logged in!")
         |> redirect(to: dashboard_path(conn, :show))
 
-      {:error, _reason, conn} ->
+      {:error, _reason} ->
         conn
         |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
