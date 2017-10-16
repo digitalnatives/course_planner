@@ -140,8 +140,9 @@ defmodule CoursePlanner.Settings do
 
   def get_system_timezone do
     case Repo.get_by(SystemVariable, key: "TIMEZONE") do
-      %{value: nil} -> "UTC"
+      %{value: nil} -> "Etc/UTC"
       %{value: value} -> value
+      _ -> "Etc/UTC"
     end
   end
 end
