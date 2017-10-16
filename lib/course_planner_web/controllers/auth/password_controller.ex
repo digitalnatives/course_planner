@@ -31,54 +31,61 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     |> redirect(to: session_path(conn, :new))
   end
 
-  def edit(conn, %{"id" => token}) do
-    user = Repo.get_by(User, reset_password_token: token)
+  def edit(conn, %{"id" => reset_password_token}) do
+    case check_password_reset_token(reset_password_token) do
+      {:ok, _reason, user} ->
+        changeset = User.changeset(user)
+        render(conn, "edit.html", changeset: changeset, id: reset_password_token)
 
-    cond do
-      is_nil(user) ->
-        conn
-        |> put_flash(:error, "Invalid reset token")
-        |> redirect(to: session_path(conn, :new))
-
-      not Users.reset_password_token_valid?(user) ->
+      {:error, :expired_token, _user} ->
         conn
         |> put_flash(:error, "Password token is expired. Contact your coordinator")
         |> redirect(to: session_path(conn, :new))
 
-      true ->
-        changeset = User.changeset(user)
-        render(conn, "edit.html", changeset: changeset, id: token)
+      {:error, :invalid_token, _user} ->
+        conn
+        |> put_flash(:error, "Invalid reset token")
+        |> redirect(to: session_path(conn, :new))
     end
   end
 
   def update(conn, %{"password" => %{"password" => password,
                                      "password_confirmation" => password_confirmation,
                                      "reset_password_token" => reset_password_token}}) do
+     case check_password_reset_token(reset_password_token) do
+       {:ok, _reason, user} ->
+         case set_new_password(user, password, password_confirmation)  do
+           {:ok, _user} ->
+             conn
+             |> put_flash(:info, "Password is successfully reset")
+             |> redirect(to: session_path(conn, :new))
 
+           {:error, changeset} ->
+             conn
+             |> render("edit.html", changeset: changeset, id: reset_password_token)
+         end
+
+       {:error, :expired_token, _user} ->
+         conn
+         |> put_flash(:error, "Password token is expired. Contact your coordinator")
+         |> redirect(to: session_path(conn, :new))
+
+       {:error, :invalid_token, _user} ->
+         conn
+         |> put_flash(:error, "Invalid reset token")
+         |> redirect(to: session_path(conn, :new))
+     end
+  end
+
+  defp check_password_reset_token(reset_password_token) do
     user = Repo.get_by(User, reset_password_token: reset_password_token)
 
     cond do
-      is_nil(user) ->
-        conn
-        |> put_flash(:error, "Invalid reset token")
-        |> redirect(to: session_path(conn, :new))
+      is_nil(user) -> {:error, :invalid_token, nil}
 
-      not Users.reset_password_token_valid?(user) ->
-        conn
-        |> put_flash(:error, "Password token is expired. Contact your coordinator")
-        |> redirect(to: session_path(conn, :new))
+      not Users.reset_password_token_valid?(user) -> {:error, :expired_token, nil}
 
-      true ->
-        case set_new_password(user, password, password_confirmation)  do
-          {:ok, _user} ->
-            conn
-            |> put_flash(:info, "Password is successfully reset")
-            |> redirect(to: session_path(conn, :new))
-
-          {:error, changeset} ->
-            conn
-            |> render("edit.html", changeset: changeset, id: reset_password_token)
-        end
+      true -> {:ok, :valid_token, user}
     end
   end
 
