@@ -4,10 +4,14 @@ defmodule CoursePlanner.Accounts.Users do
   """
   alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications, Auth.Helper}
   alias Ecto.{DateTime, Changeset, Multi}
+  alias Timex.Comparable
 
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
+
+  defp auth_password_reset_token_validation_days,
+    do: Application.get_env(:course_planner, :auth_password_reset_token_validation_days)
 
   def all do
     Repo.all(User)
@@ -85,5 +89,16 @@ defmodule CoursePlanner.Accounts.Users do
     |> Repo.preload(:notifications)
     # credo:disable-for-next-line
     |> Enum.each(&@notifier.notify_all/1)
+  end
+
+  def reset_password_token_valid?(%User{reset_password_sent_at: nil}), do: false
+  def reset_password_token_valid?(user) do
+    current_datetime = Timex.now()
+    reset_password_sent_at = user.reset_password_sent_at
+
+    days_since_reset_token_sent =
+      Comparable.diff(current_datetime, reset_password_sent_at, :days)
+
+    auth_password_reset_token_validation_days() >= days_since_reset_token_sent
   end
 end

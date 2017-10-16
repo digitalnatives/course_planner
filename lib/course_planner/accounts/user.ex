@@ -139,17 +139,12 @@ defmodule CoursePlanner.Accounts.User do
     end
   end
 
-  def validate_password_if_changed(%{changes: changes, valid?: true} = changeset) do
-    password = Map.get(changes, :password)
-
-    if password do
-      changeset
-      |> validate_length(:password, min: 6)
-      |> validate_confirmation(:password)
-      |> updates_hashed_password()
-    else
-      changeset
-    end
+  def validate_password_if_changed(%{valid?: true} = changeset) do
+    changeset
+    |> validate_required(:password)
+    |> validate_length(:password, min: 6)
+    |> validate_confirmation(:password)
+    |> updates_hashed_password()
   end
   def validate_password_if_changed(changeset), do: changeset
 

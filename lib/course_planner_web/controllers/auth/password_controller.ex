@@ -6,11 +6,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
 
   plug :put_layout, "session_layout.html"
 
-  alias CoursePlanner.Accounts.User
-  alias Timex.Comparable
-
-  defp auth_password_reset_token_validation_days,
-    do: Application.get_env(:course_planner, :auth_password_reset_token_validation_days)
+  alias CoursePlanner.Accounts.{Users, User}
 
   def new(conn, _) do
     render conn, "new.html"
@@ -24,7 +20,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     user = Repo.get_by(User, email: trimmed_downcased_email)
 
     if user do
-      password_token_still_valid(user)
+      Users.reset_password_token_valid?(user)
       # here we send the actual email to the user
 
       # if the token is valid send it
@@ -36,7 +32,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     end
 
     conn
-    |> put_flash(:error, "If the email address is registered, an emaill will be send to it")
+    |> put_flash(:info, "If the email address is registered, an emaill will be send to it")
     |> redirect(to: session_path(conn, :new))
   end
 
@@ -49,7 +45,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
         |> put_flash(:error, "Invalid reset token")
         |> redirect(to: session_path(conn, :new))
 
-      not password_token_still_valid(user) ->
+      not Users.reset_password_token_valid?(user) ->
         conn
         |> put_flash(:error, "Password token is expired. Contact your coordinator")
         |> redirect(to: session_path(conn, :new))
@@ -72,7 +68,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
         |> put_flash(:error, "Invalid reset token")
         |> redirect(to: session_path(conn, :new))
 
-      not password_token_still_valid(user) ->
+      not Users.reset_password_token_valid?(user) ->
         conn
         |> put_flash(:error, "Password token is expired. Contact your coordinator")
         |> redirect(to: session_path(conn, :new))
@@ -89,16 +85,6 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
             |> render("edit.html", changeset: changeset, id: reset_password_token)
         end
     end
-  end
-
-  defp password_token_still_valid(user) do
-    current_datetime = Timex.now()
-    reset_password_sent_at = user.reset_password_sent_at
-
-    days_since_reset_token_sent =
-      Comparable.diff(current_datetime, reset_password_sent_at, :days)
-
-    auth_password_reset_token_validation_days() >= days_since_reset_token_sent
   end
 
   defp set_new_password(user, password, password_confirmation) do
