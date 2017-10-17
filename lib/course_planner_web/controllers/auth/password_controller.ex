@@ -27,7 +27,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     end
 
     conn
-    |> put_flash(:info, "If the email address is registered, an emaill will be send to it")
+    |> put_flash(:info, "If the email address is registered, an email will be sent to it")
     |> redirect(to: session_path(conn, :new))
   end
 

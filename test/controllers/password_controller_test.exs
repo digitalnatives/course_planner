@@ -46,7 +46,7 @@ defmodule CoursePlanner.PasswordControllerTest do
       params = %{password: %{email: "random@nonexisting.com"}}
       conn = post conn, password_path(conn, :create, params)
       assert html_response(conn, 302) =~ "/sessions/new"
-      assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
+      assert get_flash(conn, "info") == "If the email address is registered, an email will be sent to it"
     end
 
     test "sending of the current token when it's still valid", %{conn: conn} do
@@ -56,7 +56,7 @@ defmodule CoursePlanner.PasswordControllerTest do
       params = %{password: %{email: user.email}}
       conn = post conn, password_path(conn, :create, params)
       assert html_response(conn, 302) =~ "/sessions/new"
-      assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
+      assert get_flash(conn, "info") == "If the email address is registered, an email will be sent to it"
 
       password_reset_url =  Helpers.password_url(conn, :edit, user.reset_password_token)
       assert_email_sent UserEmail.password(user, password_reset_url)
@@ -69,7 +69,7 @@ defmodule CoursePlanner.PasswordControllerTest do
       params = %{password: %{email: user.email}}
       conn = post conn, password_path(conn, :create, params)
       assert html_response(conn, 302) =~ "/sessions/new"
-      assert get_flash(conn, "info") == "If the email address is registered, an emaill will be send to it"
+      assert get_flash(conn, "info") == "If the email address is registered, an email will be sent to it"
 
       updated_user = Repo.get_by(User, email: user.email)
       password_reset_url =  Helpers.password_url(conn, :edit, updated_user.reset_password_token)
@@ -154,7 +154,7 @@ defmodule CoursePlanner.PasswordControllerTest do
       params = %{password: "123", password_confirmation: "123", reset_password_token: user.reset_password_token}
       conn = put conn, password_path(conn, :update, 0), password: params
       assert html_response(conn, 200) =~ "Create new password"
-      assert html_response(conn, 200) =~ "should be at least 6 character(s)"
+      assert html_response(conn, 200) =~ "should be at least 8 character(s)"
     end
 
     test "fails if token does not exist", %{conn: conn} do

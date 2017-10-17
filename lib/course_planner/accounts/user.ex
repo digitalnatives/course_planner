@@ -74,10 +74,9 @@ defmodule CoursePlanner.Accounts.User do
     |> cast(params,
       ~w(password password_confirmation reset_password_token reset_password_sent_at))
     |> validate_required(:password)
-    |> validate_length(:password, min: 6)
+    |> validate_length(:password, min: 8)
     |> validate_confirmation(:password)
     |> updates_hashed_password()
-
   end
 
   def changeset(model, params, :seed) do
