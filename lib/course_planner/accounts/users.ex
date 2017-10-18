@@ -127,4 +127,16 @@ defmodule CoursePlanner.Accounts.Users do
         {:error, :not_found}
     end
   end
+
+  def update_login_fields(user, login_successful) do
+    update_params =
+      case login_successful do
+        true -> %{last_sign_in_at: DateTime.utc(), failed_attempts: 0}
+        false -> %{failed_attempts: user.failed_attempts + 1}
+      end
+
+    user
+    |> User.changeset(update_params)
+    |> Repo.update()
+  end
 end

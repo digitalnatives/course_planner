@@ -3,6 +3,8 @@ defmodule CoursePlanner.SessionControllerTest do
 
   import CoursePlanner.Factory
 
+  alias CoursePlanner.{Repo, Accounts.User}
+
   setup(param) do
     conn =
       case param do
@@ -94,6 +96,28 @@ defmodule CoursePlanner.SessionControllerTest do
       conn = get conn, dashboard_path(conn, :show)
       assert html_response(conn, 200)
       assert get_flash(conn, "info") == "You’re now logged in!"
+    end
+
+    @tag user_role: nil
+    test "update of the login fields", %{conn: conn} do
+      user = insert(:coordinator, last_sign_in_at: Timex.shift(Timex.now(), days: -2))
+      login_params = %{session: %{email: user.email, password: "random"}}
+      conn = post conn, session_path(conn, :create, login_params)
+      conn = post conn, session_path(conn, :create, login_params)
+
+      user = Repo.get_by(User, email: user.email)
+      assert user.failed_attempts == 2
+
+      login_params = %{session: %{email: user.email, password: "secret"}}
+      conn = post conn, session_path(conn, :create, login_params)
+
+      conn = get conn, dashboard_path(conn, :show)
+      assert html_response(conn, 200)
+      assert get_flash(conn, "info") == "You’re now logged in!"
+
+      user = Repo.get_by(User, email: user.email)
+      assert user.failed_attempts == 0
+      assert Timex.Comparable.diff(Timex.now(), user.last_sign_in_at, :days) == 0
     end
 
     @tag user_role: nil

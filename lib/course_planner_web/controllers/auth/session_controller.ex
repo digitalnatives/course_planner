@@ -23,12 +23,22 @@ defmodule CoursePlannerWeb.Auth.SessionController do
 
     case Users.check_password(user, password) do
       {:ok, _reason} ->
+        Users.update_login_fields(user, true)
+
         conn
         |> login(user)
         |> put_flash(:info, "You’re now logged in!")
         |> redirect(to: dashboard_path(conn, :show))
 
+      {:error, :unauthorized} ->
+        Users.update_login_fields(user, false)
+
+        conn
+        |> put_flash(:error, "Invalid email/password combination")
+        |> render("new.html")
+
       {:error, _reason} ->
+
         conn
         |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
