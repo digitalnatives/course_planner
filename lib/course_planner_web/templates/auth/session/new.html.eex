@@ -22,8 +22,10 @@
       <div class="col-xs-12">
         <%= CoursePlannerWeb.SharedView.form_submit f, "Next", class: "login__button" %>
       </div>
+      <div class="col-xs-12 login__links">
+        <%= link "Forgot your password?", to: password_path(@conn, :new)%>
+      </div>
     </div>
-
   </div>
 
 <% end %>
