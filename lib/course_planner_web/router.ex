@@ -1,9 +1,6 @@
 defmodule CoursePlannerWeb.Router do
   @moduledoc false
   use CoursePlannerWeb, :router
-  use Coherence.Router
-
-  alias CoursePlannerWeb.JsonLogin
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,42 +8,42 @@ defmodule CoursePlannerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session
-  end
-
-  pipeline :protected do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true
   end
 
   pipeline :protected_api do
     plug :accepts, ["json"]
-    plug :fetch_session
-    plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
+  end
+
+  pipeline :with_session do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
+  end
+
+  pipeline :login_required do
+    plug Guardian.Plug.EnsureAuthenticated,
+         handler: CoursePlanner.Auth.GuardianErrorHandler
   end
 
   scope "/" do
     pipe_through :browser
-    coherence_routes()
-  end
-
-  scope "/" do
-    pipe_through :protected
-    coherence_routes :protected
+    resources "/sessions", CoursePlannerWeb.Auth.SessionController,
+      only: [:new, :create, :delete]
+    resources "/passwords", CoursePlannerWeb.Auth.PasswordController,
+      only: [:new, :create, :edit, :update]
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through :protected_api
+    pipe_through [:protected_api]
 
     resources "/calendar", CalendarController, only: [:show], singleton: true
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through :protected
+    pipe_through [:browser, :with_session, :login_required]
 
     get "/", PageController, :index
 

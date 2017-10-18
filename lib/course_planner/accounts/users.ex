@@ -2,20 +2,24 @@ defmodule CoursePlanner.Accounts.Users do
   @moduledoc """
     Handle all interactions with Users, create, list, fetch, edit, and delete
   """
-  alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications}
+  alias CoursePlanner.{Repo, Accounts.User, Notifications.Notification, Notifications, Auth.Helper}
   alias Ecto.{DateTime, Changeset, Multi}
-  alias Coherence.ControllerHelpers
+  alias Timex.Comparable
+  alias Comeonin.Bcrypt
 
   import Ecto.Query
 
   @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
+
+  defp auth_password_reset_token_validation_days,
+    do: Application.get_env(:course_planner, :auth_password_reset_token_validation_days)
 
   def all do
     Repo.all(User)
   end
 
   def add_default_password_params(user, token) do
-    random_default_password = ControllerHelpers.random_string 12
+    random_default_password = Helper.get_random_token_with_length(12)
 
     user
     |> Map.put_new("reset_password_token", token)
@@ -28,7 +32,7 @@ defmodule CoursePlanner.Accounts.Users do
     updated_user = add_default_password_params(user, token)
 
     %User{}
-    |> User.changeset(updated_user)
+    |> User.changeset(updated_user, :create)
     |> Repo.insert()
   end
 
@@ -86,5 +90,53 @@ defmodule CoursePlanner.Accounts.Users do
     |> Repo.preload(:notifications)
     # credo:disable-for-next-line
     |> Enum.each(&@notifier.notify_all/1)
+  end
+
+  def reset_password_token_valid?(%User{reset_password_sent_at: nil}), do: false
+  def reset_password_token_valid?(user) do
+    current_datetime = Timex.now()
+    reset_password_sent_at = user.reset_password_sent_at
+
+    days_since_reset_token_sent =
+      Comparable.diff(current_datetime, reset_password_sent_at, :days)
+
+    auth_password_reset_token_validation_days() >= days_since_reset_token_sent
+  end
+
+  def get_new_password_reset_token(user) do
+    if reset_password_token_valid?(user) do
+      %{
+        reset_password_token: user.reset_password_token,
+        reset_password_sent_at: user.reset_password_sent_at
+       }
+    else
+      %{
+        reset_password_token: Helper.get_random_token_with_length(12),
+        reset_password_sent_at: DateTime.utc()
+       }
+    end
+  end
+
+  def check_password(user, password) do
+    cond do
+      user && Bcrypt.checkpw(password, user.password_hash) -> {:ok, :login}
+
+      user -> {:error, :unauthorized}
+
+      true -> Bcrypt.dummy_checkpw()
+        {:error, :not_found}
+    end
+  end
+
+  def update_login_fields(user, login_successful) do
+    update_params =
+      case login_successful do
+        true -> %{last_sign_in_at: DateTime.utc(), failed_attempts: 0}
+        false -> %{failed_attempts: user.failed_attempts + 1}
+      end
+
+    user
+    |> User.changeset(update_params)
+    |> Repo.update()
   end
 end

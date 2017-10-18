@@ -9,10 +9,9 @@ defmodule CoursePlanner.VolunteerControllerTest do
   end
 
   defp login_as(user_type) do
-    user = insert(user_type)
-
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_type
+    |> insert()
+    |> guardian_login_html()
   end
 
   test "lists all entries on index", %{conn: conn} do
@@ -200,8 +199,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
 
   test "show the volunteer himself" do
     volunteer = insert(:volunteer)
-    volunteer_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, volunteer)
+    volunteer_conn = guardian_login_html(volunteer)
 
     conn = get volunteer_conn, volunteer_path(volunteer_conn, :show, volunteer)
     assert html_response(conn, 200) =~ "#{volunteer.name} #{volunteer.family_name}"
@@ -209,8 +207,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
 
   test "edit the volunteer himself" do
     volunteer = insert(:volunteer, name: "Foo", family_name: "Bar")
-    volunteer_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, volunteer)
+    volunteer_conn = guardian_login_html(volunteer)
 
     conn = get volunteer_conn, volunteer_path(volunteer_conn, :edit, volunteer)
     assert html_response(conn, 200) =~ "Foo Bar"
@@ -218,8 +215,7 @@ defmodule CoursePlanner.VolunteerControllerTest do
 
   test "update the volunteer himself" do
     volunteer = insert(:volunteer)
-    volunteer_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, volunteer)
+    volunteer_conn = guardian_login_html(volunteer)
 
     conn = put volunteer_conn, volunteer_path(volunteer_conn, :update, volunteer), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == volunteer_path(conn, :show, volunteer)

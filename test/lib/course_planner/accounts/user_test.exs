@@ -141,14 +141,34 @@ defmodule CoursePlanner.UserTest do
   describe "password changeset" do
     test "when setting password" do
       coordinator = insert(:coordinator)
-      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"}, :password)
+      changeset = User.changeset(coordinator, %{password: "secret12", password_confirmation: "secret12"}, :password_reset)
       assert changeset.valid?
     end
 
     test "when password and its confirmation does not match" do
       coordinator = insert(:coordinator)
-      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"}, :password)
+      changeset = User.changeset(coordinator, %{password: "secret1", password_confirmation: "secret2"}, :password_reset)
       assert {"does not match confirmation", [validation: :confirmation]} == changeset.errors[:password_confirmation]
+    end
+
+    test "updates password for an existing user" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{current_password: "secret", password: "new_password", password_confirmation: "new_password"}, :update)
+      assert changeset.valid?
+    end
+
+    test "updating password fails for an existing user if no current_password is provided" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{password: "secret", password_confirmation: "secret"}, :update)
+      refute changeset.valid?
+      assert {"cant be blank.", []} == changeset.errors[:current_password]
+    end
+
+    test "updating password fails for an existing user if current_password does not match" do
+      coordinator = insert(:coordinator)
+      changeset = User.changeset(coordinator, %{current_password: "random", password: "secret", password_confirmation: "secret"}, :update)
+      refute changeset.valid?
+      assert {"current password is invalid.", []} == changeset.errors[:current_password]
     end
   end
 end

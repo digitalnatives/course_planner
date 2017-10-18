@@ -11,8 +11,10 @@ defmodule CoursePlanner.ClassControllerTest do
   setup do
     insert(:system_variable, %{key: "TIMEZONE", value: "Europe/Budapest", type: "timezone"})
     conn =
-      Phoenix.ConnTest.build_conn()
-        |> assign(:current_user, insert(:coordinator))
+      :coordinator
+      |> insert()
+      |> guardian_login_html()
+
     {:ok, conn: conn}
   end
 
@@ -23,10 +25,9 @@ defmodule CoursePlanner.ClassControllerTest do
   end
 
   defp login_as(user_type) do
-    user = insert(user_type)
-
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_type
+    |> insert()
+    |> guardian_login_html()
   end
 
   test "lists all entries on index", %{conn: conn} do

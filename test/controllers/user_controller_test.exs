@@ -10,10 +10,9 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   defp login_as(user_type) do
-    user = insert(user_type)
-
-    Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_type
+    |> insert()
+    |> guardian_login_html()
   end
 
   test "lists all entries on index", %{conn: conn} do
@@ -94,6 +93,14 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "coordinator delete a user successfully", %{conn: conn} do
+    user = insert(:student)
+
+    conn = delete conn, user_path(conn, :delete, user.id)
+    assert redirected_to(conn) == user_path(conn, :index)
+    assert get_flash(conn, "info") == "User deleted successfully."
+  end
+
   test "does not delete a non-existing user", %{conn: conn} do
     conn = delete conn, user_path(conn, :delete, -1)
     assert redirected_to(conn) == user_path(conn, :index)
@@ -144,8 +151,7 @@ defmodule CoursePlanner.UserControllerTest do
 
   test "edit the user himself" do
     user = insert(:user, name: "Foo", family_name: "Bar")
-    user_conn = Phoenix.ConnTest.build_conn()
-    |> assign(:current_user, user)
+    user_conn = guardian_login_html(user)
 
     conn = get user_conn, user_path(user_conn, :edit, user)
     assert html_response(conn, 200) =~ "Foo Bar"
@@ -162,8 +168,7 @@ defmodule CoursePlanner.UserControllerTest do
 
   test "update the user himself" do
     user = insert(:student)
-    user_conn = login_as(:student)
-    |> assign(:current_user, user)
+    user_conn = guardian_login_html(user)
 
     conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert redirected_to(conn) == dashboard_path(conn, :show)

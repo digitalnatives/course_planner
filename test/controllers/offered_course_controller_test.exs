@@ -45,11 +45,11 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
   end
 
   setup(%{user_role: role}) do
-    user = insert(role)
-
     conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, user)
+      role
+      |> insert()
+      |> guardian_login_html()
+
     {:ok, conn: conn}
   end
 

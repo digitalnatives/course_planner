@@ -1,0 +1,29 @@
+<%= form_for @conn, password_path(@conn, :create), [as: :password], fn f  -> %>
+
+  <% error = get_flash(@conn, :error) %>
+
+  <div class="login__wrapper">
+
+    <div class="row row--vspace row--hspace login__form">
+      <div class="col-xs-12 mdl-layout-title login__title">
+        Send reset password link
+      </div>
+      <div class="col-xs-12 login__error-wrapper">
+        <%= CoursePlannerWeb.SharedView.form_text f, :email, required: true %>
+        <%= if error do %>
+          <div class="login__error">
+            <%= error %>
+          </div>
+        <% end %>
+      </div>
+      <div class="col-xs-6">
+        <%= link "Cancel", to: session_path(@conn, :new), class: "mdl-button mdl-js-button" %>
+      </div>
+      <div class="col-xs-6">
+        <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+      </div>
+    </div>
+
+  </div>
+
+<% end %>

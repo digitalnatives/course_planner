@@ -5,11 +5,11 @@ defmodule CoursePlanner.SettingControllerTest do
   import CoursePlanner.Factory
 
   setup(%{user_role: role}) do
-    user = insert(role)
-
     conn =
-      Phoenix.ConnTest.build_conn()
-      |> assign(:current_user, user)
+      role
+      |> insert()
+      |> guardian_login_html()
+
     {:ok, conn: conn}
   end
 
@@ -25,6 +25,7 @@ defmodule CoursePlanner.SettingControllerTest do
     test "renders form for editing system setting for coordinator", %{conn: conn} do
       insert(:system_variable, type: "text", key: "text_type_system_setting", value: "")
       insert(:system_variable, type: "boolean", key: "boolean_type_system_setting", value: "false")
+      insert(:system_variable, type: "timezone", key: "timezone_type_system_setting", value: "Europe/Budapest")
 
       conn = get conn, setting_path(conn, :edit, setting_type: "system")
       assert html_response(conn, 200) =~ "Edit system setting"
