@@ -4,22 +4,22 @@ defmodule CoursePlanner.Events do
   """
 
   import Ecto.Query, warn: false
-  alias CoursePlanner.Repo
+
+  alias CoursePlanner.{
+    Accounts.Users,
+    Events.Event,
+    Repo,
+  }
   alias Ecto.Changeset
 
-  alias CoursePlanner.Events.Event
-  alias CoursePlanner.Accounts.Users
+  def all, do: Repo.all(Event)
 
-  def all do
-    Event
-    |> Repo.all()
-    |> Repo.preload(:users)
-  end
+  def all_with_users, do: Repo.preload(all(), :users)
 
   def get(id) do
     case Repo.get(Event, id) do
       nil -> {:error, :not_found}
-      event -> {:ok, event |> Repo.preload(:users)}
+      event -> {:ok, Repo.preload(event, :users)}
     end
   end
 
@@ -39,6 +39,7 @@ defmodule CoursePlanner.Events do
     users = get_users(attrs)
 
     event
+    |> Repo.preload(:users)
     |> Event.changeset(attrs)
     |> Changeset.put_assoc(:users, users)
     |> Repo.update()

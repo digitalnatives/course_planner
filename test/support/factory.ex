@@ -2,10 +2,19 @@ defmodule CoursePlanner.Factory do
 @moduledoc """
   provides factory function for tests
 """
-alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Classes.Class,
-                     Attendances.Attendance, Tasks.Task, Settings.SystemVariable,
-                     Notifications.Notification}
+  alias CoursePlanner.{
+    Accounts.User,
+    Attendances.Attendance,
+    Classes.Class,
+    Courses.Course,
+    Courses.OfferedCourse,
+    Events.Event,
+    Notifications.Notification,
+    Tasks.Task,
+    Terms.Holiday,
+    Terms.Term,
+    Settings.SystemVariable,
+  }
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -128,6 +137,17 @@ alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Class
    %Notification{
     type: "user_modified",
     resource_path: "/"
+   }
+ end
+
+ def event_factory do
+   %Event{
+     name: sequence(:name, &"event-#{&1}"),
+     date: ~D[2010-04-17],
+     description: "some description",
+     finishing_time: ~T[16:00:00.000000],
+     location: "some location",
+     starting_time: ~T[14:00:00.000000]
    }
  end
 end
