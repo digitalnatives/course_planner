@@ -36,6 +36,9 @@ defmodule CoursePlanner.Accounts.Users do
     |> Repo.insert()
   end
 
+  def get(ids) when is_list(ids) do
+    Repo.all(from u in User, where: u.id in ^ids)
+  end
   def get(id) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}
