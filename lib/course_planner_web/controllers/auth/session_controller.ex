@@ -15,15 +15,28 @@ defmodule CoursePlannerWeb.Auth.SessionController do
 
   def create(conn, %{"session" => session, "g-recaptcha-response" => recaptcha_response}) do
     case Recaptcha.verify(recaptcha_response) do
-      {:ok, response} ->
+      {:ok, _response} ->
         conn
         |> do_create(%{"session" => session})
 
-      {:error, errors} ->
+      {:error, _errors} ->
 
         conn
-        |> put_flash(:error, "Captcha is not validated")
+        |> put_flash(:error, {:recaptcha_error, "Captcha is not validated"})
         |> render("new.html")
+    end
+  end
+  def create(conn, %{"session" => session}) do
+    recaptcha_noconfigured? =
+      is_nil(Recaptcha.Config.get_env(:recaptcha, :secret))
+        and is_nil(Recaptcha.Config.get_env(:recaptcha, :public_key))
+
+    if recaptcha_noconfigured? do
+      do_create(conn, %{"session" => session})
+    else
+      conn
+      |> put_flash(:error, {:recaptcha_error, "Captcha is not validated"})
+      |> render("new.html")
     end
   end
 
@@ -47,13 +60,13 @@ defmodule CoursePlannerWeb.Auth.SessionController do
         Users.update_login_fields(user, false)
 
         conn
-        |> put_flash(:error, "Invalid email/password combination")
+        |> put_flash(:error, {:form_error, "Invalid email/password combination"})
         |> render("new.html")
 
       {:error, _reason} ->
 
         conn
-        |> put_flash(:error, "Invalid email/password combination")
+        |> put_flash(:error, {:form_error, "Invalid email/password combination"})
         |> render("new.html")
     end
   end
@@ -61,7 +74,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
   def delete(conn, _) do
     conn
     |> logout
-    |> put_flash(:info, "See you later!")
+    |> put_flash(:info, "Logged out successfully")
     |> redirect(to: session_path(conn, :new))
   end
 
