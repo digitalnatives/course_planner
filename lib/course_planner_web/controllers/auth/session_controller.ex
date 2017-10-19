@@ -13,8 +13,21 @@ defmodule CoursePlannerWeb.Auth.SessionController do
     render conn, "new.html"
   end
 
-  def create(conn, %{"session" => %{"email" => email,
-                                    "password" => password}}) do
+  def create(conn, %{"session" => session, "g-recaptcha-response" => recaptcha_response}) do
+    case Recaptcha.verify(recaptcha_response) do
+      {:ok, response} ->
+        conn
+        |> do_create(%{"session" => session})
+
+      {:error, errors} ->
+
+        conn
+        |> put_flash(:error, "Captcha is not validated")
+        |> render("new.html")
+    end
+  end
+
+  def do_create(conn, %{"session" => %{"email" => email, "password" => password}}) do
     trimmed_downcased_email =
       email
       |> String.trim()

@@ -42,3 +42,7 @@ config :guardian, Guardian,
    verify_issuer: true,
    serializer: CoursePlanner.Auth.GuardianSerializer,
    secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"
+
+config :recaptcha,
+  public_key: "6LeVEDUUAAAAABUMP9L69uxFXKVlRHPkEqMH4_SG",
+  secret: "6LeVEDUUAAAAABevo88bjb4_yZCI7R2LZizynw2z"
