@@ -143,11 +143,11 @@ defmodule CoursePlanner.Factory do
  def event_factory do
    %Event{
      name: sequence(:name, &"event-#{&1}"),
-     date: ~D[2010-04-17],
-     description: "some description",
-     finishing_time: ~T[16:00:00.000000],
      location: "some location",
-     starting_time: ~T[14:00:00.000000]
+     description: "some description",
+     date: ~D[2010-04-17],
+     starting_time: ~T[14:00:00.000000],
+     finishing_time: ~T[16:00:00.000000],
    }
  end
 end

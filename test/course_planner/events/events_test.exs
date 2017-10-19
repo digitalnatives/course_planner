@@ -7,8 +7,8 @@ defmodule CoursePlanner.EventsTest do
   describe "events" do
     alias CoursePlanner.Events.Event
 
-    @valid_attrs %{date: ~D[2010-04-17], description: "some description", finishing_time: ~T[14:00:00.000000], location: "some location", name: "some name", starting_time: ~T[14:00:00.000000]}
-    @update_attrs %{date: ~D[2011-05-18], description: "some updated description", finishing_time: ~T[15:01:01.000000], location: "some updated location", name: "some updated name", starting_time: ~T[15:01:01.000000]}
+    @valid_attrs %{date: ~D[2010-04-17], description: "some description", finishing_time: ~T[15:00:00.000000], location: "some location", name: "some name", starting_time: ~T[14:00:00.000000]}
+    @update_attrs %{date: ~D[2011-05-18], description: "some updated description", finishing_time: ~T[15:01:01.000000], location: "some updated location", name: "some updated name", starting_time: ~T[14:01:01.000000]}
     @invalid_attrs %{date: nil, description: nil, finishing_time: nil, location: nil, name: nil, starting_time: nil}
 
     test "all/0 returns all events" do
@@ -30,7 +30,7 @@ defmodule CoursePlanner.EventsTest do
       assert {:ok, %Event{} = event} = Events.create(@valid_attrs)
       assert event.date == ~D[2010-04-17]
       assert event.description == "some description"
-      assert event.finishing_time == ~T[14:00:00.000000]
+      assert event.finishing_time == ~T[15:00:00.000000]
       assert event.location == "some location"
       assert event.name == "some name"
       assert event.starting_time == ~T[14:00:00.000000]
@@ -49,7 +49,7 @@ defmodule CoursePlanner.EventsTest do
       assert event.finishing_time == ~T[15:01:01.000000]
       assert event.location == "some updated location"
       assert event.name == "some updated name"
-      assert event.starting_time == ~T[15:01:01.000000]
+      assert event.starting_time == ~T[14:01:01.000000]
     end
 
     test "update/2 with invalid data returns error changeset" do
@@ -67,6 +67,28 @@ defmodule CoursePlanner.EventsTest do
     test "change/1 returns a event changeset" do
       event = insert(:event)
       assert %Ecto.Changeset{} = Events.change(event)
+    end
+
+    test "greater starting_time should return error" do
+      now = Timex.now()
+      invalid_attrs =
+        @valid_attrs
+        |> Map.put(:starting_time, now)
+        |> Map.put(:finishing_time, Timex.shift(now, hours: -1))
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Events.create(invalid_attrs)
+      assert changeset.errors[:finishing_time] == {"finishing time should be greater than the starting time", []}
+    end
+
+    test "equal start and end time should return error" do
+      now = Timex.now()
+      invalid_attrs =
+        @valid_attrs
+        |> Map.put(:starting_time, now)
+        |> Map.put(:finishing_time, now)
+
+      assert {:error, %Ecto.Changeset{} = changeset} = Events.create(invalid_attrs)
+      assert changeset.errors[:finishing_time] == {"finishing time should be greater than the starting time", []}
     end
   end
 end
