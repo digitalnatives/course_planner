@@ -90,5 +90,21 @@ defmodule CoursePlanner.EventsTest do
       assert {:error, %Ecto.Changeset{} = changeset} = Events.create(invalid_attrs)
       assert changeset.errors[:finishing_time] == {"finishing time should be greater than the starting time", []}
     end
+
+    test "add users to events" do
+      users = [insert(:coordinator).id, insert(:student).id, insert(:teacher).id, insert(:volunteer).id]
+      event = insert(:event)
+
+      {:ok, updated_event} = Events.update(event, %{"user_ids" => users})
+      assert length(updated_event.users) == 4
+    end
+
+    test "remove users from events" do
+      users = [insert(:coordinator), insert(:student), insert(:teacher), insert(:volunteer)]
+      event = insert(:event, %{users: users})
+
+      {:ok, updated_event} = Events.update(event, %{"user_ids" => []})
+      assert length(updated_event.users) == 0
+    end
   end
 end

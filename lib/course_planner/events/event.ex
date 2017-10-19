@@ -15,7 +15,10 @@ defmodule CoursePlanner.Events.Event do
     field :starting_time, :time
     field :finishing_time, :time
 
-    many_to_many :users, User, join_through: "events_users"
+    many_to_many :users, User,
+      join_through: "events_users",
+      join_keys: [event_id: :id, user_id: :id],
+      on_replace: :delete
 
     timestamps()
   end
