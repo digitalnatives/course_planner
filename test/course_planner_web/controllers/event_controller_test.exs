@@ -22,7 +22,7 @@ defmodule CoursePlannerWeb.EventControllerTest do
     @tag user_role: :student
     test "lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Events"
+      assert html_response(conn, 200) =~ "Events"
     end
   end
 
@@ -36,14 +36,14 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
   describe "create event" do
     @tag user_role: :coordinator
-    test "redirects to show when data is valid", %{conn: conn} do
+    test "redirects to show when data is valid", %{conn: conn, event: event} do
       conn = post conn, event_path(conn, :create), event: @create_attrs
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == event_path(conn, :show, id)
 
       conn = get conn, event_path(conn, :show, id)
-      assert html_response(conn, 200) =~ "Show Event"
+      assert html_response(conn, 200) =~ @create_attrs.name
     end
 
     @tag user_role: :coordinator
@@ -57,7 +57,7 @@ defmodule CoursePlannerWeb.EventControllerTest do
     @tag user_role: :coordinator
     test "renders form for editing chosen event", %{conn: conn, event: event} do
       conn = get conn, event_path(conn, :edit, event)
-      assert html_response(conn, 200) =~ "Edit Event"
+      assert html_response(conn, 200) =~ event.name
     end
   end
 
@@ -68,13 +68,13 @@ defmodule CoursePlannerWeb.EventControllerTest do
       assert redirected_to(conn) == event_path(conn, :show, event)
 
       conn = get conn, event_path(conn, :show, event)
-      assert html_response(conn, 200)
+      assert html_response(conn, 200) =~ @update_attrs.name
     end
 
     @tag user_role: :coordinator
     test "renders errors when data is invalid", %{conn: conn, event: event} do
       conn = put conn, event_path(conn, :update, event), event: @invalid_attrs
-      assert html_response(conn, 200) =~ "Edit Event"
+      assert html_response(conn, 200) =~ event.name
     end
   end
 

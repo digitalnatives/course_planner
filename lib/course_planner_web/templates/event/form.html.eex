@@ -1,11 +1,32 @@
-<%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <%= form_for @changeset, @action, fn f -> %>
+        <%= CoursePlannerWeb.SharedView.card @title do %>
+          <%= CoursePlannerWeb.SharedView.card_content do %>
+            <%= if @changeset.action do %>
+              <div class="form-error">
+                <p>Oops, something went wrong! Please check the errors below.</p>
+              </div>
+            <% end %>
+            <%= CoursePlannerWeb.SharedView.form_text f, :name, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_text f, :location, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_date f, :date, required: true %>
+            <%= CoursePlannerWeb.SharedView.form_time f, :starting_time, required: true, value: %{hour: 8, min: 0}  %>
+            <%= CoursePlannerWeb.SharedView.form_time f, :finishing_time, required: true, value: %{hour: 8, min: 0}  %>
+            <%= CoursePlannerWeb.SharedView.form_textarea f, :description %>
+            <%= CoursePlannerWeb.SharedView.form_multiselect f, :user_ids, all_users(), selected: selected_users(@changeset),
+                                                                                         label: "Users",
+                                                                                         display_images: true,
+                                                                                         tooltip_text: "Add new user"%>
+          <% end %>
+          <%= CoursePlannerWeb.SharedView.card_actions do %>
+            <div class="row row--vspace">
+              <div class="col-xs-12 col-md-3 col-md-offset-9">
+                <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     </div>
-  <% end %>
-
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-primary" %>
   </div>
-<% end %>
