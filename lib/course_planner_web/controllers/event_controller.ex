@@ -1,4 +1,5 @@
 defmodule CoursePlannerWeb.EventController do
+  @moduledoc false
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.Events
