@@ -67,7 +67,6 @@ defmodule CoursePlanner.Accounts.User do
     |> validate_required([:email, :role])
     |> validate_email_format(:email)
     |> unique_constraint(:email)
-    |> validate_length(:comments, max: 255)
     |> validate_number(:notification_period_days,
       greater_than_or_equal_to: 1, less_than_or_equal_to: 7)
   end

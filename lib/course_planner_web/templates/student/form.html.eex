@@ -17,7 +17,7 @@
             <%= CoursePlannerWeb.SharedView.form_text f, :email, required: true %>
             <%= CoursePlannerWeb.SharedView.form_text f, :student_id, label: "Student ID" %>
             <%= CoursePlannerWeb.SharedView.form_select f, :participation_type, participation_types %>
-            <%= CoursePlannerWeb.SharedView.form_text f, :comments %>
+            <%= CoursePlannerWeb.SharedView.form_textarea f, :comments %>
             <%= CoursePlannerWeb.SharedView.form_select f, :notification_period_days, 1..7, label: "Notification Period (days)" %>
           <% end %>
           <%= CoursePlannerWeb.SharedView.card_actions do %>
