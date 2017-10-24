@@ -7,6 +7,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
   plug :put_layout, "session_layout.html"
 
   alias CoursePlanner.Accounts.{Users, User}
+  alias Recaptcha.Config
   alias Guardian.Plug
 
   def new(conn, _) do
@@ -28,8 +29,8 @@ defmodule CoursePlannerWeb.Auth.SessionController do
   end
   def create(conn, %{"session" => session}) do
     recaptcha_noconfigured? =
-      is_nil(Recaptcha.Config.get_env(:recaptcha, :secret))
-        and is_nil(Recaptcha.Config.get_env(:recaptcha, :public_key))
+      is_nil(Config.get_env(:recaptcha, :secret))
+        and is_nil(Config.get_env(:recaptcha, :public_key))
 
     if recaptcha_noconfigured? do
       do_create(conn, %{"session" => session})
