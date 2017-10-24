@@ -30,7 +30,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
   def create(conn, %{"session" => session}) do
     recaptcha_noconfigured? =
       is_nil(Config.get_env(:recaptcha, :secret))
-        and is_nil(Config.get_env(:recaptcha, :public_key))
+        or is_nil(Config.get_env(:recaptcha, :public_key))
 
     if recaptcha_noconfigured? do
       do_create(conn, %{"session" => session})

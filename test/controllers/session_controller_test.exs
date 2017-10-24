@@ -1,9 +1,12 @@
 defmodule CoursePlanner.SessionControllerTest do
   use CoursePlannerWeb.ConnCase
+  use ExUnit.Case, async: false
 
   import CoursePlanner.Factory
 
   alias CoursePlanner.{Repo, Accounts.User}
+
+  @google_recaptcha_test_secret "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
   setup(param) do
     conn =
@@ -19,6 +22,37 @@ defmodule CoursePlanner.SessionControllerTest do
     role
     |> insert()
     |> guardian_login_html()
+  end
+
+  describe "recaptcha config/login" do
+    @tag user_role: nil
+    test "login is unsuccessful if recaptcha verify fails", %{conn: conn} do
+      Application.put_env(:recaptcha, :secret, "a_random_exiting_recaptcha")
+
+      user = insert(:coordinator)
+      login_params = %{"session" => %{"email" => user.email, "password" => "secret"}, "g-recaptcha-response" => "valid_response"}
+      conn = post conn, session_path(conn, :create, login_params)
+      assert html_response(conn, 200)
+      assert get_flash(conn, "error") == "Captcha is not validated"
+
+      Application.put_env(:recaptcha, :secret, @google_recaptcha_test_secret)
+    end
+
+    @tag user_role: nil
+    test "login is successful if recaptcha is not configured", %{conn: conn} do
+      Application.put_env(:recaptcha, :secret, nil)
+
+      user = insert(:coordinator)
+      login_params = %{"session" => %{"email" => user.email, "password" => "secret"}}
+      conn = post conn, session_path(conn, :create, login_params)
+      assert html_response(conn, 302)
+
+      conn = get conn, dashboard_path(conn, :show)
+      assert html_response(conn, 200)
+      assert get_flash(conn, "info") == "You’re now logged in!"
+
+      Application.put_env(:recaptcha, :secret, @google_recaptcha_test_secret)
+    end
   end
 
 
@@ -96,6 +130,15 @@ defmodule CoursePlanner.SessionControllerTest do
       conn = get conn, dashboard_path(conn, :show)
       assert html_response(conn, 200)
       assert get_flash(conn, "info") == "You’re now logged in!"
+    end
+
+    @tag user_role: nil
+    test "login fails when captcha is not provided but is confugured in the config", %{conn: conn} do
+      user = insert(:coordinator)
+      login_params = %{"session" => %{"email" => user.email, "password" => "secret"}}
+      conn = post conn, session_path(conn, :create, login_params)
+      assert html_response(conn, 200)
+      assert get_flash(conn, "error") == "Captcha is not validated"
     end
 
     @tag user_role: nil
