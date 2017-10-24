@@ -89,7 +89,7 @@ defmodule CoursePlanner.SessionControllerTest do
     @tag user_role: nil
     test "successful login", %{conn: conn} do
       user = insert(:coordinator)
-      login_params = %{session: %{email: user.email, password: "secret"}}
+      login_params = %{"session" => %{"email" => user.email, "password" => "secret"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
       assert html_response(conn, 302)
 
@@ -101,14 +101,14 @@ defmodule CoursePlanner.SessionControllerTest do
     @tag user_role: nil
     test "update of the login fields", %{conn: conn} do
       user = insert(:coordinator, last_sign_in_at: Timex.shift(Timex.now(), days: -2))
-      login_params = %{session: %{email: user.email, password: "random"}}
+      login_params = %{"session" => %{"email" => user.email, "password" => "random"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
       conn = post conn, session_path(conn, :create, login_params)
 
       user = Repo.get_by(User, email: user.email)
       assert user.failed_attempts == 2
 
-      login_params = %{session: %{email: user.email, password: "secret"}}
+      login_params = %{"session" => %{"email" => user.email, "password" => "secret"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
 
       conn = get conn, dashboard_path(conn, :show)
@@ -122,7 +122,7 @@ defmodule CoursePlanner.SessionControllerTest do
 
     @tag user_role: nil
     test "unsuccessful login due to a non-existing user", %{conn: conn} do
-      login_params = %{session: %{email: "non-existint-user@email.com", password: "random password"}}
+      login_params = %{"session" => %{"email" => "non-existint-user@email.com", "password" => "random password"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
       assert html_response(conn, 200)
       assert get_flash(conn, "error") == "Invalid email/password combination"
@@ -131,7 +131,7 @@ defmodule CoursePlanner.SessionControllerTest do
     @tag user_role: nil
     test "unsuccessful login due to a wrong password", %{conn: conn} do
       user = insert(:coordinator)
-      login_params = %{session: %{email: user.email, password: "wrong password"}}
+      login_params = %{"session" => %{"email" => user.email, "password" => "wrong password"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
       assert html_response(conn, 200)
       assert get_flash(conn, "error") == "Invalid email/password combination"

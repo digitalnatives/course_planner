@@ -22,7 +22,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
       {:error, _errors} ->
 
         conn
-        |> put_flash(:error, {:recaptcha_error, "Captcha is not validated"})
+        |> put_flash(:error, "Captcha is not validated")
         |> render("new.html")
     end
   end
@@ -35,7 +35,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
       do_create(conn, %{"session" => session})
     else
       conn
-      |> put_flash(:error, {:recaptcha_error, "Captcha is not validated"})
+      |> put_flash(:error, "Captcha is not validated")
       |> render("new.html")
     end
   end
@@ -60,13 +60,13 @@ defmodule CoursePlannerWeb.Auth.SessionController do
         Users.update_login_fields(user, false)
 
         conn
-        |> put_flash(:error, {:form_error, "Invalid email/password combination"})
+        |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
 
       {:error, _reason} ->
 
         conn
-        |> put_flash(:error, {:form_error, "Invalid email/password combination"})
+        |> put_flash(:error, "Invalid email/password combination")
         |> render("new.html")
     end
   end
