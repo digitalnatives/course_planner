@@ -79,6 +79,8 @@ defmodule CoursePlannerWeb.Router do
 
     resources "/settings", SettingController, only: [:show, :edit, :update], singleton: true
     resources "/about", AboutController, only: [:show], singleton: true
+
+    resources "/events", EventController
   end
 
   if Mix.env == :dev do
