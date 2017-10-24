@@ -40,6 +40,7 @@ defmodule CoursePlannerWeb.Router do
     pipe_through [:protected_api]
 
     resources "/calendar", CalendarController, only: [:show], singleton: true
+    get "/events", EventController, :fetch
   end
 
   scope "/", CoursePlannerWeb do
