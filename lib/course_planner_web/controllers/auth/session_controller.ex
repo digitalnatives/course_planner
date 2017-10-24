@@ -40,7 +40,7 @@ defmodule CoursePlannerWeb.Auth.SessionController do
     end
   end
 
-  def do_create(conn, %{"session" => %{"email" => email, "password" => password}}) do
+  defp do_create(conn, %{"session" => %{"email" => email, "password" => password}}) do
     trimmed_downcased_email =
       email
       |> String.trim()

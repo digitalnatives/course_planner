@@ -41,7 +41,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
       |> render("new.html", errors: errors)
     end
   end
-  def do_create(conn, %{"password" => %{"email" => email}}) do
+  defp do_create(conn, %{"password" => %{"email" => email}}) do
     trimmed_downcased_email =
       email
       |> String.trim()
@@ -111,8 +111,8 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
                 errors: errors)
     end
   end
-  def do_update(conn, %{"id" => reset_password_token,
-                        "password" => %{"password" => password,
+  defp do_update(conn, %{"id" => reset_password_token,
+                         "password" => %{"password" => password,
                                         "password_confirmation" => password_confirmation}}) do
      case check_password_reset_token(reset_password_token) do
        {:ok, _reason, user} ->
