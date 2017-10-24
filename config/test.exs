@@ -12,7 +12,8 @@ config :course_planner, CoursePlanner.Repo,
   password: "postgres",
   database: "course_planner_test",
   hostname: System.get_env("DATABASE_HOST") || "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  ownership_timeout: 100_000
 
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Test
