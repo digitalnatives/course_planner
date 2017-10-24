@@ -18,16 +18,16 @@ defmodule CoursePlannerWeb.Auth.Api.V1.SessionController do
     case Users.check_password(user, password) do
       {:ok, _reason} ->
         conn
-        |> json(%{ token:  get_login_token(user) })
+        |> json(%{token: get_login_token(user)})
 
       {:error, _reason} ->
         conn
-        |> json(%{ token:  "error" })
+        |> json(%{token:  "error"})
     end
   end
 
   defp get_login_token(user) do
-    { :ok, jwt, _full_claims } = Guardian.encode_and_sign(user, :api)
+    {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :api)
     jwt
   end
 
