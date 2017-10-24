@@ -5,6 +5,9 @@ defmodule CoursePlannerWeb.EventController do
   alias CoursePlanner.Events
   alias CoursePlanner.Events.Event
 
+  import Canary.Plugs
+  plug :authorize_controller
+
   def index(conn, _params) do
     events = Events.all()
     render(conn, "index.html", events: events)

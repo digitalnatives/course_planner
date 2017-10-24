@@ -20,13 +20,49 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
   describe "index" do
     @tag user_role: :student
-    test "lists all events", %{conn: conn} do
+    test "student can lists all events", %{conn: conn} do
+      conn = get conn, event_path(conn, :index)
+      assert html_response(conn, 200) =~ "Events"
+    end
+
+    @tag user_role: :teacher
+    test "teacher can lists all events", %{conn: conn} do
+      conn = get conn, event_path(conn, :index)
+      assert html_response(conn, 200) =~ "Events"
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer can lists all events", %{conn: conn} do
+      conn = get conn, event_path(conn, :index)
+      assert html_response(conn, 200) =~ "Events"
+    end
+
+    @tag user_role: :coordinator
+    test "coordinator can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
       assert html_response(conn, 200) =~ "Events"
     end
   end
 
   describe "new event" do
+    @tag user_role: :student
+    test "student cannot add new event", %{conn: conn} do
+      conn = get conn, event_path(conn, :new)
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot add new event", %{conn: conn} do
+      conn = get conn, event_path(conn, :new)
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer cannot add new event", %{conn: conn} do
+      conn = get conn, event_path(conn, :new)
+      html_response(conn, 403)
+    end
+
     @tag user_role: :coordinator
     test "renders form", %{conn: conn} do
       conn = get conn, event_path(conn, :new)
@@ -35,6 +71,25 @@ defmodule CoursePlannerWeb.EventControllerTest do
   end
 
   describe "create event" do
+    @tag user_role: :student
+    test "student cannot create event", %{conn: conn} do
+      conn = post conn, event_path(conn, :create), event: @create_attrs
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot create event", %{conn: conn} do
+      conn = post conn, event_path(conn, :create), event: @create_attrs
+      html_response(conn, 403)
+    end
+
+
+    @tag user_role: :volunteer
+    test "volunteer cannot create event", %{conn: conn} do
+      conn = post conn, event_path(conn, :create), event: @create_attrs
+      html_response(conn, 403)
+    end
+
     @tag user_role: :coordinator
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, event_path(conn, :create), event: @create_attrs
@@ -54,6 +109,24 @@ defmodule CoursePlannerWeb.EventControllerTest do
   end
 
   describe "edit event" do
+    @tag user_role: :student
+    test "student cannot edit event", %{conn: conn, event: event} do
+      conn = get conn, event_path(conn, :edit, event)
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot edit event", %{conn: conn, event: event} do
+      conn = get conn, event_path(conn, :edit, event)
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer cannot edit event", %{conn: conn, event: event} do
+      conn = get conn, event_path(conn, :edit, event)
+      html_response(conn, 403)
+    end
+
     @tag user_role: :coordinator
     test "renders form for editing chosen event", %{conn: conn, event: event} do
       conn = get conn, event_path(conn, :edit, event)
@@ -62,6 +135,24 @@ defmodule CoursePlannerWeb.EventControllerTest do
   end
 
   describe "update event" do
+    @tag user_role: :student
+    test "student cannot update event", %{conn: conn, event: event} do
+      conn = put conn, event_path(conn, :update, event), event: @update_attrs
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot update event", %{conn: conn, event: event} do
+      conn = put conn, event_path(conn, :update, event), event: @update_attrs
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer cannot update event", %{conn: conn, event: event} do
+      conn = put conn, event_path(conn, :update, event), event: @update_attrs
+      html_response(conn, 403)
+    end
+
     @tag user_role: :coordinator
     test "redirects when data is valid", %{conn: conn, event: event} do
       conn = put conn, event_path(conn, :update, event), event: @update_attrs
@@ -79,6 +170,30 @@ defmodule CoursePlannerWeb.EventControllerTest do
   end
 
   describe "delete event" do
+    @tag user_role: :student
+    test "student cannot delete event", %{conn: conn, event: event} do
+      conn = delete conn, event_path(conn, :delete, event)
+      response(conn, 403)
+      conn = get conn, event_path(conn, :show, event)
+      response(conn, 200) =~ event.name
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot delete event", %{conn: conn, event: event} do
+      conn = delete conn, event_path(conn, :delete, event)
+      response(conn, 403)
+      conn = get conn, event_path(conn, :show, event)
+      response(conn, 200) =~ event.name
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer cannot delete event", %{conn: conn, event: event} do
+      conn = delete conn, event_path(conn, :delete, event)
+      response(conn, 403)
+      conn = get conn, event_path(conn, :show, event)
+      response(conn, 200) =~ event.name
+    end
+
     @tag user_role: :coordinator
     test "deletes chosen event", %{conn: conn, event: event} do
       conn = delete conn, event_path(conn, :delete, event)
