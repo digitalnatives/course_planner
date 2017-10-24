@@ -20,5 +20,28 @@
     </main>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <div class="info-snackbar mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <script>
+
+      (function (){
+
+        <%= if get_flash(@conn, :info) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :info) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+      })();
+
+    </script>
   </body>
 </html>
