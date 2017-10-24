@@ -36,7 +36,7 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
   describe "create event" do
     @tag user_role: :coordinator
-    test "redirects to show when data is valid", %{conn: conn, event: event} do
+    test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, event_path(conn, :create), event: @create_attrs
 
       assert %{id: id} = redirected_params(conn)
