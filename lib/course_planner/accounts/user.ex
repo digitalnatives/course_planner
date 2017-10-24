@@ -7,6 +7,7 @@ defmodule CoursePlanner.Accounts.User do
   alias CoursePlanner.Notifications.Notification
   alias Ecto.Changeset
   alias Comeonin.Bcrypt
+  alias CoursePlanner.Events.Event
 
   @target_params [
       :name, :family_name, :nickname,
@@ -53,6 +54,8 @@ defmodule CoursePlanner.Accounts.User do
     field :last_sign_in_ip, :string
 
     field :unlock_token, :string
+
+    many_to_many :events, Event, join_through: "events_users"
 
     timestamps()
   end
