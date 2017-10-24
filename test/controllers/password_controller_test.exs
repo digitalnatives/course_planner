@@ -29,6 +29,16 @@ defmodule CoursePlanner.PasswordControllerTest do
 
   @moduletag user_role: nil
   describe "recaptcha config/login" do
+    test "password reset creation fails if recaptcha is configued but not provided", %{conn: conn} do
+      user = insert(:student,
+        reset_password_token: nil,
+        reset_password_sent_at: Timex.shift(Timex.now(), days: -10))
+      params = %{"password" => %{"email" => user.email}}
+      conn = post conn, password_path(conn, :create, params)
+      assert html_response(conn, 200) =~ "Send reset password link"
+      assert html_response(conn, 200) =~ "Captcha is not validated"
+    end
+
     test "password reset creation fails if recaptcha verify fails", %{conn: conn} do
       Application.put_env(:recaptcha, :secret, "a_random_exiting_recaptcha")
 
@@ -59,6 +69,15 @@ defmodule CoursePlanner.PasswordControllerTest do
       assert_email_sent UserEmail.password(user, password_reset_url)
 
       Application.put_env(:recaptcha, :secret, @google_recaptcha_test_secret)
+    end
+
+    test "password reset update fails if recaptcha is configued but not provided", %{conn: conn} do
+      reset_password_sent_at = Timex.shift(Timex.now(), days: -1)
+      user = insert(:student, reset_password_token: "my_token", reset_password_sent_at: reset_password_sent_at)
+      params = %{"password" => %{"password" => "new_password", "password_confirmation" => "new_password"}}
+      conn = put conn, password_path(conn, :update, user.reset_password_token), params
+      assert html_response(conn, 200) =~ "Create new password"
+      assert html_response(conn, 200) =~ "Captcha is not validated"
     end
 
     test "password reset update fails if recaptcha recaptcha verify fails", %{conn: conn} do
