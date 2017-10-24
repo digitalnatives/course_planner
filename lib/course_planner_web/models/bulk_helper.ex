@@ -21,10 +21,19 @@ defmodule CoursePlanner.BulkHelper do
     |> CSV.decode(strip_fields: true, headers: headers)
     |> Enum.reduce_while({:ok, []}, fn(parsed_row, {_out_result, out_value}) ->
          case parsed_row do
-           {:ok, value} -> {:cont, {:ok, [value | out_value]}}
+           {:ok, value} -> {:cont, {:ok, [fixes_row_element_case(value) | out_value]}}
            {:error, value} -> {:halt, {:error, value}}
          end
        end)
+  end
+
+  defp fixes_row_element_case(%{"name" => name, "family_name" => family_name,
+                                "nickname" => nickname, "email" => email, "role" => role}) do
+    email = String.downcase(email)
+    role = String.capitalize(role)
+
+    %{"name" => name, "family_name" => family_name, "nickname" => nickname,
+      "email" => email, "role" => role}
   end
 
   defp create_users_with_transaction([]),
