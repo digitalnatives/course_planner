@@ -201,6 +201,31 @@ defmodule CoursePlannerWeb.EventControllerTest do
       conn = get conn, event_path(conn, :show, event)
       response(conn, 404)
     end
+
+    @tag user_role: :student
+    test "student cannot delete inexisting event", %{conn: conn} do
+      conn = delete conn, event_path(conn, :delete, -1)
+      response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "teacher cannot delete inexisting event", %{conn: conn} do
+      conn = delete conn, event_path(conn, :delete, -1)
+      response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "volunteer cannot delete inexisting event", %{conn: conn} do
+      conn = delete conn, event_path(conn, :delete, -1)
+      response(conn, 403)
+    end
+
+    @tag user_role: :coordinator
+    test "inexisting event should give not found error", %{conn: conn} do
+      conn = delete conn, event_path(conn, :delete, -1)
+      response(conn, 404)
+    end
+
   end
 
 end

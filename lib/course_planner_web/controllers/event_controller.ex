@@ -67,7 +67,7 @@ defmodule CoursePlannerWeb.EventController do
         |> put_flash(:info, "Event deleted successfully.")
         |> redirect(to: event_path(conn, :index))
       else
-        {:ok, :not_found} ->
+        {:error, :not_found} ->
           conn
           |> put_status(404)
           |> render(CoursePlannerWeb.ErrorView, "404.html")
