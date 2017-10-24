@@ -8,16 +8,18 @@
       <div class="col-xs-12 mdl-layout-title login__title">
         Welcome back!
       </div>
-      <div class="col-xs-12">
+      <div class="col-xs-12 login__error-wrapper">
         <%= CoursePlannerWeb.SharedView.form_text f, :email, required: true %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :email %>
       </div>
 
       <div class="col-xs-12">
         <%= CoursePlannerWeb.SharedView.form_password f, :password, required: true %>
       </div>
 
-      <div class="col-xs-12">
+      <div class="col-xs-12 login__error-wrapper">
         <%= raw Recaptcha.Template.display %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :recaptcha %>
       </div>
 
       <div class="col-xs-12 login__error-wrapper">

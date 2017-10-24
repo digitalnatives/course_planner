@@ -13,7 +13,7 @@
 
       <div class="col-xs-12 login__error-wrapper">
         <%= raw Recaptcha.Template.display %>
-        <%= CoursePlannerWeb.Auth.PasswordView.error_tag @errors, :recaptcha %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :recaptcha %>
       </div>
 
       <div class="col-xs-6">

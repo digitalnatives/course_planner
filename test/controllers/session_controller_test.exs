@@ -32,8 +32,7 @@ defmodule CoursePlanner.SessionControllerTest do
       user = insert(:coordinator)
       login_params = %{"session" => %{"email" => user.email, "password" => "secret"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
-      assert html_response(conn, 200)
-      assert get_flash(conn, "error") == "Captcha is not validated"
+      assert html_response(conn, 200) =~ "Captcha is not validated"
 
       Application.put_env(:recaptcha, :secret, @google_recaptcha_test_secret)
     end
@@ -137,8 +136,7 @@ defmodule CoursePlanner.SessionControllerTest do
       user = insert(:coordinator)
       login_params = %{"session" => %{"email" => user.email, "password" => "secret"}}
       conn = post conn, session_path(conn, :create, login_params)
-      assert html_response(conn, 200)
-      assert get_flash(conn, "error") == "Captcha is not validated"
+      assert html_response(conn, 200) =~ "Captcha is not validated"
     end
 
     @tag user_role: nil
@@ -167,8 +165,7 @@ defmodule CoursePlanner.SessionControllerTest do
     test "unsuccessful login due to a non-existing user", %{conn: conn} do
       login_params = %{"session" => %{"email" => "non-existint-user@email.com", "password" => "random password"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
-      assert html_response(conn, 200)
-      assert get_flash(conn, "error") == "Invalid email/password combination"
+      assert html_response(conn, 200) =~ "Invalid email/password combination"
     end
 
     @tag user_role: nil
@@ -176,8 +173,7 @@ defmodule CoursePlanner.SessionControllerTest do
       user = insert(:coordinator)
       login_params = %{"session" => %{"email" => user.email, "password" => "wrong password"}, "g-recaptcha-response" => "valid_response"}
       conn = post conn, session_path(conn, :create, login_params)
-      assert html_response(conn, 200)
-      assert get_flash(conn, "error") == "Invalid email/password combination"
+      assert html_response(conn, 200) =~ "Invalid email/password combination"
     end
   end
 
