@@ -261,6 +261,16 @@ defmodule CoursePlannerWeb.EventControllerTest do
       assert %{"events" => events} = json_response(conn, 200)
       assert length(events) == 3
     end
+
+    @tag user_role: :student, pipeline: :protected_api
+    test "subscribed events only", %{conn: %{assigns: %{current_user: user}} = conn} do
+      insert(:event, users: [user], date: ~D[2017-01-03])
+      insert(:event, date: ~D[2017-01-03])
+
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: true}
+      assert %{"events" => events} = json_response(conn, 200)
+      assert length(events) == 1
+    end
   end
 
 end
