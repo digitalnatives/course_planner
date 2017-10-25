@@ -29,7 +29,7 @@ defmodule CoursePlannerWeb.Auth.Api.V1.JsonSessionController do
   defp get_login_token(conn, user) do
     conn
     |> Guardian.Plug.api_sign_in(user)
-    |> Guardian.Plug.current_token(new_conn)
+    |> Guardian.Plug.current_token()
   end
 
 end
