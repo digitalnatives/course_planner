@@ -244,20 +244,20 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
     @tag pipeline: :protected_api
     test "fails when date is in wrong format", %{conn: conn} do
-      conn = get conn, event_path(conn, :fetch), %{date: "2017-1-1", my_events: true}
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-1-1", my_events: false}
       assert json_response(conn, 406) == %{"errors" => %{"date" => "is invalid"}}
     end
 
     @tag pipeline: :protected_api
     test "when there's none", %{conn: conn} do
-      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-01", my_events: true}
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-01", my_events: false}
       assert json_response(conn, 200) == %{"events" => []}
     end
 
     @tag pipeline: :protected_api
     test "when there's many", %{conn: conn} do
       insert_list(3, :event, %{date: ~D[2017-01-03]})
-      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: true}
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: false}
       assert %{"events" => events} = json_response(conn, 200)
       assert length(events) == 3
     end
