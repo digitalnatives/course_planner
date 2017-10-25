@@ -2,8 +2,8 @@ defmodule CoursePlannerWeb.UserController do
   @moduledoc false
   use CoursePlannerWeb, :controller
   alias CoursePlanner.{Accounts.User, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
+
   require Logger
 
   import Canary.Plugs
@@ -33,7 +33,7 @@ defmodule CoursePlannerWeb.UserController do
     %{"id" => id, "user" => user_params}) do
 
     user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
+    changeset = User.changeset(user, user_params, :update)
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -86,7 +86,7 @@ defmodule CoursePlannerWeb.UserController do
 
       {:ok, user} ->
         url = Helpers.password_url(conn, :edit, user.reset_password_token)
-        ControllerHelpers.send_user_email(:welcome, user, url)
+        UserEmail.send_user_email(:welcome, user, url)
 
         conn
         |> put_flash(:info, "Reset e-mail sent.")

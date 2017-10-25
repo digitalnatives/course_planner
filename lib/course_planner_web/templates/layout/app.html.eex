@@ -47,7 +47,7 @@
                 <%= link "Edit profile", to: user_path(@conn, :edit, @conn.assigns.current_user) %>
               </li>
               <li class="mdl-menu__item">
-                <%= CoursePlannerWeb.Coherence.ViewHelpers.signout_link(@conn, "Sign out") %>
+                <%= link "Sign out", to: session_path(@conn, :delete, @current_user), method: "delete" %>
               </li>
             </ul>
           </nav>

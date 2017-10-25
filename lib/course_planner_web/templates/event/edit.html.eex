@@ -1,0 +1,6 @@
+
+  <%= render "form.html", title: @changeset.data.name,
+                          changeset: @changeset,
+                          action: event_path(@conn, :update, @event),
+                          conn: @conn
+  %>

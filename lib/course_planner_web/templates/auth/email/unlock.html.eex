@@ -1,0 +1,10 @@
+<div>
+  <p><%= dgettext "unlock", "Hello %{name}!", name: @name %><p>
+  <p>
+    <%= dgettext "unlock", "You requested unlock instructions for your locked account. Please click the link below to unlock your account." %>
+  </p>
+  <p>
+    <a href="<%= @url %>"><%= dgettext "unlock", "Unlock my Account" %></a>
+  </p>
+  <p><%= dgettext "unlock", "Thank you!" %></p>
+</div>

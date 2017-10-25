@@ -5,6 +5,8 @@ defmodule CoursePlannerWeb.CalendarController do
   alias CoursePlanner.Classes.Calendars
   alias Ecto.Changeset
 
+  plug Guardian.Plug.EnsureAuthenticated, handler: CoursePlannerWeb.JsonLogin
+
   import Canary.Plugs
   plug :authorize_controller
 

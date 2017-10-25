@@ -1,9 +1,10 @@
 defmodule CoursePlannerWeb.VolunteerController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{Accounts.User, Accounts.Volunteers, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+  alias CoursePlanner.{Accounts.Users, Accounts.User,
+                       Accounts.Volunteers,
+                       Auth.Helper}
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
   plug :authorize_resource, model: User
@@ -19,11 +20,11 @@ defmodule CoursePlannerWeb.VolunteerController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = ControllerHelpers.random_string 48
+    token = Helper.get_random_token_with_length 48
     url = Helpers.password_url(conn, :edit, token)
     case Volunteers.new(user, token) do
       {:ok, volunteer} ->
-        ControllerHelpers.send_user_email(:welcome, volunteer, url)
+        UserEmail.send_user_email(:welcome, volunteer, url)
         conn
         |> put_flash(:info, "Volunteer created and notified by.")
         |> redirect(to: volunteer_path(conn, :index))

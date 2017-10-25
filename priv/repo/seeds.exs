@@ -15,7 +15,18 @@ unless has_coordinators? do
       :seed) |> Repo.insert!
 end
 
-unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
+attendance_descriptions = Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS")
+if attendance_descriptions do
+  attendance_descriptions
+  |> SystemVariable.changeset(
+      %{
+        type: "list",
+        editable: true,
+        visible: true,
+        required: true
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "ATTENDANCE_DESCRIPTIONS",
@@ -24,10 +35,21 @@ unless Repo.get_by(SystemVariable, key: "ATTENDANCE_DESCRIPTIONS") do
         editable: true,
         visible: true,
         required: true
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
+show_program_about_page = Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE")
+if show_program_about_page do
+  show_program_about_page
+  |> SystemVariable.changeset(
+      %{
+        type: "boolean",
+        editable: true,
+        visible: true,
+        required: true
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "SHOW_PROGRAM_ABOUT_PAGE",
@@ -36,10 +58,21 @@ unless Repo.get_by(SystemVariable, key: "SHOW_PROGRAM_ABOUT_PAGE") do
         editable: true,
         visible: true,
         required: true
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
+program_name = Repo.get_by(SystemVariable, key: "PROGRAM_NAME")
+if program_name do
+  program_name
+  |> SystemVariable.changeset(
+      %{
+        type: "string",
+        editable: true,
+        visible: true,
+        required: true
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_NAME",
@@ -48,34 +81,67 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_NAME") do
         editable: true,
         visible: true,
         required: true
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS") do
+program_address = Repo.get_by(SystemVariable, key: "PROGRAM_ADDRESS")
+if program_address do
+  program_address
+  |> SystemVariable.changeset(
+      %{
+        type: "text",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_ADDRESS",
         value: "some address",
-        type: "string",
+        type: "text",
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL") do
+program_email = Repo.get_by(SystemVariable, key: "PROGRAM_EMAIL")
+if program_email do
+  program_email
+  |> SystemVariable.changeset(
+      %{
+        type: "text",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_EMAIL",
         value: "some email",
-        type: "string",
+        type: "text",
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
+program_description = Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION")
+if program_description do
+  program_description
+  |> SystemVariable.changeset(
+      %{
+        type: "text",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_DESCRIPTION",
@@ -84,10 +150,21 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_DESCRIPTION") do
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
+program_information = Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION")
+if program_information do
+  program_information
+  |> SystemVariable.changeset(
+      %{
+        type: "text",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_INFORMATION",
@@ -96,10 +173,21 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_INFORMATION") do
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
+program_logo_url = Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL")
+if program_logo_url do
+  program_logo_url
+  |> SystemVariable.changeset(
+      %{
+        type: "url",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_LOGO_URL",
@@ -108,10 +196,21 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_LOGO_URL") do
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
+program_website_url = Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL")
+if program_website_url do
+  program_website_url
+  |> SystemVariable.changeset(
+      %{
+        type: "url",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_WEBSITE_URL",
@@ -120,22 +219,44 @@ unless Repo.get_by(SystemVariable, key: "PROGRAM_WEBSITE_URL") do
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "PROGRAM_PHONE") do
+program_phone = Repo.get_by(SystemVariable, key: "PROGRAM_PHONE")
+if program_phone do
+  program_phone
+  |> SystemVariable.changeset(
+      %{
+        type: "text",
+        editable: true,
+        visible: true,
+        required: false
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "PROGRAM_PHONE",
         value: "+0036 111 1111",
-        type: "string",
+        type: "text",
         editable: true,
         visible: true,
         required: false
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
+enable_notification = Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION")
+if enable_notification do
+  enable_notification
+  |> SystemVariable.changeset(
+      %{
+        type: "boolean",
+        editable: true,
+        visible: true,
+        required: true
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "ENABLE_NOTIFICATION",
@@ -144,10 +265,21 @@ unless Repo.get_by(SystemVariable, key: "ENABLE_NOTIFICATION") do
         editable: true,
         visible: true,
         required: true
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
 end
 
-unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
+notification_job_executed_at = Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT")
+if notification_job_executed_at do
+  notification_job_executed_at
+  |> SystemVariable.changeset(
+      %{
+        type: "utc_datetime",
+        editable: false,
+        visible: false,
+        required: true
+       })
+  |> Repo.update!()
+else
   %SystemVariable{} |> SystemVariable.changeset(
       %{
         key: "NOTIFICATION_JOB_EXECUTED_AT",
@@ -156,7 +288,30 @@ unless Repo.get_by(SystemVariable, key: "NOTIFICATION_JOB_EXECUTED_AT") do
         editable: false,
         visible: false,
         required: true
-      }) |> Repo.insert!
+      }) |> Repo.insert!()
+end
+
+timezone = Repo.get_by(SystemVariable, key: "TIMEZONE")
+if timezone do
+  timezone
+  |> SystemVariable.changeset(
+      %{
+        type: "timezone",
+        editable: true,
+        visible: true,
+        required: true
+      })
+  |> Repo.update!()
+else
+  %SystemVariable{} |> SystemVariable.changeset(
+      %{
+        key: "TIMEZONE",
+        value: "Europe/Budapest",
+        type: "timezone",
+        editable: true,
+        visible: true,
+        required: true
+      }) |> Repo.insert!()
 end
 
 "Seed ran successfully."

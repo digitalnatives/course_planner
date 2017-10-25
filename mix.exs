@@ -28,8 +28,9 @@ defmodule CoursePlanner.Mixfile do
   def application do
     [mod: {CoursePlanner, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :coherence, :swoosh, :quantum, :canada,
-                    :canary, :elixir_make, :email_checker]]
+                    :phoenix_ecto, :postgrex, :swoosh, :phoenix_swoosh, :quantum, :canada,
+                    :canary, :elixir_make, :calendar, :email_checker, :guardian, :comeonin,
+                    :bcrypt_elixir, :timex, :timex_ecto]]
   end
 
   # Specifies which paths to compile per environment.
@@ -49,7 +50,7 @@ defmodule CoursePlanner.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:swoosh, "~> 0.7.0"},
-     {:coherence, github: "ghatighorias/coherence", tag: "v0.5.1"},
+     {:phoenix_swoosh, "~> 0.2.0"},
      {:canada, "~> 1.0.1"},
      {:canary, github: "cpjk/canary"},
      {:distillery, "~> 1.0.0"},
@@ -59,7 +60,13 @@ defmodule CoursePlanner.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:quantum, ">= 2.0.0-beta.1"},
      {:csv, "~> 2.0.0"},
+     {:calendar, "~> 0.17.2"},
      {:email_checker, "~> 0.1.1"},
+     {:comeonin, "~> 4.0"},
+     {:bcrypt_elixir, "~> 1.0"},
+     {:guardian, "~> 0.14.5"},
+     {:timex, "== 3.1.24"},
+     {:timex_ecto, "== 3.1.1"}
    ]
   end
 

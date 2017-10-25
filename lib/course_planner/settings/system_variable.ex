@@ -85,18 +85,15 @@ defmodule CoursePlanner.Settings.SystemVariable do
   end
   defp validate_value_type(changeset), do: changeset
 
-  def parse_value(value, type) do
-    case type do
-      "text"    -> {:ok, value}
-      "url"     -> parse_url(value)
-      "list"    -> parse_list(value)
-      "string"  -> parse_string(value)
-      "integer" -> parse_integer(value)
-      "boolean" -> parse_boolean(value)
-      "utc_datetime" -> parse_utc_datetime(value)
-      _         -> {:error, "unknown type"}
-    end
-  end
+  def parse_value(value, "text"), do:         {:ok, value}
+  def parse_value(value, "url"), do:          parse_url(value)
+  def parse_value(value, "list"), do:         parse_list(value)
+  def parse_value(value, "string"), do:       parse_string(value)
+  def parse_value(value, "integer"), do:      parse_integer(value)
+  def parse_value(value, "boolean"), do:      parse_boolean(value)
+  def parse_value(value, "utc_datetime"), do: parse_utc_datetime(value)
+  def parse_value(value, "timezone"), do:     parse_timezone(value)
+  def parse_value(_value, _type), do:         {:error, "unknown type"}
 
   def parse_string(value) do
     if String.length(value || "") > 255 do
@@ -153,6 +150,14 @@ defmodule CoursePlanner.Settings.SystemVariable do
     case Type.cast(:utc_datetime, value) do
       :error -> {:error, "is not an ISO8601 datetime"}
       {:ok, _} = result -> result
+    end
+  end
+
+  def parse_timezone(value) do
+    if value in Timex.timezones() do
+      {:ok, value}
+    else
+      {:error, "the timezone #{value} is not valid."}
     end
   end
 end

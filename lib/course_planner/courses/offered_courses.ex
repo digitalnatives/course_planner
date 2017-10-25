@@ -2,7 +2,7 @@ defmodule CoursePlanner.Courses.OfferedCourses do
   @moduledoc false
 
   alias CoursePlanner.{Courses.OfferedCourse, Repo, Attendances, Notifications.Notifier,
-                       Notifications, Accounts.Students, Accounts.Teachers}
+                       Notifications, Accounts.Students, Accounts.Teachers, Settings}
   import Ecto.Query
   alias Ecto.Changeset
 
@@ -121,7 +121,10 @@ defmodule CoursePlanner.Courses.OfferedCourses do
     |> Enum.uniq_by(fn %{id: id} -> id end)
   end
 
-  def with_pending_attendances(date \\ Timex.now()) do
+  def with_pending_attendances do
+    with_pending_attendances(Settings.utc_to_system_timezone(Timex.now()))
+  end
+  def with_pending_attendances(date) do
    Repo.all(from oc in OfferedCourse,
      join: c in assoc(oc,  :classes),
      join: a in assoc(c,  :attendances),

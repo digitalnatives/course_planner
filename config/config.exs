@@ -1,7 +1,11 @@
 use Mix.Config
 
 config :course_planner,
-  ecto_repos: [CoursePlanner.Repo]
+  ecto_repos: [CoursePlanner.Repo],
+  site_name: "CoursePlanner",
+  auth_email_reply_to: nil,
+  auth_email_title: "Course Planner",
+  auth_password_reset_token_validation_days: 2
 
 config :course_planner, CoursePlannerWeb.Endpoint,
   url: [host: "localhost"],
@@ -17,23 +21,6 @@ config :logger, :console,
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Local
 
-# %% Coherence Configuration %%   Don't remove this line
-config :coherence,
-  user_schema: CoursePlanner.Accounts.User,
-  repo: CoursePlanner.Repo,
-  module: CoursePlanner,
-  web_module: CoursePlannerWeb,
-  router: CoursePlannerWeb.Router,
-  logged_out_url: "/",
-  title: "Course Planner",
-  layout: {CoursePlannerWeb.Coherence.LayoutView, "app.html"},
-  messages_backend: CoursePlannerWeb.Coherence.Messages,
-  opts: [:authenticatable, :recoverable, :lockable, :trackable, :unlockable_with_token]
-
-config :coherence, CoursePlannerWeb.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Local
-# %% End Coherence Configuration %%
-
 config :canary,
   repo: CoursePlanner.Repo,
   unauthorized_handler: {CoursePlannerWeb.Helper, :handle_unauthorized}
@@ -48,3 +35,10 @@ config :email_checker,
   validations: [EmailChecker.Check.Format]
 
 import_config "#{Mix.env}.exs"
+
+config :guardian, Guardian,
+   issuer: "CoursePlanner.#{Mix.env}",
+   ttl: {1, :days},
+   verify_issuer: true,
+   serializer: CoursePlanner.Auth.GuardianSerializer,
+   secret_key: to_string(Mix.env) <> "SuPerseCret_aBraCadabrA"
