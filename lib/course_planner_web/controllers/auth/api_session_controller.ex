@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.Auth.Api.V1.SessionController do
+defmodule CoursePlannerWeb.Auth.Api.V1.JsonSessionController do
   @moduledoc """
     This module handles api loging in to the system
   """
@@ -18,7 +18,7 @@ defmodule CoursePlannerWeb.Auth.Api.V1.SessionController do
     case Users.check_password(user, password) do
       {:ok, _reason} ->
         conn
-        |> json(%{token: get_login_token(user)})
+        |> json(%{token: get_login_token(conn, user)})
 
       {:error, _reason} ->
         conn
@@ -26,9 +26,10 @@ defmodule CoursePlannerWeb.Auth.Api.V1.SessionController do
     end
   end
 
-  defp get_login_token(user) do
-    {:ok, jwt, _full_claims} = Guardian.encode_and_sign(user, :api)
-    jwt
+  defp get_login_token(conn, user) do
+    conn
+    |> Guardian.Plug.api_sign_in(user)
+    |> Guardian.Plug.current_token(new_conn)
   end
 
 end

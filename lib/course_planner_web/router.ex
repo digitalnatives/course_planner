@@ -37,7 +37,7 @@ defmodule CoursePlannerWeb.Router do
   scope "/" do
     pipe_through :public_api
 
-    resources "/api/sessions", CoursePlannerWeb.Auth.Api.V1.SessionController,
+    resources "/api/sessions", CoursePlannerWeb.Auth.Api.V1.JsonSessionController,
       only: [:create]
   end
 
