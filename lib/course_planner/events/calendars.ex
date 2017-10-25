@@ -27,14 +27,16 @@ defmodule CoursePlanner.Events.Calendars do
       where: ^user_id == u.id and
         e.date >= ^week_range.beginning_of_week and e.date <= ^week_range.end_of_week
 
-    Repo.all(query)
+    query
+    |> Repo.all()
+    |> Repo.preload(:users)
   end
 
   def get_all_events(week_range) do
-    query = from e in Event,
-      where: e.date >= ^week_range.beginning_of_week and e.date <= ^week_range.end_of_week
-
-    Repo.all(query)
+    Event
+    |> where([e], e.date >= ^week_range.beginning_of_week and e.date <= ^week_range.end_of_week)
+    |> Repo.all()
+    |> Repo.preload(:users)
   end
 
   def get_week_range(date) do

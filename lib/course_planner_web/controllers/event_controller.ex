@@ -2,8 +2,6 @@ defmodule CoursePlannerWeb.EventController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  plug Guardian.Plug.EnsureAuthenticated, handler: CoursePlannerWeb.JsonLogin
-
   alias CoursePlanner.{
     Events.Calendars,
     Events.Event,
@@ -11,6 +9,7 @@ defmodule CoursePlannerWeb.EventController do
   }
   alias Ecto.Changeset
 
+  plug Guardian.Plug.EnsureAuthenticated, handler: CoursePlannerWeb.JsonLogin
   import Canary.Plugs
   plug :authorize_controller
 

@@ -38,7 +38,7 @@ defimpl Canada.Can, for: CoursePlanner.Accounts.User do
     when action in [:show, :edit, :update], do: true
 
   def can?(_user, action, EventController)
-    when action in [:index, :show], do: true
+    when action in [:index, :show, :fetch], do: true
 
   def can?(_user, _action, _controller), do: false
 end
