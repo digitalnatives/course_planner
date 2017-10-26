@@ -8,9 +8,12 @@ defmodule CoursePlanner.Events do
   alias CoursePlanner.{
     Accounts.Users,
     Events.Event,
+    Notifications,
     Repo,
   }
   alias Ecto.Changeset
+
+  @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
 
   def all, do: Repo.all(Event)
 
@@ -48,4 +51,21 @@ defmodule CoursePlanner.Events do
   def delete(%Event{} = event), do: Repo.delete(event)
 
   def change(%Event{} = event), do: Event.changeset(event, %{})
+
+  def notify_users(event, current_user, path \\ "/") do
+    event
+    |> Repo.preload(:users)
+    |> Map.get(:users, [])
+    |> Enum.reject(fn %{id: id} -> id == current_user.id end)
+    |> Enum.each(&(notify_user(&1, event, path)))
+  end
+
+  def notify_user(user, event, path) do
+    Notifications.new()
+    |> Notifications.type(:event_created)
+    |> Notifications.resource_path(path)
+    |> Notifications.to(user)
+    |> Notifications.add_data(%{event: event})
+    |> @notifier.notify_later()
+  end
 end

@@ -2,8 +2,10 @@ defmodule CoursePlannerWeb.EventController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.Events
-  alias CoursePlanner.Events.Event
+  alias CoursePlanner.{
+    Events.Event,
+    Events,
+  }
 
   import Canary.Plugs
   plug :authorize_controller
@@ -18,9 +20,11 @@ defmodule CoursePlannerWeb.EventController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"event" => event_params}) do
+  def create(%{assigns: %{current_user: current_user}} = conn, %{"event" => event_params}) do
     case Events.create(event_params) do
       {:ok, event} ->
+        Events.notify_users(event, current_user, event_url(conn, :show, event.id))
+
         conn
         |> put_flash(:info, "Event created successfully.")
         |> redirect(to: event_path(conn, :show, event))

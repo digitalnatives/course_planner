@@ -32,7 +32,8 @@ defmodule CoursePlanner.UserEmailTest do
     {:term_deleted, "A term you are enrolled in was deleted"},
     {:class_subscribed, "You were subscribed to a class"},
     {:class_updated, "A class you subscribe to was updated"},
-    {:class_deleted, "A class you subscribe to was deleted"}
+    {:class_deleted, "A class you subscribe to was deleted"},
+    {:event_created, "You were invited to an event"}
     ] do
     @email email
     test "notify #{inspect @email}" do
