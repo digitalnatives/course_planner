@@ -72,10 +72,12 @@ defmodule CoursePlannerWeb.EventController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(%{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     with {:ok, event} <- Events.get(id),
-         {:ok, _event} <- Events.delete(event)
+         {:ok, event} <- Events.delete(event)
       do
+        Events.notify_deleted(event, current_user)
+
         conn
         |> put_flash(:info, "Event deleted successfully.")
         |> redirect(to: event_path(conn, :index))

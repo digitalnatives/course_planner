@@ -66,6 +66,11 @@ defmodule CoursePlanner.Mailer.UserEmail do
         subject: "An event you were invited to was updated",
         template: "event_updated.html"
       },
+    "event_deleted" =>
+      %{
+        subject: "An event you were invited to was deleted",
+        template: "event_deleted.html"
+      },
   }
 
   def build_email(%{user: %{name: _, email: nil}}), do: {:error, :invalid_recipient}

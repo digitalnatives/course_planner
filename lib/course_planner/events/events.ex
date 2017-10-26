@@ -84,6 +84,16 @@ defmodule CoursePlanner.Events do
     |> notify_users(event, :event_created, path)
   end
 
+  def notify_deleted(event, current_user) do
+    users =
+      event
+      |> Repo.preload(:users)
+      |> Map.get(:users)
+      |> Enum.reject(fn %{id: id} -> id == current_user.id end)
+
+    notify_users(users, event, :event_deleted, "/")
+  end
+
   def notify_users(users, event, type, path) do
     users
     |> Enum.each(&(notify_user(&1, event, type, path)))
