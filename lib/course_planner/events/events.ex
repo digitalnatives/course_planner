@@ -52,20 +52,50 @@ defmodule CoursePlanner.Events do
 
   def change(%Event{} = event), do: Event.changeset(event, %{})
 
-  def notify_users(event, current_user, path \\ "/") do
+  def notify_new(event, current_user, path) do
     event
     |> Repo.preload(:users)
     |> Map.get(:users, [])
     |> Enum.reject(fn %{id: id} -> id == current_user.id end)
-    |> Enum.each(&(notify_user(&1, event, path)))
+    |> Enum.each(&(notify_user(&1, event, :event_created, path)))
   end
 
-  def notify_user(user, event, path) do
+  def notify_updated(users_before, event, current_user, path) do
+    users_before =
+      users_before
+      |> Enum.reject(fn %{id: id} -> id == current_user.id end)
+
+    users_after =
+      event.users
+      |> Enum.reject(fn %{id: id} -> id == current_user.id end)
+
+    diff = List.myers_difference(users_before, users_after)
+
+    diff
+    |> Keyword.get(:del, [])
+    |> notify_users(event, :event_uninvited, path)
+
+    diff
+    |> Keyword.get(:eq, [])
+    |> notify_users(event, :event_updated, path)
+
+    diff
+    |> Keyword.get(:ins, [])
+    |> notify_users(event, :event_created, path)
+  end
+
+  def notify_users(users, event, type, path) do
+    users
+    |> Enum.each(&(notify_user(&1, event, type, path)))
+  end
+
+  def notify_user(user, event, type, path) do
     Notifications.new()
-    |> Notifications.type(:event_created)
+    |> Notifications.type(type)
     |> Notifications.resource_path(path)
     |> Notifications.to(user)
     |> Notifications.add_data(%{event: event})
     |> @notifier.notify_later()
   end
+
 end

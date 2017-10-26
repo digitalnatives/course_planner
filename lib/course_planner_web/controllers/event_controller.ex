@@ -23,7 +23,7 @@ defmodule CoursePlannerWeb.EventController do
   def create(%{assigns: %{current_user: current_user}} = conn, %{"event" => event_params}) do
     case Events.create(event_params) do
       {:ok, event} ->
-        Events.notify_users(event, current_user, event_url(conn, :show, event.id))
+        Events.notify_new(event, current_user, event_url(conn, :show, event.id))
 
         conn
         |> put_flash(:info, "Event created successfully.")
@@ -50,11 +50,20 @@ defmodule CoursePlannerWeb.EventController do
     render(conn, "edit.html", event: event, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "event" => event_params}) do
+  def update(%{assigns: %{current_user: current_user}} = conn,
+    %{"id" => id, "event" => event_params}) do
+
     {:ok, event} = Events.get(id)
+
+    users_before =
+      event
+      |> Repo.preload(:users)
+      |> Map.get(:users)
 
     case Events.update(event, event_params) do
       {:ok, event} ->
+        Events.notify_updated(users_before, event, current_user, event_url(conn, :show, event.id))
+
         conn
         |> put_flash(:info, "Event updated successfully.")
         |> redirect(to: event_path(conn, :show, event))

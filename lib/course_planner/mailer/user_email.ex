@@ -56,6 +56,16 @@ defmodule CoursePlanner.Mailer.UserEmail do
         subject: "You were invited to an event",
         template: "event_created.html"
       },
+    "event_uninvited" =>
+      %{
+        subject: "You were uninvited from an event",
+        template: "event_uninvited.html"
+      },
+    "event_updated" =>
+      %{
+        subject: "An event you were invited to was updated",
+        template: "event_updated.html"
+      },
   }
 
   def build_email(%{user: %{name: _, email: nil}}), do: {:error, :invalid_recipient}
