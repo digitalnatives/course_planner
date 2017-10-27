@@ -301,11 +301,12 @@ defmodule CoursePlannerWeb.SharedView do
 
     name = display_user_name(user)
 
-    url = if clickable, do: user_show_path(user), else: ""
+    url = user_show_path(user)
 
     render "user_bubble.html", url: url,
                                profile_picture: profile_picture,
-                               name: name
+                               name: name,
+                               clickable: clickable
   end
 
   def class_list(classes, opts \\ []) do

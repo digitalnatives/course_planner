@@ -15,6 +15,7 @@
   <%= CoursePlannerWeb.SharedView.navbar_item "Classes", @conn, class_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Attendances", @conn, attendance_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Tasks", @conn, task_path(@conn, :index) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Events", @conn, event_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Settings", @conn, setting_path(@conn, :show) %>
   <%= if show_program_about?(), do: CoursePlannerWeb.SharedView.navbar_item "About #{get_program_name()}", @conn, about_path(@conn, :show) %>

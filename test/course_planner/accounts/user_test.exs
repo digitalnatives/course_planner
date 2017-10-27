@@ -105,14 +105,9 @@ defmodule CoursePlanner.UserTest do
       refute changeset.errors[:comments]
     end
 
-    test "changeset is valid when comment is 255 characters" do
-      changeset = User.changeset(%User{}, %{comments: String.duplicate("a", 255)})
-      refute changeset.errors[:comments]
-    end
-
-    test "changeset is invalid when comment is bigger than 255 characters" do
-      changeset = User.changeset(%User{}, %{comments: String.duplicate("a", 256)})
-      assert changeset.errors[:comments] == {"should be at most %{count} character(s)", [count: 255, validation: :length, max: 255]}
+    test "changeset is valid for comments bigger than 255 characters" do
+      changeset = User.changeset(%User{}, %{email: "a@a.com", role: "Student", comments: String.duplicate("a", 256)})
+      assert assert changeset.valid?
     end
   end
 

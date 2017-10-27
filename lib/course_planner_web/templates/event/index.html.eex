@@ -1,0 +1,83 @@
+
+  <div class="row middle-xs page-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+      Events
+    </div>
+    <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+      <div class="col-xs-6 col-sm-3 col-md-2">
+        <%= link "New event", to: event_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
+    <% end %>
+  </div>
+
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th>Starting time</th>
+        <th>Finishing time</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= Enum.with_index(@events) |> Enum.map(fn {event,index} -> %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= event.name %>
+          </td>
+          <td>
+            <%= event.date |> Ecto.Date.cast!()
+                |> Ecto.DateTime.from_date_and_time(event.starting_time |> Ecto.Time.cast!())
+                |> Settings.utc_to_system_timezone()
+                |> Timex.format!("{h24}:{m}") %>
+          </td>
+          <td>
+            <%= event.date |> Ecto.Date.cast!()
+                |> Ecto.DateTime.from_date_and_time(event.finishing_time |> Ecto.Time.cast!())
+                |> Settings.utc_to_system_timezone()
+                |> Timex.format!("{h24}:{m}") %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= event.date %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= event.location %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= event.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@events)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= event.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: event_path(@conn, :show, event) %>
+              </li>
+              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: event_path(@conn, :edit, event) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: event_path(@conn, :delete, event), method: :delete, data: [confirm: "Are you sure?"] %>
+                </li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+      <% end) %>
+    </tbody>
+  </table>

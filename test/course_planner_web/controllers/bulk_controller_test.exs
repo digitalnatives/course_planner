@@ -98,6 +98,23 @@ defmodule CoursePlanner.BulkControllerTest do
       assert Repo.get_by(User, email: "d@d.com")
     end
 
+    test "creates bulk request with multiple rows of data even if role are downcased", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation",
+        """
+           Aname, AFamile,Anickname,a@a.com,student
+           Bname,BFamile,Bnickname,b@b.com,teacher
+           Cname,CFamile,Cnickname,c@c.com,volunteer
+           Dname,DFamile,Dnickname,d@d.com,coordinator
+        """)
+      conn = post conn, bulk_path(conn, :create), params
+      assert redirected_to(conn) == user_path(conn, :index)
+      assert get_flash(conn, "info") == "All users are created and notified by"
+      assert Repo.get_by(User, email: "a@a.com")
+      assert Repo.get_by(User, email: "b@b.com")
+      assert Repo.get_by(User, email: "c@c.com")
+      assert Repo.get_by(User, email: "d@d.com")
+    end
+
     test "does not create bulk request if input file is missing", %{conn: conn} do
       params = %{"input" => %{"target" => "user", "title" => "user bulk creation"}}
       conn = post conn, bulk_path(conn, :create), params
