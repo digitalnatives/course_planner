@@ -5,6 +5,7 @@ defmodule CoursePlannerWeb.Auth.Api.V1.JsonSessionController do
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.Accounts.{Users, User}
+  alias Guardian.Plug
 
   plug :put_layout, ""
 
@@ -25,11 +26,16 @@ defmodule CoursePlannerWeb.Auth.Api.V1.JsonSessionController do
         |> json(%{token:  "error"})
     end
   end
+  def create(conn, _params) do
+    conn
+    |> put_status(406)
+    |> render(CoursePlannerWeb.ErrorView, "406.json", errors: [])
+  end
 
   defp get_login_token(conn, user) do
     conn
-    |> Guardian.Plug.api_sign_in(user)
-    |> Guardian.Plug.current_token()
+    |> Plug.api_sign_in(user)
+    |> Plug.current_token()
   end
 
 end
