@@ -30,7 +30,7 @@ defmodule CoursePlanner.Mixfile do
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
                     :phoenix_ecto, :postgrex, :swoosh, :phoenix_swoosh, :quantum, :canada,
                     :canary, :elixir_make, :calendar, :email_checker, :guardian, :comeonin,
-                    :bcrypt_elixir, :timex, :timex_ecto]]
+                    :bcrypt_elixir, :timex, :timex_ecto, :recaptcha]]
   end
 
   # Specifies which paths to compile per environment.
@@ -66,7 +66,9 @@ defmodule CoursePlanner.Mixfile do
      {:bcrypt_elixir, "~> 1.0"},
      {:guardian, "~> 0.14.5"},
      {:timex, "== 3.1.24"},
-     {:timex_ecto, "== 3.1.1"}
+     {:timex_ecto, "== 3.1.1"},
+     {:hackney, "~> 1.8", override: true},
+     {:recaptcha, "~> 2.2.1"}
    ]
   end
 
