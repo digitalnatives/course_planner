@@ -28,3 +28,6 @@ erl_crash.dump
 # Docker
 scripts/docker-compose-up.sh
 docker-compose.yml
+
+#Environment variable file
+.env
