@@ -107,4 +107,25 @@ defmodule CoursePlanner.EventsTest do
       assert length(updated_event.users) == 0
     end
   end
+
+  describe "event encode" do
+    test "encode event" do
+      event = insert(:event)
+      {:ok, encoded_event} = Poison.encode(event)
+      assert encoded_event =~ "name"
+      assert encoded_event =~ "location"
+      assert encoded_event =~ "description"
+      assert encoded_event =~ "date"
+      assert encoded_event =~ "id"
+      assert encoded_event =~ "starting_time"
+      assert encoded_event =~ "finishing_time"
+    end
+
+    test "does not encode users" do
+      users = [insert(:coordinator), insert(:student), insert(:teacher), insert(:volunteer)]
+      event = insert(:event, %{users: users})
+      {:ok, encoded_event} = Poison.encode(event)
+      refute encoded_event =~ ~r/users/
+    end
+  end
 end
