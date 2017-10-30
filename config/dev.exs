@@ -34,3 +34,7 @@ config :course_planner, CoursePlanner.Repo,
 config :course_planner,
   auth_email_from_name: "Dev Name",
   auth_email_from_email: "dev@email"
+
+config :recaptcha,
+  secret: System.get_env("RECAPTCHA_SECRET_KEY"),
+  public_key: System.get_env("RECAPTCHA_SITE_KEY")

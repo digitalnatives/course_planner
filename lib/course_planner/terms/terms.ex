@@ -12,7 +12,8 @@ defmodule CoursePlanner.Terms do
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def all do
-    Repo.all(Term)
+    query = from t in Term, order_by: [desc: t.start_date, desc: t.end_date]
+    Repo.all(query)
   end
 
   def new do
@@ -106,7 +107,7 @@ defmodule CoursePlanner.Terms do
       join: oc in assoc(t, :offered_courses),
       join: co in assoc(oc, :course),
       preload: [offered_courses: {oc, course: co}],
-      order_by: [asc: t.start_date, asc: co.name])
+      order_by: [desc: t.start_date, asc: co.name])
   end
   def find_all_by_user(%{role: "Teacher", id: user_id}) do
     Repo.all(from t in Term,
@@ -115,7 +116,7 @@ defmodule CoursePlanner.Terms do
         join: te in assoc(oc, :teachers),
         preload: [offered_courses: {oc, course: co, teachers: te}],
         where: te.id == ^user_id,
-        order_by: [asc: t.start_date, asc: co.name]
+        order_by: [desc: t.start_date, asc: co.name]
     )
   end
   def find_all_by_user(%{role: "Student", id: user_id}) do
@@ -125,7 +126,7 @@ defmodule CoursePlanner.Terms do
       join: s in assoc(oc, :students),
       preload: [offered_courses: {oc, course: co, students: s}],
       where: s.id == ^user_id,
-      order_by: [asc: t.start_date, asc: co.name]
+      order_by: [desc: t.start_date, asc: co.name]
     )
   end
 
@@ -138,6 +139,7 @@ defmodule CoursePlanner.Terms do
       join: as in assoc(a, :student),
       preload: [offered_courses: {oc, course: co, classes: {c, attendances: {a, student: as}}}],
       where: as.id == ^student_id,
-      order_by: [asc: t.start_date, asc: t.end_date, asc: co.name, asc: c.date, asc: c.starting_at])
+      order_by: [desc: t.start_date, desc: t.end_date,
+                 asc: co.name, asc: c.date, asc: c.starting_at])
   end
 end

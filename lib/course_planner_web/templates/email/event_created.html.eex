@@ -1,0 +1,7 @@
+<div>
+  <h2>Dear <%= @name %>,</h2>
+  <h2>You were invited for "<%= @data["event"]["name"] %>"</h2>
+  <h3>See details <%= link "here: ", to: @path%></h3>
+
+  <h3>This is an automatically generated email, please do not reply</h3>
+</div>

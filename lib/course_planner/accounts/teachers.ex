@@ -3,7 +3,8 @@ defmodule CoursePlanner.Accounts.Teachers do
   import Ecto.Query
   alias CoursePlanner.{Repo, Accounts.User, Accounts.Users, Courses.OfferedCourse}
 
-  @teachers from u in User, where: u.role == "Teacher"
+  @teachers from u in User, where: u.role == "Teacher",
+    order_by: [u.name, u.family_name, u.nickname]
 
   def all do
     Repo.all(@teachers)
