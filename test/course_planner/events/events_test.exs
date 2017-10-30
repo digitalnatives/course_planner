@@ -21,6 +21,20 @@ defmodule CoursePlanner.EventsTest do
       assert Events.all_with_users() == [event |> Repo.preload(:users)]
     end
 
+    test "all_splitted/1 returns events splited by time" do
+      %{id: id1} = insert(:event, %{date: ~D[2017-02-02], starting_time: ~T[10:00:00.000000]})
+      %{id: id2} = insert(:event, %{date: ~D[2017-02-02], starting_time: ~T[12:00:00.000000]})
+      %{id: id3} = insert(:event, %{date: ~D[2017-02-03], starting_time: ~T[13:00:00.000000]})
+
+      %{id: id4} = insert(:event, %{date: ~D[2017-02-03], starting_time: ~T[15:00:00.000000]})
+      %{id: id5} = insert(:event, %{date: ~D[2017-02-04], starting_time: ~T[15:00:00.000000]})
+      %{id: id6} = insert(:event, %{date: ~D[2017-02-04], starting_time: ~T[21:00:00.000000]})
+
+      {past_events, future_events} = Events.all_splitted(~N[2017-02-03 14:00:00])
+      assert [%{id: ^id3}, %{id: ^id2}, %{id: ^id1}] = past_events
+      assert [%{id: ^id4}, %{id: ^id5}, %{id: ^id6}] = future_events
+    end
+
     test "get/1 returns the event with given id" do
       event = insert(:event) |> Repo.preload(:users)
       assert Events.get(event.id) == {:ok, event}

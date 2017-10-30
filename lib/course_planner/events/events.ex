@@ -17,15 +17,30 @@ defmodule CoursePlanner.Events do
 
   def all do
     query = from e in Event,
-    order_by: [desc: e.starting_time, desc: e.finishing_time]
+    order_by: [asc: e.date, asc: e.starting_time, asc: e.finishing_time]
 
     Repo.all(query)
+  end
+
+  def all_splitted(now) do
+    all()
+    |> Enum.split_with(&(compare_event_date_time(&1, now)))
+    |> revertse_past_events()
+  end
+
+  def compare_event_date_time(event, now) do
+    {:ok, event_datetime} = NaiveDateTime.new(event.date, event.starting_time)
+    Timex.compare(event_datetime, now) == -1
+  end
+
+  def revertse_past_events({past_events, future_events}) do
+    {Enum.reverse(past_events), future_events}
   end
 
   def all_with_users do
     query = from e in Event,
     preload: [:users],
-    order_by: [desc: e.starting_time, desc: e.finishing_time]
+    order_by: [desc: e.date, desc: e.starting_time, desc: e.finishing_time]
 
     Repo.all(query)
   end
