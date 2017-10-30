@@ -2,7 +2,7 @@ defmodule CoursePlannerWeb.TermController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Terms, Terms.Term}
+  alias CoursePlanner.Terms
   alias Ecto.Changeset
 
   import Canary.Plugs
