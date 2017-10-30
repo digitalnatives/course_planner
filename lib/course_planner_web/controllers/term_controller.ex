@@ -9,10 +9,7 @@ defmodule CoursePlannerWeb.TermController do
   plug :authorize_controller
 
   def index(conn, _params) do
-    query = from t in Term, order_by: [desc: t.start_date, desc: t.end_date]
-    terms = Repo.all(query)
-
-    render(conn, "index.html", terms: terms)
+    render(conn, "index.html", terms: Terms.all())
   end
 
   def new(conn, _params) do

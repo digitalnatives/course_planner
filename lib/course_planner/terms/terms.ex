@@ -12,7 +12,8 @@ defmodule CoursePlanner.Terms do
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def all do
-    Repo.all(Term)
+    query = from t in Term, order_by: [desc: t.start_date, desc: t.end_date]
+    Repo.all(query)
   end
 
   def new do
