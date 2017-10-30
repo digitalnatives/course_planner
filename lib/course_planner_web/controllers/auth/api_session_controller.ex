@@ -1,4 +1,4 @@
-defmodule CoursePlannerWeb.Auth.Api.V1.JsonSessionController do
+defmodule CoursePlannerWeb.Auth.Api.JsonSessionController do
   @moduledoc """
     This module handles api loging in to the system
   """
