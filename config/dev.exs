@@ -36,5 +36,5 @@ config :course_planner,
   auth_email_from_email: "dev@email"
 
 config :recaptcha,
-  secret: "${RECAPTCHA_SECRET_KEY}",
-  public_key: "${RECAPTCHA_SITE_KEY}"
+  secret: System.get_env("RECAPTCHA_SECRET_KEY"),
+  public_key: System.get_env("RECAPTCHA_SITE_KEY")

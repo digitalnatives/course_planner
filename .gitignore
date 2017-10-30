@@ -30,4 +30,4 @@ scripts/docker-compose-up.sh
 docker-compose.yml
 
 #Environment variable file
-.env
+.envrc
