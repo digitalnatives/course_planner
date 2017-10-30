@@ -1,8 +1,4 @@
-<%= form_for @changeset, password_path(@conn, :update, @changeset.data), [as: :password], fn f  -> %>
-
-  <%= hidden_input f, :reset_password_token %>
-
-  <% error = get_flash(@conn, :error) %>
+<%= form_for @conn, password_path(@conn, :update, @id), [method: :put, as: :password], fn f  -> %>
 
   <div class="login__wrapper">
 
@@ -10,24 +6,29 @@
       <div class="col-xs-12 mdl-layout-title login__title">
         Create new password
       </div>
+
       <div class="col-xs-12 login__error-wrapper">
         <%= CoursePlannerWeb.SharedView.form_password f, :password, required: true %>
-        <%= if error do %>
-          <div class="login__error">
-            <%= error %>
-          </div>
-        <% end %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :password %>
       </div>
-      <div class="col-xs-12">
+
+      <div class="col-xs-12 login__error-wrapper">
         <%= CoursePlannerWeb.SharedView.form_password f, :password_confirmation, required: true %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :password_confirmation %>
       </div>
+
+      <div class="col-xs-12 login__error-wrapper">
+        <%= raw Recaptcha.Template.display %>
+        <%= CoursePlannerWeb.Auth.LayoutView.error_tag @errors, :recaptcha %>
+      </div>
+
       <div class="col-xs-6">
         <%= link "Cancel", to: session_path(@conn, :new), class: "mdl-button mdl-js-button" %>
       </div>
+
       <div class="col-xs-6">
         <%= CoursePlannerWeb.SharedView.form_submit f, "Send" %>
       </div>
-
   </div>
 
 <% end %>

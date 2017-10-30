@@ -15,9 +15,20 @@ defmodule CoursePlanner.Events do
 
   @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
 
-  def all, do: Repo.all(Event)
+  def all do
+    query = from e in Event,
+    order_by: [desc: e.starting_time, desc: e.finishing_time]
 
-  def all_with_users, do: Repo.preload(all(), :users)
+    Repo.all(query)
+  end
+
+  def all_with_users do
+    query = from e in Event,
+    preload: [:users],
+    order_by: [desc: e.starting_time, desc: e.finishing_time]
+
+    Repo.all(query)
+  end
 
   def get(id) do
     case Repo.get(Event, id) do

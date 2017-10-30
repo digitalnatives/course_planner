@@ -15,7 +15,10 @@ defmodule CoursePlanner.Accounts.Users do
     do: Application.get_env(:course_planner, :auth_password_reset_token_validation_days)
 
   def all do
-    Repo.all(User)
+    query = from u in User,
+      order_by: [u.name, u.family_name, u.nickname]
+
+    Repo.all(query)
   end
 
   def add_default_password_params(user, token) do

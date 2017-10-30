@@ -2,10 +2,16 @@ defmodule CoursePlanner.Courses do
   @moduledoc """
   This module provides custom functionality for controller over the model
   """
+  import Ecto.Query
 
   alias CoursePlanner.{Repo, Courses.Course, Terms, Notifications.Notifier, Notifications}
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
+
+  def all do
+    query = from c in Course, order_by: [asc: c.name]
+    Repo.all(query)
+  end
 
   def delete(id) do
     course = Repo.get(Course, id)

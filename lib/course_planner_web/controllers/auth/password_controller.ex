@@ -8,12 +8,40 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
 
   alias CoursePlanner.Accounts.{Users, User}
   alias CoursePlannerWeb.{Auth.UserEmail, Router.Helpers}
+  alias Recaptcha.Config
 
   def new(conn, _) do
-    render conn, "new.html"
+    render(conn, "new.html", errors: [])
   end
 
-  def create(conn, %{"password" => %{"email" => email}}) do
+  def create(conn, %{"password" => create_params, "g-recaptcha-response" => recaptcha_response}) do
+    case Recaptcha.verify(recaptcha_response) do
+      {:ok, _response} ->
+        conn
+        |> do_create(%{"password" => create_params})
+
+      {:error, _errors} ->
+        errors = [recaptcha: {"Captcha is not validated", []}]
+
+        conn
+        |> render("new.html", errors: errors)
+    end
+  end
+  def create(conn, %{"password" => %{"email" => _email}} = params) do
+    recaptcha_noconfigured? =
+      is_nil(Config.get_env(:recaptcha, :secret))
+        or is_nil(Config.get_env(:recaptcha, :public_key))
+
+    if recaptcha_noconfigured? do
+      do_create(conn, params)
+    else
+      errors = [recaptcha: {"Captcha is not validated", []}]
+
+      conn
+      |> render("new.html", errors: errors)
+    end
+  end
+  defp do_create(conn, %{"password" => %{"email" => email}}) do
     trimmed_downcased_email =
       email
       |> String.trim()
@@ -33,9 +61,8 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
 
   def edit(conn, %{"id" => reset_password_token}) do
     case check_password_reset_token(reset_password_token) do
-      {:ok, _reason, user} ->
-        changeset = User.changeset(user)
-        render(conn, "edit.html", changeset: changeset, id: reset_password_token)
+      {:ok, _reason, _user} ->
+        render(conn, "edit.html", id: reset_password_token, errors: [])
 
       {:error, :expired_token, _user} ->
         conn
@@ -49,9 +76,44 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
     end
   end
 
-  def update(conn, %{"password" => %{"password" => password,
-                                     "password_confirmation" => password_confirmation,
-                                     "reset_password_token" => reset_password_token}}) do
+  def update(conn, %{"id" => reset_password_token,
+                     "password" => %{"password" => password,
+                                     "password_confirmation" => password_confirmation},
+                     "g-recaptcha-response" => recaptcha_response}) do
+
+    update_params = %{"id" => reset_password_token,
+                      "password" => %{"password" => password,
+                                      "password_confirmation" => password_confirmation}}
+    case Recaptcha.verify(recaptcha_response) do
+      {:ok, _response} ->
+        conn
+        |> do_update(update_params)
+
+      {:error, _errors} ->
+        errors = [recaptcha: {"Captcha is not validated", []}]
+
+        conn
+        |> render("edit.html", id: reset_password_token, errors: errors)
+    end
+  end
+  def update(conn, %{"id" => reset_password_token} = params) do
+    recaptcha_noconfigured? =
+      is_nil(Config.get_env(:recaptcha, :secret))
+        or is_nil(Config.get_env(:recaptcha, :public_key))
+
+    if recaptcha_noconfigured? do
+      do_update(conn, params)
+    else
+      errors = [recaptcha: {"Captcha is not validated", []}]
+
+      conn
+      |> render("edit.html", id: reset_password_token,
+                errors: errors)
+    end
+  end
+  defp do_update(conn, %{"id" => reset_password_token,
+                         "password" => %{"password" => password,
+                                        "password_confirmation" => password_confirmation}}) do
      case check_password_reset_token(reset_password_token) do
        {:ok, _reason, user} ->
          case set_new_password(user, password, password_confirmation)  do
@@ -62,7 +124,7 @@ defmodule CoursePlannerWeb.Auth.PasswordController do
 
            {:error, changeset} ->
              conn
-             |> render("edit.html", changeset: changeset, id: reset_password_token)
+             |> render("edit.html", id: reset_password_token, errors: changeset.errors)
          end
 
        {:error, :expired_token, _user} ->

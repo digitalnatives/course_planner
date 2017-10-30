@@ -8,8 +8,7 @@ defmodule CoursePlannerWeb.CourseController do
   plug :authorize_controller
 
   def index(conn, _params) do
-    courses = Repo.all(Course)
-    render(conn, "index.html", courses: courses)
+    render(conn, "index.html", courses: Courses.all())
   end
 
   def new(conn, _params) do
