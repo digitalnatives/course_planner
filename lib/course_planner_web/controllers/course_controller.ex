@@ -8,7 +8,9 @@ defmodule CoursePlannerWeb.CourseController do
   plug :authorize_controller
 
   def index(conn, _params) do
-    courses = Repo.all(Course)
+    query = from c in Course, order_by: [asc: c.name]
+    courses = Repo.all(query)
+
     render(conn, "index.html", courses: courses)
   end
 

@@ -2,14 +2,17 @@ defmodule CoursePlannerWeb.TermController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.Terms
+  alias CoursePlanner.{Terms, Terms.Term}
   alias Ecto.Changeset
 
   import Canary.Plugs
   plug :authorize_controller
 
   def index(conn, _params) do
-    render(conn, "index.html", terms: Terms.all)
+    query = from t in Term, order_by: [desc: t.start_date, desc: t.end_date]
+    terms = Repo.all(query)
+
+    render(conn, "index.html", terms: terms)
   end
 
   def new(conn, _params) do

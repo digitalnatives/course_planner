@@ -4,7 +4,10 @@ defmodule CoursePlanner.Tasks do
   import Ecto.Query, except: [update: 2]
 
   def all do
-    Repo.all(Task)
+    query = from t in Task,
+    order_by: [desc: t.start_time, desc: t.finish_time]
+
+    Repo.all(query)
   end
   def all_with_users, do: all() |> Repo.preload(:volunteers)
 
