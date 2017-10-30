@@ -34,10 +34,10 @@ defmodule CoursePlannerWeb.Router do
          handler: CoursePlanner.Auth.GuardianErrorHandler
   end
 
-  scope "/" do
+  scope "/api/v1" do
     pipe_through :public_api
 
-    resources "/api/sessions", CoursePlannerWeb.Auth.Api.JsonSessionController,
+    resources "/sessions", CoursePlannerWeb.Auth.Api.JsonSessionController,
       only: [:create]
   end
 
