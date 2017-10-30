@@ -9,7 +9,7 @@ defmodule CoursePlannerWeb.TermController do
   plug :authorize_controller
 
   def index(conn, _params) do
-    render(conn, "index.html", terms: Terms.all)
+    render(conn, "index.html", terms: Terms.all())
   end
 
   def new(conn, _params) do
