@@ -17,6 +17,12 @@ defmodule CoursePlannerWeb.Router do
     plug CoursePlanner.CurrentUser
   end
 
+  pipeline :public_api do
+    plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+  end
+
   pipeline :with_session do
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
@@ -26,6 +32,13 @@ defmodule CoursePlannerWeb.Router do
   pipeline :login_required do
     plug Guardian.Plug.EnsureAuthenticated,
          handler: CoursePlanner.Auth.GuardianErrorHandler
+  end
+
+  scope "/api/v1" do
+    pipe_through :public_api
+
+    resources "/sessions", CoursePlannerWeb.Auth.Api.JsonSessionController,
+      only: [:create]
   end
 
   scope "/" do
