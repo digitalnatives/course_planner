@@ -45,27 +45,36 @@ defmodule CoursePlanner.Attendances do
 
   def get_all_offered_courses do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: c in assoc(oc, :classes),
       join: s in assoc(oc, :students),
       join: t in assoc(oc, :teachers),
-      preload: [:term, :course, teachers: t, students: s, classes: c])
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name])
   end
 
   def get_all_teacher_offered_courses(teacher_id) do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: t in assoc(oc, :teachers),
       join: c in assoc(oc, :classes),
       join: s in assoc(oc, :students),
-      preload: [:term, :course, teachers: t, students: s, classes: c],
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name],
       where: t.id == ^teacher_id)
   end
 
   def get_all_student_offered_courses(student_id) do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
       join: t in assoc(oc, :teachers),
-      preload: [:term, :course, teachers: t, students: s, classes: c],
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name],
       where: s.id == ^student_id)
   end
 

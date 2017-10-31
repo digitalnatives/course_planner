@@ -23,3 +23,8 @@ auth_email_from_name: "Test Name",
 auth_email_from_email: "test@email"
 
 config :course_planner, :notifier, CoursePlanner.TestNotifier
+
+config :recaptcha,
+  http_client: Recaptcha.Http.MockClient,
+  secret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe",
+  public_key: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"

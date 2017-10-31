@@ -22,3 +22,7 @@ config :course_planner, CoursePlanner.Mailer,
 config :course_planner,
   auth_email_from_name: "${EMAIL_FROM_NAME}",
   auth_email_from_email: "${EMAIL_FROM_EMAIL}"
+
+config :recaptcha,
+  secret: "${RECAPTCHA_SECRET_KEY}",
+  public_key: "${RECAPTCHA_SITE_KEY}"

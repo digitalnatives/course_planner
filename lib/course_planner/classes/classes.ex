@@ -12,9 +12,15 @@ defmodule CoursePlanner.Classes do
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
 
   def all do
-    Class
-    |> Repo.all()
-    |> Repo.preload([:offered_course, offered_course: :term, offered_course: :course])
+    query = from t in Term,
+    join: oc in assoc(t, :offered_courses),
+    join: co in assoc(oc, :course),
+    join: c in assoc(oc, :classes),
+    preload: [offered_courses: {oc, classes: c, course: co}],
+    order_by: [desc: t.start_date, desc: co.name, desc: c.date,
+               desc: c.starting_at, desc: c.finishes_at]
+
+    Repo.all(query)
   end
 
   def new do
