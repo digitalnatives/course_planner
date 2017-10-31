@@ -30,7 +30,7 @@ defmodule CoursePlanner.Events do
 
   def compare_event_date_time(event, now) do
     {:ok, event_datetime} = NaiveDateTime.new(event.date, event.starting_time)
-    Timex.compare(event_datetime, now) == -1
+    Timex.before?(event_datetime, now)
   end
 
   def revertse_past_events({past_events, future_events}) do
