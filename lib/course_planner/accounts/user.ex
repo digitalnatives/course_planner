@@ -84,7 +84,6 @@ defmodule CoursePlanner.Accounts.User do
   def changeset(model, params, :seed) do
     model
     |> changeset(params)
-    |> validate_current_password()
     |> validate_password_if_changed()
   end
 
