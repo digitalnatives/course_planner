@@ -49,10 +49,11 @@ defmodule CoursePlannerWeb.Router do
       only: [:new, :create, :edit, :update]
   end
 
-  scope "/", CoursePlannerWeb do
+  scope "/api", CoursePlannerWeb do
     pipe_through [:protected_api]
 
     resources "/calendar", CalendarController, only: [:show], singleton: true
+    get "/events", EventController, :fetch
   end
 
   scope "/", CoursePlannerWeb do
