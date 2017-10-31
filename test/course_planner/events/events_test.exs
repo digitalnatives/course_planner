@@ -7,8 +7,10 @@ defmodule CoursePlanner.EventsTest do
   describe "events" do
     alias CoursePlanner.Events.Event
 
-    @valid_attrs %{date: ~D[2010-04-17], description: "some description", finishing_time: ~T[15:00:00.000000], location: "some location", name: "some name", starting_time: ~T[14:00:00.000000]}
-    @update_attrs %{date: ~D[2011-05-18], description: "some updated description", finishing_time: ~T[15:01:01.000000], location: "some updated location", name: "some updated name", starting_time: ~T[14:01:01.000000]}
+    @today Timex.today()
+    @now Timex.now()
+    @valid_attrs %{date: @today, description: "some description", finishing_time: ~T[15:00:00.000000], location: "some location", name: "some name", starting_time: ~T[14:00:00.000000]}
+    @update_attrs %{date: @today, description: "some updated description", finishing_time: ~T[15:01:01.000000], location: "some updated location", name: "some updated name", starting_time: ~T[14:01:01.000000]}
     @invalid_attrs %{date: nil, description: nil, finishing_time: nil, location: nil, name: nil, starting_time: nil}
 
     test "all/0 returns all events" do
@@ -22,15 +24,22 @@ defmodule CoursePlanner.EventsTest do
     end
 
     test "all_splitted/1 returns events splited by time" do
-      %{id: id1} = insert(:event, %{date: ~D[2017-02-02], starting_time: ~T[10:00:00.000000]})
-      %{id: id2} = insert(:event, %{date: ~D[2017-02-02], starting_time: ~T[12:00:00.000000]})
-      %{id: id3} = insert(:event, %{date: ~D[2017-02-03], starting_time: ~T[13:00:00.000000]})
+      day_before = Timex.shift(@today, days: -1)
+      day_after = Timex.shift(@today, days: 1)
+      %{id: id1} = insert(:event, %{date: day_before, starting_time: ~T[10:00:00.000000]})
+      %{id: id2} = insert(:event, %{date: day_before, starting_time: ~T[12:00:00.000000]})
+      %{id: id3} = insert(:event, %{date: @today, starting_time: ~T[13:00:00.000000]})
 
-      %{id: id4} = insert(:event, %{date: ~D[2017-02-03], starting_time: ~T[15:00:00.000000]})
-      %{id: id5} = insert(:event, %{date: ~D[2017-02-04], starting_time: ~T[15:00:00.000000]})
-      %{id: id6} = insert(:event, %{date: ~D[2017-02-04], starting_time: ~T[21:00:00.000000]})
+      %{id: id4} = insert(:event, %{date: @today, starting_time: ~T[15:00:00.000000]})
+      %{id: id5} = insert(:event, %{date: day_after, starting_time: ~T[15:00:00.000000]})
+      %{id: id6} = insert(:event, %{date: day_after, starting_time: ~T[21:00:00.000000],
+        finishing_time: ~T[23:00:00.000000]})
 
-      {past_events, future_events} = Events.all_splitted(~N[2017-02-03 14:00:00])
+      {past_events, future_events} =
+        @now
+        |> Timex.set([hour: 14, minute: 0, second: 0])
+        |> Events.all_splitted()
+
       assert [%{id: ^id3}, %{id: ^id2}, %{id: ^id1}] = past_events
       assert [%{id: ^id4}, %{id: ^id5}, %{id: ^id6}] = future_events
     end
@@ -42,7 +51,7 @@ defmodule CoursePlanner.EventsTest do
 
     test "create/1 with valid data creates a event" do
       assert {:ok, %Event{} = event} = Events.create(@valid_attrs)
-      assert event.date == ~D[2010-04-17]
+      assert event.date == @today
       assert event.description == "some description"
       assert event.finishing_time == ~T[15:00:00.000000]
       assert event.location == "some location"
@@ -58,7 +67,7 @@ defmodule CoursePlanner.EventsTest do
       event = insert(:event)
       assert {:ok, event} = Events.update(event, @update_attrs)
       assert %Event{} = event
-      assert event.date == ~D[2011-05-18]
+      assert event.date == @today
       assert event.description == "some updated description"
       assert event.finishing_time == ~T[15:01:01.000000]
       assert event.location == "some updated location"
