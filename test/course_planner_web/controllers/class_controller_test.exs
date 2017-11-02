@@ -35,6 +35,12 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Classes"
   end
 
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, class_path(conn, :index)
+    assert html_response(conn, 200) =~ "Classes"
+  end
+
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, class_path(conn, :new)
     assert html_response(conn, 200) =~ "New class"
@@ -249,6 +255,7 @@ defmodule CoursePlanner.ClassControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     created_course = create_course()
     class = Repo.insert! %Class{offered_course_id: created_course.id}
@@ -261,12 +268,16 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = get volunteer_conn, class_path(volunteer_conn, :edit, class)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, class_path(supervisor_conn, :edit, class)
+    assert html_response(conn, 403)
   end
 
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     created_course = create_course()
     class_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
@@ -280,12 +291,16 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = delete volunteer_conn, class_path(volunteer_conn, :delete, class.id)
     assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, class_path(supervisor_conn, :delete, class.id)
+    assert html_response(conn, 403)
   end
 
   test "does not render form for new class for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     conn = get student_conn, class_path(student_conn, :new)
     assert html_response(conn, 403)
@@ -295,12 +310,16 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = get volunteer_conn, class_path(volunteer_conn, :new)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, class_path(supervisor_conn, :new)
+    assert html_response(conn, 403)
   end
 
   test "does not create class for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     created_course = create_course()
     completed_attributes = %{@valid_attrs | offered_course_id: created_course.id}
@@ -313,12 +332,16 @@ defmodule CoursePlanner.ClassControllerTest do
 
     conn = post volunteer_conn, class_path(volunteer_conn, :create), class: completed_attributes
     assert html_response(conn, 403)
+
+    conn = post supervisor_conn, class_path(supervisor_conn, :create), class: completed_attributes
+    assert html_response(conn, 403)
   end
 
   test "does not update chosen class for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     created_course = create_course()
     class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}
@@ -332,6 +355,9 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 403)
 
     conn = put volunteer_conn, class_path(volunteer_conn, :update, class), class: update_params
+    assert html_response(conn, 403)
+
+    conn = put supervisor_conn, class_path(supervisor_conn, :update, class), class: update_params
     assert html_response(conn, 403)
   end
 

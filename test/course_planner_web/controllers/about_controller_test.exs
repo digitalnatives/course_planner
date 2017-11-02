@@ -21,7 +21,39 @@ defmodule CoursePlanner.AboutControllerTest do
   end
 
   @tag user_role: :coordinator
-  test "shows chosen resource", %{conn: conn} do
+  test "shows chosen resource for coordinator", %{conn: conn} do
+    program_data =
+    [
+      %{
+        key: "PROGRAM_WEBSITE_URL",
+        value: "http://www.program-website-url.com/",
+        type: "url"
+       },
+      %{
+        key: "ATTENDANCE_DESCRIPTIONS",
+        value: "sick leave, informed beforehand",
+        type: "list"
+       },
+      %{
+        key: "PROGRAM_DESCRIPTION",
+        value: "some sample description of the program",
+        type: "text"
+       },
+      %{
+         key: "PROGRAM_NAME",
+         value: "some name",
+         type: "string"
+       }
+    ]
+
+    populated_settings = populate_settings(program_data)
+
+    conn = get conn, about_path(conn, :show)
+    assert html_response(conn, 200) =~ "About #{populated_settings["PROGRAM_NAME"].value}"
+  end
+
+  @tag user_role: :supervisor
+  test "shows chosen resource for supervisor", %{conn: conn} do
     program_data =
     [
       %{
