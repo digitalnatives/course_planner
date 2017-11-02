@@ -74,10 +74,6 @@ defmodule CoursePlannerWeb.SupervisorController do
         conn
         |> put_flash(:error, "Supervisor was not found.")
         |> redirect(to: supervisor_path(conn, :index))
-      {:error, :self_deletion} ->
-        conn
-        |> put_flash(:error, "Supervisor cannot delete herself.")
-        |> redirect(to: supervisor_path(conn, :index))
       {:error, _changeset} ->
         conn
         |> put_flash(:error, "Something went wrong.")
