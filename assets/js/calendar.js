@@ -367,7 +367,7 @@
         ( USER_ROLE === "Teacher" || USER_ROLE === "Student" ) ?
           `<div class="calendar__switch">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="calendar-switch">
-              <span class="mdl-switch__label calendar__switch-label">Display every class</span>
+              <span class="mdl-switch__label calendar__switch-label">Display every slot</span>
               <input
                 type="checkbox"
                 id="calendar-switch"
