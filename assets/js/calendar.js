@@ -79,10 +79,10 @@
               index
             })
         ).map(
-          // add edges to classes that contains the overlapping classes (bot not the actual class)
-          ( cl1, _, classes ) => Object.assign( {}, cl1, {
+          // add edges to slots that contains the overlapping slots (bot not the actual slot)
+          ( cl1, _, slots ) => Object.assign( {}, cl1, {
             edges:
-              classes.filter(
+              slots.filter(
                 ( cl2 ) =>
                   cl1 !== cl2 && (
                     ( cl1.a <  cl2.a && cl2.a <  cl1.b ) ||
@@ -102,7 +102,7 @@
             calculate connected components of the graph
         */
 
-        let classesWithComponents = [];
+        let slotsWithComponents = [];
 
         let componentCounter = 0;
 
@@ -134,14 +134,14 @@
           stack = notConnected.concat( connected );
 
           // add the current to the output array
-          classesWithComponents = classesWithComponents.concat( [ cl ] );
+          slotsWithComponents = slotsWithComponents.concat( [ cl ] );
         }
 
         /*
             color components of the graph
         */
 
-        let everyColoredClasses = classesWithComponents.reduce(
+        let everyColoredSlots = slotsWithComponents.reduce(
           // separate them by component
           ( components, cl ) =>
             Object.assign(
@@ -152,20 +152,20 @@
           , []
         ).map(
           // color the components
-          ( classes, _ ) => {
+          ( slots, _ ) => {
             let maxColor = 0;
 
-            stack = classes.slice().sort(
+            stack = slots.slice().sort(
               ( cl1, cl2 ) => cl1.edges.length > cl2.edges.length
             );
 
-            let coloredClasses = [];
+            let coloredSlots = [];
 
             while ( stack.length ) {
               let [ cl ] = stack.slice( -1 );
               stack = stack.slice( 0, -1 );
 
-              const connectedColors = coloredClasses.filter(
+              const connectedColors = coloredSlots.filter(
                 ( connectedCl ) => connectedCl.edges.includes( cl.index )
               ).map(
                 ( connectedCl ) => connectedCl.color
@@ -179,16 +179,16 @@
 
               cl = Object.assign( {}, cl, { color } );
 
-              coloredClasses = coloredClasses.concat( [ cl ] );
+              coloredSlots = coloredSlots.concat( [ cl ] );
 
               maxColor = Math.max( maxColor, color );
             }
 
-            coloredClasses = coloredClasses.map(
+            coloredSlots = coloredSlots.map(
               ( cl ) => Object.assign( {}, cl, { maxColor } )
             );
 
-            return coloredClasses;
+            return coloredSlots;
           }
         ).reduce(
           // merge the components into one array
@@ -197,13 +197,13 @@
 
         // console.log(s);
 
-        return { classes: everyColoredClasses, date };
+        return { slots: everyColoredSlots, date };
       }
     ).map(
       // calculate dimensions from the hours and colors
       ( day ) => Object.assign( {}, day, {
-        classes:
-          day.classes.map(
+        slots:
+          day.slots.map(
             ( cl ) => {
               const top = ( cl.a - 8 ) * 50;
               const height = ( cl.b - 8 ) * 50 - top;
@@ -234,7 +234,7 @@
               ).join( "" )
             }
             ${
-              day.classes.map(
+              day.slots.map(
                 ( cl, i ) => `
                   <div
                     class="calendar__class"
