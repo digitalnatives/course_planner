@@ -109,8 +109,9 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
 
   @tag user_role: :supervisor
   test "renders page not found when id is nonexistent for supervisor", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :show, -1)
-    assert html_response(conn, 403)
+    assert_error_sent 404, fn ->
+      get conn, offered_course_path(conn, :show, -1)
+    end
   end
 
   @tag user_role: :coordinator
