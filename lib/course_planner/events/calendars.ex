@@ -13,6 +13,7 @@ defmodule CoursePlanner.Events.Calendars do
   def get_user_events(user, true, week_range) do
     case user.role do
      "Coordinator" -> get_all_events(week_range)
+     "Supervisor" -> get_all_events(week_range)
      _             -> get_user_events(user.id, week_range)
     end
   end
