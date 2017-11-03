@@ -40,6 +40,12 @@ defmodule CoursePlannerWeb.EventControllerTest do
       conn = get conn, event_path(conn, :index)
       assert html_response(conn, 200) =~ "Events"
     end
+
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor can lists all events", %{conn: conn} do
+      conn = get conn, event_path(conn, :index)
+      assert html_response(conn, 200) =~ "Events"
+    end
   end
 
   @describetag pipeline: :browser
@@ -58,6 +64,12 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
     @tag user_role: :volunteer, pipeline: :browser
     test "volunteer cannot add new event", %{conn: conn} do
+      conn = get conn, event_path(conn, :new)
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot add new event", %{conn: conn} do
       conn = get conn, event_path(conn, :new)
       html_response(conn, 403)
     end
@@ -83,9 +95,14 @@ defmodule CoursePlannerWeb.EventControllerTest do
       html_response(conn, 403)
     end
 
-
     @tag user_role: :volunteer, pipeline: :browser
     test "volunteer cannot create event", %{conn: conn} do
+      conn = post conn, event_path(conn, :create), event: @create_attrs
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot create event", %{conn: conn} do
       conn = post conn, event_path(conn, :create), event: @create_attrs
       html_response(conn, 403)
     end
@@ -128,6 +145,12 @@ defmodule CoursePlannerWeb.EventControllerTest do
       html_response(conn, 403)
     end
 
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot edit event", %{conn: conn, event: event} do
+      conn = get conn, event_path(conn, :edit, event)
+      html_response(conn, 403)
+    end
+
     @tag user_role: :coordinator, pipeline: :browser
     test "renders form for editing chosen event", %{conn: conn, event: event} do
       conn = get conn, event_path(conn, :edit, event)
@@ -151,6 +174,12 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
     @tag user_role: :volunteer, pipeline: :browser
     test "volunteer cannot update event", %{conn: conn, event: event} do
+      conn = put conn, event_path(conn, :update, event), event: @update_attrs
+      html_response(conn, 403)
+    end
+
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot update event", %{conn: conn, event: event} do
       conn = put conn, event_path(conn, :update, event), event: @update_attrs
       html_response(conn, 403)
     end
@@ -197,6 +226,14 @@ defmodule CoursePlannerWeb.EventControllerTest do
       response(conn, 200) =~ event.name
     end
 
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot delete event", %{conn: conn, event: event} do
+      conn = delete conn, event_path(conn, :delete, event)
+      response(conn, 403)
+      conn = get conn, event_path(conn, :show, event)
+      response(conn, 200) =~ event.name
+    end
+
     @tag user_role: :coordinator, pipeline: :browser
     test "deletes chosen event", %{conn: conn, event: event} do
       conn = delete conn, event_path(conn, :delete, event)
@@ -219,6 +256,12 @@ defmodule CoursePlannerWeb.EventControllerTest do
 
     @tag user_role: :volunteer, pipeline: :browser
     test "volunteer cannot delete inexisting event", %{conn: conn} do
+      conn = delete conn, event_path(conn, :delete, -1)
+      response(conn, 403)
+    end
+
+    @tag user_role: :supervisor, pipeline: :browser
+    test "supervisor cannot delete inexisting event", %{conn: conn} do
       conn = delete conn, event_path(conn, :delete, -1)
       response(conn, 403)
     end
@@ -270,6 +313,26 @@ defmodule CoursePlannerWeb.EventControllerTest do
       conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: true}
       assert %{"events" => events} = json_response(conn, 200)
       assert length(events) == 1
+    end
+
+    @tag user_role: :supervisor, pipeline: :protected_api
+    test "all events for supervisor", %{conn: %{assigns: %{current_user: user}} = conn} do
+      insert(:event, users: [user], date: ~D[2017-01-03])
+      insert(:event, date: ~D[2017-01-03])
+
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: true}
+      assert %{"events" => events} = json_response(conn, 200)
+      assert length(events) == 2
+    end
+
+    @tag user_role: :coordinator, pipeline: :protected_api
+    test "all events for coordinator", %{conn: %{assigns: %{current_user: user}} = conn} do
+      insert(:event, users: [user], date: ~D[2017-01-03])
+      insert(:event, date: ~D[2017-01-03])
+
+      conn = get conn, event_path(conn, :fetch), %{date: "2017-01-04", my_events: true}
+      assert %{"events" => events} = json_response(conn, 200)
+      assert length(events) == 2
     end
   end
 

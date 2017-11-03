@@ -59,6 +59,12 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     assert html_response(conn, 200) =~ "Courses"
   end
 
+  @tag user_role: :supervisor
+  test "lists all entries on index for supervisor", %{conn: conn} do
+    conn = get conn, offered_course_path(conn, :index)
+    assert html_response(conn, 200) =~ "Courses"
+  end
+
   @tag user_role: :coordinator
   test "renders form for new resources", %{conn: conn} do
     insert_list(3, :student)
@@ -87,8 +93,22 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
   end
 
+  @tag user_role: :supervisor
+  test "shows chosen resource for supervisor", %{conn: conn} do
+    offered_course = insert(:offered_course)
+    conn = get conn, offered_course_path(conn, :show, offered_course)
+    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
+  end
+
   @tag user_role: :coordinator
   test "renders page not found when id is nonexistent", %{conn: conn} do
+    assert_error_sent 404, fn ->
+      get conn, offered_course_path(conn, :show, -1)
+    end
+  end
+
+  @tag user_role: :supervisor
+  test "renders page not found when id is nonexistent for supervisor", %{conn: conn} do
     assert_error_sent 404, fn ->
       get conn, offered_course_path(conn, :show, -1)
     end
@@ -205,195 +225,266 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     assert html_response(conn, 200) =~ "New course"
   end
 
-  @tag user_role: :teacher
-  test "teacher can see offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
+  describe "teacher" do
+    @tag user_role: :teacher
+    test "can see offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :show, offered_course)
+      assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
+    end
+
+    @tag user_role: :teacher
+    test "can edit offered course if assigned to her", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 200) =~ "Edit course"
+    end
+
+    @tag user_role: :teacher
+    test "cannot edit offered course if is not assigned to her", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "can update offered course if assigned to her", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      params = %{syllabus: "New syllabus"}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
+      assert Repo.get_by(OfferedCourse, params)
+    end
+
+    @tag user_role: :teacher
+    test "can not update offered syllabus course if is not assigned to her", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      params = %{syllabus: "New syllabus"}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "can not update anything beside syllabus", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      params = %{syllabus: "New syllabus", term: nil, course: nil, number_of_sessions: -1}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
+      updated_offered_course = Repo.get!(OfferedCourse, offered_course.id)
+
+      assert "New syllabus" == updated_offered_course.syllabus
+      assert offered_course.course_id == updated_offered_course.course_id
+      assert offered_course.term_id == updated_offered_course.term_id
+      assert offered_course.number_of_sessions == updated_offered_course.number_of_sessions
+    end
+
+    @tag user_role: :teacher
+    test "can not update if syllabus is empty", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      params = %{syllabus: ""}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert html_response(conn, 200) =~ "Edit course"
+    end
+
+    @tag user_role: :teacher
+    test "can list their offered courses", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      assert html_response(conn, 200)
+    end
+
+    @tag user_role: :teacher
+    test "can't see form for new offered course", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "can't create offered course", %{conn: conn} do
+      attrs = valid_attrs()
+      conn = post conn, offered_course_path(conn, :create), offered_course: attrs
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "can't delete offered course", %{conn: conn} do
+      offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+      conn = delete conn, offered_course_path(conn, :delete, offered_course)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :teacher
+    test "can't see new course button", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      refute html_response(conn, 200) =~ "New course"
+    end
   end
 
-  @tag user_role: :teacher
-  test "teacher can edit offered course if assigned to her", %{conn: conn} do
-    teacher = conn.assigns.current_user
-    offered_course = insert(:offered_course, teachers: [teacher])
-    conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 200) =~ "Edit course"
+  describe "student" do
+    @tag user_role: :student
+    test "can see offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :show, offered_course)
+      assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
+    end
+
+    @tag user_role: :student
+    test "can't edit offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :student
+    test "can't update offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      params = %{syllabus: "New syllabus"}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :student
+    test "can list their offered courses", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      assert html_response(conn, 200)
+    end
+
+    @tag user_role: :student
+    test "can't see form for new offered course", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :student
+    test "can't create offered course", %{conn: conn} do
+      attrs = valid_attrs()
+      conn = post conn, offered_course_path(conn, :create), offered_course: attrs
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :student
+    test "can't delete offered course", %{conn: conn} do
+      offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+      conn = delete conn, offered_course_path(conn, :delete, offered_course)
+      assert html_response(conn, 403)
+    end
   end
 
-  @tag user_role: :teacher
-  test "teacher cannot edit offered course if is not assigned to her", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 403)
+  describe "volunteer" do
+    @tag user_role: :volunteer
+    test "can't see offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :show, offered_course)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't edit offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't update offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      params = %{syllabus: "New syllabus"}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't list all offered courses", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't see form for new offered course", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't create offered course", %{conn: conn} do
+      attrs = valid_attrs()
+      conn = post conn, offered_course_path(conn, :create), offered_course: attrs
+      assert html_response(conn, 403)
+    end
+
+    @tag user_role: :volunteer
+    test "can't delete offered course", %{conn: conn} do
+      offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+      conn = delete conn, offered_course_path(conn, :delete, offered_course)
+      assert html_response(conn, 403)
+    end
   end
 
-  @tag user_role: :teacher
-  test "teacher can update offered course if assigned to her", %{conn: conn} do
-    teacher = conn.assigns.current_user
-    offered_course = insert(:offered_course, teachers: [teacher])
-    params = %{syllabus: "New syllabus"}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
-    assert Repo.get_by(OfferedCourse, params)
-  end
+  describe "supervisor" do
+    @tag user_role: :supervisor
+    test "can see offered course", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :show, offered_course)
+      assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
+    end
 
-  @tag user_role: :teacher
-  test "teacher can not update offered syllabus course if is not assigned to her", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    params = %{syllabus: "New syllabus"}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert html_response(conn, 403)
-  end
+    @tag user_role: :supervisor
+    test "can't edit offered course if assigned to her", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 403)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can not update anything beside syllabus", %{conn: conn} do
-    teacher = conn.assigns.current_user
-    offered_course = insert(:offered_course, teachers: [teacher])
-    params = %{syllabus: "New syllabus", term: nil, course: nil, number_of_sessions: -1}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert redirected_to(conn) == offered_course_path(conn, :show, offered_course)
-    updated_offered_course = Repo.get!(OfferedCourse, offered_course.id)
+    @tag user_role: :teacher
+    test "cannot edit offered course if is not assigned to her", %{conn: conn} do
+      offered_course = insert(:offered_course)
+      conn = get conn, offered_course_path(conn, :edit, offered_course)
+      assert html_response(conn, 403)
+    end
 
-    assert "New syllabus" == updated_offered_course.syllabus
-    assert offered_course.course_id == updated_offered_course.course_id
-    assert offered_course.term_id == updated_offered_course.term_id
-    assert offered_course.number_of_sessions == updated_offered_course.number_of_sessions
-  end
+    @tag user_role: :supervisor
+    test "can't update offered course", %{conn: conn} do
+      teacher = conn.assigns.current_user
+      offered_course = insert(:offered_course, teachers: [teacher])
+      params = %{syllabus: "New syllabus"}
+      conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
+      assert html_response(conn, 403)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can not update if syllabus is empty", %{conn: conn} do
-    teacher = conn.assigns.current_user
-    offered_course = insert(:offered_course, teachers: [teacher])
-    params = %{syllabus: ""}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert html_response(conn, 200) =~ "Edit course"
-  end
+    @tag user_role: :supervisor
+    test "can list offered courses", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      assert html_response(conn, 200)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can list their offered courses", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 200)
-  end
+    @tag user_role: :supervisor
+    test "can't see form for new offered course", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :new)
+      assert html_response(conn, 403)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can't see form for new offered course", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :new)
-    assert html_response(conn, 403)
-  end
+    @tag user_role: :supervisor
+    test "can't create offered course", %{conn: conn} do
+      attrs = valid_attrs()
+      conn = post conn, offered_course_path(conn, :create), offered_course: attrs
+      assert html_response(conn, 403)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can't create offered course", %{conn: conn} do
-    attrs = valid_attrs()
-    conn = post conn, offered_course_path(conn, :create), offered_course: attrs
-    assert html_response(conn, 403)
-  end
+    @tag user_role: :supervisor
+    test "can't delete offered course", %{conn: conn} do
+      offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
+      conn = delete conn, offered_course_path(conn, :delete, offered_course)
+      assert html_response(conn, 403)
+    end
 
-  @tag user_role: :teacher
-  test "teacher can't delete offered course", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
-    conn = delete conn, offered_course_path(conn, :delete, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :student
-  test "student can see offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 200) =~ "#{offered_course.course.name} - #{offered_course.term.name}"
-  end
-
-  @tag user_role: :student
-  test "student can't edit offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :student
-  test "student can't update offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    params = %{syllabus: "New syllabus"}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :student
-  test "student can list their offered courses", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 200)
-  end
-
-  @tag user_role: :student
-  test "student can't see form for new offered course", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :new)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :student
-  test "student can't create offered course", %{conn: conn} do
-    attrs = valid_attrs()
-    conn = post conn, offered_course_path(conn, :create), offered_course: attrs
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :student
-  test "student can't delete offered course", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
-    conn = delete conn, offered_course_path(conn, :delete, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't see offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :show, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't edit offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    conn = get conn, offered_course_path(conn, :edit, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't update offered course", %{conn: conn} do
-    offered_course = insert(:offered_course)
-    params = %{syllabus: "New syllabus"}
-    conn = put conn, offered_course_path(conn, :update, offered_course), offered_course: params
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't list all offered courses", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :index)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't see form for new offered course", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :new)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't create offered course", %{conn: conn} do
-    attrs = valid_attrs()
-    conn = post conn, offered_course_path(conn, :create), offered_course: attrs
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :volunteer
-  test "volunteer can't delete offered course", %{conn: conn} do
-    offered_course = Repo.insert! %OfferedCourse{term_id: term().id, course_id: course("Course2").id}
-    conn = delete conn, offered_course_path(conn, :delete, offered_course)
-    assert html_response(conn, 403)
-  end
-
-  @tag user_role: :teacher
-  test "teacher can't see new course button", %{conn: conn} do
-    conn = get conn, offered_course_path(conn, :index)
-    refute html_response(conn, 200) =~ "New course"
+    @tag user_role: :supervisor
+    test "can't see new course button", %{conn: conn} do
+      conn = get conn, offered_course_path(conn, :index)
+      refute html_response(conn, 200) =~ "New course"
+    end
   end
 end

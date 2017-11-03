@@ -159,4 +159,33 @@ defmodule CoursePlanner.SettingControllerTest do
       assert html_response(conn, 403)
     end
   end
+
+  @moduletag user_role: :supervisor
+  describe "settings functionality for supervisor user" do
+    test "shows chosen resource", %{conn: conn} do
+      conn = get conn, setting_path(conn, :show)
+      html_response = html_response(conn, 200)
+      assert html_response =~ "System Settings"
+      assert html_response =~ "Program Settings"
+    end
+
+    test "cannot edit system settings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit, setting_type: "system")
+      assert html_response(conn, 403)
+    end
+
+    test "cannot edit programsettings", %{conn: conn} do
+      conn = get conn, setting_path(conn, :edit, setting_type: "program")
+      assert html_response(conn, 403)
+    end
+
+    test "can't update settings", %{conn: conn} do
+      system_variable = insert(:system_variable)
+      updated_params = %{system_variables: %{"0" => %{id: "#{system_variable.id}", value: "new program name"}}}
+
+      conn = put conn, setting_path(conn, :update), settings: updated_params
+      assert html_response(conn, 403)
+    end
+  end
+
 end
