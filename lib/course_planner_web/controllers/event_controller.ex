@@ -14,8 +14,12 @@ defmodule CoursePlannerWeb.EventController do
   plug :authorize_controller
 
   def index(conn, _params) do
-    events = Events.all()
-    render(conn, "index.html", events: events)
+    {past_events, upcoming_events} = Events.all_splitted(Timex.now())
+
+    render(conn, "index.html",
+      past_events: past_events,
+      upcoming_events: upcoming_events
+    )
   end
 
   def new(conn, _params) do

@@ -20,31 +20,36 @@ defmodule CoursePlannerWeb.EventControllerTest do
     @tag user_role: :student, pipeline: :browser
     test "student can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Events"
+      assert html_response(conn, 200) =~ "Upcoming events"
+      assert html_response(conn, 200) =~ "Past events"
     end
 
     @tag user_role: :teacher, pipeline: :browser
     test "teacher can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Events"
+      assert html_response(conn, 200) =~ "Upcoming events"
+      assert html_response(conn, 200) =~ "Past events"
     end
 
     @tag user_role: :volunteer, pipeline: :browser
     test "volunteer can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Events"
+      assert html_response(conn, 200) =~ "Upcoming events"
+      assert html_response(conn, 200) =~ "Past events"
     end
 
     @tag user_role: :coordinator, pipeline: :browser
     test "coordinator can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Events"
+      assert html_response(conn, 200) =~ "Upcoming events"
+      assert html_response(conn, 200) =~ "Past events"
     end
 
     @tag user_role: :supervisor, pipeline: :browser
     test "supervisor can lists all events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Events"
+      assert html_response(conn, 200) =~ "Upcoming events"
+      assert html_response(conn, 200) =~ "Past events"
     end
   end
 
