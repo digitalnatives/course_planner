@@ -5,7 +5,7 @@ defmodule CoursePlannerWeb.LayoutView do
   alias CoursePlanner.Settings
 
   @navbars %{"Coordinator" => "coordinator_app_navbar.html",
-             "Supervisor" => "supervisor_app_navbar.html",
+             "Supervisor" => "coordinator_app_navbar.html",
              "Student" => "student_app_navbar.html",
              "Teacher" => "teacher_app_navbar.html",
              "Volunteer" => "volunteer_app_navbar.html"}
