@@ -56,10 +56,10 @@
     }
   }
 
-  function renderCalendar ( startDate, classes, calendar, displayEvery ) {
+  function renderSlots(startDate, slots, calendar, displayEvery) {
     const monday = new Date( startDate );
 
-    let days = new Array( 7 ).fill( monday ).map(
+    return new Array( 7 ).fill( monday ).map(
       ( monday, index ) => {
         const day = new Date( monday );
         day.setDate( day.getDate() + index );
@@ -67,22 +67,22 @@
       }
     ).map(
       ( date ) => {
-        let stack = classes.filter(
-          // filter the classes so they will contain the classes of the current day
+        let stack = slots.filter(
+          // filter the slots so they will contain the slots of the current day
           ( cl ) => cl.date === isoDate( date )
         ).sort().map(
           // add number hours, and index for them
           ( cl, index ) =>
             Object.assign( {}, cl, {
-              a: toHours( cl.starting_at ),
-              b: toHours( cl.finishes_at ),
+              a: toHours( cl.start ),
+              b: toHours( cl.finish ),
               index
             })
         ).map(
-          // add edges to classes that contains the overlapping classes (bot not the actual class)
-          ( cl1, _, classes ) => Object.assign( {}, cl1, {
+          // add edges to slots that contains the overlapping slots (bot not the actual slot)
+          ( cl1, _, slots ) => Object.assign( {}, cl1, {
             edges:
-              classes.filter(
+              slots.filter(
                 ( cl2 ) =>
                   cl1 !== cl2 && (
                     ( cl1.a <  cl2.a && cl2.a <  cl1.b ) ||
@@ -102,7 +102,7 @@
             calculate connected components of the graph
         */
 
-        let classesWithComponents = [];
+        let slotsWithComponents = [];
 
         let componentCounter = 0;
 
@@ -134,14 +134,14 @@
           stack = notConnected.concat( connected );
 
           // add the current to the output array
-          classesWithComponents = classesWithComponents.concat( [ cl ] );
+          slotsWithComponents = slotsWithComponents.concat( [ cl ] );
         }
 
         /*
             color components of the graph
         */
 
-        let everyColoredClasses = classesWithComponents.reduce(
+        let everyColoredSlots = slotsWithComponents.reduce(
           // separate them by component
           ( components, cl ) =>
             Object.assign(
@@ -152,20 +152,20 @@
           , []
         ).map(
           // color the components
-          ( classes, _ ) => {
+          ( slots, _ ) => {
             let maxColor = 0;
 
-            stack = classes.slice().sort(
+            stack = slots.slice().sort(
               ( cl1, cl2 ) => cl1.edges.length > cl2.edges.length
             );
 
-            let coloredClasses = [];
+            let coloredSlots = [];
 
             while ( stack.length ) {
               let [ cl ] = stack.slice( -1 );
               stack = stack.slice( 0, -1 );
 
-              const connectedColors = coloredClasses.filter(
+              const connectedColors = coloredSlots.filter(
                 ( connectedCl ) => connectedCl.edges.includes( cl.index )
               ).map(
                 ( connectedCl ) => connectedCl.color
@@ -179,16 +179,16 @@
 
               cl = Object.assign( {}, cl, { color } );
 
-              coloredClasses = coloredClasses.concat( [ cl ] );
+              coloredSlots = coloredSlots.concat( [ cl ] );
 
               maxColor = Math.max( maxColor, color );
             }
 
-            coloredClasses = coloredClasses.map(
+            coloredSlots = coloredSlots.map(
               ( cl ) => Object.assign( {}, cl, { maxColor } )
             );
 
-            return coloredClasses;
+            return coloredSlots;
           }
         ).reduce(
           // merge the components into one array
@@ -197,13 +197,13 @@
 
         // console.log(s);
 
-        return { classes: everyColoredClasses, date };
+        return { slots: everyColoredSlots, date };
       }
     ).map(
       // calculate dimensions from the hours and colors
       ( day ) => Object.assign( {}, day, {
-        classes:
-          day.classes.map(
+        slots:
+          day.slots.map(
             ( cl ) => {
               const top = ( cl.a - 8 ) * 50;
               const height = ( cl.b - 8 ) * 50 - top;
@@ -234,10 +234,10 @@
               ).join( "" )
             }
             ${
-              day.classes.map(
+              day.slots.map(
                 ( cl, i ) => `
                   <div
-                    class="calendar__class"
+                    class="calendar__class ${cl.color_css_class}"
                     style="
                       top: ${ cl.top }px;
                       height: ${ cl.height }px;
@@ -247,14 +247,14 @@
                     id="${ isoDate( day.date ) }__${ cl.index }"
                   >
                     <div class="calendar__class-course">
-                      ${ cl.course_name }
+                      ${ cl.primary_name }
                     </div>
                     <div class="calendar__class-teachers">
-                      ${ cl.teachers.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }
+                      ${ cl.primary_users.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }
                     </div>
                     <div class="calendar__class-time">
-                      ${ cl.classroom ? cl.classroom + "," : "" }
-                      ${ renderHour( cl.starting_at ) }-${ renderHour( cl.finishes_at ) }
+                      ${ cl.place ? cl.place + "," : "" }
+                      ${ renderHour( cl.start ) }-${ renderHour( cl.finish ) }
                     </div>
                   </div>
                   <div
@@ -264,10 +264,10 @@
                     "
                     for="${ isoDate( day.date ) }__${ cl.index }"
                   >
-                    ${ cl.course_name }<br />
-                    ${ cl.teachers.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }<br />
-                    ${ cl.classroom ? cl.classroom + "," : "" }
-                    ${ renderHour( cl.starting_at ) }-${ renderHour( cl.finishes_at ) }
+                    ${ cl.primary_name }<br />
+                    ${ cl.primary_users.map( ( teacher ) => renderName( teacher ) ).join( ", " ) }<br />
+                    ${ cl.place ? cl.place + "," : "" }
+                    ${ renderHour( cl.start ) }-${ renderHour( cl.finish ) }
                   </div>
                 `
               ).join( "" )
@@ -277,11 +277,50 @@
         </div>
       `
     ).join( "" );
+  }
 
-    let previousMonday = new Date( monday );
+
+  function createCalendarSlots(classes, events){
+    var classSlots = classes.map(function(item) {
+        var slot = new Object();
+        slot.primary_name = item.course_name;
+        slot.secondary_name = item.term_name;
+        slot.description = "";
+        slot.date = item.date;
+        slot.start = item.starting_at;
+        slot.finish = item.finishes_at;
+        slot.place = item.classroom;
+        slot.primary_users = item.teachers;
+        slot.seconday_users = [];
+        slot.color_css_class = "calendar__slot__class_color";
+        return slot;
+      });
+
+    var eventSlots = events.map(function(item) {
+        var slot = new Object();
+        slot.primary_name = item.name;
+        slot.secondary_name = "";
+        slot.description = item.description;
+        slot.date = item.date;
+        slot.start = item.starting_time;
+        slot.finish = item.finishing_time;
+        slot.place = item.location;
+        slot.primary_users = [];
+        slot.seconday_users = item.users;
+        slot.color_css_class = "calendar__slot__event_color";
+        return slot;
+      });
+
+    return classSlots.concat(eventSlots);
+  }
+
+  function renderCalendar ( startDate, renderedSlots, calendar, displayEvery ) {
+    const monday = new Date( startDate );
+
+    let previousMonday = new Date( startDate );
     previousMonday.setDate( monday.getDate() - 7 );
 
-    let nextMonday = new Date( monday );
+    let nextMonday = new Date( startDate );
     nextMonday.setDate( monday.getDate() + 7 );
 
     calendar.innerHTML = `
@@ -323,14 +362,14 @@
           }
         </div>
         <div class="calendar__days">
-          ${ days }
+          ${ renderedSlots }
         </div>
       </div>
       ${
         ( USER_ROLE === "Teacher" || USER_ROLE === "Student" ) ?
           `<div class="calendar__switch">
             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="calendar-switch">
-              <span class="mdl-switch__label calendar__switch-label">Display every class</span>
+              <span class="mdl-switch__label calendar__switch-label">Display every slot</span>
               <input
                 type="checkbox"
                 id="calendar-switch"
@@ -351,6 +390,27 @@
 
   var calendarPointerInterval = null;
 
+  function xhrGet ( path ) {
+    return new Promise(
+      function ( resolve, reject ) {
+        const req = new XMLHttpRequest( );
+
+        req.addEventListener( "load",
+          function ( ) {
+            var parsedData = JSON.parse( this.responseText );
+            resolve(parsedData);
+          }
+        );
+
+        req.addEventListener( "error", reject );
+
+        req.open( "GET", path );
+        req.setRequestHeader("authorization", `Bearer ${JWT}`)
+        req.send( );
+      }
+    )
+  }
+
   function loadCalendar ( displayEvery = false ) {
     const calendar = document.querySelector( ".calendar__wrapper" );
 
@@ -363,21 +423,25 @@
     let startDate = startDateParameter.length && startDateParameter[0][1];
     startDate = getMonday( startDate );
 
-    const req = new XMLHttpRequest( );
+    Promise.all([
+      xhrGet(`/api/calendar?date=${ startDate }&my_classes=${ !displayEvery }`),
+      xhrGet(`/api/events?date=${ startDate }&my_events=${ !displayEvery }`)
+    ]).then(
+      function ( responses ) {
 
-    req.addEventListener( "load",
-      function ( ) {
-        renderCalendar( startDate, JSON.parse( this.responseText ).classes, calendar, displayEvery );
+        let slots = createCalendarSlots(responses[0].classes, responses[1].events)
+        let renderedSlots = renderSlots(startDate, slots, calendar, displayEvery);
+        renderCalendar( startDate, renderedSlots, calendar, displayEvery );
 
         clearInterval( calendarPointerInterval );
         updatePointer();
         calendarPointerInterval = setInterval( updatePointer, 10000 );
       }
-    );
-
-    req.open( "GET", `/api/calendar?date=${ startDate }&my_classes=${ !displayEvery }` );
-    req.setRequestHeader("authorization", `Bearer ${JWT}`)
-    req.send( );
+    ).catch(
+      function ( err ) {
+        console.log(err);
+      }
+    )
   }
 
   function initCalendar ( ) {
