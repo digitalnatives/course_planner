@@ -237,7 +237,7 @@
               day.slots.map(
                 ( cl, i ) => `
                   <div
-                    class="calendar__class"
+                    class="calendar__class ${cl.color_css_class}"
                     style="
                       top: ${ cl.top }px;
                       height: ${ cl.height }px;
@@ -292,6 +292,7 @@
         slot.place = item.classroom;
         slot.primary_users = item.teachers;
         slot.seconday_users = [];
+        slot.color_css_class = "calendar__slot_green";
         return slot;
       });
 
@@ -306,6 +307,7 @@
         slot.place = item.location;
         slot.primary_users = [];
         slot.seconday_users = item.users;
+        slot.color_css_class = "calendar__slot_red";
         return slot;
       });
 
