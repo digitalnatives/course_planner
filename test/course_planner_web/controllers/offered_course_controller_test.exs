@@ -102,16 +102,14 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
 
   @tag user_role: :coordinator
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, offered_course_path(conn, :show, -1)
-    end
+    conn = get conn, offered_course_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   @tag user_role: :supervisor
   test "renders page not found when id is nonexistent for supervisor", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, offered_course_path(conn, :show, -1)
-    end
+    conn = get conn, offered_course_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   @tag user_role: :coordinator
@@ -119,6 +117,12 @@ defmodule CoursePlanner.OfferedCourseControllerTest do
     offered_course = insert(:offered_course)
     conn = get conn, offered_course_path(conn, :edit, offered_course)
     assert html_response(conn, 200) =~ "Edit course"
+  end
+
+  @tag user_role: :coordinator
+  test "renders form for editing non-existent resource", %{conn: conn} do
+    conn = get conn, offered_course_path(conn, :edit, -1)
+    assert html_response(conn, 404)
   end
 
   @tag user_role: :coordinator

@@ -110,6 +110,11 @@ defmodule CoursePlanner.ClassControllerTest do
     assert html_response(conn, 200) =~ "Edit class"
   end
 
+  test "renders page not found for editing inexistent resource", %{conn: conn} do
+    conn = get conn, class_path(conn, :edit, -1)
+    assert html_response(conn, 404)
+  end
+
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
     created_course = create_course()
     class_insert_args = %Class{offered_course_id: created_course.id, date: Ecto.Date.from_erl({2010, 01, 01}), starting_at: Ecto.Time.from_erl({13, 0, 0}), finishes_at: Ecto.Time.from_erl({14, 0, 0})}

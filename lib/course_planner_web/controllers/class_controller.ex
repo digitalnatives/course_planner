@@ -2,24 +2,22 @@ defmodule CoursePlannerWeb.ClassController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Classes.Class, Classes, Attendances}
+  alias CoursePlanner.{Classes, Attendances}
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", terms: Classes.all())
   end
 
   def new(conn, _params) do
-    changeset = Class.changeset(%Class{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: Classes.new())
   end
 
   def create(%{assigns: %{current_user: current_user}} = conn, %{"class" => class_params}) do
-    changeset = Class.changeset(%Class{}, class_params, :create)
-
-    case Repo.insert(changeset) do
+    case Classes.create(class_params) do
       {:ok, class} ->
 
         Classes.notify_class_students(class,
@@ -39,19 +37,15 @@ defmodule CoursePlannerWeb.ClassController do
   end
 
   def edit(conn, %{"id" => id}) do
-    class = Repo.get!(Class, id)
-    changeset = Class.changeset(class)
-    render(conn, "edit.html", class: class, changeset: changeset)
+    with {:ok, class, changeset} <- Classes.edit(id),
+    do: render(conn, "edit.html", class: class, changeset: changeset)
   end
 
   def update(
     %{assigns: %{current_user: current_user}} = conn,
     %{"id" => id, "class" => class_params}) do
 
-    class = Repo.get!(Class, id)
-    changeset = Class.changeset(class, class_params, :update)
-
-    case Repo.update(changeset) do
+    case Classes.update(id, class_params) do
       {:ok, class} ->
         Classes.notify_class_students(class,
           current_user,
@@ -60,7 +54,7 @@ defmodule CoursePlannerWeb.ClassController do
         conn
         |> put_flash(:info, "Class updated successfully.")
         |> redirect(to: class_path(conn, :index))
-      {:error, changeset} ->
+      {:error, class, changeset} ->
         render(conn, "edit.html", class: class, changeset: changeset)
     end
   end
@@ -72,10 +66,7 @@ defmodule CoursePlannerWeb.ClassController do
         conn
         |> put_flash(:info, "Class deleted successfully.")
         |> redirect(to: class_path(conn, :index))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      {:error, :not_found} -> {:error, :not_found}
       {:error, _changeset} ->
         conn
         |> put_flash(:error, "Something went wrong.")

@@ -16,6 +16,16 @@ defmodule CoursePlanner.Terms do
     Repo.all(query)
   end
 
+  def all_for_classes do
+    Repo.all(from t in Term,
+    join: oc in assoc(t, :offered_courses),
+    join: co in assoc(oc, :course),
+    join: c in assoc(oc, :classes),
+    preload: [offered_courses: {oc, classes: c, course: co}],
+    order_by: [asc: t.start_date, asc: co.name, asc: c.date,
+               asc: c.starting_at, asc: c.finishes_at])
+  end
+
   def new do
     Term.changeset(%Term{holidays: [], courses: []})
   end
@@ -27,26 +37,27 @@ defmodule CoursePlanner.Terms do
   end
 
   def get(id) do
-    Term
-    |> Repo.get(id)
-    |> Repo.preload([:courses])
+    case Repo.get(Term, id) do
+      nil -> {:error, :not_found}
+      term -> {:ok, Repo.preload(term, [:courses])}
+    end
   end
 
   def edit(id) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term -> {:ok, term, Term.changeset(term)}
+      {:ok, term} -> {:ok, term, Term.changeset(term)}
+      error -> error
     end
   end
 
   def update(id, params) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term ->
+      {:ok, term} ->
         term
         |> term_changeset_with_holidays(params)
         |> Repo.update
         |> format_update_error(term)
+      error -> error
     end
   end
 
@@ -73,8 +84,8 @@ defmodule CoursePlanner.Terms do
 
   def delete(id) do
     case get(id) do
-      nil -> {:error, :not_found}
-      term -> Repo.delete(term)
+      {:ok, term} -> Repo.delete(term)
+      error -> error
     end
   end
 

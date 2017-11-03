@@ -40,15 +40,19 @@ defmodule CoursePlanner.CoordinatorControllerTest do
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, coordinator_path(conn, :show, -1)
-    end
+    conn = get conn, coordinator_path(conn, :show, -1)
+    assert html_response(conn, 404)
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
     coordinator = insert(:coordinator, %{name: "Foo", family_name: "Bar"})
     conn = get conn, coordinator_path(conn, :edit, coordinator)
     assert html_response(conn, 200) =~ "Foo Bar"
+  end
+
+  test "renders page not found for editing inexistent resource", %{conn: conn} do
+    conn = get conn, coordinator_path(conn, :edit, -1)
+    assert html_response(conn, 404)
   end
 
   test "does not updates if the resource does not exist", %{conn: conn} do

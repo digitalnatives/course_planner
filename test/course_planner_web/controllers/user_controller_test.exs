@@ -52,6 +52,11 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 200) =~ "Foo Bar"
   end
 
+  test "renders page not found for editing inexistent resource", %{conn: conn} do
+    conn = get conn, user_path(conn, :edit, -1)
+    assert html_response(conn, 404)
+  end
+
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
     user = insert(:student, %{name: "Foo", family_name: "Bar"})
     conn = put conn, user_path(conn, :update, user), %{"user" => %{"email" => "not email"}}

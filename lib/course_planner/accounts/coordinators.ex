@@ -16,6 +16,13 @@ defmodule CoursePlanner.Accounts.Coordinators do
     |> Users.new_user(token)
   end
 
+  def edit(id) do
+    case Users.get(id) do
+      {:ok, coordinator} -> {:ok, coordinator, User.changeset(coordinator)}
+      error -> error
+    end
+  end
+
   def update(id, params) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}

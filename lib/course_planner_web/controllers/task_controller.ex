@@ -6,6 +6,7 @@ defmodule CoursePlannerWeb.TaskController do
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   @error_messages %{
     not_found: "Task was not found."
@@ -50,24 +51,16 @@ defmodule CoursePlannerWeb.TaskController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Tasks.get(id) do
-      {:ok, task} ->
-        render(conn, "show.html", task: task)
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
-      end
+    with {:ok, task} <- Tasks.get(id) do
+      render(conn, "show.html", task: task)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    case Tasks.get(id) do
-      {:ok, task} ->
-        render(conn, "edit.html", task: task, changeset: Task.changeset(task))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+    with {:ok, task} <- Tasks.get(id),
+         changeset   <- Task.changeset(task)
+    do
+      render(conn, "edit.html", task: task, changeset: changeset)
     end
   end
 
@@ -77,10 +70,7 @@ defmodule CoursePlannerWeb.TaskController do
        conn
        |> put_flash(:info, "Task updated successfully.")
        |> redirect(to: task_path(conn, :show, task))
-     {:error, :not_found} ->
-       conn
-       |> put_status(404)
-       |> render(CoursePlannerWeb.ErrorView, "404.html")
+     {:error, :not_found} -> {:error, :not_found}
      {:error, changeset} ->
        render(conn, "edit.html", task: id, changeset: changeset)
     end

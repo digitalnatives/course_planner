@@ -55,6 +55,11 @@ defmodule CoursePlanner.CourseControllerTest do
     assert html_response(conn, 200) =~ "English"
   end
 
+  test "renders not found page when editing non-existent resource", %{conn: conn} do
+    conn = get conn, course_path(conn, :edit, -1)
+    assert html_response(conn, 404)
+  end
+
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
     course = Repo.insert! %Course{}
     conn = put conn, course_path(conn, :update, course), course: @valid_attrs

@@ -23,6 +23,41 @@ defmodule CoursePlanner.Classes do
     Repo.all(query)
   end
 
+  def new do
+    Class.changeset(%Class{})
+  end
+
+  def get(id) do
+    case Repo.get(Class, id) do
+      nil -> {:error, :not_found}
+      class -> {:ok, class}
+    end
+  end
+
+  def edit(id) do
+    case get(id) do
+      {:ok, class} -> {:ok, class, Class.changeset(class)}
+      error -> error
+    end
+  end
+
+  def create(params) do
+    %Class{}
+    |> Class.changeset(params, :create)
+    |> Repo.insert()
+  end
+
+  def update(id, params) do
+    case get(id) do
+      {:ok, class} ->
+        class
+        |> Class.changeset(params, :update)
+        |> Repo.update()
+        |> format_error(class)
+      error -> error
+    end
+  end
+
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
     offered_course_id = changeset |> Changeset.get_field(:offered_course_id)
@@ -48,11 +83,9 @@ defmodule CoursePlanner.Classes do
   def validate_for_holiday(changeset), do: changeset
 
   def delete(id) do
-    class = Repo.get(Class, id)
-    if is_nil(class) do
-      {:error, :not_found}
-    else
-      Repo.delete(class)
+    case get(id) do
+      {:ok, class} -> Repo.delete(class)
+      error -> error
     end
   end
 
@@ -111,6 +144,9 @@ defmodule CoursePlanner.Classes do
 
     {Enum.reverse(reversed_past_classes), next_classes}
   end
+
+  defp format_error({:ok, class}, _), do: {:ok, class}
+  defp format_error({:error, changeset}, class), do: {:error, class, changeset}
 
   defp compare_class_date_time(class, now) do
     class_datetime =

@@ -6,6 +6,7 @@ defmodule CoursePlannerWeb.AttendanceController do
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
 
@@ -37,10 +38,7 @@ defmodule CoursePlannerWeb.AttendanceController do
            %{"id" => offered_course_id}) when role in ["Coordinator", "Supervisor"] do
 
     case Attendances.get_course_attendances(offered_course_id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      nil -> {:error, :not_found}
       offered_course ->
         render(conn, "show_coordinator.html", offered_course: offered_course)
     end
@@ -49,10 +47,7 @@ defmodule CoursePlannerWeb.AttendanceController do
   def show(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn,
            %{"id" => offered_course_id}) do
     case Attendances.get_teacher_course_attendances(offered_course_id, id) do
-      nil ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      nil -> {:error, :not_found}
       offered_course ->
         render(conn, "show_teacher.html", offered_course: offered_course)
     end
@@ -66,10 +61,7 @@ defmodule CoursePlannerWeb.AttendanceController do
     |> Repo.preload([:term, :course, :teachers])
 
     case Attendances.get_student_attendances(offered_course_id, id) do
-     [] ->
-       conn
-       |> put_status(404)
-       |> render(CoursePlannerWeb.ErrorView, "404.html")
+     [] -> {:error, :not_found}
      attendances ->
        render(conn, "show_student.html", attendances: attendances, offered_course: offered_course)
     end

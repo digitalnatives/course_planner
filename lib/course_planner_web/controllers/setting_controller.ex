@@ -2,11 +2,12 @@ defmodule CoursePlannerWeb.SettingController do
   @moduledoc false
   use CoursePlannerWeb, :controller
 
-  alias CoursePlanner.{Settings, Settings.SystemVariable}
+  alias CoursePlanner.Settings
   alias Ecto.Changeset
 
   import Canary.Plugs
   plug :authorize_controller
+  action_fallback CoursePlannerWeb.FallbackController
 
   def show(%{assigns: %{current_user: %{role: role}}} = conn, _param)
     when role in ["Coordinator", "Supervisor"] do
@@ -23,22 +24,12 @@ defmodule CoursePlannerWeb.SettingController do
 
   def edit(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn,
            %{"setting_type" =>  setting_type}) do
-    editable_system_variables = Settings.get_editable_systemvariables()
-
-    case Settings.filter_system_variables(editable_system_variables, setting_type) do
-     {:ok, filtered_system_variables} ->
-       title = "Edit #{setting_type} setting"
-
-       changeset =
-         filtered_system_variables
-         |> Enum.map(&SystemVariable.changeset/1)
-         |> Settings.wrap()
-
-       render(conn, "edit.html", changeset: changeset, title: title)
-     {:error, _} ->
-       conn
-       |> put_status(404)
-       |> render(CoursePlannerWeb.ErrorView, "404.html")
+    with editable_system_variables <- Settings.get_editable_systemvariables(),
+         {:ok, filtered_system_variables} <-
+           Settings.filter_system_variables(editable_system_variables, setting_type),
+         changeset <- Settings.get_changeset(filtered_system_variables)
+    do
+       render(conn, "edit.html", changeset: changeset, title: "Edit #{setting_type} setting")
     end
   end
 
