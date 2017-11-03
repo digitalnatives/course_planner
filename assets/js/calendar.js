@@ -56,14 +56,13 @@
     }
   }
 
-  function renderSlots(startDate, slots, calendar, displayEvery, dayView) {
-    const monday = dayView ? new Date( startDate ) : new Date( getMonday(startDate) );
-    const slot_css_class = dayView ? "calendar__day_full" : "calendar__day";
+  function renderSlots(startDate, slots, calendar, displayEvery, isDayView) {
+    const anchorDay = isDayView ? new Date( startDate ) : new Date( getMonday(startDate) );
+    const slot_css_class = isDayView ? "calendar__day_full" : "calendar__day";
 
-    var dayArray = dayView ? new Array( 1 ) : new Array( 7 );
+    var dayArray = isDayView ? new Array( 1 ) : new Array( 7 );
 
-
-    return dayArray.fill( new Date(startDate) ).map(
+    return dayArray.fill( new Date(anchorDay) ).map(
       ( monday, index ) => {
         const day = new Date( monday );
         day.setDate( day.getDate() + index );
@@ -318,8 +317,7 @@
     return classSlots.concat(eventSlots);
   }
 
-  function renderCalendar ( startDate, renderedSlots, calendar, displayEvery, dayView ) {
-    //this change ensure monday is not dependent on startDay
+  function renderCalendar ( startDate, renderedSlots, calendar, displayEvery, isDayView ) {
     const monday = new Date( getMonday(startDate) );
 
     let previousMonday = new Date( monday );
@@ -334,7 +332,6 @@
     let nextDay = new Date( startDate );
     nextDay.setDate( nextDay.getDate() + 1);
 
-    console.log(dayView);
     calendar.innerHTML = `
 
       <div class="calendar__switch">
@@ -344,14 +341,14 @@
             type="checkbox"
             id="day_view-switch"
             class="mdl-switch__input"
-            ${dayView ? "checked" : ""}
+            ${isDayView ? "checked" : ""}
           >
         </label>
       </div>
 
       <div class="row">
         ${
-          dayView ?
+          isDayView ?
             `
               <div class="col-xs-4 col-md-3 col-lg-2">
                 <a
@@ -364,7 +361,7 @@
               <div class="col-xs-4 col-md-3 col-lg-2">
                 <a
                   class="mdl-button mdl-js-button"
-                  href="/schedule?date=${ getMonday( ) }&dayView=true"
+                  href="/schedule?date=${ isoDate(new Date()) }&dayView=true"
                 >
                   Today
                 </a>
