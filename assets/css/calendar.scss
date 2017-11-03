@@ -14,6 +14,15 @@
       text-align: center;
     }
 
+    &__slot {
+      &__class_color{
+        background-color: rgba($primary, 0.5);
+      }
+      &__event_color{
+        background-color: rgba(175, 78, 86, 0.5);
+      }
+    }
+
     &__time {
       display: flex;
       flex-direction: column;
@@ -101,7 +110,6 @@
       position: absolute;
       padding: 4px;
 
-      background-color: rgba($primary, 0.5);
       border: $calendar-border;
       box-sizing: border-box;
 

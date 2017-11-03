@@ -292,7 +292,7 @@
         slot.place = item.classroom;
         slot.primary_users = item.teachers;
         slot.seconday_users = [];
-        slot.color_css_class = "calendar__slot_green";
+        slot.color_css_class = "calendar__slot__class_color";
         return slot;
       });
 
@@ -307,7 +307,7 @@
         slot.place = item.location;
         slot.primary_users = [];
         slot.seconday_users = item.users;
-        slot.color_css_class = "calendar__slot_red";
+        slot.color_css_class = "calendar__slot__event_color";
         return slot;
       });
 
