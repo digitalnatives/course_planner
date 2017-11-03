@@ -10,7 +10,7 @@
     <% end %>
   </div>
 
-<%= render "index_event.html", events: @future_events, section_title: "Future events", conn: @conn %>
+<%= render "index_event.html", events: @upcoming_events, section_title: "Upcoming events", conn: @conn %>
 <%= render "index_event.html", events: @past_events, section_title: "Past events", conn: @conn %>
 
 

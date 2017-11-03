@@ -44,9 +44,9 @@ defmodule CoursePlannerWeb.EventControllerTest do
     end
 
     @tag user_role: :coordinator
-    test "list future and past events", %{conn: conn} do
+    test "list upcoming and past events", %{conn: conn} do
       conn = get conn, event_path(conn, :index)
-      assert html_response(conn, 200) =~ "Future events"
+      assert html_response(conn, 200) =~ "Upcoming events"
       assert html_response(conn, 200) =~ "Past events"
     end
   end

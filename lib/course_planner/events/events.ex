@@ -33,8 +33,8 @@ defmodule CoursePlanner.Events do
     Timex.before?(event_datetime, now)
   end
 
-  def reverse_past_events({past_events, future_events}) do
-    {Enum.reverse(past_events), future_events}
+  def reverse_past_events({past_events, upcoming_events}) do
+    {Enum.reverse(past_events), upcoming_events}
   end
 
   def all_with_users do

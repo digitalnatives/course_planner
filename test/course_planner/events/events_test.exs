@@ -35,13 +35,13 @@ defmodule CoursePlanner.EventsTest do
       %{id: id6} = insert(:event, %{date: day_after, starting_time: ~T[21:00:00.000000],
         finishing_time: ~T[23:00:00.000000]})
 
-      {past_events, future_events} =
+      {past_events, upcoming_events} =
         @now
         |> Timex.set([hour: 14, minute: 0, second: 0])
         |> Events.all_splitted()
 
       assert [%{id: ^id3}, %{id: ^id2}, %{id: ^id1}] = past_events
-      assert [%{id: ^id4}, %{id: ^id5}, %{id: ^id6}] = future_events
+      assert [%{id: ^id4}, %{id: ^id5}, %{id: ^id6}] = upcoming_events
     end
 
     test "get/1 returns the event with given id" do
