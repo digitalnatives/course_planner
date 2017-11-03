@@ -25,7 +25,7 @@ defmodule CoursePlanner.Events do
   def all_splitted(now) do
     all()
     |> Enum.split_with(&(compare_event_date_time(&1, now)))
-    |> revertse_past_events()
+    |> reverse_past_events()
   end
 
   def compare_event_date_time(event, now) do
@@ -33,7 +33,7 @@ defmodule CoursePlanner.Events do
     Timex.before?(event_datetime, now)
   end
 
-  def revertse_past_events({past_events, future_events}) do
+  def reverse_past_events({past_events, future_events}) do
     {Enum.reverse(past_events), future_events}
   end
 
