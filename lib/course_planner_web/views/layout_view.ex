@@ -5,6 +5,7 @@ defmodule CoursePlannerWeb.LayoutView do
   alias CoursePlanner.Settings
 
   @navbars %{"Coordinator" => "coordinator_app_navbar.html",
+             "Supervisor" => "coordinator_app_navbar.html",
              "Student" => "student_app_navbar.html",
              "Teacher" => "teacher_app_navbar.html",
              "Volunteer" => "volunteer_app_navbar.html"}
@@ -18,7 +19,7 @@ defmodule CoursePlannerWeb.LayoutView do
   end
 
   def render_user_role_based_navbar(%{assigns: %{current_user: %{role: role}}} = conn)
-    when role in ["Coordinator", "Student", "Teacher", "Volunteer"] do
+    when role in ["Coordinator", "Supervisor", "Student", "Teacher", "Volunteer"] do
     render(@navbars[role], conn: conn)
   end
   def render_user_role_based_navbar(_conn), do: nil

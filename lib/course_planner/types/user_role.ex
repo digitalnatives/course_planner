@@ -5,5 +5,5 @@ defmodule CoursePlanner.Types.UserRole do
   use CoursePlanner.Types.Enum
 
   def type, do: :user_role
-  def valid_types, do: ["Student", "Teacher", "Coordinator", "Volunteer"]
+  def valid_types, do: ["Student", "Teacher", "Coordinator", "Volunteer", "Supervisor"]
 end

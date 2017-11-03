@@ -19,6 +19,12 @@ defmodule CoursePlanner.StudentControllerTest do
     assert html_response(conn, 200) =~ "Students"
   end
 
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, student_path(conn, :index)
+    assert html_response(conn, 200) =~ "Students"
+  end
+
   test "does not create student for coordinator user when data is invalid", %{conn: conn} do
     conn = post conn, student_path(conn, :create), %{"user" => %{"email" => ""}}
     assert html_response(conn, 200) =~ "Something went wrong."
@@ -34,6 +40,7 @@ defmodule CoursePlanner.StudentControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     student = insert(:student)
 
@@ -45,9 +52,19 @@ defmodule CoursePlanner.StudentControllerTest do
 
     conn = post volunteer_conn, student_path(volunteer_conn, :create), %{"user" => student}
     assert html_response(conn, 403)
+
+    conn = post supervisor_conn, student_path(supervisor_conn, :create), %{"user" => student}
+    assert html_response(conn, 403)
   end
 
   test "shows chosen resource", %{conn: conn} do
+    student = insert(:student)
+    conn = get conn, student_path(conn, :show, student)
+    assert html_response(conn, 200) =~ "#{student.name} #{student.family_name}"
+  end
+
+  test "shows chosen resource for supervisor" do
+    conn = login_as(:supervisor)
     student = insert(:student)
     conn = get conn, student_path(conn, :show, student)
     assert html_response(conn, 200) =~ "#{student.name} #{student.family_name}"
@@ -141,6 +158,7 @@ defmodule CoursePlanner.StudentControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     student = insert(:student)
 
@@ -152,12 +170,16 @@ defmodule CoursePlanner.StudentControllerTest do
 
     conn = get volunteer_conn, student_path(volunteer_conn, :edit, student)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, student_path(supervisor_conn, :edit, student)
+    assert html_response(conn, 403)
   end
 
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     student = insert(:student)
 
@@ -169,12 +191,16 @@ defmodule CoursePlanner.StudentControllerTest do
 
     conn = delete volunteer_conn, student_path(volunteer_conn, :delete, student.id)
     assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, student_path(supervisor_conn, :delete, student.id)
+    assert html_response(conn, 403)
   end
 
   test "does not render form for new class for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     conn = get student_conn, student_path(student_conn, :new)
     assert html_response(conn, 403)
@@ -184,12 +210,16 @@ defmodule CoursePlanner.StudentControllerTest do
 
     conn = get volunteer_conn, student_path(volunteer_conn, :new)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, student_path(supervisor_conn, :new)
+    assert html_response(conn, 403)
   end
 
   test "does not update chosen student for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     student = insert(:student, %{})
 
@@ -200,6 +230,9 @@ defmodule CoursePlanner.StudentControllerTest do
     assert html_response(conn, 403)
 
     conn = put volunteer_conn, student_path(volunteer_conn, :update, student), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 403)
+
+    conn = put supervisor_conn, student_path(supervisor_conn, :update, student), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 

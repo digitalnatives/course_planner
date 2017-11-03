@@ -9,7 +9,9 @@ defmodule CoursePlannerWeb.SettingController do
   plug :authorize_controller
   action_fallback CoursePlannerWeb.FallbackController
 
-  def show(%{assigns: %{current_user: %{role: "Coordinator"}}} = conn, _param) do
+  def show(%{assigns: %{current_user: %{role: role}}} = conn, _param)
+    when role in ["Coordinator", "Supervisor"] do
+
     visible_system_variables = Settings.get_visible_systemvariables()
     program_system_variables =
       Settings.filter_program_systemvariables(visible_system_variables)

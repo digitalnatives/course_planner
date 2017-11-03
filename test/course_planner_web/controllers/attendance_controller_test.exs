@@ -52,6 +52,12 @@ defmodule CoursePlanner.AttendanceControllerTest do
     assert html_response(conn, 200) =~ "Attendances by courses"
   end
 
+  test "lists all entries on index for supervisor", %{conn: _conn} do
+    user_conn = login_as(:supervisor)
+    conn = get user_conn, attendance_path(user_conn, :index)
+    assert html_response(conn, 200) =~ "Attendances by courses"
+  end
+
   test "lists all entries on index for teacher", %{conn: _conn} do
     user_conn = login_as(:teacher)
     conn = get user_conn, attendance_path(user_conn, :index)
@@ -73,6 +79,15 @@ defmodule CoursePlanner.AttendanceControllerTest do
 
   test "shows chosen resource by user coordinator", %{conn: _conn} do
     user_conn = login_as(:coordinator)
+    students = insert_list(3, :student)
+    offered_course = create_attendance(students)
+
+    conn = get user_conn, attendance_path(user_conn, :show, offered_course.id)
+    assert html_response(conn, 200) =~ ~r/Attendances for\s+#{offered_course.course.name}\s+in\s+#{offered_course.term.name}/
+  end
+
+  test "shows chosen resource by user supervisor", %{conn: _conn} do
+    user_conn = login_as(:supervisor)
     students = insert_list(3, :student)
     offered_course = create_attendance(students)
 
@@ -132,12 +147,29 @@ defmodule CoursePlanner.AttendanceControllerTest do
     assert html_response(conn, 403)
   end
 
+  test "do not renders form for editing course attendance if requested by by user supervisor", %{conn: _conn} do
+    supervisor_conn = login_as(:supervisor)
+
+    attendance = Repo.insert! %Attendance{}
+    conn = get supervisor_conn, attendance_fill_course_path(supervisor_conn, :fill_course, attendance)
+    assert html_response(conn, 403)
+  end
+
   test "do not update attendence if requested by user volunteer", %{conn: _conn} do
     volunteer_conn = login_as(:volunteer)
 
     attendance = Repo.insert! %Attendance{}
 
     conn = put volunteer_conn, attendance_update_fill_path(volunteer_conn, :update_fill, attendance)
+    assert html_response(conn, 403)
+  end
+
+  test "do not update attendence if requested by user supervisor", %{conn: _conn} do
+    supervisor_conn = login_as(:supervisor)
+
+    attendance = Repo.insert! %Attendance{}
+
+    conn = put supervisor_conn, attendance_update_fill_path(supervisor_conn, :update_fill, attendance)
     assert html_response(conn, 403)
   end
 

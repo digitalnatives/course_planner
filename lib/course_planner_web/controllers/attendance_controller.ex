@@ -9,9 +9,17 @@ defmodule CoursePlannerWeb.AttendanceController do
   action_fallback CoursePlannerWeb.FallbackController
 
   def index(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn, _params) do
+
     offered_courses = Attendances.get_all_offered_courses()
 
     render(conn, "index_coordinator.html", offered_courses: offered_courses)
+  end
+
+  def index(%{assigns: %{current_user: %{id: _id, role: "Supervisor"}}} = conn, _params) do
+
+    offered_courses = Attendances.get_all_offered_courses()
+
+    render(conn, "index_supervisor.html", offered_courses: offered_courses)
   end
 
   def index(%{assigns: %{current_user: %{id: id, role: "Teacher"}}} = conn, _params) do
@@ -26,8 +34,9 @@ defmodule CoursePlannerWeb.AttendanceController do
     render(conn, "index_student.html", offered_courses: offered_courses)
   end
 
-  def show(%{assigns: %{current_user: %{id: _id, role: "Coordinator"}}} = conn,
-           %{"id" => offered_course_id}) do
+  def show(%{assigns: %{current_user: %{id: _id, role: role}}} = conn,
+           %{"id" => offered_course_id}) when role in ["Coordinator", "Supervisor"] do
+
     case Attendances.get_course_attendances(offered_course_id) do
       nil -> {:error, :not_found}
       offered_course ->

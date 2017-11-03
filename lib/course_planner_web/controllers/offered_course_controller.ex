@@ -35,7 +35,8 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   end
 
   def show(%{assigns: %{current_user: %{role: user_role}}} = conn, %{"id" => id})
-  when user_role in ["Coordinator", "Teacher"] do
+    when user_role in ["Coordinator", "Supervisor", "Teacher"] do
+
     with {:ok, offered_course} <-
             OfferedCourses.get(id, [:term, :course, :students, :teachers, :classes]),
          {past_classes, next_classes} <-
@@ -44,9 +45,9 @@ defmodule CoursePlannerWeb.OfferedCourseController do
             |> Classes.split_past_and_next()
     do
       render(conn, "show.html", offered_course: offered_course,
-                              next_classes: next_classes,
-                              past_classes: past_classes,
-                              user_role: user_role)
+                                next_classes: next_classes,
+                                past_classes: past_classes,
+                                user_role: user_role)
     end
   end
 

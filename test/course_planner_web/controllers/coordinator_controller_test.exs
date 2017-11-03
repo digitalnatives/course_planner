@@ -26,6 +26,19 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 200) =~ "#{coordinator.name} #{coordinator.family_name}"
   end
 
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, coordinator_path(conn, :index)
+    assert html_response(conn, 200) =~ "Coordinators"
+  end
+
+  test "shows chosen resource for supervisor" do
+    conn = login_as(:supervisor)
+    coordinator = insert(:coordinator)
+    conn = get conn, coordinator_path(conn, :show, coordinator)
+    assert html_response(conn, 200) =~ "#{coordinator.name} #{coordinator.family_name}"
+  end
+
   test "renders page not found when id is nonexistent", %{conn: conn} do
     conn = get conn, coordinator_path(conn, :show, -1)
     assert html_response(conn, 404)
@@ -122,6 +135,7 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     coordinator = insert(:coordinator)
 
@@ -133,12 +147,16 @@ defmodule CoursePlanner.CoordinatorControllerTest do
 
     conn = get volunteer_conn, coordinator_path(volunteer_conn, :edit, coordinator)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, coordinator_path(supervisor_conn, :edit, coordinator)
+    assert html_response(conn, 403)
   end
 
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     coordinator = insert(:coordinator)
 
@@ -150,12 +168,16 @@ defmodule CoursePlanner.CoordinatorControllerTest do
 
     conn = delete volunteer_conn, coordinator_path(volunteer_conn, :delete, coordinator.id)
     assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, coordinator_path(supervisor_conn, :delete, coordinator.id)
+    assert html_response(conn, 403)
   end
 
   test "does not render form for new coordinator for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     conn = get student_conn, coordinator_path(student_conn, :new)
     assert html_response(conn, 403)
@@ -164,6 +186,9 @@ defmodule CoursePlanner.CoordinatorControllerTest do
     assert html_response(conn, 403)
 
     conn = get volunteer_conn, coordinator_path(volunteer_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get supervisor_conn, coordinator_path(supervisor_conn, :new)
     assert html_response(conn, 403)
   end
 

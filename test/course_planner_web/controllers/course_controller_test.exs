@@ -27,6 +27,12 @@ defmodule CoursePlanner.CourseControllerTest do
     assert html_response(conn, 200) =~ "Course types"
   end
 
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, course_path(conn, :index)
+    assert html_response(conn, 200) =~ "Course types"
+  end
+
   test "renders form for new resources", %{conn: conn} do
     conn = get conn, course_path(conn, :new)
     assert html_response(conn, 200) =~ "New course"
@@ -99,6 +105,7 @@ defmodule CoursePlanner.CourseControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     course = insert(:course)
 
@@ -110,12 +117,16 @@ defmodule CoursePlanner.CourseControllerTest do
 
     conn = get volunteer_conn, course_path(volunteer_conn, :edit, course)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, course_path(supervisor_conn, :edit, course)
+    assert html_response(conn, 403)
   end
 
   test "does not delete a chosen resource for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     course = insert(:course)
 
@@ -127,12 +138,16 @@ defmodule CoursePlanner.CourseControllerTest do
 
     conn = delete volunteer_conn, course_path(volunteer_conn, :delete, course.id)
     assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, course_path(supervisor_conn, :delete, course.id)
+    assert html_response(conn, 403)
   end
 
   test "does not render form for new class for non coordinator user", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     conn = get student_conn, course_path(student_conn, :new)
     assert html_response(conn, 403)
@@ -142,12 +157,16 @@ defmodule CoursePlanner.CourseControllerTest do
 
     conn = get volunteer_conn, course_path(volunteer_conn, :new)
     assert html_response(conn, 403)
+
+    conn = get supervisor_conn, course_path(supervisor_conn, :new)
+    assert html_response(conn, 403)
   end
 
   test "does not create class for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     course = insert(:course)
 
@@ -159,12 +178,16 @@ defmodule CoursePlanner.CourseControllerTest do
 
     conn = post volunteer_conn, course_path(volunteer_conn, :create), class: course
     assert html_response(conn, 403)
+
+    conn = post supervisor_conn, course_path(supervisor_conn, :create), class: course
+    assert html_response(conn, 403)
   end
 
   test "does not update chosen course for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     course = Repo.insert! %Course{}
 
@@ -175,6 +198,9 @@ defmodule CoursePlanner.CourseControllerTest do
     assert html_response(conn, 403)
 
     conn = put volunteer_conn, course_path(volunteer_conn, :update, course), course: @valid_attrs
+    assert html_response(conn, 403)
+
+    conn = put supervisor_conn, course_path(supervisor_conn, :update, course), course: @valid_attrs
     assert html_response(conn, 403)
   end
 end

@@ -4,6 +4,7 @@
   <%= CoursePlannerWeb.SharedView.navbar_separator %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Coordinators", @conn, coordinator_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Students", @conn, student_path(@conn, :index) %>
+  <%= CoursePlannerWeb.SharedView.navbar_item "Supervisors", @conn, supervisor_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Teachers", @conn, teacher_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "Volunteers", @conn, volunteer_path(@conn, :index) %>
   <%= CoursePlannerWeb.SharedView.navbar_item "All users", @conn, user_path(@conn, :index) %>

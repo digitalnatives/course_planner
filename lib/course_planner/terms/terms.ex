@@ -113,7 +113,7 @@ defmodule CoursePlanner.Terms do
     students_and_teachers ++ Coordinators.all()
   end
 
-  def find_all_by_user(%{role: "Coordinator"}) do
+  def find_all_by_user(%{role: role}) when role in ["Coordinator", "Supervisor"] do
     Repo.all(from t in Term,
       join: oc in assoc(t, :offered_courses),
       join: co in assoc(oc, :course),

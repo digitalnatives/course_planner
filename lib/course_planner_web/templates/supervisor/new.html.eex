@@ -1,0 +1,6 @@
+
+  <%= render "form.html", title: "New supervisor",
+                          changeset: @changeset,
+                          action: supervisor_path(@conn, :create),
+                          conn: @conn
+  %>

@@ -28,4 +28,29 @@ defmodule CoursePlannerWeb.EventView do
         end
       )
   end
+
+  def render("index.json", %{events: events}) do
+    %{events: render_many(events, CoursePlannerWeb.EventView, "event.json")}
+  end
+
+  def render("event.json", %{event: event}) do
+    %{
+      name: event.name,
+      description: event.description,
+      location: event.location,
+
+      date: event.date,
+      starting_time: event.starting_time,
+      finishing_time: event.finishing_time,
+      users: Enum.map(event.users, &user_json/1)
+    }
+  end
+
+  defp user_json(user) do
+    %{
+      name: user.name,
+      family_name: user.family_name,
+      nickname: user.nickname
+    }
+  end
 end

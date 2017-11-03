@@ -3,16 +3,23 @@ defmodule CoursePlannerWeb.EventController do
   use CoursePlannerWeb, :controller
 
   alias CoursePlanner.{
+    Events.Calendars,
     Events.Event,
     Events,
   }
+  alias Ecto.Changeset
 
+  plug Guardian.Plug.EnsureAuthenticated, handler: CoursePlannerWeb.JsonLogin
   import Canary.Plugs
   plug :authorize_controller
 
   def index(conn, _params) do
-    events = Events.all()
-    render(conn, "index.html", events: events)
+    {past_events, upcoming_events} = Events.all_splitted(Timex.now())
+
+    render(conn, "index.html",
+      past_events: past_events,
+      upcoming_events: upcoming_events
+    )
   end
 
   def new(conn, _params) do
@@ -86,6 +93,24 @@ defmodule CoursePlannerWeb.EventController do
           conn
           |> put_status(404)
           |> render(CoursePlannerWeb.ErrorView, "404.html")
+    end
+  end
+
+  def fetch(%{assigns: %{current_user: current_user}} = conn, params) do
+    case Calendars.validate(params) do
+     %{valid?: true} = changeset ->
+       my_events = Changeset.get_field(changeset, :my_events, false)
+       date = Changeset.get_field(changeset, :date, Date.utc_today())
+
+       week_range =  Calendars.get_week_range(date)
+       events = Calendars.get_user_events(current_user, my_events, week_range)
+       render conn, "index.json", events: events
+     %{errors: errors} ->
+       formatted_errors = Calendars.format_errors(errors)
+
+       conn
+       |> put_status(406)
+       |> render(CoursePlannerWeb.ErrorView, "406.json", %{errors: formatted_errors})
     end
   end
 end

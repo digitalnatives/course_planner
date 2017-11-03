@@ -34,4 +34,10 @@ defmodule CoursePlanner.ScheduleControllerTest do
     conn = get conn, schedule_path(conn, :show)
     assert html_response(conn, 200)
   end
+
+  @tag user_role: :supervisor
+  test "renders schedule page for supervisor", %{conn: conn} do
+    conn = get conn, schedule_path(conn, :show)
+    assert html_response(conn, 200)
+  end
 end

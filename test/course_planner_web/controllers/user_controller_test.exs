@@ -20,7 +20,21 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 200) =~ "All users"
   end
 
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, user_path(conn, :index)
+    assert html_response(conn, 200) =~ "All users"
+  end
+
   test "shows chosen resource", %{conn: conn} do
+    user = insert(:student)
+    conn = get conn, user_path(conn, :show, user)
+    assert html_response(conn, 200) =~
+      Enum.join([user.name, user.family_name], " ")
+  end
+
+  test "shows chosen resource for supervisor" do
+    conn = login_as(:supervisor)
     user = insert(:student)
     conn = get conn, user_path(conn, :show, user)
     assert html_response(conn, 200) =~
@@ -85,6 +99,7 @@ defmodule CoursePlanner.UserControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     user = insert(:student)
 
@@ -95,6 +110,9 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
 
     conn = get volunteer_conn, user_path(volunteer_conn, :edit, user)
+    assert html_response(conn, 403)
+
+    conn = get supervisor_conn, user_path(supervisor_conn, :edit, user)
     assert html_response(conn, 403)
   end
 
@@ -116,6 +134,7 @@ defmodule CoursePlanner.UserControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     user = insert(:student)
 
@@ -127,12 +146,16 @@ defmodule CoursePlanner.UserControllerTest do
 
     conn = delete volunteer_conn, user_path(volunteer_conn, :delete, user.id)
     assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, user_path(supervisor_conn, :delete, user.id)
+    assert html_response(conn, 403)
   end
 
   test "does not update chosen user for non coordinator use", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     user = insert(:student, %{})
 
@@ -143,6 +166,9 @@ defmodule CoursePlanner.UserControllerTest do
     assert html_response(conn, 403)
 
     conn = put volunteer_conn, user_path(volunteer_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
+    assert html_response(conn, 403)
+
+    conn = put supervisor_conn, user_path(supervisor_conn, :update, user), %{"user" => %{"email" => "foo@bar.com"}}
     assert html_response(conn, 403)
   end
 
