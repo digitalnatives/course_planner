@@ -70,6 +70,28 @@
 
     }
 
+    &__day_full {
+      display: flex;
+      flex-direction: column;
+
+      width: 100%;
+
+      box-sizing: border-box;
+      border-left: $calendar-border;
+
+      &-header {
+        padding-top: 15px;
+        box-sizing: border-box;
+        height: 50px;
+        text-align: center;
+
+        background-color: $secondary;
+        color: white;
+
+      }
+
+    }
+
     &__classes {
       position: relative;
       overflow: hidden;

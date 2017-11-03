@@ -56,10 +56,14 @@
     }
   }
 
-  function renderSlots(startDate, slots, calendar, displayEvery) {
-    const monday = new Date( startDate );
+  function renderSlots(startDate, slots, calendar, displayEvery, dayView) {
+    const monday = dayView ? new Date( startDate ) : new Date( getMonday(startDate) );
+    const slot_css_class = dayView ? "calendar__day_full" : "calendar__day";
 
-    return new Array( 7 ).fill( monday ).map(
+    var dayArray = dayView ? new Array( 1 ) : new Array( 7 );
+
+
+    return dayArray.fill( new Date(startDate) ).map(
       ( monday, index ) => {
         const day = new Date( monday );
         day.setDate( day.getDate() + index );
@@ -216,7 +220,7 @@
       })
     ).map(
       ( day ) => `
-        <div class="calendar__day">
+        <div class="${slot_css_class}">
           <div class="calendar__day-header">
             ${ renderDay( day.date ) }, ${ isoDate( day.date ) }
           </div>
@@ -314,42 +318,94 @@
     return classSlots.concat(eventSlots);
   }
 
-  function renderCalendar ( startDate, renderedSlots, calendar, displayEvery ) {
-    const monday = new Date( startDate );
+  function renderCalendar ( startDate, renderedSlots, calendar, displayEvery, dayView ) {
+    //this change ensure monday is not dependent on startDay
+    const monday = new Date( getMonday(startDate) );
 
-    let previousMonday = new Date( startDate );
+    let previousMonday = new Date( monday );
     previousMonday.setDate( monday.getDate() - 7 );
 
-    let nextMonday = new Date( startDate );
+    let nextMonday = new Date( monday );
     nextMonday.setDate( monday.getDate() + 7 );
 
+    let previousDay = new Date( startDate );
+    previousDay.setDate( previousDay.getDate() - 1 );
+
+    let nextDay = new Date( startDate );
+    nextDay.setDate( nextDay.getDate() + 1);
+
+    console.log(dayView);
     calendar.innerHTML = `
-      <div class="row">
-        <div class="col-xs-4 col-md-3 col-lg-2">
-          <a
-            class="mdl-button mdl-js-button"
-            href="/schedule?date=${ isoDate(previousMonday) }"
+
+      <div class="calendar__switch">
+        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="day_view-switch">
+          <span class="mdl-switch__label">Day view</span>
+          <input
+            type="checkbox"
+            id="day_view-switch"
+            class="mdl-switch__input"
+            ${dayView ? "checked" : ""}
           >
-            previous week
-          </a>
-        </div>
-        <div class="col-xs-4 col-md-3 col-lg-2">
-          <a
-            class="mdl-button mdl-js-button"
-            href="/schedule?date=${ getMonday( ) }"
-          >
-            current week
-          </a>
-        </div>
-        <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
-          <a
-            class="mdl-button mdl-js-button"
-            href="/schedule?date=${ isoDate(nextMonday) }"
-          >
-            next week
-          </a>
-        </div>
+        </label>
       </div>
+
+      <div class="row">
+        ${
+          dayView ?
+            `
+              <div class="col-xs-4 col-md-3 col-lg-2">
+                <a
+                  class="mdl-button mdl-js-button"
+                  href="/schedule?date=${ isoDate(previousDay) }&dayView=true"
+                >
+                  Previous day
+                </a>
+              </div>
+              <div class="col-xs-4 col-md-3 col-lg-2">
+                <a
+                  class="mdl-button mdl-js-button"
+                  href="/schedule?date=${ getMonday( ) }&dayView=true"
+                >
+                  Today
+                </a>
+              </div>
+
+              <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
+                <a
+                  class="mdl-button mdl-js-button"
+                  href="/schedule?date=${ isoDate(nextDay) }&dayView=true"
+                >
+                  Next day
+                </a>
+              </div>`
+          : `<div class="col-xs-4 col-md-3 col-lg-2">
+              <a
+                class="mdl-button mdl-js-button"
+                href="/schedule?date=${ isoDate(previousMonday) }"
+              >
+                previous week
+              </a>
+            </div>
+            <div class="col-xs-4 col-md-3 col-lg-2">
+              <a
+                class="mdl-button mdl-js-button"
+                href="/schedule?date=${ getMonday( ) }"
+              >
+                current week
+              </a>
+            </div>
+
+            <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
+              <a
+                class="mdl-button mdl-js-button"
+                href="/schedule?date=${ isoDate(nextMonday) }"
+              >
+                next week
+              </a>
+            </div>`
+        }
+      </div>
+
       <div class="calendar">
         <div class="calendar__time">
           <div class="calendar__time-header"></div>
@@ -411,27 +467,38 @@
     )
   }
 
-  function loadCalendar ( displayEvery = false ) {
+  function loadCalendar ( displayEvery = false) {
+    var dayView = localStorage.getItem("dayView")  === "true";
+
     const calendar = document.querySelector( ".calendar__wrapper" );
 
-    const startDateParameter = window.location.search.slice( 1 ).split( "&" ).map(
+    const queryStringEntries = window.location.search.slice( 1 ).split( "&" ).map(
       ( pairString ) => pairString.split( "=" ).map( decodeURIComponent )
-    ).filter(
+    )
+
+    const startDateParameter = queryStringEntries.filter(
       ( pair ) => pair[0] === "date"
     );
 
     let startDate = startDateParameter.length && startDateParameter[0][1];
-    startDate = getMonday( startDate );
+
+    const dayViewParameter = queryStringEntries.filter(
+      ( pair ) => pair[0] === "dayView"
+    )
+
+    let isDayView = dayViewParameter.length;
+
+    let queryDate = isDayView ? startDate : getMonday( startDate );
 
     Promise.all([
-      xhrGet(`/api/calendar?date=${ startDate }&my_classes=${ !displayEvery }`),
-      xhrGet(`/api/events?date=${ startDate }&my_events=${ !displayEvery }`)
+      xhrGet(`/api/calendar?date=${ queryDate }&my_classes=${ !displayEvery }`),
+      xhrGet(`/api/events?date=${ queryDate }&my_events=${ !displayEvery }`)
     ]).then(
       function ( responses ) {
 
         let slots = createCalendarSlots(responses[0].classes, responses[1].events)
-        let renderedSlots = renderSlots(startDate, slots, calendar, displayEvery);
-        renderCalendar( startDate, renderedSlots, calendar, displayEvery );
+        let renderedSlots = renderSlots(queryDate, slots, calendar, displayEvery, isDayView);
+        renderCalendar( queryDate, renderedSlots, calendar, displayEvery, isDayView);
 
         clearInterval( calendarPointerInterval );
         updatePointer();
@@ -452,8 +519,22 @@
 
       document.addEventListener( "change",
         function ( e ) {
+          var dayView = localStorage.getItem("dayView") === "true";
+          let displayEvery = document.getElementById("calendar-switch") ? document.getElementById("calendar-switch").checked : false;
+
           if ( e.target.id === "calendar-switch" ) {
-            loadCalendar( e.target.checked )
+            loadCalendar(e.target.checked);
+          } else if ( e.target.id === "day_view-switch" ) {
+            const otherEntries = window.location.search.slice(1).split("&").filter(
+              ( pair ) => pair.split("=")[0] != "dayView"
+            )
+
+            if ( e.target.checked ) {
+              window.location.search = "?" + otherEntries.concat("dayView=true").join("&");
+            } else {
+              window.location.search = "?" + otherEntries.join("&");
+            }
+
           }
         }
       )
