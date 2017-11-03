@@ -65,6 +65,21 @@ defmodule CoursePlanner.BulkControllerTest do
     end
   end
 
+  @moduletag user_role: :supervisor
+  describe "settings functionality for supervisor user" do
+    test "does not render new page", %{conn: conn} do
+      conn = get conn, bulk_path(conn, :new), target: "user", title: "Bulk Users"
+      assert html_response(conn, 403)
+    end
+
+    test "does not create bulk request for supervisor user", %{conn: conn} do
+      params = create_input_params("user", "user bulk creation", "Aname,AFamile,Anickname,a@a.com,Student")
+      conn = post conn, bulk_path(conn, :create), params
+      assert html_response(conn, 403)
+      refute Repo.get_by(User, name: "Aname", family_name: "AFamile", role: "Student")
+    end
+  end
+
   @moduletag user_role: :coordinator
   describe "settings functionality for coordinator user" do
     test "render new page", %{conn: conn} do

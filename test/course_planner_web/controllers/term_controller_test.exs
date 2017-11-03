@@ -25,6 +25,7 @@ defmodule CoursePlanner.TermControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     conn = get student_conn, term_path(student_conn, :new)
     assert html_response(conn, 403)
@@ -33,6 +34,9 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 403)
 
     conn = get volunteer_conn, term_path(volunteer_conn, :new)
+    assert html_response(conn, 403)
+
+    conn = get supervisor_conn, term_path(supervisor_conn, :new)
     assert html_response(conn, 403)
   end
 
@@ -117,6 +121,13 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 200) =~ t.name
   end
 
+  test "show existing term for supervisor" do
+    conn = login_as(:supervisor)
+    t = insert(:term)
+    conn = get conn, term_path(conn, :show, t.id)
+    assert html_response(conn, 200) =~ t.name
+  end
+
   test "doesn't show existing term for non coordinator users", %{conn: _conn} do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
@@ -139,6 +150,12 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 404)
   end
 
+  test "doesn't show inexisting term for supervisor" do
+    conn = login_as(:supervisor)
+    conn = get conn, term_path(conn, :show, 1)
+    assert html_response(conn, 404)
+  end
+
   test "delete existing term for coordinator", %{conn: conn} do
     t = insert(:term)
     conn = delete conn, term_path(conn, :delete, t.id)
@@ -155,6 +172,7 @@ defmodule CoursePlanner.TermControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     t = insert(:term)
 
@@ -165,6 +183,9 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 403)
 
     conn = delete volunteer_conn, term_path(volunteer_conn, :delete, t.id)
+    assert html_response(conn, 403)
+
+    conn = delete supervisor_conn, term_path(supervisor_conn, :delete, t.id)
     assert html_response(conn, 403)
   end
 
@@ -178,6 +199,7 @@ defmodule CoursePlanner.TermControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     term = insert(:term)
 
@@ -188,6 +210,9 @@ defmodule CoursePlanner.TermControllerTest do
     assert html_response(conn, 403)
 
     conn = get volunteer_conn, term_path(volunteer_conn, :edit, term)
+    assert html_response(conn, 403)
+
+    conn = get supervisor_conn, term_path(supervisor_conn, :edit, term)
     assert html_response(conn, 403)
   end
 
@@ -213,6 +238,7 @@ defmodule CoursePlanner.TermControllerTest do
     student_conn   = login_as(:student)
     teacher_conn   = login_as(:teacher)
     volunteer_conn = login_as(:volunteer)
+    supervisor_conn = login_as(:supervisor)
 
     term = insert(:term)
 
@@ -224,6 +250,9 @@ defmodule CoursePlanner.TermControllerTest do
 
     conn = put volunteer_conn, term_path(volunteer_conn, :update, term), term: %{name: ""}
     assert html_response(conn, 403)
+
+    conn = put supervisor_conn, term_path(supervisor_conn, :update, term), term: %{name: ""}
+    assert html_response(conn, 403)
   end
 
   test "renders error for updating inexisting resource", %{conn: conn} do
@@ -232,6 +261,12 @@ defmodule CoursePlanner.TermControllerTest do
   end
 
   test "lists all entries on index for coordinator", %{conn: conn} do
+    conn = get conn, term_path(conn, :index)
+    assert html_response(conn, 200) =~ "Terms"
+  end
+
+  test "lists all entries on index for supervisor" do
+    conn = login_as(:supervisor)
     conn = get conn, term_path(conn, :index)
     assert html_response(conn, 200) =~ "Terms"
   end

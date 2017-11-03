@@ -71,6 +71,7 @@ defmodule CoursePlannerWeb.Router do
     resources "/bulk", BulkController, only: [:new, :create], singleton: true
 
     resources "/coordinators", CoordinatorController
+    resources "/supervisors", SupervisorController
     resources "/students", StudentController
     resources "/teachers", TeacherController
     resources "/volunteers", VolunteerController

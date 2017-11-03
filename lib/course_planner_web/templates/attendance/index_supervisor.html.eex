@@ -1,0 +1,56 @@
+
+  <div class="row middle-xs page-header">
+    <div class="col-xs-12 page-title">
+      Attendances by courses
+    </div>
+  </div>
+
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Term</th>
+        <th class="mdl-data-table__cell--non-numeric">Course type</th>
+        <th class="mdl-data-table__cell--non-numeric">Teachers</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= Enum.with_index(@offered_courses) |> Enum.map(fn {offered_course,index} -> %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= offered_course.term.name %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= offered_course.course.name %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= get_teacher_display_name(offered_course.teachers) %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= offered_course.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@offered_courses)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= offered_course.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: attendance_path(@conn, :show, offered_course) %>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      <% end) %>
+    </tbody>
+  </table>

@@ -49,7 +49,7 @@ defmodule CoursePlannerWeb.OfferedCourseController do
   end
 
   def show(%{assigns: %{current_user: %{role: user_role}}} = conn, %{"id" => id})
-  when user_role in ["Coordinator", "Teacher"] do
+  when user_role in ["Coordinator", "Supervisor", "Teacher"] do
     offered_course =
       OfferedCourse
       |> Repo.get!(id)
