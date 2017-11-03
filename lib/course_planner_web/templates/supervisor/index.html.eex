@@ -1,11 +1,11 @@
 
   <div class="row middle-xs page-header">
     <div class="col-xs-6 col-sm-9 col-md-10 page-title">
-      Teachers
+      Supervisors
     </div>
     <%= if @conn.assigns.current_user.role == "Coordinator" do %>
       <div class="col-xs-6 col-sm-3 col-md-2">
-        <%= link "New teacher", to: teacher_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+        <%= link "New supervisor", to: supervisor_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
       </div>
     <% end %>
   </div>
@@ -20,19 +20,19 @@
       </tr>
     </thead>
     <tbody>
-      <%= Enum.with_index(@teachers) |> Enum.map(fn {teacher,index} -> %>
+      <%= Enum.with_index(@supervisors) |> Enum.map(fn {supervisor,index} -> %>
         <tr>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= CoursePlannerWeb.SharedView.display_user_name(teacher) %>
+            <%= CoursePlannerWeb.SharedView.display_user_name(supervisor) %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= teacher.email %>
+            <%= supervisor.email %>
           </td>
           <td class="mdl-data-table__cell--non-numeric">
-            <%= teacher.phone_number %>
+            <%= supervisor.phone_number %>
           </td>
           <td>
-            <button id="tr_menu_<%= teacher.id %>"
+            <button id="tr_menu_<%= supervisor.id %>"
                     class="mdl-button mdl-js-button mdl-button--icon"
             >
               <i class="material-icons">more_vert</i>
@@ -41,28 +41,24 @@
               class="
                 mdl-menu mdl-js-menu
                 <%=
-                  if index > 10 and index > length(@teachers)-4 do
+                  if index > 10 and index > length(@supervisors)-4 do
                     'mdl-menu--top-right'
                   else
                     'mdl-menu--bottom-right'
                   end
                 %>
               "
-              for="tr_menu_<%= teacher.id %>"
+              for="tr_menu_<%= supervisor.id %>"
             >
               <li class="mdl-menu__item">
-                <%= link "Show", to: teacher_path(@conn, :show, teacher) %>
+                <%= link "Show", to: supervisor_path(@conn, :show, supervisor) %>
               </li>
               <%= if @conn.assigns.current_user.role == "Coordinator" do %>
                 <li class="mdl-menu__item">
-                  <%= link "Edit", to: teacher_path(@conn, :edit, teacher) %>
+                  <%= link "Edit", to: supervisor_path(@conn, :edit, supervisor) %>
                 </li>
                 <li class="mdl-menu__item">
-                  <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
-                  data: [confirm: """
-                  Are you sure?
-                  No class for the course taught by her can be created.
-                  """] %>
+                  <%= link "Delete", to: supervisor_path(@conn, :delete, supervisor), method: :delete, data: [confirm: "Are you sure?"] %>
                 </li>
               <% end %>
             </ul>

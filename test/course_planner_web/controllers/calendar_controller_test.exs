@@ -147,6 +147,51 @@ defmodule CoursePlanner.CalendarControllerTest do
     end
   end
 
+  describe "when requested by a supervisor, calendar returns:" do
+    @tag user_role: :supervisor
+    test "empty when there is no classes on the requested date", %{conn: conn} do
+      params = %{date: "2017-01-01", my_classes: "false"}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 200) == @empty_result
+    end
+
+    @tag user_role: :supervisor
+    test "all classes in the requested week  when my_classes is not present", %{conn: conn} do
+      create_test_data()
+
+      params = %{date: "2017-01-01"}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 200) == @class_on_first_of_January
+    end
+
+    @tag user_role: :supervisor
+    test "all classes in the requested week  when my_classes is false", %{conn: conn} do
+      create_test_data()
+
+      params = %{date: "2017-01-01", my_classes: "false"}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 200) == @class_on_first_of_January
+    end
+
+    @tag user_role: :supervisor
+    test "all classes in the requested week when my_classes is true", %{conn: conn} do
+      create_test_data()
+
+      params = %{date: "2017-01-01", my_classes: "true"}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 200) == @class_on_first_of_January
+    end
+
+    @tag user_role: :supervisor
+    test "all classes of the current week when date parameter is not present", %{conn: conn} do
+      create_test_data()
+
+      params = %{my_classes: "false"}
+      conn = get conn, calendar_path(conn, :show), params
+      assert json_response(conn, 200) == @class_on_the_current_week
+    end
+  end
+
   describe "when requested by a volunteer, calendar returns:" do
     @tag user_role: :volunteer
     test "empty when there is no classes on the requested date", %{conn: conn} do

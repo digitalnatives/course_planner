@@ -6,11 +6,36 @@ defmodule CoursePlanner.PermissionsTest do
     Terms.Term,
     Accounts.User
   }
-  alias CoursePlannerWeb.TaskController
+  alias CoursePlannerWeb.{
+    AttendanceController,
+    BulkController,
+    CalendarController,
+    ClassController,
+    CoordinatorController,
+    CourseController,
+    CourseMatrixController,
+    DashboardController,
+    EventController,
+    OfferedCourseController,
+    PageController,
+    ScheduleController,
+    SettingController,
+    StudentrController,
+    SupervisorController,
+    TaskController,
+    TeacherController,
+    TermController,
+    UserController,
+    VolunteerController,
+  }
 
   @coordinator %User{
     email: "coordiantor@courseplanner.com",
     role: "Coordinator"
+  }
+  @supervisor %User{
+    email: "supervisor@courseplanner.com",
+    role: "Supervisor"
   }
   @volunteer %User{
     id: 2,
@@ -32,6 +57,60 @@ defmodule CoursePlanner.PermissionsTest do
         assert Canada.Can.can?(@coordinator, @action, TaskController)
     end
   end)
+
+  for action <- [:index, :show], controller <- [
+    AttendanceController,
+    BulkController,
+    CalendarController,
+    ClassController,
+    CoordinatorController,
+    CourseController,
+    CourseMatrixController,
+    DashboardController,
+    EventController,
+    OfferedCourseController,
+    PageController,
+    ScheduleController,
+    SettingController,
+    StudentrController,
+    SupervisorController,
+    TaskController,
+    TeacherController,
+    TermController,
+    UserController,
+    VolunteerController] do
+
+    @action action
+    @controller controller
+    test "supervisor can perform #{@action} in #{@controller}" do
+      assert Canada.Can.can?(@supervisor, @action, @controller)
+    end
+  end
+
+  for action <- [:create, :update, :delete, :edit], controller <- [
+    AttendanceController,
+    BulkController,
+    ClassController,
+    CoordinatorController,
+    CourseController,
+    CourseMatrixController,
+    EventController,
+    OfferedCourseController,
+    SettingController,
+    StudentrController,
+    SupervisorController,
+    TaskController,
+    TeacherController,
+    TermController,
+    UserController,
+    VolunteerController] do
+
+    @action action
+    @controller controller
+    test "supervisor can perform #{@action} in #{@controller}" do
+      refute Canada.Can.can?(@supervisor, @action, @controller)
+    end
+  end
 
   Enum.map([:index, :show, :grab], fn action ->
     @action action

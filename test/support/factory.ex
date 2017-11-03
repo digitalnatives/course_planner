@@ -59,6 +59,16 @@ defmodule CoursePlanner.Factory do
    }
  end
 
+ def supervisor_factory do
+   %User{
+     name: sequence(:name, &"supervisor-#{&1}"),
+     email: sequence(:email, &"supervisor-#{&1}@courseplanner.com"),
+     role: "Supervisor",
+     password_hash: @password_hash,
+     notification_period_days: 1
+   }
+ end
+
  def volunteer_factory do
    %User{
      name: sequence(:name, &"volunteer-#{&1}"),

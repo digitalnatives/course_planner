@@ -446,4 +446,72 @@ defmodule CoursePlanner.TaskControllerTest do
       assert get_flash(conn, "error") == "Task is expired"
     end
   end
+
+
+  @moduletag user_role: :supervisor
+  describe "supervisor access" do
+    test "lists all entries on index", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :index)
+      assert html_response(conn, 200) =~ "Tasks"
+    end
+
+    test "shows chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+      conn = get conn, task_path(conn, :show, task)
+      assert html_response(conn, 200) =~ task.name
+    end
+
+    test "renders page not found when id is nonexistent", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :show, -1)
+      assert html_response(conn, 404)
+    end
+
+    test "does not renders form for editing", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = get conn, task_path(conn, :edit, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not update a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = put conn, task_path(conn, :update, task), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not delete a chosen resource", %{conn: conn, user: _user} do
+      task = insert(:task)
+
+      conn = delete conn, task_path(conn, :delete, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not render for for new resources for non-coordinator users", %{conn: conn, user: _user} do
+      conn = get conn, task_path(conn, :new)
+      assert html_response(conn, 403)
+    end
+
+    test "does not create task", %{conn: conn, user: _user} do
+      conn = post conn, task_path(conn, :create), task: @valid_attrs
+      assert html_response(conn, 403)
+    end
+
+    test "does not grab a task", %{conn: conn, user: user} do
+      task = insert(:task)
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_grab_path(conn, :grab, task)
+      assert html_response(conn, 403)
+    end
+
+    test "does not drop a task", %{conn: conn, user: user} do
+      task = insert(:task, volunteers: [user])
+      conn = assign(conn, :current_user, user)
+
+      conn = post conn, task_drop_path(conn, :drop, task)
+      assert html_response(conn, 403)
+    end
+  end
+
 end

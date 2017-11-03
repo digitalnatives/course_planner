@@ -4,14 +4,16 @@
       All users
     </div>
 
-    <div class="row col-xs-6 col-sm-3 col-md-4">
-      <div class="col-sm-6">
-        <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+    <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+      <div class="row col-xs-6 col-sm-3 col-md-4">
+        <div class="col-sm-6">
+          <%= link "Notify all", to: user_path(@conn, :notify), method: :post, class: "mdl-button mdl-js-button mdl-button--raised" %>
+        </div>
+        <div class="col-sm-6">
+          <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Users"), class: "mdl-button mdl-js-button mdl-button--raised" %>
+        </div>
       </div>
-      <div class="col-sm-6">
-        <%= link "Bulk user creation", to: bulk_path(@conn, :new, target: "user", title: "Bulk Users"), class: "mdl-button mdl-js-button mdl-button--raised" %>
-      </div>
-    </div>
+    <% end %>
   </div>
 
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">

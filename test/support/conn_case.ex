@@ -26,6 +26,7 @@ defmodule CoursePlannerWeb.ConnCase do
       import Ecto.Query
 
       import CoursePlannerWeb.Router.Helpers
+      import CoursePlanner.Factory
 
       # The default endpoint for testing
       @endpoint CoursePlannerWeb.Endpoint
@@ -49,6 +50,18 @@ defmodule CoursePlannerWeb.ConnCase do
         |> Plug.Conn.put_req_header("authorization", "Bearer #{jwt}")
         |> assign(:current_user, user)
       end
+
+      def build_conn(context) do
+        user = context
+        |> Map.get(:user_role, :coordinator)
+        |> insert()
+        case Map.get(context, :pipeline, nil) do
+          :protected_api -> guardian_login_html_json(user)
+          :browser       -> guardian_login_html(user)
+          _              -> Phoenix.ConnTest.build_conn
+        end
+      end
+
     end
   end
 

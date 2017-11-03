@@ -2,9 +2,11 @@
     <div class="col-xs-6 col-sm-9 col-md-10 page-title">
       Classes
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
-      <%= link "New class", to: class_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
-    </div>
+    <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+      <div class="col-xs-6 col-sm-3 col-md-2">
+        <%= link "New class", to: class_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
+    <% end %>
   </div>
 
   <%= for term <- @terms do %>
