@@ -59,8 +59,7 @@
   function renderSlots(startDate, slots, calendar, displayEvery, isDayView) {
     const anchorDay = isDayView ? new Date( startDate ) : new Date( getMonday(startDate) );
     const slot_css_class = isDayView ? "calendar__day_full" : "calendar__day";
-
-    var dayArray = isDayView ? new Array( 1 ) : new Array( 7 );
+    const dayArray = isDayView ? new Array( 1 ) : new Array( 7 );
 
     return dayArray.fill( new Date(anchorDay) ).map(
       ( monday, index ) => {
@@ -198,8 +197,6 @@
           ( acc, component ) => acc.concat( component ), []
         )
 
-        // console.log(s);
-
         return { slots: everyColoredSlots, date };
       }
     ).map(
@@ -261,10 +258,8 @@
                     </div>
                   </div>
                   <div
-                    class="
-                      mdl-tooltip
-                      ${ cl.color < cl.maxColor / 2 ? "mdl-tooltip--left" : "mdl-tooltip--right" }
-                    "
+                    class="mdl-tooltip
+                    ${isDayView ? "mdl-tooltip-center" : (cl.color < cl.maxColor / 2) ? "mdl-tooltip--left" : "mdl-tooltip--right"}"
                     for="${ isoDate( day.date ) }__${ cl.index }"
                   >
                     ${ cl.primary_name }<br />
@@ -333,7 +328,6 @@
     nextDay.setDate( nextDay.getDate() + 1);
 
     calendar.innerHTML = `
-
       <div class="calendar__switch">
         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="day_view-switch">
           <span class="mdl-switch__label">Day view</span>
@@ -465,8 +459,6 @@
   }
 
   function loadCalendar ( displayEvery = false) {
-    var dayView = localStorage.getItem("dayView")  === "true";
-
     const calendar = document.querySelector( ".calendar__wrapper" );
 
     const queryStringEntries = window.location.search.slice( 1 ).split( "&" ).map(
@@ -477,7 +469,7 @@
       ( pair ) => pair[0] === "date"
     );
 
-    let startDate = startDateParameter.length && startDateParameter[0][1];
+    let startDate = startDateParameter.length === 0 ? isoDate(new Date()) : startDateParameter[0][1];
 
     const dayViewParameter = queryStringEntries.filter(
       ( pair ) => pair[0] === "dayView"
@@ -516,9 +508,6 @@
 
       document.addEventListener( "change",
         function ( e ) {
-          var dayView = localStorage.getItem("dayView") === "true";
-          let displayEvery = document.getElementById("calendar-switch") ? document.getElementById("calendar-switch").checked : false;
-
           if ( e.target.id === "calendar-switch" ) {
             loadCalendar(e.target.checked);
           } else if ( e.target.id === "day_view-switch" ) {
