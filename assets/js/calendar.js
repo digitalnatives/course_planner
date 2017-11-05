@@ -259,7 +259,7 @@
                   </div>
                   <div
                     class="mdl-tooltip
-                    ${isDayView ? "mdl-tooltip-center" : (cl.color < cl.maxColor / 2) ? "mdl-tooltip--left" : "mdl-tooltip--right"}"
+                    ${isDayView ? "mdl-tooltip--center" : (cl.color < cl.maxColor / 2) ? "mdl-tooltip--left" : "mdl-tooltip--right"}"
                     for="${ isoDate( day.date ) }__${ cl.index }"
                   >
                     ${ cl.primary_name }<br />
