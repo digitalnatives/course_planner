@@ -39,14 +39,6 @@ defmodule CoursePlanner.Events do
     {Enum.reverse(past_events), upcoming_events}
   end
 
-  def all_with_users do
-    query = from e in Event,
-    preload: [:users],
-    order_by: [asc: e.date, asc: e.starting_time, asc: e.finishing_time]
-
-    Repo.all(query)
-  end
-
   def get(id) do
     case Repo.get(Event, id) do
       nil -> {:error, :not_found}

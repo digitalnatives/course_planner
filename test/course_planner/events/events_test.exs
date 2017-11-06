@@ -47,11 +47,6 @@ defmodule CoursePlanner.EventsTest do
       end
     end
 
-    test "all_with_users/0 returns all events with preloaded users" do
-      event = insert(:event)
-      assert Events.all_with_users() == [event |> Repo.preload(:users)]
-    end
-
     test "all_splitted/1 returns events splited by time" do
       user = insert(:coordinator)
       day_before = Timex.shift(@today, days: -1)
