@@ -206,6 +206,15 @@ defmodule CoursePlanner.UserControllerTest do
     assert Repo.get_by(User, email: "foo@bar.com")
   end
 
+  test "does not update password if is too short" do
+    user = insert(:student, name: "Foo", family_name: "Bar")
+    user_conn = guardian_login_html(user)
+
+    conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"current_password" => "secret", "password" => "123456", "password_confirmation" => "123456"}}
+
+    assert html_response(conn, 200) =~ "should be at least 8 character(s)"
+  end
+
   test "notify all users" do
     user_conn = login_as(:coordinator)
 
