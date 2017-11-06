@@ -20,9 +20,9 @@ config :course_planner, CoursePlanner.Mailer,
   api_key: System.get_env("SENDGRID_API_KEY")
 
 config :course_planner,
-  auth_email_from_name: "${EMAIL_FROM_NAME}",
-  auth_email_from_email: "${EMAIL_FROM_EMAIL}"
+  auth_email_from_name: System.get_env("EMAIL_FROM_NAME"),
+  auth_email_from_email: System.get_env("EMAIL_FROM_EMAIL")
 
 config :recaptcha,
-  secret: "${RECAPTCHA_SECRET_KEY}",
-  public_key: "${RECAPTCHA_SITE_KEY}"
+  secret: System.get_env("RECAPTCHA_SECRET_KEY"),
+  public_key: System.get_env("RECAPTCHA_SITE_KEY")
