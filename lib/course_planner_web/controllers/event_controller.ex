@@ -13,8 +13,8 @@ defmodule CoursePlannerWeb.EventController do
   import Canary.Plugs
   plug :authorize_controller
 
-  def index(conn, _params) do
-    {past_events, upcoming_events} = Events.all_splitted(Timex.now())
+  def index(%{assigns: %{current_user: current_user}} = conn, _params) do
+    {past_events, upcoming_events} = Events.all_splitted(Timex.now(), current_user)
 
     render(conn, "index.html",
       past_events: past_events,
