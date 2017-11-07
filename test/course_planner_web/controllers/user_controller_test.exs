@@ -207,8 +207,7 @@ defmodule CoursePlanner.UserControllerTest do
   end
 
   test "does not update password if is too short" do
-    user = insert(:student, name: "Foo", family_name: "Bar")
-    user_conn = guardian_login_html(user)
+    %{assigns: %{current_user: user}} = user_conn = login_as(:student)
 
     conn = put user_conn, user_path(user_conn, :update, user), %{"user" => %{"current_password" => "secret", "password" => "123456", "password_confirmation" => "123456"}}
 
