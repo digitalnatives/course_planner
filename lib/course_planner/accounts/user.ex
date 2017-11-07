@@ -148,7 +148,7 @@ defmodule CoursePlanner.Accounts.User do
 
     if password do
       changeset
-      |> validate_length(:password, min: 6)
+      |> validate_length(:password, min: 8)
       |> validate_confirmation(:password)
       |> updates_hashed_password()
     else
