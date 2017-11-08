@@ -61,6 +61,7 @@
                   <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
                   data: [confirm: """
                   Are you sure?
+                  She cannot be assigned to teach a course.
                   No class for the course taught by her can be created.
                   """] %>
                 </li>
