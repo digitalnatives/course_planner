@@ -2,8 +2,7 @@ defmodule CoursePlannerWeb.BulkController do
   @moduledoc false
   use CoursePlannerWeb, :controller
   alias CoursePlanner.BulkHelper
-  alias Coherence.ControllerHelpers
-  alias CoursePlannerWeb.Router.Helpers
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
   plug :authorize_controller
@@ -65,7 +64,7 @@ defmodule CoursePlannerWeb.BulkController do
         created_entities
         |> Enum.reduce(%{}, fn({_operation_id, user}, _out) ->
             url = Helpers.password_url(conn, :edit, user.reset_password_token)
-            ControllerHelpers.send_user_email(:welcome, user, url)
+            UserEmail.send_user_email(:welcome, user, url)
           end)
         {:ok, created_entities}
       _  -> {:ok, :ok}

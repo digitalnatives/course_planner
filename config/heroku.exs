@@ -15,14 +15,14 @@ config :course_planner, CoursePlanner.Repo,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
 
-config :coherence, CoursePlannerWeb.Coherence.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: System.get_env("SENDGRID_API_KEY")
-
-config :coherence,
-  email_from_name: System.get_env("EMAIL_FROM_NAME"),
-  email_from_email: System.get_env("EMAIL_FROM_EMAIL")
-
 config :course_planner, CoursePlanner.Mailer,
   adapter: Swoosh.Adapters.Sendgrid,
   api_key: System.get_env("SENDGRID_API_KEY")
+
+config :course_planner,
+  auth_email_from_name: System.get_env("EMAIL_FROM_NAME"),
+  auth_email_from_email: System.get_env("EMAIL_FROM_EMAIL")
+
+config :recaptcha,
+  secret: System.get_env("RECAPTCHA_SECRET_KEY"),
+  public_key: System.get_env("RECAPTCHA_SITE_KEY")

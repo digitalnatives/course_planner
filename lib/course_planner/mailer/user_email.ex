@@ -51,6 +51,26 @@ defmodule CoursePlanner.Mailer.UserEmail do
         subject: "One or more attendances are not filled",
         template: "attendance_missing.html"
       },
+    "event_created" =>
+      %{
+        subject: "You were invited to an event",
+        template: "event_created.html"
+      },
+    "event_uninvited" =>
+      %{
+        subject: "You were uninvited from an event",
+        template: "event_uninvited.html"
+      },
+    "event_updated" =>
+      %{
+        subject: "An event you were invited to was updated",
+        template: "event_updated.html"
+      },
+    "event_deleted" =>
+      %{
+        subject: "An event you were invited to was deleted",
+        template: "event_deleted.html"
+      },
   }
 
   def build_email(%{user: %{name: _, email: nil}}), do: {:error, :invalid_recipient}
@@ -76,4 +96,5 @@ defmodule CoursePlanner.Mailer.UserEmail do
     |> render_body("summary.html",
       %{name: name, notifications: notifications, params: @notifications})
   end
+
 end

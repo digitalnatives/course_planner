@@ -1,12 +1,14 @@
 defmodule CoursePlannerWeb.CoordinatorController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{Accounts.User, Accounts.Coordinators, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+  alias CoursePlanner.{Accounts.Users, Accounts.User,
+                       Accounts.Coordinators,
+                       Auth.Helper}
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", coordinators: Coordinators.all())
@@ -18,11 +20,11 @@ defmodule CoursePlannerWeb.CoordinatorController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = ControllerHelpers.random_string 48
+    token = Helper.get_random_token_with_length 48
     url = Helpers.password_url(conn, :edit, token)
     case Coordinators.new(user, token) do
       {:ok, coordinator} ->
-        ControllerHelpers.send_user_email(:welcome, coordinator, url)
+        UserEmail.send_user_email(:welcome, coordinator, url)
         conn
         |> put_flash(:info, "Coordinator created and notified by.")
         |> redirect(to: coordinator_path(conn, :index))
@@ -34,14 +36,14 @@ defmodule CoursePlannerWeb.CoordinatorController do
   end
 
   def show(conn, %{"id" => id}) do
-    coordinator = Repo.get!(User, id)
-    render(conn, "show.html", coordinator: coordinator)
+    with {:ok, coordinator} <- Users.get(id) do
+      render(conn, "show.html", coordinator: coordinator)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    coordinator = Repo.get!(User, id)
-    changeset = User.changeset(coordinator)
-    render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
+    with {:ok, coordinator, changeset} <- Coordinators.edit(id),
+    do: render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -54,12 +56,9 @@ defmodule CoursePlannerWeb.CoordinatorController do
         conn
         |> put_flash(:info, "Coordinator updated successfully.")
         |> redirect(to: coordinator_path(conn, :show, coordinator))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, coordinator, changeset} ->
         render(conn, "edit.html", coordinator: coordinator, changeset: changeset)
+      error -> error
     end
   end
 

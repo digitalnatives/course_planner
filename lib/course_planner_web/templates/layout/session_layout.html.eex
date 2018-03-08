@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%= CoursePlannerWeb.Auth.LayoutView.layout_title() %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  </head>
+
+  <body>
+    <main role="main">
+      <%= render @view_module, @view_template, assigns %>
+    </main>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <div class="info-snackbar mdl-js-snackbar mdl-snackbar">
+      <div class="mdl-snackbar__text"></div>
+      <button class="mdl-snackbar__action" type="button"></button>
+    </div>
+    <script>
+
+      (function (){
+
+        <%= if get_flash(@conn, :info) do %>
+          setTimeout(
+            function ( ) {
+              document.querySelector( ".info-snackbar" ).MaterialSnackbar.showSnackbar(
+                {
+                  timeout: 5000,
+                  message: "<%= get_flash(@conn, :info) %>"
+                }
+              );
+            }, 500
+          );
+        <% end %>
+      })();
+
+    </script>
+  </body>
+</html>

@@ -117,7 +117,7 @@ defmodule CoursePlannerWeb.SharedView do
   end
 
   def form_date(form, field, opts \\ []) do
-    default = opts[:value] || Ecto.Date.utc()
+    default = opts[:value] || Settings.utc_to_system_timezone()
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     error = error_message(form, field)
@@ -151,7 +151,7 @@ defmodule CoursePlannerWeb.SharedView do
   end
 
   def form_datetime(form, field, opts \\ []) do
-    default = Map.merge(Ecto.DateTime.utc(), opts[:value] || %{})
+    default = Map.merge(Settings.utc_to_system_timezone(), opts[:value] || %{})
     class = opts[:class] || ""
     label = opts[:label] || humanize(field)
     error = error_message(form, field)
@@ -301,11 +301,12 @@ defmodule CoursePlannerWeb.SharedView do
 
     name = display_user_name(user)
 
-    url = if clickable, do: user_show_path(user), else: ""
+    url = user_show_path(user)
 
     render "user_bubble.html", url: url,
                                profile_picture: profile_picture,
-                               name: name
+                               name: name,
+                               clickable: clickable
   end
 
   def class_list(classes, opts \\ []) do

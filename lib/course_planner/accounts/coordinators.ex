@@ -3,7 +3,8 @@ defmodule CoursePlanner.Accounts.Coordinators do
   import Ecto.Query
   alias CoursePlanner.{Repo, Accounts.User, Accounts.Users}
 
-  @coordinators from u in User, where: u.role == "Coordinator"
+  @coordinators from u in User, where: u.role == "Coordinator",
+    order_by: [u.name, u.family_name, u.nickname]
 
   def all do
     Repo.all(@coordinators)
@@ -13,6 +14,13 @@ defmodule CoursePlanner.Accounts.Coordinators do
     user
     |> Map.put("role", "Coordinator")
     |> Users.new_user(token)
+  end
+
+  def edit(id) do
+    case Users.get(id) do
+      {:ok, coordinator} -> {:ok, coordinator, User.changeset(coordinator)}
+      error -> error
+    end
   end
 
   def update(id, params) do

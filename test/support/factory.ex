@@ -2,10 +2,19 @@ defmodule CoursePlanner.Factory do
 @moduledoc """
   provides factory function for tests
 """
-alias CoursePlanner.Terms.{Term,Holiday}
-alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Classes.Class,
-                     Attendances.Attendance, Tasks.Task, Settings.SystemVariable,
-                     Notifications.Notification}
+  alias CoursePlanner.{
+    Accounts.User,
+    Attendances.Attendance,
+    Classes.Class,
+    Courses.Course,
+    Courses.OfferedCourse,
+    Events.Event,
+    Notifications.Notification,
+    Tasks.Task,
+    Terms.Holiday,
+    Terms.Term,
+    Settings.SystemVariable,
+  }
 
   use ExMachina.Ecto, repo: CoursePlanner.Repo
 
@@ -45,6 +54,16 @@ alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Class
      name: sequence(:name, &"coordinator-#{&1}"),
      email: sequence(:email, &"coordinator-#{&1}@courseplanner.com"),
      role: "Coordinator",
+     password_hash: @password_hash,
+     notification_period_days: 1
+   }
+ end
+
+ def supervisor_factory do
+   %User{
+     name: sequence(:name, &"supervisor-#{&1}"),
+     email: sequence(:email, &"supervisor-#{&1}@courseplanner.com"),
+     role: "Supervisor",
      password_hash: @password_hash,
      notification_period_days: 1
    }
@@ -128,6 +147,17 @@ alias CoursePlanner.{Accounts.User, Courses.Course, Courses.OfferedCourse, Class
    %Notification{
     type: "user_modified",
     resource_path: "/"
+   }
+ end
+
+ def event_factory do
+   %Event{
+     name: sequence(:name, &"event-#{&1}"),
+     location: "some location",
+     description: "some description",
+     date: ~D[2010-04-17],
+     starting_time: ~T[14:00:00.000000],
+     finishing_time: ~T[16:00:00.000000],
    }
  end
 end

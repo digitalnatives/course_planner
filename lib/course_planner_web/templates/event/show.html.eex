@@ -1,0 +1,78 @@
+
+  <div class="row">
+    <div class="
+      col-xs-12
+      col-sm-offset-1 col-sm-10
+      col-md-offset-2 col-md-8
+      col-lg-offset-2 col-lg-8
+    ">
+      <div class="row middle-xs page-header">
+        <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+          <%= @event.name %>
+        </div>
+        <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            <%= link "Edit", to: event_path(@conn, :edit, @event),
+                             class: "mdl-button mdl-js-button mdl-button--raised"
+            %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="page">
+        <%= CoursePlannerWeb.SharedView.card do %>
+          <%= CoursePlannerWeb.SharedView.card_content vpadding: true do %>
+            <div class="row row--hspace row--vspace middle-xs">
+              <div class="col-xs-9">
+                <div class="detail">
+                  <div class="detail__name">Name</div>
+                  <div class="detail__value">
+                    <%= @event.name %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Location</div>
+                  <div class="detail__value">
+                    <%= @event.location %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Date</div>
+                  <div class="detail__value">
+                    <%= @event.date %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Starting time</div>
+                  <div class="detail__value">
+                    <%= @event.starting_time %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Finish time</div>
+                  <div class="detail__value">
+                    <%= @event.finishing_time %>
+                    <%= @event.finishing_time %>
+                  </div>
+                </div>
+                <div class="detail">
+                  <div class="detail__name">Description</div>
+                  <div class="detail__value">
+                    <%= CoursePlannerWeb.SharedView.format_text_to_html(@event.description) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="row middle-xs page-header">
+          <div class="col-xs-12 page-title page-title--small">
+            Participants
+          </div>
+        </div>
+        <%= CoursePlannerWeb.SharedView.user_list @conn.assigns.current_user, @event.users %>
+
+      </div>
+    </div>
+  </div>

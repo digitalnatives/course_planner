@@ -1,9 +1,6 @@
 defmodule CoursePlannerWeb.Router do
   @moduledoc false
   use CoursePlannerWeb, :router
-  use Coherence.Router
-
-  alias CoursePlannerWeb.JsonLogin
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,42 +8,56 @@ defmodule CoursePlannerWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session
-  end
-
-  pipeline :protected do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: true
   end
 
   pipeline :protected_api do
     plug :accepts, ["json"]
-    plug :fetch_session
-    plug Coherence.Authentication.Session, protected: &JsonLogin.callback/1
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
+  end
+
+  pipeline :public_api do
+    plug :accepts, ["json"]
+    plug Guardian.Plug.VerifyHeader, realm: "Bearer"
+    plug Guardian.Plug.LoadResource
+  end
+
+  pipeline :with_session do
+    plug Guardian.Plug.VerifySession
+    plug Guardian.Plug.LoadResource
+    plug CoursePlanner.CurrentUser
+  end
+
+  pipeline :login_required do
+    plug Guardian.Plug.EnsureAuthenticated,
+         handler: CoursePlanner.Auth.GuardianErrorHandler
+  end
+
+  scope "/api/v1" do
+    pipe_through :public_api
+
+    resources "/sessions", CoursePlannerWeb.Auth.Api.JsonSessionController,
+      only: [:create]
   end
 
   scope "/" do
     pipe_through :browser
-    coherence_routes()
+    resources "/sessions", CoursePlannerWeb.Auth.SessionController,
+      only: [:new, :create, :delete]
+    resources "/passwords", CoursePlannerWeb.Auth.PasswordController,
+      only: [:new, :create, :edit, :update]
   end
 
-  scope "/" do
-    pipe_through :protected
-    coherence_routes :protected
-  end
-
-  scope "/", CoursePlannerWeb do
-    pipe_through :protected_api
+  scope "/api", CoursePlannerWeb do
+    pipe_through [:protected_api]
 
     resources "/calendar", CalendarController, only: [:show], singleton: true
+    get "/events", EventController, :fetch
   end
 
   scope "/", CoursePlannerWeb do
-    pipe_through :protected
+    pipe_through [:browser, :with_session, :login_required]
 
     get "/", PageController, :index
 
@@ -60,6 +71,7 @@ defmodule CoursePlannerWeb.Router do
     resources "/bulk", BulkController, only: [:new, :create], singleton: true
 
     resources "/coordinators", CoordinatorController
+    resources "/supervisors", SupervisorController
     resources "/students", StudentController
     resources "/teachers", TeacherController
     resources "/volunteers", VolunteerController
@@ -82,6 +94,8 @@ defmodule CoursePlannerWeb.Router do
 
     resources "/settings", SettingController, only: [:show, :edit, :update], singleton: true
     resources "/about", AboutController, only: [:show], singleton: true
+
+    resources "/events", EventController
   end
 
   if Mix.env == :dev do

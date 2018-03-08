@@ -1,0 +1,6 @@
+
+  <%= render "form.html", title: "New Event",
+                          changeset: @changeset,
+                          action: event_path(@conn, :create),
+                          conn: @conn
+  %>

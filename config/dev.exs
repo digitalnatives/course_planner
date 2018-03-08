@@ -31,6 +31,10 @@ config :course_planner, CoursePlanner.Repo,
   hostname: System.get_env("DATABASE_HOST") || "localhost",
   pool_size: 10
 
-config :coherence,
-  email_from_name: "Dev Name",
-  email_from_email: "dev@email"
+config :course_planner,
+  auth_email_from_name: "Dev Name",
+  auth_email_from_email: "dev@email"
+
+config :recaptcha,
+  secret: System.get_env("RECAPTCHA_SECRET_KEY"),
+  public_key: System.get_env("RECAPTCHA_SITE_KEY")

@@ -45,6 +45,7 @@ defmodule CoursePlannerWeb do
       import CoursePlannerWeb.CustomRoute
       import CoursePlannerWeb.ErrorHelpers
       import CoursePlannerWeb.Gettext
+      alias CoursePlanner.Settings
 
       def page_title, do: "Course Planner"
       defoverridable [page_title: 0]

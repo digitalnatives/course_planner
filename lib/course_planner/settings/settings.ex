@@ -8,9 +8,18 @@ defmodule CoursePlanner.Settings do
 
   alias CoursePlanner.{Repo, Settings.SystemVariable}
   alias Ecto.Multi
+  # alias Calendar.DateTime, as: CalendarDateTime
+  # alias Ecto.DateTime, as: EctoDateTime
+  alias Timex.Timezone
 
   schema "settings_fake_table" do
     embeds_many :system_variables, SystemVariable
+  end
+
+  def get_changeset(system_variables) do
+    system_variables
+    |> Enum.map(&SystemVariable.changeset/1)
+    |> wrap()
   end
 
   def wrap(system_variables) do
@@ -51,7 +60,7 @@ defmodule CoursePlanner.Settings do
       case setting_type do
         "system"  -> {:ok, filter_non_program_systemvariables(system_variables)}
         "program" -> {:ok, filter_program_systemvariables(system_variables)}
-        _         -> {:error, nil}
+        _         -> {:error, :not_found}
       end
   end
 
@@ -104,5 +113,42 @@ defmodule CoursePlanner.Settings do
   defp add_update_changeset(changeset, multi) do
     name = changeset.data.id |> Integer.to_string |> String.to_atom
     Multi.update(multi, name, changeset)
+  end
+
+  def timezone_to_utc(datetime) do
+    datetime
+    |> add_timezone_info(get_system_timezone())
+    |> Timezone.convert("Etc/UTC")
+  end
+
+  def utc_to_system_timezone(now \\ Timex.now()) do
+    now
+    |> add_timezone_info("Etc/UTC")
+    |> Timezone.convert(get_system_timezone())
+  end
+
+  defp add_timezone_info(%NaiveDateTime{} = datetime, timezone) do
+    case Calendar.DateTime.from_naive(datetime, timezone) do
+      {:ok, datetime_with_tz} -> datetime_with_tz
+      error -> error
+    end
+  end
+  defp add_timezone_info(%Ecto.DateTime{} = datetime, timezone) do
+    datetime
+    |> Ecto.DateTime.to_erl()
+    |> Calendar.DateTime.from_erl!(timezone)
+  end
+  defp add_timezone_info(%DateTime{} = datetime, timezone) do
+    datetime
+    |> DateTime.to_naive()
+    |> add_timezone_info(timezone)
+  end
+
+  def get_system_timezone do
+    case Repo.get_by(SystemVariable, key: "TIMEZONE") do
+      %{value: nil} -> "Etc/UTC"
+      %{value: value} -> value
+      _ -> "Etc/UTC"
+    end
   end
 end

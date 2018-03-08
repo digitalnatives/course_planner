@@ -5,11 +5,58 @@ defmodule CoursePlanner.Classes do
   import Ecto.Changeset
   import Ecto.Query
 
-  alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications}
+  alias CoursePlanner.{Repo, Classes.Class, Notifications.Notifier, Notifications, Settings}
   alias CoursePlanner.Terms.Term
   alias Ecto.{Changeset, DateTime, Date}
 
   @notifier Application.get_env(:course_planner, :notifier, Notifier)
+
+  def all do
+    query = from t in Term,
+    join: oc in assoc(t, :offered_courses),
+    join: co in assoc(oc, :course),
+    join: c in assoc(oc, :classes),
+    preload: [offered_courses: {oc, classes: c, course: co}],
+    order_by: [desc: t.start_date, desc: co.name, desc: c.date,
+               desc: c.starting_at, desc: c.finishes_at]
+
+    Repo.all(query)
+  end
+
+  def new do
+    Class.changeset(%Class{})
+  end
+
+  def get(id) do
+    case Repo.get(Class, id) do
+      nil -> {:error, :not_found}
+      class -> {:ok, class}
+    end
+  end
+
+  def edit(id) do
+    case get(id) do
+      {:ok, class} -> {:ok, class, Class.changeset(class)}
+      error -> error
+    end
+  end
+
+  def create(params) do
+    %Class{}
+    |> Class.changeset(params, :create)
+    |> Repo.insert()
+  end
+
+  def update(id, params) do
+    case get(id) do
+      {:ok, class} ->
+        class
+        |> Class.changeset(params, :update)
+        |> Repo.update()
+        |> format_error(class)
+      error -> error
+    end
+  end
 
   def validate_for_holiday(%{valid?: true} = changeset) do
     class_date = changeset |> Changeset.get_field(:date) |> Date.cast!
@@ -36,11 +83,9 @@ defmodule CoursePlanner.Classes do
   def validate_for_holiday(changeset), do: changeset
 
   def delete(id) do
-    class = Repo.get(Class, id)
-    if is_nil(class) do
-      {:error, :not_found}
-    else
-      Repo.delete(class)
+    case get(id) do
+      {:ok, class} -> Repo.delete(class)
+      error -> error
     end
   end
 
@@ -93,13 +138,22 @@ defmodule CoursePlanner.Classes do
   end
 
   def split_past_and_next(classes) do
-    now = DateTime.utc
+    now = Settings.utc_to_system_timezone(Timex.now())
     {reversed_past_classes, next_classes} =
-      Enum.split_with(classes, fn class ->
-        class_datetime = DateTime.from_date_and_time(class.date, class.starting_at)
-        DateTime.compare(class_datetime, now) == :lt
-      end)
+      Enum.split_with(classes, &(compare_class_date_time(&1, now)))
 
     {Enum.reverse(reversed_past_classes), next_classes}
+  end
+
+  defp format_error({:ok, class}, _), do: {:ok, class}
+  defp format_error({:error, changeset}, class), do: {:error, class, changeset}
+
+  defp compare_class_date_time(class, now) do
+    class_datetime =
+          class.date
+          |> DateTime.from_date_and_time(class.starting_at)
+          |> Settings.utc_to_system_timezone()
+
+        Timex.compare(class_datetime, now) == -1
   end
 end

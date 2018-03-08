@@ -1,12 +1,15 @@
 defmodule CoursePlannerWeb.StudentController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{Accounts.User, Accounts.Students, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+
+  alias CoursePlanner.{Accounts.Users, Accounts.User,
+                       Accounts.Students,
+                       Auth.Helper, Terms}
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", students: Students.all())
@@ -18,11 +21,11 @@ defmodule CoursePlannerWeb.StudentController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = ControllerHelpers.random_string 48
+    token = Helper.get_random_token_with_length 48
     url = Helpers.password_url(conn, :edit, token)
     case Students.new(user, token) do
       {:ok, student} ->
-        ControllerHelpers.send_user_email(:welcome, student, url)
+        UserEmail.send_user_email(:welcome, student, url)
         conn
         |> put_flash(:info, "Student created and notified by.")
         |> redirect(to: student_path(conn, :index))
@@ -34,14 +37,19 @@ defmodule CoursePlannerWeb.StudentController do
   end
 
   def show(conn, %{"id" => id}) do
-    student = Repo.get!(User, id)
-    render(conn, "show.html", student: student)
+    with {:ok, student} <- Users.get(id),
+         terms <- Terms.student_attendances(student.id)
+      do
+      render(conn, "show.html", student: student, terms: terms)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    student = Repo.get!(User, id)
-    changeset = User.changeset(student)
-    render(conn, "edit.html", student: student, changeset: changeset)
+    with {:ok, student} <- Users.get(id),
+         changeset   <- User.changeset(student)
+    do
+      render(conn, "edit.html", student: student, changeset: changeset)
+    end
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -51,12 +59,9 @@ defmodule CoursePlannerWeb.StudentController do
         conn
         |> put_flash(:info, "Student updated successfully.")
         |> redirect(to: student_path(conn, :show, student))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, student, changeset} ->
         render(conn, "edit.html", student: student, changeset: changeset)
+      error -> error
     end
   end
 

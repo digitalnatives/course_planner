@@ -2,31 +2,30 @@ defmodule CoursePlannerWeb.UserController do
   @moduledoc false
   use CoursePlannerWeb, :controller
   alias CoursePlanner.{Accounts.User, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
+
   require Logger
 
   import Canary.Plugs
   plug :authorize_resource, model: User, non_id_actions: [:notify]
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", users: Users.all())
   end
 
   def show(conn, %{"id" => id}) do
-    case Users.get(id) do
-      {:ok, user} -> render(conn, "show.html", user: user)
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+    with {:ok, user} <- Users.get(id) do
+      render(conn, "show.html", user: user)
     end
   end
 
   def edit(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    changeset = User.changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+    with {:ok, user} <- Users.get(id),
+         changeset   <- User.changeset(user)
+    do
+      render(conn, "edit.html", user: user, changeset: changeset)
+    end
   end
 
   def update(
@@ -34,7 +33,7 @@ defmodule CoursePlannerWeb.UserController do
     %{"id" => id, "user" => user_params}) do
 
     user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
+    changeset = User.changeset(user, user_params, :update)
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -87,15 +86,12 @@ defmodule CoursePlannerWeb.UserController do
 
       {:ok, user} ->
         url = Helpers.password_url(conn, :edit, user.reset_password_token)
-        ControllerHelpers.send_user_email(:welcome, user, url)
+        UserEmail.send_user_email(:welcome, user, url)
 
         conn
         |> put_flash(:info, "Reset e-mail sent.")
         |> redirect(to: user_path(conn, :show, user))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
+      error -> error
     end
   end
 end

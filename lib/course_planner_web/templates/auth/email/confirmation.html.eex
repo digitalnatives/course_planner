@@ -1,0 +1,10 @@
+<div>
+  <p><%= dgettext "confirmation", "Hello %{name}!", name: @name %><p>
+  <p>
+    <%= dgettext "confirmation", "Your new account is almost ready. Click the link below to confirm you new account." %>
+  </p>
+  <p>
+    <a href="<%= @url %>"><%= dgettext "confirmation", "Confirm my Account" %></a>
+  </p>
+  <p><%= dgettext "confirmation", "Thank you!" %></p>
+</div>

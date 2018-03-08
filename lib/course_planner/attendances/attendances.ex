@@ -17,7 +17,7 @@ defmodule CoursePlanner.Attendances do
       preload: [:term, :course, :teachers],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id,
-      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_teacher_course_attendances(offered_course_id, teacher_id) do
@@ -30,7 +30,7 @@ defmodule CoursePlanner.Attendances do
       preload: [:term, :course, teachers: t],
       preload: [classes: {c, attendances: {a, student: as, class: ac}}],
       where: oc.id == ^offered_course_id and t.id == ^teacher_id,
-      order_by: [asc: ac.date, asc: as.name, asc: as.family_name])
+      order_by: [asc: ac.date, asc: ac.starting_at, asc: as.name, asc: as.family_name])
   end
 
   def get_student_attendances(offered_course_id, student_id) do
@@ -40,32 +40,41 @@ defmodule CoursePlanner.Attendances do
       join: oc in assoc(c, :offered_course),
       preload: [class: {c, [offered_course: {oc, [:course, :term]}]}, student: s],
       where: a.student_id == ^student_id and oc.id == ^offered_course_id,
-      order_by: [asc: c.date])
+      order_by: [asc: c.date, asc: c.starting_at])
   end
 
   def get_all_offered_courses do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: c in assoc(oc, :classes),
       join: s in assoc(oc, :students),
       join: t in assoc(oc, :teachers),
-      preload: [:term, :course, teachers: t, students: s, classes: c])
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name])
   end
 
   def get_all_teacher_offered_courses(teacher_id) do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: t in assoc(oc, :teachers),
       join: c in assoc(oc, :classes),
       join: s in assoc(oc, :students),
-      preload: [:term, :course, teachers: t, students: s, classes: c],
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name],
       where: t.id == ^teacher_id)
   end
 
   def get_all_student_offered_courses(student_id) do
     Repo.all(from oc in OfferedCourse,
+      join: te in assoc(oc, :term),
+      join: co in assoc(oc, :course),
       join: s in assoc(oc, :students),
       join: c in assoc(oc, :classes),
       join: t in assoc(oc, :teachers),
-      preload: [:term, :course, teachers: t, students: s, classes: c],
+      preload: [term: t, course: co, teachers: t, students: s, classes: c],
+      order_by: [asc: te.name, asc: co.name],
       where: s.id == ^student_id)
   end
 

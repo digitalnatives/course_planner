@@ -3,9 +3,11 @@
     <div class="col-xs-6 col-sm-9 col-md-10 page-title">
       Teachers
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
-      <%= link "New teacher", to: teacher_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
-    </div>
+    <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+      <div class="col-xs-6 col-sm-3 col-md-2">
+        <%= link "New teacher", to: teacher_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
+    <% end %>
   </div>
 
   <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
@@ -59,6 +61,7 @@
                   <%= link "Delete", to: teacher_path(@conn, :delete, teacher), method: :delete,
                   data: [confirm: """
                   Are you sure?
+                  She cannot be assigned to teach a course.
                   No class for the course taught by her can be created.
                   """] %>
                 </li>

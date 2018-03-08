@@ -15,5 +15,5 @@
   <script>
 
     var USER_ROLE = "<%= @conn.assigns.current_user.role %>";
-
+    var JWT = "<%= @jwt %>"
   </script>

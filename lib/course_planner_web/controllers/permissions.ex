@@ -5,6 +5,7 @@ defimpl Canada.Can, for: CoursePlanner.Accounts.User do
     AttendanceController,
     CalendarController,
     DashboardController,
+    EventController,
     OfferedCourseController,
     PageController,
     ScheduleController,
@@ -15,6 +16,9 @@ defimpl Canada.Can, for: CoursePlanner.Accounts.User do
     when action in [:grab, :drop], do: false
 
   def can?(%User{role: "Coordinator"}, _action, _controller), do: true
+
+  def can?(%User{role: "Supervisor"}, action, _controller)
+    when action in [:index, :show], do: true
 
   def can?(%User{role: "Teacher"}, _action, AttendanceController), do: true
   def can?(%User{role: "Teacher"}, action, OfferedCourseController)
@@ -35,6 +39,9 @@ defimpl Canada.Can, for: CoursePlanner.Accounts.User do
 
   def can?(%User{id: id}, action, %User{id: id})
     when action in [:show, :edit, :update], do: true
+
+  def can?(_user, action, EventController)
+    when action in [:index, :show, :fetch], do: true
 
   def can?(_user, _action, _controller), do: false
 end

@@ -1,12 +1,14 @@
 defmodule CoursePlannerWeb.VolunteerController do
   @moduledoc false
   use CoursePlannerWeb, :controller
-  alias CoursePlanner.{Accounts.User, Accounts.Volunteers, Accounts.Users}
-  alias CoursePlannerWeb.Router.Helpers
-  alias Coherence.ControllerHelpers
+  alias CoursePlanner.{Accounts.Users, Accounts.User,
+                       Accounts.Volunteers,
+                       Auth.Helper}
+  alias CoursePlannerWeb.{Router.Helpers, Auth.UserEmail}
 
   import Canary.Plugs
   plug :authorize_resource, model: User
+  action_fallback CoursePlannerWeb.FallbackController
 
   def index(conn, _params) do
     render(conn, "index.html", volunteers: Volunteers.all())
@@ -18,11 +20,11 @@ defmodule CoursePlannerWeb.VolunteerController do
   end
 
   def create(conn, %{"user" => user}) do
-    token = ControllerHelpers.random_string 48
+    token = Helper.get_random_token_with_length 48
     url = Helpers.password_url(conn, :edit, token)
     case Volunteers.new(user, token) do
       {:ok, volunteer} ->
-        ControllerHelpers.send_user_email(:welcome, volunteer, url)
+        UserEmail.send_user_email(:welcome, volunteer, url)
         conn
         |> put_flash(:info, "Volunteer created and notified by.")
         |> redirect(to: volunteer_path(conn, :index))
@@ -34,19 +36,19 @@ defmodule CoursePlannerWeb.VolunteerController do
   end
 
   def show(conn, %{"id" => id}) do
-    volunteer =
-      User
-      |> Repo.get!(id)
-
-    tasks = Volunteers.get_tasks(volunteer)
-
-    render(conn, "show.html", volunteer: volunteer, tasks: tasks)
+    with {:ok, volunteer} <- Users.get(id),
+         tasks            <- Volunteers.get_tasks(volunteer)
+    do
+      render(conn, "show.html", volunteer: volunteer, tasks: tasks)
+    end
   end
 
   def edit(conn, %{"id" => id}) do
-    volunteer = Repo.get!(User, id)
-    changeset = User.changeset(volunteer)
-    render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+    with {:ok, volunteer} <- Users.get(id),
+         changeset   <- User.changeset(volunteer)
+    do
+      render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+    end
   end
 
   def update(%{assigns: %{current_user: current_user}} = conn, %{"id" => id, "user" => params}) do
@@ -59,12 +61,9 @@ defmodule CoursePlannerWeb.VolunteerController do
         conn
         |> put_flash(:info, "Volunteer updated successfully.")
         |> redirect(to: volunteer_path(conn, :show, volunteer))
-      {:error, :not_found} ->
-        conn
-        |> put_status(404)
-        |> render(CoursePlannerWeb.ErrorView, "404.html")
       {:error, volunteer, changeset} ->
         render(conn, "edit.html", volunteer: volunteer, changeset: changeset)
+      error -> error
     end
   end
 

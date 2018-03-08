@@ -1,0 +1,69 @@
+
+  <div class="row middle-xs page-header">
+    <div class="col-xs-6 col-sm-9 col-md-10 page-title">
+      Supervisors
+    </div>
+    <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+      <div class="col-xs-6 col-sm-3 col-md-2">
+        <%= link "New supervisor", to: supervisor_path(@conn, :new), class: "mdl-button mdl-js-button mdl-button--raised" %>
+      </div>
+    <% end %>
+  </div>
+
+  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp page">
+    <thead>
+      <tr>
+        <th class="mdl-data-table__cell--non-numeric">Name</th>
+        <th class="mdl-data-table__cell--non-numeric">Email</th>
+        <th class="mdl-data-table__cell--non-numeric">Phone number</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= Enum.with_index(@supervisors) |> Enum.map(fn {supervisor,index} -> %>
+        <tr>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= CoursePlannerWeb.SharedView.display_user_name(supervisor) %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= supervisor.email %>
+          </td>
+          <td class="mdl-data-table__cell--non-numeric">
+            <%= supervisor.phone_number %>
+          </td>
+          <td>
+            <button id="tr_menu_<%= supervisor.id %>"
+                    class="mdl-button mdl-js-button mdl-button--icon"
+            >
+              <i class="material-icons">more_vert</i>
+            </button>
+            <ul
+              class="
+                mdl-menu mdl-js-menu
+                <%=
+                  if index > 10 and index > length(@supervisors)-4 do
+                    'mdl-menu--top-right'
+                  else
+                    'mdl-menu--bottom-right'
+                  end
+                %>
+              "
+              for="tr_menu_<%= supervisor.id %>"
+            >
+              <li class="mdl-menu__item">
+                <%= link "Show", to: supervisor_path(@conn, :show, supervisor) %>
+              </li>
+              <%= if @conn.assigns.current_user.role == "Coordinator" do %>
+                <li class="mdl-menu__item">
+                  <%= link "Edit", to: supervisor_path(@conn, :edit, supervisor) %>
+                </li>
+                <li class="mdl-menu__item">
+                  <%= link "Delete", to: supervisor_path(@conn, :delete, supervisor), method: :delete, data: [confirm: "Are you sure?"] %>
+                </li>
+              <% end %>
+            </ul>
+          </td>
+        </tr>
+      <% end) %>
+    </tbody>
+  </table>

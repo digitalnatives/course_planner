@@ -26,15 +26,4 @@
       text-align: center;
       color: $grey-500;
     }
-
-    transition: box-shadow 300ms ease,
-                background-color 300ms ease;
-
-    background-color: transparent;
-    box-shadow: none;
-
-    &:hover {
-      background-color: white;
-      @extend .mdl-shadow--2dp;
-    }
   }

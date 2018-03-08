@@ -14,6 +14,15 @@
       text-align: center;
     }
 
+    &__slot {
+      &__class_color{
+        background-color: rgba($primary, 0.5);
+      }
+      &__event_color{
+        background-color: rgba(175, 78, 86, 0.5);
+      }
+    }
+
     &__time {
       display: flex;
       flex-direction: column;
@@ -70,6 +79,28 @@
 
     }
 
+    &__day_full {
+      display: flex;
+      flex-direction: column;
+
+      width: 100%;
+
+      box-sizing: border-box;
+      border-left: $calendar-border;
+
+      &-header {
+        padding-top: 15px;
+        box-sizing: border-box;
+        height: 50px;
+        text-align: center;
+
+        background-color: $secondary;
+        color: white;
+
+      }
+
+    }
+
     &__classes {
       position: relative;
       overflow: hidden;
@@ -101,7 +132,6 @@
       position: absolute;
       padding: 4px;
 
-      background-color: rgba($primary, 0.5);
       border: $calendar-border;
       box-sizing: border-box;
 
