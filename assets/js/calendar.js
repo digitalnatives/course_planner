@@ -279,9 +279,9 @@
 
   function getCorrectDateString(DesiredDate)
   {
-      return DesiredDate.getFullYear().toString() + "-"
-      + (DesiredDate.getMonth() + 1).toString() + '-'
-      + DesiredDate.getDate().toString();
+      var monthInString = DesiredDate.getMonth() < 10 ? '0' + (DesiredDate.getMonth() + 1).toString() : (DesiredDate.getMonth() + 1).toString();
+      var dayInString = DesiredDate.getDate() < 10 ? '0' + DesiredDate.getDate().toString() : DesiredDate.getDate().toString();
+      return DesiredDate.getFullYear().toString() + '-' + monthInString + '-' + dayInString;
   }
 
   function createCalendarSlots(classes, events){
