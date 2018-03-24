@@ -277,6 +277,12 @@
     ).join( "" );
   }
 
+  function getCorrectDateString(DesiredDate)
+  {
+      return DesiredDate.getFullYear().toString() + "-"
+      + (DesiredDate.getMonth() + 1).toString() + '-'
+      + DesiredDate.getDate().toString();
+  }
 
   function createCalendarSlots(classes, events){
     var classSlots = classes.map(function(item) {
@@ -389,7 +395,7 @@
             <div class="col-xs-4 col-md-3 col-md-offset-3 col-lg-2 col-lg-offset-6">
               <a
                 class="mdl-button mdl-js-button"
-                href="/schedule?date=${ isoDate(nextMonday) }"
+                href="/schedule?date=${ getCorrectDateString(nextMonday) }"
               >
                 next week
               </a>
