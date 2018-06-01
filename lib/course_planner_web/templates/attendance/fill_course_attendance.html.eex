@@ -2,12 +2,7 @@
   <% title = Enum.join(["Fill attendances for", @offered_course.course.name, "in", @offered_course.term.name], " ") %>
 
   <div class="row">
-    <div class="
-      col-xs-12
-      col-sm-offset-1 col-sm-10
-      col-md-offset-2 col-md-8
-      col-lg-offset-2 col-lg-8
-    ">
+    <div>
       <%= form_for @changeset, attendance_update_fill_path(@conn, :update_fill, @offered_course), fn f -> %>
         <%= CoursePlannerWeb.SharedView.card title do %>
           <%= CoursePlannerWeb.SharedView.card_content do %>
