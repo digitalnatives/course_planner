@@ -13,17 +13,19 @@ defmodule CoursePlanner.Events do
   }
   alias Ecto.Changeset
 
+  @query from e in Event, order_by: [asc: e.date, asc: e.starting_time, asc: e.finishing_time]
   @notifier Application.get_env(:course_planner, :notifier, CoursePlanner.Notifications.Notifier)
 
-  def all do
-    query = from e in Event,
-    order_by: [asc: e.date, asc: e.starting_time, asc: e.finishing_time]
-
-    Repo.all(query)
+  def all(%{role: role}) when role in ["Coordinator", "Supervisor"], do: Repo.all(@query)
+  def all(user) do
+    user
+    |> Repo.preload(events: @query)
+    |> Map.get(:events)
   end
 
-  def all_splitted(now) do
-    all()
+  def all_splitted(now, current_user) do
+    current_user
+    |> all()
     |> Enum.split_with(&(compare_event_date_time(&1, now)))
     |> reverse_past_events()
   end
@@ -35,14 +37,6 @@ defmodule CoursePlanner.Events do
 
   def reverse_past_events({past_events, upcoming_events}) do
     {Enum.reverse(past_events), upcoming_events}
-  end
-
-  def all_with_users do
-    query = from e in Event,
-    preload: [:users],
-    order_by: [asc: e.date, asc: e.starting_time, asc: e.finishing_time]
-
-    Repo.all(query)
   end
 
   def get(id) do

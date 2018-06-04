@@ -13,17 +13,42 @@ defmodule CoursePlanner.EventsTest do
     @update_attrs %{date: @today, description: "some updated description", finishing_time: ~T[15:01:01.000000], location: "some updated location", name: "some updated name", starting_time: ~T[14:01:01.000000]}
     @invalid_attrs %{date: nil, description: nil, finishing_time: nil, location: nil, name: nil, starting_time: nil}
 
-    test "all/0 returns all events" do
-      event = insert(:event)
-      assert Events.all() == [event]
+    test "all/1 returns all events ordered" do
+      %{id: id3} = insert(:event, %{date: @today, starting_time: ~T[13:00:00.000000],
+        finishing_time: ~T[14:00:00.000000]})
+      %{id: id2} = insert(:event, %{date: @today, starting_time: ~T[13:00:00.000000],
+        finishing_time: ~T[13:00:00.000000]})
+      %{id: id1} = insert(:event, %{date: @today, starting_time: ~T[10:00:00.000000]})
+
+      assert [%{id: ^id1}, %{id: ^id2}, %{id: ^id3}] = Events.all(%{role: "Coordinator"})
     end
 
-    test "all_with_users/0 returns all events with preloaded users" do
-      event = insert(:event)
-      assert Events.all_with_users() == [event |> Repo.preload(:users)]
+    for role <- [:student, :teacher, :volunteer] do
+      @role role
+      test "all/1 return only invited events for #{@role}" do
+        user = insert(@role)
+        other_users = [insert(:student), insert(:teacher)]
+        %{id: id} = insert(:event, users: [user | other_users])
+        _not_invited_event = insert(:event, users: other_users)
+
+        assert [%{id: ^id}] = Events.all(user)
+      end
+    end
+
+    for role <- [:supervisor, :coordinator] do
+      @role role
+      test "all/1 return all events for #{@role}" do
+        user = insert(@role)
+        other_users = [insert(:student), insert(:teacher)]
+        %{id: id1} = insert(:event, starting_time: ~T[10:00:00.000000], users: [user | other_users])
+        %{id: id2} = insert(:event, starting_time: ~T[12:00:00.000000], users: other_users)
+
+        assert [%{id: ^id1}, %{id: ^id2}] = Events.all(user)
+      end
     end
 
     test "all_splitted/1 returns events splited by time" do
+      user = insert(:coordinator)
       day_before = Timex.shift(@today, days: -1)
       day_after = Timex.shift(@today, days: 1)
       %{id: id1} = insert(:event, %{date: day_before, starting_time: ~T[10:00:00.000000]})
@@ -38,7 +63,7 @@ defmodule CoursePlanner.EventsTest do
       {past_events, upcoming_events} =
         @now
         |> Timex.set([hour: 14, minute: 0, second: 0])
-        |> Events.all_splitted()
+        |> Events.all_splitted(user)
 
       assert [%{id: ^id3}, %{id: ^id2}, %{id: ^id1}] = past_events
       assert [%{id: ^id4}, %{id: ^id5}, %{id: ^id6}] = upcoming_events
